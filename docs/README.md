@@ -13,7 +13,8 @@ considerado e por que perdeu.
 `.claude/agents/` seguem.
 
 **`specs/`** — o spec de cada unidade. O design pedagógico nasce fora do repositório e
-aterrissa aqui versionado; `/implement-unit` trabalha contra ele.
+aterrissa aqui versionado; `/implement-unit` trabalha contra ele. `specs/README.md` tem o
+currículo do primeiro módulo e as decisões que travam a escrita.
 
 ## Ordem de leitura para quem chega
 
