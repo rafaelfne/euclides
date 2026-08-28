@@ -1,0 +1,120 @@
+import type { Exercise, Misconception } from '../../schema'
+
+export const asymptoticsMisconceptions: Misconception[] = [
+  { id: 'asymptotics.sem-regime', label: 'Afirmação de custo sem dizer de que regime fala',
+    socraticQuestion: 'Escreva a mesma frase trocando "em média" por "no pior caso". As duas continuam verdadeiras?',
+    escalation: [
+      'Se elas discordam, a frase original estava afirmando qual das duas? E quem lê tem como saber?',
+      'Construa a entrada em que o pior caso acontece. Ela é rara, ou é a entrada mais comum que você tem?',
+    ],
+    reviewCycle: 'asymptotics.c4' },
+
+  { id: 'asymptotics.sem-unidade', label: 'Não dizer o que n conta',
+    socraticQuestion: 'Comparar duas strings de mil caracteres custa o mesmo que comparar dois inteiros. Se não custa, o que a sua conta estava chamando de uma operação?',
+    escalation: [
+      'A conta contou comparações e chamou cada uma de O(1). Escreva o custo de novo, agora com duas grandezas: quantos elementos e quão grande é cada um.',
+    ],
+    reviewCycle: 'asymptotics.c2' },
+
+  { id: 'asymptotics.amortizado-e-caso-medio', label: 'Amortizado confundido com caso médio',
+    socraticQuestion: 'Um array dobra de capacidade quando enche. Das mil inserções seguidas, quantas são caras — e isso depende de sorteio nenhum?',
+    escalation: [
+      'Caso médio fala de uma distribuição de entradas possíveis. Aqui a sequência é fixa e o custo alto é certo em posições conhecidas. Qual dos dois qualificadores descreve isso?',
+    ],
+    reviewCycle: 'asymptotics.c5' },
+
+  { id: 'asymptotics.constante-nao-importa', label: 'Ignorar constantes onde n é pequeno',
+    socraticQuestion: 'Um algoritmo custa 1000·n e outro custa n². Para quais valores de n o segundo termina antes?',
+    escalation: [
+      'Encontre o ponto em que eles empatam. Se o seu n real está abaixo dele, qual das duas afirmações assintóticas ajuda a decidir?',
+    ],
+    reviewCycle: 'asymptotics.c1' },
+
+  { id: 'asymptotics.pior-caso-e-raro', label: 'Supor que o pior caso é raro por definição',
+    socraticQuestion: 'Qual entrada leva um quicksort com pivô no primeiro elemento ao pior caso? Quantas vezes por dia você recebe uma entrada assim?',
+    escalation: [
+      'A entrada já ordenada é o pior caso, e é a mais comum de todas. O que "pior caso" está qualificando: a frequência da entrada, ou o custo dela?',
+    ],
+    reviewCycle: 'asymptotics.c4' },
+
+  { id: 'asymptotics.recorrencia-sem-base', label: 'Escrever a recorrência sem o caso base',
+    socraticQuestion: 'Aplique a sua relação a uma entrada de tamanho 1. Ela devolve um número, ou volta a chamar a si mesma?',
+    escalation: [
+      'Uma relação sem caso base não descreve procedimento que pare. Qual o menor tamanho de entrada que o seu procedimento resolve sem se chamar de novo?',
+    ],
+    reviewCycle: 'asymptotics.c3' },
+]
+
+export const asymptoticsExercises: Exercise[] = [
+  {
+    kind: 'choice', id: 'asymptotics.e0',
+    prompt: '"Essa busca é O(1)." A frase não é falsa. O que falta nela para sobreviver a uma revisão?',
+    choices: [
+      { correct: true, text: 'O regime, as hipóteses sob as quais o limite vale, se ele é por operação ou amortizado, e o que n está contando' },
+      { correct: false, text: 'Nada: O(1) é a informação inteira, e o resto é formalidade acadêmica', misconceptionId: 'asymptotics.sem-regime' },
+      { correct: false, text: 'Só o regime — as outras três não mudam a decisão de quem lê', misconceptionId: 'asymptotics.sem-regime' },
+    ],
+  },
+  {
+    kind: 'choice', id: 'asymptotics.e1',
+    prompt: 'Duas implementações de um mesmo filtro: uma custa cerca de 1000·n, outra cerca de n². As coleções reais têm entre 20 e 200 elementos. Qual afirmação decide a escolha?',
+    choices: [
+      { correct: true, text: 'Elas empatam perto de n = 1000, e todo o intervalo real está abaixo disso — a assintótica não decide aqui, e a constante decide' },
+      { correct: false, text: 'A primeira, porque O(n) domina O(n²) e a constante é ignorada na notação', misconceptionId: 'asymptotics.constante-nao-importa' },
+      { correct: false, text: 'A segunda, porque n² com n pequeno é sempre menor que qualquer coisa linear', misconceptionId: 'asymptotics.constante-nao-importa' },
+    ],
+  },
+  {
+    kind: 'choice', id: 'asymptotics.e2',
+    prompt: 'Uma função procura uma chave numa lista de n URLs, comparando strings. A conta deu O(n). O que essa conta assumiu sem declarar?',
+    choices: [
+      { correct: true, text: 'Que comparar duas URLs custa o mesmo independentemente do comprimento delas — n conta elementos e ignora o tamanho de cada um' },
+      { correct: false, text: 'Que a lista está desordenada; ordenada seria O(log n)', misconceptionId: 'asymptotics.sem-unidade' },
+      { correct: false, text: 'Nada: comparar duas strings é uma operação, e uma operação é O(1)', misconceptionId: 'asymptotics.sem-unidade' },
+    ],
+  },
+  {
+    kind: 'choice', id: 'asymptotics.e3',
+    prompt: 'Um procedimento divide a entrada ao meio e se chama nas duas metades, gastando tempo linear para juntar. Como escrever o custo dele?',
+    choices: [
+      { correct: true, text: 'T(n) = 2·T(n/2) + n, com T(1) constante — e sem essa segunda parte a relação não descreve nada que pare' },
+      { correct: false, text: 'T(n) = 2·T(n/2) + n, que já é a relação completa', misconceptionId: 'asymptotics.recorrencia-sem-base' },
+      { correct: false, text: 'T(n) = n·log n, porque é assim que essa recorrência sempre resolve', misconceptionId: 'asymptotics.recorrencia-sem-base' },
+    ],
+  },
+  {
+    kind: 'choice', id: 'asymptotics.e4',
+    prompt: 'Uma tabela hash tem custo O(1) no caso médio e O(n) no pior. Um serviço público recebe as chaves de quem chama. Qual dos dois números decide o dimensionamento?',
+    choices: [
+      { correct: true, text: 'O pior caso, porque quem escolhe as chaves pode escolhê-las para colidir — e aí o pior caso deixa de ser improvável e passa a ser o normal' },
+      { correct: false, text: 'O caso médio, porque o pior caso é uma possibilidade teórica que quase nunca ocorre', misconceptionId: 'asymptotics.pior-caso-e-raro' },
+      { correct: false, text: 'Nenhum dos dois isoladamente: a média entre eles descreve o comportamento real', misconceptionId: 'asymptotics.sem-regime' },
+    ],
+  },
+  {
+    kind: 'bug', id: 'asymptotics.e5',
+    prompt: 'Este comentário documenta o custo da função. Marque a linha em que a afirmação está errada e escolha a consequência.',
+    language: 'javascript',
+    code: `// Insere no fim: O(1) em média.
+push(value) {
+  if (this.size === this.capacity) this.grow()
+  this.data[this.size] = value
+  this.size = this.size + 1
+}`,
+    faultyLines: [1],
+    consequences: [
+      { correct: true, text: 'O qualificador está trocado: não há sorteio nenhum aqui. O custo alto acontece em posições conhecidas e é espalhado pelas inserções baratas — isso é amortizado, e a frase deveria dizer O(1) amortizado no pior caso' },
+      { correct: false, text: 'A afirmação está correta: na média das inserções o custo é constante, e é isso que "em média" quer dizer', misconceptionId: 'asymptotics.amortizado-e-caso-medio' },
+      { correct: false, text: 'O defeito é o limite, não o qualificador: com o redimensionamento a inserção é O(n) e nunca O(1)', misconceptionId: 'asymptotics.amortizado-e-caso-medio' },
+    ],
+  },
+  {
+    kind: 'choice', id: 'asymptotics.e6',
+    prompt: 'Você precisa afirmar o custo de um laço simples sobre uma coleção. Qual técnica responde, e o que ela não decide sozinha?',
+    choices: [
+      { correct: true, text: 'Contar as operações do laço responde limite, regime e unidade de medida — e cala sobre amortização, que só aparece quando alguma operação redistribui custo ao longo da sequência' },
+      { correct: false, text: 'Só a recorrência responde com rigor; a contagem direta é uma aproximação informal', misconceptionId: 'asymptotics.recorrencia-sem-base' },
+      { correct: false, text: 'A contagem responde as quatro partes: um laço simples não tem nada de amortizado a declarar', misconceptionId: 'asymptotics.amortizado-e-caso-medio' },
+    ],
+  },
+]

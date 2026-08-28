@@ -1,0 +1,138 @@
+import type { Exercise, Misconception } from '../../schema'
+
+export const linearMisconceptions: Misconception[] = [
+  { id: 'linear.insercao-no-comeco-e-barata', label: 'Supor que mexer no começo custa o mesmo que mexer no fim',
+    socraticQuestion: 'Numa coleção de cinco elementos guardada em bloco contíguo, quantas posições precisam receber um novo valor quando o primeiro elemento sai?',
+    escalation: [
+      'Você contou as escritas ou contou a chamada? Escreva o conteúdo do bloco depois de cada escrita e conte as linhas.',
+      'Agora troque cinco por um milhão. A chamada continua sendo uma; e o número de escritas?',
+    ],
+    reviewCycle: 'linear.c3' },
+
+  { id: 'linear.capacidade-e-tamanho', label: 'Capacidade confundida com quantidade de elementos',
+    socraticQuestion: 'Um array dinâmico com capacidade 16 guarda 9 elementos. Quantas posições existem, quantas têm valor, e qual dos dois números a próxima inserção compara com o limite?',
+    escalation: [
+      'Se os dois números fossem o mesmo, toda inserção precisaria realocar. Qual dos dois cresce de um em um, e qual dá saltos?',
+    ],
+    reviewCycle: 'linear.c3' },
+
+  { id: 'linear.pilha-e-fila-invertidas', label: 'Supor que fila é a pilha lida ao contrário',
+    socraticQuestion: 'Empilhe A, B, C e desempilhe tudo; depois enfileire A, B, C e desenfileire tudo. Escreva as duas saídas. Uma é o inverso da outra?',
+    escalation: [
+      'Uma saída é C B A e a outra é A B C — inverter uma dá a outra, para esta entrada. Agora intercale as operações: empilhe A, empilhe B, tire um, empilhe C, tire tudo. Faça o mesmo com a fila e compare de novo.',
+    ],
+    reviewCycle: 'linear.c1' },
+
+  { id: 'linear.ponteiro-em-maos', label: 'Remover de lista ligada declarado O(1) sem dizer o que já se tem',
+    socraticQuestion: 'Para desligar um nó de uma lista ligada é preciso ter o nó anterior. Quanto custa chegar até ele partindo da cabeça?',
+    escalation: [
+      'A remoção em si é constante. Somando o que foi pago para achar o nó, qual é o custo da operação que alguém pediu — "remova este valor"?',
+    ],
+    reviewCycle: 'linear.c4' },
+
+  { id: 'linear.indice-em-lista-ligada', label: 'Esperar acesso por índice numa lista ligada',
+    socraticQuestion: 'Numa lista ligada, o que existe guardado em cada nó que permitiria pular direto para a posição 500?',
+    escalation: [
+      'Cada nó conhece só o próximo. Se o único caminho é seguir os ponteiros, quantos saltos até a posição 500?',
+    ],
+    reviewCycle: 'linear.c4' },
+
+  { id: 'linear.lista-ligada-e-sempre-melhor', label: 'Escolher pela tabela de custos, ignorando as hipóteses dela',
+    socraticQuestion: 'A tabela diz que inserir no meio é O(1) na lista ligada e O(n) no array. Que hipótese sobre o acesso à memória essa tabela assumiu e não declarou?',
+    escalation: [
+      'Percorrer um bloco contíguo lê posições vizinhas; percorrer uma lista ligada salta para endereços quaisquer. Qual das duas o processador consegue adiantar?',
+    ],
+    reviewCycle: 'linear.c5' },
+]
+
+export const linearExercises: Exercise[] = [
+  {
+    kind: 'choice', id: 'linear.e0',
+    prompt: 'O contrato Lista oferece obter, inserir e remover por posição, e tamanho. Qual pergunta ele responde diretamente?',
+    choices: [
+      { correct: true, text: 'O que está na posição 7' },
+      { correct: false, text: 'Em que posição está o valor 42', misconceptionId: 'linear.indice-em-lista-ligada' },
+      { correct: false, text: 'Qual é o menor valor guardado', misconceptionId: 'linear.insercao-no-comeco-e-barata' },
+    ],
+  },
+  {
+    kind: 'choice', id: 'linear.e1',
+    prompt: 'Uma pilha e uma fila recebem, nesta ordem: entra A, entra B, sai um, entra C, sai um, sai um. Quais são as duas saídas?',
+    choices: [
+      { correct: true, text: 'Pilha: B, C, A. Fila: A, B, C. Uma não é o inverso da outra — a intercalação das operações separa as duas' },
+      { correct: false, text: 'Pilha: C, B, A. Fila: A, B, C — uma é sempre o inverso da outra', misconceptionId: 'linear.pilha-e-fila-invertidas' },
+      { correct: false, text: 'As duas devolvem A, B, C: a ordem de saída depende da ordem de entrada, não da estrutura', misconceptionId: 'linear.pilha-e-fila-invertidas' },
+    ],
+  },
+  {
+    kind: 'choice', id: 'linear.e2',
+    prompt: 'Uma fila de jobs foi implementada com um array, enfileirando no fim e desenfileirando da posição 0. Com dez mil pendentes ela começou a atrasar, sem que a carga tivesse mudado. Por quê?',
+    choices: [
+      { correct: true, text: 'Desenfileirar da posição 0 desloca todos os outros uma casa: o custo por job cresce com o tamanho da fila, e a carga não precisou mudar para o atraso aparecer' },
+      { correct: false, text: 'O array precisou realocar várias vezes para caber dez mil elementos, e cada realocação copia tudo', misconceptionId: 'linear.capacidade-e-tamanho' },
+      { correct: false, text: 'Arrays não servem para fila porque não há operação de fila neles; o defeito é conceitual e não de custo', misconceptionId: 'linear.pilha-e-fila-invertidas' },
+    ],
+  },
+  {
+    kind: 'trace', id: 'linear.e3',
+    prompt:
+      'O bloco guarda 10, 20, 30, 40 e 50, nesta ordem, a partir da posição 0. Execute remover(0) ' +
+      'e preencha uma linha por escrita: que valor foi escrito, como fica o bloco, e quantas ' +
+      'escritas já aconteceram.',
+    pseudocode: `função remover(A, p)
+    para cada j de p até n − 2 faça
+        A[j] ← A[j + 1]
+    n ← n − 1`,
+    invariant: 'Depois da escrita em j, as posições p até j já contêm os elementos que vinham depois delas.',
+    columns: [
+      { key: 'step', label: 'escrita' },
+      { key: 'key', label: 'onde escreve' },
+      { key: 'moved', label: 'valor escrito', placeholder: '0' },
+      { key: 'content', label: 'bloco depois da escrita', placeholder: '11 22 33 44 55' },
+      { key: 'moves', label: 'escritas até aqui', placeholder: '0' },
+    ],
+    conventions: [
+      { notation: '11 22 33 44 55', rule: 'o bloco', why: 'Os cinco valores na ordem das posições, separados por espaço. O bloco continua com cinco posições: remover não encolhe o bloco, só o tamanho lógico.' },
+      { notation: '(última posição)', rule: 'o que sobra no fim', why: 'A última posição mantém o valor antigo até que n mude. Escreva o que está lá, não o que deveria estar.' },
+    ],
+    reference: 'linear.remove-first-trace',
+    misconceptionByStep: { '4': 'linear.capacidade-e-tamanho' },
+  },
+  {
+    kind: 'choice', id: 'linear.e4',
+    prompt: 'Uma lista ligada tem mil nós. Você tem em mãos o nó da posição 500 e quer removê-lo. Qual o custo, e qual o custo de "remova o nó que contém o valor X"?',
+    choices: [
+      { correct: true, text: 'Com o nó em mãos, constante. Por valor, O(n): alguém precisa percorrer até achá-lo, e é esse custo que a frase "remoção é O(1)" omite' },
+      { correct: false, text: 'Constante nos dois casos — é a vantagem da lista ligada sobre o array', misconceptionId: 'linear.ponteiro-em-maos' },
+      { correct: false, text: 'O(n) nos dois casos, porque a lista ligada não tem acesso por índice', misconceptionId: 'linear.indice-em-lista-ligada' },
+    ],
+  },
+  {
+    kind: 'choice', id: 'linear.e5',
+    prompt: 'A tabela de custos favorece a lista ligada na inserção, e na prática o array dinâmico costuma vencer ao percorrer coleções grandes. O que a tabela não declarou?',
+    choices: [
+      { correct: true, text: 'Que os acessos custam o mesmo em qualquer endereço — um bloco contíguo lê posições vizinhas, e a lista ligada salta para endereços quaisquer' },
+      { correct: false, text: 'Nada: a tabela está certa, e a prática contradiz a teoria por causa de detalhes de implementação da linguagem', misconceptionId: 'linear.lista-ligada-e-sempre-melhor' },
+      { correct: false, text: 'Que a lista ligada aloca um nó por elemento, o que a torna O(n log n) no percurso', misconceptionId: 'linear.lista-ligada-e-sempre-melhor' },
+    ],
+  },
+  {
+    kind: 'bug', id: 'linear.e6',
+    prompt: 'Esta implementação de pilha sobre array é plausível e passa nos testes de uso normal. Marque a linha defeituosa e escolha a consequência.',
+    language: 'javascript',
+    code: `class Pilha {
+  constructor() { this.dados = new Array(8); this.n = 0 }
+  empilhar(x) {
+    this.dados[this.n] = x
+    this.n = this.n + 1
+  }
+  desempilhar() { this.n = this.n - 1; return this.dados[this.n] }
+}`,
+    faultyLines: [4],
+    consequences: [
+      { correct: true, text: 'A escrita acontece sem comparar n com a capacidade do bloco: a partir do nono elemento a pilha passa a gravar fora do que foi alocado, e nada avisa enquanto os testes usarem menos de oito' },
+      { correct: false, text: 'Nada de grave: o bloco cresce sozinho quando a posição escrita passa do fim', misconceptionId: 'linear.capacidade-e-tamanho' },
+      { correct: false, text: 'O defeito é desempilhar sem verificar se a pilha está vazia; empilhar está correto', misconceptionId: 'linear.capacidade-e-tamanho' },
+    ],
+  },
+]

@@ -48,3 +48,8 @@ diante de um problema novo.
 A unidade de tabelas hash foi implementada primeiro, deliberadamente: é a que mais
 estressa o modelo de conteúdo, porque quebra o modelo mental ingênuo mais comum da área
 ("hash é O(1)") e exercita todos os tipos de exercício.
+
+As oito estão implementadas. Duas decisões mudaram o escopo desta lista e estão registradas
+em `docs/specs/README.md`: heap saiu do primeiro módulo, porque implementa um contrato
+diferente do da árvore de busca; e "estruturas lineares" virou uma unidade com o contrato
+Lista, tendo pilha e fila como restrições dele.

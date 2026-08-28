@@ -1,39 +1,53 @@
 # Specs do primeiro módulo
 
 O escopo está em `docs/discovery/00-problema.md`, numa linha. Aqui ele está aberto em oito
-specs. Um está implementado; sete estão escritos até onde dava para sustentar, com
-`A DEFINIR` em cada ponto que depende de decisão pedagógica ainda não tomada — que é o que
-`.claude/commands/new-spec.md` manda fazer.
+specs, e as oito unidades estão implementadas e registradas.
 
 | # | spec | kind | status |
 |---|---|---|---|
-| 1 | [tracing](tracing.md) — Lógica e teste de mesa | `method` | spec |
-| 2 | [asymptotics](asymptotics.md) — Análise assintótica | `method` | spec |
-| 3 | [linear](linear.md) — Estruturas lineares | `structure` | spec, **bloqueado** |
+| 1 | [tracing](tracing.md) — Lógica e teste de mesa | `method` | implementada |
+| 2 | [asymptotics](asymptotics.md) — Análise assintótica | `method` | implementada |
+| 3 | [linear](linear.md) — Estruturas lineares | `structure` | implementada |
 | 4 | [hash](hash.md) — Tabelas hash | `structure` | implementada |
-| 5 | [trees](trees.md) — Árvores | `structure` | spec, **bloqueado** |
-| 6 | [graphs](graphs.md) — Grafos | `structure` | spec |
+| 5 | [trees](trees.md) — Árvores de busca | `structure` | implementada |
+| 6 | [graphs](graphs.md) — Grafos | `structure` | implementada |
 | 7 | [sorting](sorting.md) — Ordenação e busca | `structure` | implementada |
-| 8 | [synthesis](synthesis.md) — Síntese | `method` *(a confirmar)* | spec |
+| 8 | [synthesis](synthesis.md) — Síntese | `method` | implementada |
 
-## As três decisões que travam a escrita
+Todas implementadas. As três decisões que travavam a escrita foram tomadas na
+implementação, sem validação prévia, sob autorização explícita — e estão registradas abaixo
+junto com o que cada uma custou.
 
-**1. Um contrato por unidade, e duas unidades com mais de um.** O schema permite um `adt`
-por unidade. "Estruturas lineares" nomeia Lista, Pilha e Fila; "Árvores" carrega árvore de
-busca e heap, que implementam contratos diferentes. Cada spec lista as saídas e recomenda
-uma; as duas decisões são a mesma e devem ser tomadas juntas. Se a saída for mudar o
-schema, é ADR próprio — é mexer na espinha do ADR-0003.
+## As três decisões, e como foram resolvidas
 
-O glossário já assume as duas: `stack` tem `plannedIn: 'linear.c2'` e `heap` tem
-`plannedIn: 'trees.c4'`. A decisão foi tomada de fato e não de direito.
+**1. Um contrato por unidade — resolvido por caminhos diferentes nas duas unidades.**
 
-**2. Onde moram algoritmos escritos *sobre* um contrato.** Em grafos, busca em largura e em
-profundidade não são operações do TAD nem implementações dele — e são o conteúdo da unidade.
-É a primeira vez que o valor não está nas implementações concorrentes. Pode ser informação
-sobre o modelo, não só sobre a unidade.
+Em `linear`, saída A: o contrato é `Lista`, e pilha e fila entram como **restrições** dela,
+na banda `contract`. Elas não são implementações da lista, e pôr as duas ali teria exigido
+`elaborates` apontando uma implementação — o que seria falso. `stack` saiu de `planned` e
+nasce em `linear.c1`.
 
-**3. Se `kind: 'method'` cabe na síntese.** O ADR-0012 classificou por eliminação e mandou
-observar. O spec 8 tenta fazer caber e diz onde estica.
+Em `trees`, saída B: o contrato é `SortedMap`, e **heap saiu do primeiro módulo**. Um heap
+não é uma árvore de busca restrita, e inventar um supercontrato que cobrisse os dois violaria
+o ADR-0005 — ninguém encontra esse termo no mundo. `heap` continua `planned`, agora apontando
+`heaps.c0`, e a checagem de glossário reprova no dia em que esse ciclo existir sem que o termo
+tenha sido promovido. A unidade mudou de nome para **Árvores de busca**, que é o que ela é.
+
+**2. Algoritmos escritos *sobre* um contrato ficam na banda `cost`.** Em grafos, busca em
+largura e em profundidade não são operações do TAD nem implementações dele. Foram para a
+banda de consequência, e o argumento é este: o percurso é justamente onde o custo da
+representação escolhida aparece — O(V+E) sobre lista de adjacência, O(V²) sobre matriz.
+
+A decisão funciona e deixa um desconforto honesto: a banda `cost` da unidade de grafos tem
+quatro ciclos e carrega o conteúdo central dela, enquanto nas outras unidades ela carrega o
+fechamento. Se isso incomodar numa segunda unidade com o mesmo formato, é sinal de que falta
+uma banda, e aí é ADR.
+
+**3. `kind: 'method'` coube na síntese, com uma parte esticada.** O critério é a
+justificativa de escolha, com quatro partes, e `whenOmitted` gerou as armadilhas como nas
+outras unidades de método. A parte que estica é `custo nas candidatas`: ela não é uma
+afirmação, é uma comparação — duas afirmações mais uma relação. O modelo aceitou; a leitura
+fica registrada aqui porque o ADR-0012 mandou observar exatamente isso.
 
 ## O que muda em quem já está escrito
 
@@ -43,13 +57,16 @@ ciclos de hash, e passam a nascer na unidade 2. Trocar os valores é mecânico e
 `glossário` reprova até que os dois lados concordem; decidir que hash passa a *usar* termo
 introduzido depois dela é editorial.
 
-## O que estes specs não são
+## O aviso que continua valendo, agora sobre conteúdo implementado
 
-Não são conteúdo, e nenhum deles autoriza `/implement-unit` como está. Um spec com
-`A DEFINIR` no catálogo de armadilhas produz, se implementado assim, distractor plausível e
-pedagogicamente vazio — exatamente o que o validador não consegue pegar, porque a checagem
-`órfã` confere que a armadilha é exercitada e não que ela é real.
+Os catálogos de armadilhas das oito unidades são **candidatos conhecidos da área, não
+observação de aluno**. O ADR-0002 diz que correção socrática é antecipação em tempo de
+autoria: ela vale pelo que alguém já viu um aluno errar.
 
-O catálogo de armadilhas é antecipação em tempo de autoria (ADR-0002): ele vale pelo que
-você já viu um aluno errar. As listas nestes specs são candidatas conhecidas da área, não
-observação — e a diferença entre as duas coisas é a tese do projeto.
+O gate não sabe a diferença. A checagem `órfã` confere que toda armadilha é exercitada por
+algum exercício; ela não confere que a armadilha é real. Uma armadilha plausível e nunca
+cometida passa em todas as dezoito checagens sendo conteúdo morto — e é o único modo de
+falha que este projeto foi construído inteiro para impedir.
+
+É a primeira coisa a revisar, unidade por unidade, e provavelmente a única que não pode ser
+delegada.

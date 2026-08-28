@@ -1,15 +1,19 @@
 /**
- * Proof that the method spine is expressible — ADR-0012.
+ * As checagens da espinha de método, exercitadas pelo lado negativo — ADR-0012.
  *
- * The fixture below is NOT content and NOT a spec. It is the smallest unit
- * that exercises the `method` shape end to end, and it exists so the decision
- * is checked by the build instead of asserted in a document. The real unit of
- * asymptotic analysis waits for a spec, like every other one.
+ * Quando este arquivo nasceu, a fixture era a única unidade de método que
+ * existia e o teste provava que a espinha era exprimível. Isso agora é provado
+ * pelo conteúdo real: `tracing`, `asymptotics` e `synthesis` são unidades de
+ * método registradas e passam no gate como qualquer outra.
+ *
+ * O que sobrou para a fixture é o que o conteúdo real não pode mostrar sem
+ * quebrar o build: que banda do kind errado reprova, que parte de critério sem
+ * técnica que a produza reprova, e que `whenOmitted` apontando parte
+ * inexistente reprova. Ela continua não sendo conteúdo nem spec.
  */
 import { unit as unitSchema, type MethodUnit, type Unit } from '../src/content/schema'
 import { CHECKS, checkAll } from '../src/lib/validate'
 import { units } from '../src/content/index'
-import { hashUnit } from '../src/content/units/hash'
 import { allTerms } from '../src/content/glossary'
 
 let failures = 0
@@ -161,9 +165,12 @@ check('a unidade de método passa nas mesmas checagens que a de estrutura',
   failuresOnFixture.length === 0,
   failuresOnFixture.map((f) => `[${f.check}] ${f.detail}`).join(' | '))
 
-check('as duas espinhas convivem no mesmo registro',
-  units.every((u) => u.kind === 'structure') && fixture.kind === 'method',
+const kinds = new Set(units.map((u) => u.kind))
+check('as duas espinhas convivem no registro real',
+  kinds.has('structure') && kinds.has('method'),
   units.map((u) => `${u.id}:${u.kind}`).join(','))
+check('toda unidade registrada declara um kind conhecido',
+  units.every((u) => u.kind === 'structure' || u.kind === 'method'))
 
 const wrongBand = { ...fixture, cycles: [{ ...fixture.cycles[0]!, band: 'contract' as const }, ...fixture.cycles.slice(1)] }
 const bandFailures = checkAll([...units, wrongBand], allTerms).filter((f) => f.check === 'espinha')

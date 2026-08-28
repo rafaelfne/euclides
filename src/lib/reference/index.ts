@@ -1,11 +1,19 @@
 import type { TraceStep } from '../socratic'
 import { hashReferenceGenerators } from './hash-table'
+import { tracingReferenceGenerators } from './tracing'
+import { linearReferenceGenerators } from './linear'
+import { treesReferenceGenerators } from './trees'
+import { graphsReferenceGenerators } from './graphs'
 import { sortingReferenceGenerators } from './sorting'
 
 export type ReferenceGenerator = () => TraceStep[]
 
 const registries: Array<Record<string, ReferenceGenerator>> = [
+  tracingReferenceGenerators,
+  linearReferenceGenerators,
   hashReferenceGenerators,
+  treesReferenceGenerators,
+  graphsReferenceGenerators,
   sortingReferenceGenerators,
 ]
 
