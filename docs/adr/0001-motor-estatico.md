@@ -79,5 +79,5 @@ guarda a autoexplicação do aluno e exporta a sessão em markdown para correç�
 ## Itens de ação
 
 1. [x] Content model que sustenta correção determinística
-2. [x] Motor de divergência com escada de três degraus
-3. [ ] Botão de exportar sessão em markdown
+2. [x] Motor de divergência com três degraus
+3. [x] Exportar sessão em markdown — painel de lacunas em `/gaps`

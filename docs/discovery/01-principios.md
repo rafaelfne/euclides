@@ -65,6 +65,7 @@ o bastante é auditoria.
 
 Se uma resposta está superficial, diga. Elogio vago atrapalha o objetivo.
 
-**Não mecanizável, e o mais fácil de perder.** Vale para o app — o painel de lacunas diz
-"você resolveu em quatro tentativas, isso não conta como domínio" em vez de mostrar um
-percentual — e vale para quem escreve o conteúdo.
+**Não mecanizável, e o mais fácil de perder.** Vale para o app — o painel de lacunas em
+`/gaps` diz "resolvido em quatro tentativas — chegar lá não é o mesmo que dominar" em vez
+de mostrar um percentual, e `scripts/test-export.ts` reprova se algum número percentual
+aparecer no export — e vale para quem escreve o conteúdo.

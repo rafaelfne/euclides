@@ -103,11 +103,12 @@ export function UnitMap({ unit }: { unit: Unit }) {
 
   return (
     <main className="shell">
-      <header className="masthead">
+      <header className="masthead" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 18 }}>
           <Link href="/" className="display" style={{ fontSize: 30, fontWeight: 700, color: 'var(--ink)' }}>Euclides</Link>
           <span className="lbl" style={{ color: 'var(--ink-3)' }}>Unidade {unit.number} · {unit.title}</span>
         </div>
+        <Link href="/gaps" className="lbl" style={{ color: 'var(--ink-3)' }}>Lacunas →</Link>
       </header>
 
       <div style={{ padding: '30px 48px 60px' }}>

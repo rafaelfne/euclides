@@ -48,4 +48,16 @@ grande, caso o cenário mude.
 ## Itens de ação
 
 1. [x] `src/lib/progress.ts` com zod e versão
-2. [ ] Exportador de sessão em markdown
+2. [x] Exportador de sessão em markdown — `src/lib/session-export.ts`, painel em `/gaps`
+
+## Nota de implementação
+
+O export atravessa a fronteira do app, então o princípio 3 precisou atravessar com ele.
+Ele carrega o estado do aluno — tentativas, o que saiu limpo, quais armadilhas dispararam
+e a pergunta que cada uma já fez na tela — e nunca uma entrada de `escalation` que o aluno
+não alcançou nem o texto de uma alternativa correta. `scripts/test-export.ts` checa as duas
+ausências, porque um vazamento ali não quebraria tela nenhuma: entregaria em silêncio a
+resposta que o motor inteiro existe para reter.
+
+O markdown também pede, em voz ativa, que o modelo do outro lado corrija sem entregar o
+valor — inclusive se o aluno pedir.

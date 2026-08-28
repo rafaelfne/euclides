@@ -94,6 +94,7 @@ src/content/conventions.ts   a folha de notação do pseudocódigo
 src/content/units/<id>/index.ts      unidade, ciclos, ADT, implementações
 src/content/units/<id>/exercises.ts  exercícios e catálogo de armadilhas
 src/lib/socratic.ts          divergência de traço e os três degraus
+src/lib/session-export.ts    o markdown do painel de lacunas — sem resposta dentro
 src/lib/reference/index.ts   o registro agregado dos geradores de gabarito
 src/lib/reference/           implementações que GERAM o gabarito (nunca digitado)
 src/lib/pseudocode.ts        tokenizador semântico do pseudocódigo

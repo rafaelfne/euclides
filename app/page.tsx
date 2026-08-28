@@ -12,7 +12,10 @@ export default function Home() {
         que não esteja declarado — aqui também não: toda complexidade vem com regime e
         hipóteses, todo termo vem com o que ele não é.
       </p>
-      <div className="lbl" style={{ marginBottom: 14 }}>Unidades</div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', maxWidth: 640, marginBottom: 14 }}>
+        <span className="lbl">Unidades</span>
+        <Link href="/gaps" className="lbl" style={{ color: 'var(--ink-3)' }}>Lacunas →</Link>
+      </div>
       <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'grid', gap: 10, maxWidth: 640 }}>
         {units.map((u) => (
           <li key={u.id}>
