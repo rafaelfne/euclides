@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npm run validate && npm run docs:check && next build",
+    "build": "npm run validate && npm run docs:check && tsx scripts/check-no-dev-server.ts && next build",
     "validate": "tsx scripts/validate-content.ts",
     "typecheck": "tsc --noEmit",
     "test": "tsx scripts/test-all.ts",

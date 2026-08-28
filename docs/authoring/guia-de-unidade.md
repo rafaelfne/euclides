@@ -107,10 +107,10 @@ npm run build
 `npm test` descobre as suítes por glob de propósito: a versão anterior listava um arquivo
 e um terceiro teste ficou dois commits existindo, passando e nunca rodando.
 
-**Pare o `npm run dev` antes de rodar `npm run build`.** Os dois escrevem em `.next`, e o
-build por cima do servidor de desenvolvimento corrompe o cache: a página volta sem CSS
-nenhum e o console acusa módulo faltando. Não é defeito do seu conteúdo. `rm -rf .next` e
-suba o servidor de novo.
+**O build se recusa a rodar com o `npm run dev` de pé**, e `scripts/check-no-dev-server.ts`
+explica por quê: os dois escrevem em `.next`, e o build por cima do dev corrompe o cache —
+a página volta sem CSS nenhum e o console acusa módulo faltando. Se você chegou nesse estado
+por outro caminho, `rm -rf .next` e suba o servidor de novo; não é defeito do seu conteúdo.
 
 Depois `/audit-unit <id>`, que cobre o que não é mecanizável.
 

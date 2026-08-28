@@ -32,6 +32,8 @@ jobs:
       - name: Suítes de teste
         run: npm test
 
+      # `npm run build` inclui a guarda de porta, que não faz sentido no CI:
+      # aqui nada está de pé, e o passo já roda validate e docs:check separados.
       - name: Export estático
         run: npx next build
 
