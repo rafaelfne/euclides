@@ -168,6 +168,17 @@ export const traceExercise = z.object({
     label: z.string().min(1),
     placeholder: z.string().min(1).optional(),
   })).min(2),
+  /**
+   * Como se escrevem as células DESTE traço. As convenções gerais estão em
+   * `traceConventions`; estas são as da unidade, e são obrigatórias porque a
+   * versão global delas apareceu num exercício de outra unidade descrevendo
+   * uma estrutura que ele não tem. ADR-0013.
+   */
+  conventions: z.array(z.object({
+    notation: z.string().min(1),
+    rule: z.string().min(1),
+    why: z.string().min(1),
+  })).min(1),
   /** Name of the reference generator; resolved from the registry at runtime. */
   reference: z.string().min(1),
   misconceptionByStep: z.record(z.string(), z.string()),

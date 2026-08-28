@@ -8,6 +8,7 @@
  */
 import { unit as unitSchema, type MethodUnit, type Unit } from '../src/content/schema'
 import { CHECKS, checkAll } from '../src/lib/validate'
+import { units } from '../src/content/index'
 import { hashUnit } from '../src/content/units/hash'
 import { allTerms } from '../src/content/glossary'
 
@@ -155,16 +156,17 @@ const parsed = unitSchema.safeParse(fixture)
 check('o schema aceita uma unidade de método', parsed.success,
   parsed.success ? '' : parsed.error.issues.map((i) => `${i.path.join('.')} ${i.message}`).join(' | '))
 
-const failuresOnFixture = checkAll([hashUnit, fixture], allTerms)
+const failuresOnFixture = checkAll([...units, fixture], allTerms)
 check('a unidade de método passa nas mesmas checagens que a de estrutura',
   failuresOnFixture.length === 0,
   failuresOnFixture.map((f) => `[${f.check}] ${f.detail}`).join(' | '))
 
 check('as duas espinhas convivem no mesmo registro',
-  [hashUnit.kind, fixture.kind].join(',') === 'structure,method')
+  units.every((u) => u.kind === 'structure') && fixture.kind === 'method',
+  units.map((u) => `${u.id}:${u.kind}`).join(','))
 
 const wrongBand = { ...fixture, cycles: [{ ...fixture.cycles[0]!, band: 'contract' as const }, ...fixture.cycles.slice(1)] }
-const bandFailures = checkAll([wrongBand], allTerms).filter((f) => f.check === 'espinha')
+const bandFailures = checkAll([...units, wrongBand], allTerms).filter((f) => f.check === 'espinha')
 check('banda de estrutura numa unidade de método reprova', bandFailures.length > 0,
   'nenhuma falha de espinha')
 
@@ -172,7 +174,7 @@ const uncovered = {
   ...fixture,
   techniques: (fixture as MethodUnit).techniques.map((t) => ({ ...t, produces: ['bound'] })),
 }
-const coverFailures = checkAll([uncovered], allTerms).filter((f) => f.check === 'cobertura')
+const coverFailures = checkAll([...units, uncovered], allTerms).filter((f) => f.check === 'cobertura')
 check('parte do critério que nenhuma técnica produz reprova', coverFailures.length === 3,
   `${coverFailures.length} falha(s) de cobertura`)
 
@@ -181,7 +183,7 @@ const badPart = {
   criterion: { ...(fixture as MethodUnit).criterion, whenOmitted: [{ partId: 'nao-existe', reads: 'x' }] },
 }
 check('whenOmitted apontando parte inexistente reprova',
-  checkAll([badPart], allTerms).some((f) => f.check === 'cobertura'))
+  checkAll([...units, badPart], allTerms).some((f) => f.check === 'cobertura'))
 
 check('a lista de checagens é a mesma para os dois kinds', CHECKS.length > 0)
 

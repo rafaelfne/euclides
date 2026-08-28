@@ -14,16 +14,18 @@ export const conventions = [
 ]
 
 /**
- * Como se preenche um traço. Mesma razão da tabela acima, um nível adiante: a
- * notação do pseudocódigo estava declarada e a de PREENCHIMENTO não, então o
- * aluno inventava a sua e divergia do gabarito sem ter errado o raciocínio.
+ * Como se preenche um traço — o que vale para QUALQUER traço da trilha.
+ *
+ * A notação de cada coluna é do exercício, não daqui: a primeira versão desta
+ * lista descrevia bucket, rehash e carga, e apareceu inteira dentro de um
+ * exercício de ordenação, onde nenhuma das três existe. Convenção declarada no
+ * escopo errado é convenção não declarada. Ver `traceExercise.conventions` em
+ * `src/content/schema.ts` e o ADR-0013.
  */
 export const traceConventions = [
-  { notation: '0:[12,20]', rule: 'uma posição ocupada', why: 'O número da posição, dois-pontos, e as chaves que estão nela. Só as chaves — o valor guardado não entra no traço.' },
-  { notation: '0:[12,20] 5:[45]', rule: 'a tabela inteira', why: 'Só as posições que têm alguma chave, da menor para a maior, separadas por espaço.' },
-  { notation: '—', rule: 'tabela vazia', why: 'Nenhuma posição ocupada ainda.' },
-  { notation: 'sim / não', rule: 'houve rehash', why: 'Responda as duas linhas. Deixar em branco não é dizer não.' },
-  { notation: '0,75', rule: 'a carga', why: 'Vírgula decimal, e a casa a mais não muda nada: 0,75 e 0,750 valem igual.' },
+  { notation: '(em cinza)', rule: 'o texto claro na célula', why: 'É o formato esperado, nunca a resposta. Ele não conta como preenchimento.' },
+  { notation: '(vazio)', rule: 'deixar em branco', why: 'Não é uma resposta. Toda linha e toda coluna editável precisam de valor.' },
+  { notation: '0,75', rule: 'número', why: 'Vírgula decimal, e a casa a mais não muda nada: 0,75 e 0,750 valem igual.' },
 ]
 
 /** Language boundary, declared because leaving it implicit is how drift starts. */

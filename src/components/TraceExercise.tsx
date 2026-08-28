@@ -66,7 +66,7 @@ export function TraceExercise({ unit, exercise }: { unit: Unit; exercise: TraceE
           Como preencher
         </summary>
         <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '7px 14px', fontSize: 13, alignItems: 'baseline', paddingLeft: 2 }}>
-          {traceConventions.map((c) => (
+          {[...exercise.conventions, ...traceConventions].map((c) => (
             <div key={c.rule} style={{ display: 'contents' }}>
               <span className="mono" style={{ fontSize: 12.5, whiteSpace: 'nowrap', color: 'var(--ink)' }}>{c.notation}</span>
               <span style={{ color: 'var(--ink-3)' }}>

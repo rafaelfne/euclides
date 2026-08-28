@@ -157,6 +157,103 @@ export const hashGlossary: GlossaryTerm[] = [
     falseFriends: [], introducedIn: 'hash.c8' },
 ]
 
+export const sortingGlossary: GlossaryTerm[] = [
+  { id: 'sorting', canonical: 'ordenação', canonicalLanguage: 'pt',
+    alsoKnownAs: ['sort', 'sorting'],
+    definition: 'Devolver os mesmos elementos numa ordem em que nenhum vem antes de um menor, segundo o comparador dado.',
+    isNot: ['não é uma estrutura — é um problema, e cada algoritmo é uma forma de resolvê-lo', 'não promete nada sobre elementos que comparam como iguais'],
+    falseFriends: [], introducedIn: 'sorting.c0' },
+
+  { id: 'permutation', canonical: 'permutação', canonicalLanguage: 'pt',
+    alsoKnownAs: ['permutation'],
+    definition: 'Os mesmos elementos, em outra ordem: nenhum entra, nenhum sai, nenhum duplica.',
+    isNot: ['não é uma cópia com elementos trocados por outros', 'não permite descartar duplicata — ordenar não filtra'],
+    falseFriends: [], introducedIn: 'sorting.c0' },
+
+  { id: 'stability', canonical: 'estabilidade', canonicalLanguage: 'pt',
+    alsoKnownAs: ['stable sort', 'ordenação estável'],
+    definition: 'A garantia de que elementos que comparam como iguais saem na mesma ordem relativa em que entraram.',
+    isNot: ['não fala de elementos diferentes — a ordem deles é a do comparador', 'não é uma propriedade do comparador, e sim do algoritmo'],
+    falseFriends: [
+      { context: 'sistemas', meaning: '“estável” como sinônimo de confiável ou sem falha. Aqui é uma garantia exata sobre ordem relativa, e um algoritmo instável não tem defeito nenhum.' },
+      { context: 'versionamento', meaning: 'uma versão estável é a publicada. Homônimo total.' },
+    ], introducedIn: 'sorting.c1' },
+
+  { id: 'comparator', canonical: 'comparador', canonicalLanguage: 'pt',
+    alsoKnownAs: ['comparator', 'função de comparação'],
+    definition: 'A função que decide, para dois elementos, qual vem antes — ou que eles empatam.',
+    isNot: ['não devolve sim ou não: devolve antes, depois ou empate', 'não pode contradizer a si mesmo — se diz que x vem antes de y e y antes de z, tem de dizer que x vem antes de z'],
+    falseFriends: [], introducedIn: 'sorting.c1' },
+
+  { id: 'insertion-sort', canonical: 'insertion sort', canonicalLanguage: 'en',
+    alsoKnownAs: ['ordenação por inserção'],
+    definition: 'Percorre a coleção mantendo a parte à esquerda já ordenada, e insere cada elemento novo nessa parte.',
+    isNot: ['não é o mesmo que selection sort, que procura o menor em vez de inserir o próximo'],
+    falseFriends: [], introducedIn: 'sorting.c2' },
+
+  { id: 'adaptive', canonical: 'adaptatividade', canonicalLanguage: 'pt',
+    alsoKnownAs: ['adaptive sort'],
+    definition: 'A propriedade de custar menos quando a entrada já chega com parte da ordem pronta.',
+    isNot: ['não é caso médio — caso médio fala de entrada sorteada, adaptatividade fala de entrada já quase ordenada', 'não é uma garantia de pior caso'],
+    falseFriends: [], introducedIn: 'sorting.c2' },
+
+  { id: 'merge-sort', canonical: 'merge sort', canonicalLanguage: 'en',
+    alsoKnownAs: ['ordenação por intercalação'],
+    definition: 'Divide a coleção ao meio, ordena as duas metades e intercala as duas em uma.',
+    isNot: ['não ordena no próprio array — a intercalação precisa de espaço à parte'],
+    falseFriends: [], introducedIn: 'sorting.c3' },
+
+  { id: 'merge', canonical: 'intercalação', canonicalLanguage: 'pt',
+    alsoKnownAs: ['merge'],
+    definition: 'Percorrer duas sequências já ordenadas tomando sempre o menor dos dois primeiros, até esgotar as duas.',
+    isNot: ['não é concatenar e depois ordenar', 'não reordena nada: ela depende das duas entradas já estarem ordenadas'],
+    falseFriends: [
+      { context: 'Git', meaning: '`merge` junta históricos e resolve conflito de conteúdo. Não há ordem envolvida, e a operação não é comutativa como esta é.' },
+      { context: 'banco de dados', meaning: '`MERGE` insere ou atualiza conforme a linha existir. Homônimo total.' },
+    ], introducedIn: 'sorting.c3' },
+
+  { id: 'quicksort', canonical: 'quicksort', canonicalLanguage: 'en',
+    alsoKnownAs: ['ordenação por particionamento'],
+    definition: 'Escolhe um pivô, separa a coleção em menores e maiores que ele, e repete nas duas partes.',
+    isNot: ['não garante O(n log n) — essa é a afirmação de caso médio, e o pior caso é O(n²)'],
+    falseFriends: [], introducedIn: 'sorting.c4' },
+
+  { id: 'pivot', canonical: 'pivô', canonicalLanguage: 'pt',
+    alsoKnownAs: ['pivot'],
+    definition: 'O elemento contra o qual todos os outros são comparados numa rodada de particionamento.',
+    isNot: ['não precisa ser o menor nem o do meio — a escolha é livre, e é ela que decide o custo'],
+    falseFriends: [
+      { context: 'planilhas', meaning: 'tabela dinâmica, ou pivot table, agrega dados por categoria. Nenhuma relação.' },
+    ], introducedIn: 'sorting.c4' },
+
+  { id: 'partition', canonical: 'partição', canonicalLanguage: 'pt',
+    alsoKnownAs: ['partition', 'particionamento'],
+    definition: 'A separação da coleção em duas partes, uma com o que é menor que o pivô e outra com o que é maior.',
+    isNot: ['não ordena nenhuma das partes — só garante que o pivô ficou no lugar final dele'],
+    falseFriends: [
+      { context: 'discos', meaning: 'partição de disco é uma divisão fixa de armazenamento. Homônimo total.' },
+      { context: 'sistemas distribuídos', meaning: 'particionar dados é distribuí-los por máquina, quase sempre por hash da chave. Mesma palavra, e ali não há pivô nem ordem.' },
+    ], introducedIn: 'sorting.c4' },
+
+  { id: 'in-place', canonical: 'in-place', canonicalLanguage: 'en',
+    alsoKnownAs: ['no próprio array', 'em memória constante'],
+    definition: 'Ordenar rearranjando o próprio array, sem alocar outra coleção do tamanho da entrada.',
+    isNot: ['não quer dizer espaço O(1): a pilha de chamadas de um algoritmo recursivo conta e cresce', 'não é o mesmo que estável — são garantias independentes'],
+    falseFriends: [], introducedIn: 'sorting.c5' },
+
+  { id: 'binary-search', canonical: 'busca binária', canonicalLanguage: 'pt',
+    alsoKnownAs: ['binary search'],
+    definition: 'Procurar numa coleção ordenada cortando metade das posições a cada comparação.',
+    isNot: ['não funciona sem ordem — e a ordem tem de ser a mesma que o comparador da busca usa', 'não devolve a primeira ocorrência por padrão quando há chaves repetidas'],
+    falseFriends: [], introducedIn: 'sorting.c6' },
+
+  { id: 'timsort', canonical: 'Timsort', canonicalLanguage: 'en',
+    alsoKnownAs: [],
+    definition: 'A combinação de insertion sort em trechos pequenos com intercalação dos trechos, usada como ordenação padrão de várias linguagens.',
+    isNot: ['não é um algoritmo novo — é a composição deliberada de dois que a unidade já viu'],
+    falseFriends: [], introducedIn: 'sorting.c8' },
+]
+
 /**
  * Terms whose false friends bite before their own unit exists. They carry
  * `introducedIn: PLANNED` and a `plannedIn` the validator cannot resolve yet
@@ -184,6 +281,9 @@ export const PLANNED = 'planned'
  * makes `falseFriends` mandatory for it — the rest of the glossary may leave
  * the field empty rather than invent an entry.
  */
-export const OVERLOADED_TERMS = ['hash', 'heap', 'stack', 'bucket', 'chaining', 'load-factor', 'probing', 'clustering']
+export const OVERLOADED_TERMS = [
+  'hash', 'heap', 'stack', 'bucket', 'chaining', 'load-factor', 'probing', 'clustering',
+  'merge', 'partition', 'pivot', 'stability',
+]
 
-export const allTerms: GlossaryTerm[] = [...hashGlossary, ...plannedGlossary]
+export const allTerms: GlossaryTerm[] = [...hashGlossary, ...sortingGlossary, ...plannedGlossary]

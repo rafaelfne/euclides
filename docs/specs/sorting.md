@@ -1,6 +1,6 @@
 # Spec — Unidade 7: Ordenação e busca
 
-**Status:** spec — não implementada
+**Status:** implementada
 **Kind:** `structure`.
 
 O ADR-0012 já resolveu a dúvida sobre esta unidade e vale repetir o argumento, porque ele
@@ -73,32 +73,32 @@ Errada quando: n é grande e a entrada é aleatória.
 Âncora: é a outra metade do Timsort, e o motivo de bibliotecas trocarem para ele abaixo de
 umas dezenas de elementos.
 
-**A DEFINIR** — três implementações ou duas? Três dão o triângulo completo (garantia contra
-memória contra adaptatividade) e podem estourar a carga. Duas exigem escolher qual par, e
-merge/quick é o par que ensina menos, porque as duas são O(n log n) no caso médio.
+As três entraram: o par merge/quick sozinho ensina menos, porque os dois são O(n log n) no
+caso médio e o trade-off some. Insertion sort é o que traz adaptatividade e espaço O(1).
 
-## Busca — a segunda metade da unidade
+## Busca
 
-Busca binária cabe aqui e é o motivo de ordenar. **A DEFINIR:** ela é um ciclo desta
-unidade ou uma implementação concorrente do contrato `contém`? A segunda leitura conflita
-com a unidade 4, que já respondeu `contém` com hash.
+Busca binária entrou como ciclo na banda `cost`, não como contrato próprio. O movimento é
+"ordenar custa n log n uma vez para tornar toda busca seguinte log n" — decisão de
+engenharia, não operação nova. Tratá-la como contrato conflitaria com a unidade 4, que já
+respondeu `contém`.
 
-Recomendo: um ciclo na banda `cost`, cujo movimento é "ordenar custa O(n log n) uma vez para
-transformar toda busca futura em O(log n)" — que é a decisão real de engenharia, e liga esta
-unidade à 3, à 4 e à 5 de uma vez.
-
-## Ciclos (proposta)
+## Ciclos, como implementados
 
 | # | banda | título | termos novos |
 |---|---|---|---|
-| c0 | contrato | O que `ordenar` promete e o que ele cala | ordenação, permutação |
-| c1 | contrato | Estabilidade: a ausência que o problema motivador ativa | estabilidade |
-| c2 | implementação | Merge sort e a intercalação | merge sort, intercalação |
-| c3 | implementação | Quicksort, o pivô e o pior caso | quicksort, pivô, partição |
-| c4 | implementação | Insertion sort e a entrada quase ordenada | insertion sort, adaptatividade |
-| c5 | custo | Pior caso garantido contra caso médio bom | *(a definir)* |
+| c0 | contrato | O que ordenar promete, e o que ele cala | ordenação, permutação |
+| c1 | contrato | Estabilidade: a ausência que reordena o que ninguém pediu | estabilidade, comparador |
+| c2 | implementação · insertion-sort | Insertion sort e a parte que já está pronta | insertion sort, adaptatividade |
+| c3 | implementação · merge-sort | Merge sort e a intercalação | merge sort, intercalação |
+| c4 | implementação · quicksort | Quicksort, o pivô e o pior caso | quicksort, pivô, partição |
+| c5 | custo | O preço que o contrato não menciona | in-place |
 | c6 | custo | Ordenar uma vez para buscar muitas | busca binária |
-| c7 | custo | Quando ordenar é a escolha errada | *(a definir)* |
+| c7 | custo | Quando ordenar é a escolha errada | — |
+| c8 | implementação *(aprofundamento)* · merge-sort | O que as bibliotecas realmente fazem | Timsort |
+
+Insertion sort veio antes de merge sort de propósito: ele é o único traçável à mão sem
+recursão, e o `c8` volta a ele para mostrar que a biblioteca usa os dois juntos.
 
 ## Armadilhas conhecidas
 
@@ -107,26 +107,45 @@ unidade à 3, à 4 e à 5 de uma vez.
 - `in-place-e-sem-memoria` — supor que in-place significa espaço O(1) mesmo com recursão
 - `comparador-inconsistente` — um `comparar` que não é transitivo, e o resultado que não é ordem
 - `ordenar-para-achar-um` — ordenar tudo O(n log n) para responder uma pergunta que era O(n)
+- `adaptativo-e-caso-medio` — a propriedade de uma entrada concreta lida como distribuição
+- `estabilidade-custa` — supor que preservar a ordem entre iguais tem preço assintótico
 
-A última é a mais valiosa para o objetivo da trilha: é o erro mais comum em código gerado
-por IA que um júnior aceita, porque a saída está certa.
+`ordenar-para-achar-um` é a mais valiosa para o objetivo da trilha: é o erro mais comum em
+código gerado por IA que um júnior aceita, porque a saída está certa.
 
-**A DEFINIR** — sua leitura.
+A que mais rende exercício é `sort-e-estavel`, e o motivo é o mesmo de
+`rehash-copia-buckets` na unidade 4: **o defeito é parcial.** No traço de `sorting.e3`, quem
+inverte o desempate produz uma saída ordenada — só a letra denuncia. É por isso que ele
+sobrevive a um teste que compara apenas as chaves.
 
-## Critério de domínio (proposta)
+## Critério de domínio
 
 Diante de uma chamada de ordenação em código que nunca viu: dizer se a ordem entre iguais é
 preservada e como saber; nomear o pior caso do algoritmo usado e construir a entrada que o
 ativa; e decidir, para uma carga de trabalho dada, se vale ordenar uma vez ou buscar
 linearmente sempre.
 
+Operacionalmente: `sorting.e3` e `sorting.e7` resolvidos **sem ativar nenhuma armadilha**,
+numa revisita feita ao menos sete dias depois.
+
+## Decidido na implementação, sem validação prévia
+
+- **`estabilidade-custa` no lugar de `estavel-e-mais-lento`.** O id proposto continha uma
+  expressão da lista de abstrações vagas, e o eixo estava implícito. O que a armadilha
+  ataca é a suposição de custo assintótico, e o id passou a dizer isso.
+- **Timsort virou o ciclo de aprofundamento**, elaborando merge sort. É a melhor âncora
+  cotidiana da unidade: é literalmente o `sort` que o aluno chama todo dia.
+
 ## Perguntas em aberto
 
-1. **Duas ou três implementações.**
-2. **Busca binária: ciclo desta unidade ou contrato próprio.**
-3. **`quicksort-e-n-log-n` e `o1-sem-qualificar` são a mesma armadilha em estruturas
+1. **O catálogo de armadilhas ainda é candidato, não observação.** As sete foram escritas a
+   partir do que é atestado na área e verificável contra fato — se o `sort` da linguagem é
+   estável, se o comparador booleano quebra —, não a partir de leitura do aluno. É o que
+   `docs/specs/README.md` avisa sobre todos estes specs, e vale para esta unidade mesmo
+   implementada.
+2. **`quicksort-e-n-log-n` e `o1-sem-qualificar` são a mesma armadilha em estruturas
    diferentes.** O glossário tem `id` único por termo; o catálogo de armadilhas é por
    unidade. Duas armadilhas com o mesmo ensinamento em unidades diferentes é repetição útil
    ou dívida? A checagem `órfã` não tem opinião sobre isso.
-4. **Esta unidade é a que mais depende da 2.** Sem regime e sem pior caso declarados, `c5`
+3. **Esta unidade é a que mais depende da 2.** Sem regime e sem pior caso declarados, `c5`
    não existe. Confirma que a ordem 2 → 7 é dura, não sugerida.

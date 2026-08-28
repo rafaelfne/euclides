@@ -1,9 +1,13 @@
 import type { TraceStep } from '../socratic'
 import { hashReferenceGenerators } from './hash-table'
+import { sortingReferenceGenerators } from './sorting'
 
 export type ReferenceGenerator = () => TraceStep[]
 
-const registries: Array<Record<string, ReferenceGenerator>> = [hashReferenceGenerators]
+const registries: Array<Record<string, ReferenceGenerator>> = [
+  hashReferenceGenerators,
+  sortingReferenceGenerators,
+]
 
 function merge(): Record<string, ReferenceGenerator> {
   const merged: Record<string, ReferenceGenerator> = {}

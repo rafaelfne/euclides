@@ -13,7 +13,7 @@ specs. Um está implementado; sete estão escritos até onde dava para sustentar
 | 4 | [hash](hash.md) — Tabelas hash | `structure` | implementada |
 | 5 | [trees](trees.md) — Árvores | `structure` | spec, **bloqueado** |
 | 6 | [graphs](graphs.md) — Grafos | `structure` | spec |
-| 7 | [sorting](sorting.md) — Ordenação e busca | `structure` | spec |
+| 7 | [sorting](sorting.md) — Ordenação e busca | `structure` | implementada |
 | 8 | [synthesis](synthesis.md) — Síntese | `method` *(a confirmar)* | spec |
 
 ## As três decisões que travam a escrita

@@ -53,6 +53,12 @@ export const hashExercises: Exercise[] = [
       { key: 'alpha', label: 'carga (α)', placeholder: '0,000' },
       { key: 'content', label: 'onde cada chave está', placeholder: '0:[12,20] 5:[45]' },
     ],
+    conventions: [
+      { notation: '0:[12,20]', rule: 'uma posição ocupada', why: 'O número da posição, dois-pontos, e as chaves que estão nela. Só as chaves — o valor guardado não entra no traço.' },
+      { notation: '0:[12,20] 5:[45]', rule: 'a tabela inteira', why: 'Só as posições que têm alguma chave, da menor para a maior, separadas por espaço.' },
+      { notation: '—', rule: 'tabela vazia', why: 'Nenhuma posição ocupada ainda.' },
+      { notation: 'sim / não', rule: 'houve rehash', why: 'Responda as seis linhas. Deixar em branco não é dizer não.' },
+    ],
     reference: 'hash.chaining-insert-trace',
     misconceptionByStep: { '4': 'hash.rehash-copia-buckets' },
   },
