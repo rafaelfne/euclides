@@ -1,5 +1,7 @@
 import { notFound } from 'next/navigation'
 import { units, unitById } from '@/content'
+import { AppShell } from '@/components/AppShell'
+import { UnitTabs } from '@/components/UnitTabs'
 import { UnitMap } from '@/components/UnitMap'
 
 export function generateStaticParams() {
@@ -10,5 +12,9 @@ export default async function UnitPage({ params }: { params: Promise<{ unit: str
   const { unit: unitId } = await params
   const unit = unitById(unitId)
   if (!unit) notFound()
-  return <UnitMap unit={unit} />
+  return (
+    <AppShell unitId={unit.id} tabs={<UnitTabs unit={unit} />}>
+      <UnitMap unit={unit} />
+    </AppShell>
+  )
 }

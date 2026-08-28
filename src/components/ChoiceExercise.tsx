@@ -4,6 +4,8 @@ import { useState } from 'react'
 import type { Unit, Choice } from '@/content/schema'
 import { misconceptionById } from '@/content'
 import { recordAttempt } from '@/lib/progress'
+import { cn } from '@/lib/utils'
+import { Panel, PanelBody, PanelHeader, PanelMeta, PanelTitle } from './ui/panel'
 
 /**
  * The distractor mechanic. Feedback never contains the answer — it contains
@@ -36,64 +38,63 @@ export function ChoiceExercise({
   }
 
   return (
-    <section style={{ borderTop: '2px solid var(--ink)', paddingTop: 20, maxWidth: 860 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 12 }}>
-        <span className="lbl">Exercício</span>
-        <span className="lbl">{attempts === 0 ? 'sem tentativa' : `tentativa ${attempts}`}</span>
-      </div>
-      <p style={{ fontSize: 16, marginTop: 0, marginBottom: 16 }}>{prompt}</p>
+    <Panel>
+      <PanelHeader>
+        <PanelTitle>Exercício</PanelTitle>
+        <PanelMeta>{attempts === 0 ? 'sem tentativa' : `tentativa ${attempts}`}</PanelMeta>
+      </PanelHeader>
+      <PanelBody className="flex flex-col gap-4">
+        <p className="m-0 text-[15px] leading-relaxed text-fg">{prompt}</p>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-        {choices.map((c, i) => {
-          const isPicked = picked === i
-          const border = !isPicked ? 'var(--rule)' : c.correct ? 'var(--blue)' : 'var(--red)'
-          const bg = !isPicked ? '#F8F5EE' : c.correct ? 'var(--blue-bg)' : 'var(--red-bg)'
-          return (
-            <button
-              key={i}
-              onClick={() => onPick(i)}
-              style={{
-                textAlign: 'left', border: `1.5px solid ${border}`, background: bg,
-                padding: '13px 16px', font: 'inherit', fontSize: 14.5, cursor: 'pointer',
-                color: 'var(--ink)',
-              }}
-            >
-              {c.text}
-            </button>
-          )
-        })}
-      </div>
+        <div className="flex flex-col gap-1.5">
+          {choices.map((c, i) => {
+            const isPicked = picked === i
+            return (
+              <button
+                key={i}
+                onClick={() => onPick(i)}
+                className={cn(
+                  'cursor-pointer border px-4 py-3 text-left font-serif text-[14px] leading-relaxed transition-colors',
+                  !isPicked && 'border-rule bg-panel-head text-fg-2 hover:bg-panel-hover hover:text-fg',
+                  isPicked && c.correct && 'border-contract-rule bg-contract-bg text-fg',
+                  isPicked && !c.correct && 'border-implementation-rule bg-implementation-bg text-fg',
+                )}
+              >
+                {c.text}
+              </button>
+            )
+          })}
+        </div>
 
-      {chosen && !chosen.correct && misconception && !exhausted && (
-        <div style={{ borderLeft: '3px solid var(--red)', padding: '4px 0 4px 16px', marginTop: 16 }}>
-          <div style={{ fontSize: 15, fontWeight: 600, color: '#A32A22', marginBottom: 6 }}>
-            {misconception.socraticQuestion}
-          </div>
-          {escalationIndex >= 0 && (
-            <div style={{ fontSize: 14.5, color: 'var(--ink-2)' }}>
-              {escalation[escalationIndex]}
+        {chosen && !chosen.correct && misconception && !exhausted && (
+          <div className="border-l-2 border-implementation pl-4">
+            <div className="mb-1.5 text-[14.5px] font-semibold text-implementation">
+              {misconception.socraticQuestion}
             </div>
-          )}
-        </div>
-      )}
-
-      {chosen && !chosen.correct && misconception && exhausted && (
-        <div style={{ borderLeft: '3px solid var(--ink-4)', padding: '4px 0 4px 16px', marginTop: 16 }}>
-          <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 6 }}>Vamos parar aqui.</div>
-          <div style={{ fontSize: 14.5, color: 'var(--ink-2)' }}>
-            Releia o ciclo {misconception.reviewCycle.split('.')[1]} e volte a este exercício amanhã.
-            Insistir agora treina a tentativa, não o raciocínio.
+            {escalationIndex >= 0 && (
+              <div className="text-[13.5px] leading-relaxed text-fg-2">{escalation[escalationIndex]}</div>
+            )}
           </div>
-        </div>
-      )}
+        )}
 
-      {chosen?.correct && (
-        <div style={{ borderLeft: '3px solid var(--blue)', padding: '4px 0 4px 16px', marginTop: 16, fontSize: 14.5 }}>
-          {attempts === 1
-            ? 'Resolvido na primeira tentativa, sem ativar nenhuma ideia errada. Isto conta para o critério de domínio.'
-            : `Resolvido em ${attempts} tentativas. Chegar lá não é o mesmo que dominar — este exercício volta na revisita.`}
-        </div>
-      )}
-    </section>
+        {chosen && !chosen.correct && misconception && exhausted && (
+          <div className="border-l-2 border-rule pl-4">
+            <div className="mb-1.5 text-[14.5px] font-semibold text-fg">Vamos parar aqui.</div>
+            <div className="text-[13.5px] leading-relaxed text-fg-3">
+              Releia o ciclo {misconception.reviewCycle.split('.')[1]} e volte a este exercício amanhã.
+              Insistir agora treina a tentativa, não o raciocínio.
+            </div>
+          </div>
+        )}
+
+        {chosen?.correct && (
+          <div className="border-l-2 border-contract pl-4 text-[13.5px] leading-relaxed text-fg-2">
+            {attempts === 1
+              ? 'Resolvido na primeira tentativa, sem ativar nenhuma ideia errada. Isto conta para o critério de domínio.'
+              : `Resolvido em ${attempts} tentativas. Chegar lá não é o mesmo que dominar — este exercício volta na revisita.`}
+          </div>
+        )}
+      </PanelBody>
+    </Panel>
   )
 }

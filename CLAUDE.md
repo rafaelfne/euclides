@@ -91,6 +91,8 @@ src/content/index.ts         o registro de unidades — é daqui que o validador
 src/content/glossary.ts      termos por unidade, allTerms, e OVERLOADED_TERMS
 src/content/vocabulary.ts    abstrações vagas e as licenças de citação
 src/content/conventions.ts   a folha de notação do pseudocódigo
+src/components/ui/            primitivos shadcn — código do projeto, não da dependência
+src/components/band-tokens.ts a paleta e o rótulo de cada banda, exaustivos por tipo
 src/content/units/<id>/index.ts      unidade, ciclos, ADT, implementações
 src/content/units/<id>/exercises.ts  exercícios e catálogo de armadilhas
 src/lib/socratic.ts          divergência de traço e os três degraus
@@ -126,7 +128,9 @@ escrever conteúdo.
    `allowedVagueUses` — unidade, palavra, o trecho e a razão. Nunca dentro da string: não
    há renderizador que remova marcador, e ele chega ao aluno.
 4. **Enum em inglês vazando para a tela.** `BANDA · IMPLEMENTATION`. Todo enum
-   renderizado precisa de mapa de rótulos exaustivo por tipo.
+   renderizado precisa de mapa de rótulos exaustivo por tipo. Os mapas de banda e de
+   camada vivem em `src/components/band-tokens.ts`; nenhum componente escreve o rótulo
+   à mão.
 
 ## Comandos
 

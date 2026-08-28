@@ -1,5 +1,7 @@
 import { notFound } from 'next/navigation'
 import { units, unitById, cycleById, exerciseById } from '@/content'
+import { AppShell } from '@/components/AppShell'
+import { UnitTabs } from '@/components/UnitTabs'
 import { CycleScreen } from '@/components/CycleScreen'
 
 export function generateStaticParams() {
@@ -17,5 +19,9 @@ export default async function CyclePage({
   if (!unit || !cycle) notFound()
   const exercise = exerciseById(unit, cycle.exerciseId)
   if (!exercise) notFound()
-  return <CycleScreen unit={unit} cycle={cycle} exercise={exercise} />
+  return (
+    <AppShell unitId={unit.id} tabs={<UnitTabs unit={unit} cycleId={cycle.id} />}>
+      <CycleScreen unit={unit} cycle={cycle} exercise={exercise} />
+    </AppShell>
+  )
 }

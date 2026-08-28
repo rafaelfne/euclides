@@ -1,40 +1,50 @@
 import Link from 'next/link'
 import { units } from '@/content'
+import { AppShell } from '@/components/AppShell'
+import { Badge } from '@/components/ui/badge'
 
 export default function Home() {
   return (
-    <main className="shell" style={{ padding: '72px 48px' }}>
-      <div className="display" style={{ fontSize: 56, lineHeight: 1.05, marginBottom: 18 }}>
-        Euclides
+    <AppShell>
+      <div className="flex flex-col gap-7 px-7 py-8">
+        <div className="flex max-w-[720px] flex-col gap-3">
+          <h1 className="m-0 text-[34px] font-semibold leading-tight">Euclides</h1>
+          <p className="m-0 text-[15px] leading-relaxed text-fg-2">
+            Fundamentos para julgar código sem executá-lo. Nos <em>Elementos</em>, nada é assumido
+            que não esteja declarado — aqui também não: toda complexidade vem com regime e
+            hipóteses, todo termo vem com o que ele não é.
+          </p>
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <span className="lbl">Primeiro módulo</span>
+          <ul className="m-0 grid list-none grid-cols-2 gap-2 p-0">
+            {units.map((u) => (
+              <li key={u.id}>
+                <Link
+                  href={`/units/${u.id}`}
+                  className="flex h-full flex-col gap-1.5 border border-rule bg-panel px-4 py-3.5 text-inherit hover:bg-panel-hover"
+                >
+                  <div className="flex items-baseline gap-2.5">
+                    <span className="font-mono text-[10.5px] text-fg-5">
+                      {String(u.number).padStart(2, '0')}
+                    </span>
+                    <span className="text-[17px] font-semibold">{u.title}</span>
+                  </div>
+                  <span className="text-[12.5px] leading-snug text-fg-3">{u.learningObjective}</span>
+                  <div className="mt-auto flex gap-1.5 pt-1.5">
+                    <Badge tone={u.kind === 'structure' ? 'implementation' : 'contract'}>
+                      {u.kind === 'structure' ? 'estrutura' : 'método'}
+                    </Badge>
+                    <Badge>{u.cycles.length} ciclos</Badge>
+                    <Badge>{u.exercises.length} exercícios</Badge>
+                  </div>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
-      <p style={{ fontSize: 19, maxWidth: 640, color: 'var(--ink-2)', marginBottom: 40 }}>
-        Fundamentos para julgar código sem executá-lo. Nos <em>Elementos</em>, nada é assumido
-        que não esteja declarado — aqui também não: toda complexidade vem com regime e
-        hipóteses, todo termo vem com o que ele não é.
-      </p>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', maxWidth: 640, marginBottom: 14 }}>
-        <span className="lbl">Unidades</span>
-        <Link href="/gaps" className="lbl" style={{ color: 'var(--ink-3)' }}>Lacunas →</Link>
-      </div>
-      <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'grid', gap: 10, maxWidth: 640 }}>
-        {units.map((u) => (
-          <li key={u.id}>
-            <Link
-              href={`/units/${u.id}`}
-              style={{
-                display: 'block', border: '1.5px solid var(--rule)', padding: '16px 20px',
-                color: 'var(--ink)',
-              }}
-            >
-              <span className="lbl" style={{ color: 'var(--ink-4)' }}>Unidade {u.number}</span>
-              <div style={{ fontSize: 21, fontWeight: 600, marginTop: 4 }}>{u.title}</div>
-              <div style={{ fontSize: 14, color: 'var(--ink-3)', marginTop: 6 }}>
-                {u.cycles.length} ciclos · {u.exercises.length} exercícios
-              </div>
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </main>
+    </AppShell>
   )
 }

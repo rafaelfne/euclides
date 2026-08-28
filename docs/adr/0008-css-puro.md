@@ -1,6 +1,10 @@
 # ADR-0008: CSS puro com custom properties, sem framework de utilitários
 
-**Status:** Aceito
+**Status:** Substituído pelo [ADR-0015](0015-direcao-ide.md)
+
+> A reversão foi decisão de produto, não do gatilho abaixo: quando ela aconteceu eram
+> quatro templates e um autor. O argumento de kB deste ADR continua de pé e virou custo
+> declarado no 0015.
 **Data:** 2026-08-28
 **Decisores:** Rafael Neves
 
@@ -41,4 +45,5 @@ para dezenas de telas com vários autores, reavaliar.
 ## Itens de ação
 
 1. [x] Tokens em `:root`
-2. [ ] Reavaliar se passar de ~15 telas ou ganhar um segundo autor
+2. [~] Reavaliar se passar de ~15 telas ou ganhar um segundo autor — revisitado antes
+   disso, por mudança de direção visual; ver ADR-0015

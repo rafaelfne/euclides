@@ -2,19 +2,27 @@
 
 import type { Cycle } from '@/content/schema'
 import type { CycleStatus } from '@/lib/progress'
+import { BAND_TONE, type BandTone } from './band-tokens'
 
 /**
- * Position on the spine, not the noun: the opening band is a square in both
- * kinds, the middle a triangle, the consequence a circle. A student who
- * learned the map on one unit reads the other without relearning it.
+ * Shape carries the taxonomic band, fill carries progress. Two channels, so a
+ * glance answers both "what kind of thing is this" and "where am I" — which a
+ * numbered list in a column answers for neither.
+ *
+ * A forma codifica a POSIÇÃO na espinha, não o substantivo: a banda de abertura
+ * é quadrado nas duas espinhas do ADR-0012, a do meio é triângulo, a da
+ * consequência é círculo.
  */
-const SHAPE_BY_BAND: Record<Cycle['band'], 'square' | 'triangle' | 'circle'> = {
-  contract: 'square', implementation: 'triangle', cost: 'circle',
-  criterion: 'square', technique: 'triangle', failure: 'circle',
+const SHAPE_BY_TONE: Record<BandTone, 'square' | 'triangle' | 'circle'> = {
+  contract: 'square',
+  implementation: 'triangle',
+  cost: 'circle',
 }
-const COLOR_BY_BAND: Record<Cycle['band'], string> = {
-  contract: '#1F4E9C', implementation: '#C1352B', cost: '#A9761C',
-  criterion: '#1F4E9C', technique: '#C1352B', failure: '#A9761C',
+
+const COLOR_BY_TONE: Record<BandTone, string> = {
+  contract: '#7EA6E0',
+  implementation: '#E08279',
+  cost: '#D6A44C',
 }
 
 const FILL: Record<CycleStatus, { fill: number; ring: number }> = {
@@ -24,45 +32,41 @@ const FILL: Record<CycleStatus, { fill: number; ring: number }> = {
   review: { fill: 1, ring: 1 },
 }
 
-/**
- * Shape carries the taxonomic band, fill carries progress. Two channels, so a
- * glance answers both "what kind of thing is this" and "where am I" — which a
- * numbered list in a column answers for neither.
- */
 export function CycleNode({
-  band, status, label, size = 34,
+  band, status, label, size = 30,
 }: {
   band: Cycle['band']
   status: CycleStatus
   label: string
   size?: number
 }) {
-  const color = COLOR_BY_BAND[band]
+  const tone = BAND_TONE[band]
+  const color = COLOR_BY_TONE[tone]
   const { fill, ring } = FILL[status]
-  const shape = SHAPE_BY_BAND[band]
+  const shape = SHAPE_BY_TONE[tone]
   return (
-    <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+    <span className="flex flex-col items-center gap-1.5">
       <svg width={size} height={size} viewBox="0 0 34 34" aria-hidden>
         {shape === 'square' && (
           <>
             <rect x="4" y="4" width="26" height="26" fill={color} fillOpacity={fill} stroke={color} strokeWidth="1.5" />
-            <rect x="0.75" y="0.75" width="32.5" height="32.5" fill="none" stroke={color} strokeWidth="1.5" strokeOpacity={ring} strokeDasharray="3 3" />
+            {ring > 0 && <rect x="1" y="1" width="32" height="32" fill="none" stroke={color} strokeWidth="1" strokeDasharray="3 3" />}
           </>
         )}
         {shape === 'triangle' && (
           <>
             <polygon points="17,4 31,29 3,29" fill={color} fillOpacity={fill} stroke={color} strokeWidth="1.5" />
-            <polygon points="17,0.5 33.5,30 0.5,30" fill="none" stroke={color} strokeWidth="1.5" strokeOpacity={ring} strokeDasharray="3 3" />
+            {ring > 0 && <polygon points="17,0.5 33.5,31 0.5,31" fill="none" stroke={color} strokeWidth="1" strokeDasharray="3 3" />}
           </>
         )}
         {shape === 'circle' && (
           <>
             <circle cx="17" cy="17" r="13" fill={color} fillOpacity={fill} stroke={color} strokeWidth="1.5" />
-            <circle cx="17" cy="17" r="16.25" fill="none" stroke={color} strokeWidth="1.5" strokeOpacity={ring} strokeDasharray="3 3" />
+            {ring > 0 && <circle cx="17" cy="17" r="16" fill="none" stroke={color} strokeWidth="1" strokeDasharray="3 3" />}
           </>
         )}
       </svg>
-      <span className="lbl" style={{ fontSize: 10, color }}>{label}</span>
+      <span className="font-mono text-[9px] text-fg-5">{label}</span>
     </span>
   )
 }

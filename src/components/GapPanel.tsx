@@ -5,6 +5,8 @@ import { useEffect, useState } from 'react'
 import type { Progress, Unit } from '@/content/schema'
 import { read } from '@/lib/progress'
 import { buildSessionExport, collectGaps, type UnitGaps } from '@/lib/session-export'
+import { Button } from './ui/button'
+import { Panel, PanelBody, PanelHeader, PanelMeta, PanelTitle } from './ui/panel'
 
 export function GapPanel({ units }: { units: Unit[] }) {
   const [progress, setProgress] = useState<Progress | null>(null)
@@ -13,7 +15,7 @@ export function GapPanel({ units }: { units: Unit[] }) {
   useEffect(() => { setProgress(read()) }, [])
 
   if (!progress) {
-    return <p style={{ fontSize: 15, color: 'var(--ink-3)' }}>Lendo o progresso deste navegador…</p>
+    return <p className="text-[14px] text-fg-3">Lendo o progresso deste navegador…</p>
   }
 
   const gaps = collectGaps(units, progress, Date.now())
@@ -31,18 +33,9 @@ export function GapPanel({ units }: { units: Unit[] }) {
 
   return (
     <>
-      <div style={{ display: 'flex', gap: 14, alignItems: 'center', marginBottom: 30 }}>
-        <button
-          onClick={copy}
-          style={{
-            border: '1.5px solid var(--ink)', background: 'var(--ink)', color: 'var(--paper)',
-            padding: '11px 18px', font: 'inherit', fontSize: 13, letterSpacing: '0.08em',
-            textTransform: 'uppercase', cursor: 'pointer',
-          }}
-        >
-          Copiar sessão
-        </button>
-        <span style={{ fontSize: 13.5, color: 'var(--ink-3)', fontStyle: 'italic' }}>
+      <div className="mb-7 flex items-center gap-3.5">
+        <Button onClick={copy}>Copiar sessão</Button>
+        <span className="text-[12.5px] italic text-fg-4">
           {copied
             ? 'copiado — cole no seu projeto do Claude'
             : 'markdown com suas lacunas, sem nenhuma resposta dentro'}
@@ -50,25 +43,21 @@ export function GapPanel({ units }: { units: Unit[] }) {
       </div>
 
       {!gaps.length && (
-        <p style={{ fontSize: 15.5, color: 'var(--ink-2)', maxWidth: 640 }}>
-          Nenhuma lacuna registrada neste navegador. Ou nada foi tentado ainda, ou tudo saiu
-          na primeira tentativa — e só a segunda hipótese conta.
+        <p className="max-w-[640px] text-[14.5px] leading-relaxed text-fg-2">
+          Nenhuma lacuna registrada neste navegador. Ou nada foi tentado ainda, ou tudo saiu na
+          primeira tentativa — e só a segunda hipótese conta.
         </p>
       )}
 
-      {gaps.map((g) => <UnitGapBlock key={g.unit.id} gaps={g} />)}
+      <div className="flex flex-col gap-3">
+        {gaps.map((g) => <UnitGapBlock key={g.unit.id} gaps={g} />)}
+      </div>
 
-      <details style={{ marginTop: 36, maxWidth: 820 }}>
-        <summary style={{ cursor: 'pointer', fontSize: 13.5, color: 'var(--ink-3)' }}>
+      <details className="mt-8 max-w-[860px] border border-rule bg-panel">
+        <summary className="lbl cursor-pointer px-3.5 py-2 hover:text-fg-2">
           Ver o markdown antes de copiar
         </summary>
-        <pre
-          className="mono"
-          style={{
-            fontSize: 12, background: '#F8F5EE', border: '1px solid var(--rule)',
-            padding: 16, marginTop: 12, overflowX: 'auto', whiteSpace: 'pre-wrap',
-          }}
-        >
+        <pre className="m-0 max-h-[420px] overflow-auto border-t border-rule bg-[#101218] px-4 py-3.5 font-mono text-[11.5px] leading-relaxed whitespace-pre-wrap text-fg-3">
           {markdown}
         </pre>
       </details>
@@ -79,51 +68,46 @@ export function GapPanel({ units }: { units: Unit[] }) {
 function UnitGapBlock({ gaps }: { gaps: UnitGaps }) {
   const { unit, lines, masteryBlockers, dueForReview } = gaps
   return (
-    <section style={{ borderTop: '2px solid var(--ink)', paddingTop: 18, marginBottom: 34, maxWidth: 820 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 12 }}>
-        <Link href={`/units/${unit.id}`} style={{ color: 'var(--ink)' }}>
-          <span style={{ fontSize: 20, fontWeight: 600 }}>{unit.title}</span>
-        </Link>
-        <span className="lbl" style={{ color: 'var(--ink-4)' }}>Unidade {unit.number}</span>
-      </div>
+    <Panel className="max-w-[860px]">
+      <PanelHeader>
+        <PanelTitle className="text-fg-2">{unit.title}</PanelTitle>
+        <PanelMeta>Unidade {String(unit.number).padStart(2, '0')}</PanelMeta>
+      </PanelHeader>
+      <PanelBody className="flex flex-col gap-3.5">
+        <p className="m-0 text-[13px] leading-relaxed text-fg-3">{unit.mastery.statement}</p>
 
-      <p style={{ fontSize: 14, color: 'var(--ink-2)', marginTop: 0, marginBottom: 14 }}>
-        {unit.mastery.statement}
-      </p>
-
-      <div style={{ fontSize: 14, marginBottom: 18 }}>
-        {masteryBlockers.length ? (
-          <span style={{ color: '#A32A22' }}>
-            Falta resolver na primeira tentativa: {masteryBlockers.join(', ')}.
-          </span>
-        ) : (
-          <span style={{ color: 'var(--blue)' }}>
-            Os exercícios exigidos pelo critério saíram na primeira tentativa.
-          </span>
-        )}
-        {dueForReview.length > 0 && (
-          <span style={{ color: 'var(--ochre-ink)', marginLeft: 10 }}>
-            Venceu a revisita: {dueForReview.join(', ')}.
-          </span>
-        )}
-      </div>
-
-      {lines.map((line) => (
-        <div key={line.exerciseId} style={{ borderLeft: '3px solid var(--rule)', paddingLeft: 16, marginBottom: 16 }}>
-          <div style={{ display: 'flex', gap: 12, alignItems: 'baseline', marginBottom: 4 }}>
-            <span className="mono" style={{ fontSize: 12.5, color: 'var(--ink-3)' }}>{line.exerciseId}</span>
-            <span style={{ fontSize: 13.5 }}>{line.verdict}</span>
-          </div>
-          {line.misconceptions.map((m) => (
-            <div key={m.id} style={{ fontSize: 13.5, color: 'var(--ink-2)', marginTop: 6 }}>
-              <span style={{ fontWeight: 600 }}>{m.label}</span> — “{m.socraticQuestion}”{' '}
-              <Link href={`/units/${unit.id}/cycles/${m.reviewCycle}`} style={{ color: 'var(--blue)' }}>
-                rever {m.reviewCycle.split('.')[1]}
-              </Link>
-            </div>
-          ))}
+        <div className="flex flex-wrap gap-x-4 gap-y-1 text-[13px]">
+          {masteryBlockers.length ? (
+            <span className="text-implementation">
+              Falta resolver na primeira tentativa: {masteryBlockers.join(', ')}.
+            </span>
+          ) : (
+            <span className="text-contract">
+              Os exercícios exigidos pelo critério saíram na primeira tentativa.
+            </span>
+          )}
+          {dueForReview.length > 0 && (
+            <span className="text-cost">Venceu a revisita: {dueForReview.join(', ')}.</span>
+          )}
         </div>
-      ))}
-    </section>
+
+        {lines.map((line) => (
+          <div key={line.exerciseId} className="border-l-2 border-rule pl-4">
+            <div className="mb-1 flex items-baseline gap-3">
+              <span className="font-mono text-[11.5px] text-fg-4">{line.exerciseId}</span>
+              <span className="text-[13px] text-fg-2">{line.verdict}</span>
+            </div>
+            {line.misconceptions.map((m) => (
+              <div key={m.id} className="mt-1.5 text-[13px] leading-relaxed text-fg-3">
+                <span className="font-semibold text-fg-2">{m.label}</span> — “{m.socraticQuestion}”{' '}
+                <Link href={`/units/${unit.id}/cycles/${m.reviewCycle}`} className="text-contract">
+                  rever {m.reviewCycle.split('.')[1]}
+                </Link>
+              </div>
+            ))}
+          </div>
+        ))}
+      </PanelBody>
+    </Panel>
   )
 }
