@@ -32,9 +32,13 @@ export const CHECKS = [
   ['vocabulário', 'vocabulário: nenhuma abstração vaga não registrada'],
   ['convenção', 'convenção: todo pseudocódigo respeita a folha de notação'],
   ['referência', 'referência: todo traço é gerado por implementação que roda'],
+  ['formato', 'formato: toda coluna editável de traço declara como se escreve a resposta'],
   ['glossário', 'glossário: ids únicos, introdução declarada dos dois lados'],
   ['sobrecarga', 'sobrecarga: todo termo sobrecarregado declara seus falsos amigos'],
 ] as const
+
+/** Colunas que o exercício já entrega preenchidas; ver `GIVEN` em TraceExercise. */
+const GIVEN_COLUMNS = new Set(['step', 'key'])
 
 export type CheckId = (typeof CHECKS)[number][0]
 export interface Failure { check: CheckId; detail: string }
@@ -279,6 +283,21 @@ export function checkAll(units: Unit[], terms: GlossaryTerm[]): Failure[] {
       if (steps.length < 2) { fail('referência', `${ex.id}: gerador produz ${steps.length} passo(s)`); continue }
       for (const col of ex.columns) {
         if (!(col.key in steps[0]!)) fail('referência', `${ex.id}: coluna "${col.key}" ausente no traço gerado`)
+      }
+
+      // ADR-0013: coluna dada não precisa de formato; coluna que o aluno
+      // preenche, sim — e o formato não pode ser um valor que o gabarito emite,
+      // senão o placeholder entrega um passo da resposta.
+      const emitted = new Set(steps.flatMap((step) => Object.values(step)))
+      for (const col of ex.columns) {
+        if (GIVEN_COLUMNS.has(col.key)) continue
+        if (!col.placeholder) {
+          fail('formato', `${ex.id}: coluna "${col.key}" é preenchida pelo aluno e não declara placeholder`)
+          continue
+        }
+        if (emitted.has(col.placeholder)) {
+          fail('formato', `${ex.id}: o placeholder de "${col.key}" é "${col.placeholder}", que o gabarito emite — declare o formato, não o valor`)
+        }
       }
       for (const step of Object.keys(ex.misconceptionByStep)) {
         if (Number(step) > steps.length) fail('referência', `${ex.id}: misconception no passo ${step}, traço tem ${steps.length}`)

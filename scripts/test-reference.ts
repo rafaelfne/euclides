@@ -17,7 +17,7 @@ for (const s of trace) {
 console.log('')
 
 check('o traço tem 5 passos', trace.length === 5)
-check('o rehash dispara no passo 4, não no 8', trace[3]!.rehash === 'sim' && trace[4]!.rehash === '—')
+check('o rehash dispara no passo 4, não no 8', trace[3]!.rehash === 'sim' && trace[4]!.rehash === 'não')
 check('depois do rehash, 3 e 11 seguem juntos e 7 se separa',
   trace[3]!.content.includes('3:[3,11]') && trace[3]!.content.includes('7:[7]'),
   trace[3]!.content)
@@ -38,6 +38,15 @@ check('o degrau 1 diz onde quebrou sem dizer o campo', !rungs[0]!.head.includes(
 check('nenhum degrau contém a resposta correta',
   !rungs.some((r) => `${r.head} ${r.body}`.includes('3:[3,11]')))
 check('o degrau 3 é uma pergunta', rungs[2]!.head.trim().endsWith('?'), rungs[2]!.head)
+
+const semZeroFinal = trace.map((s) => ({ ...s, alpha: s.alpha!.replace(/0$/, '') }))
+const dNum = findDivergence(semZeroFinal, trace, cols)
+check('0,75 conta como 0,750 — número compara por valor, não por escrita',
+  dNum.firstDivergentStep === null, String(dNum.firstDivergentStep))
+
+check('o gerador não emite caractere que o aluno não digita',
+  trace.every((s) => s.rehash === 'sim' || s.rehash === 'não'),
+  trace.map((s) => s.rehash).join(','))
 
 const right = findDivergence(trace, trace, cols)
 check('um traço correto não gera devolutiva', right.firstDivergentStep === null && buildFeedback(right, 1, mis) === null)

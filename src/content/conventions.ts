@@ -13,6 +13,19 @@ export const conventions = [
   { notation: 'NULO', rule: 'ausência de valor', why: 'Maiúscula para não confundir com uma variável.' },
 ]
 
+/**
+ * Como se preenche um traço. Mesma razão da tabela acima, um nível adiante: a
+ * notação do pseudocódigo estava declarada e a de PREENCHIMENTO não, então o
+ * aluno inventava a sua e divergia do gabarito sem ter errado o raciocínio.
+ */
+export const traceConventions = [
+  { notation: '0:[12,20]', rule: 'uma posição ocupada', why: 'O número da posição, dois-pontos, e as chaves que estão nela. Só as chaves — o valor guardado não entra no traço.' },
+  { notation: '0:[12,20] 5:[45]', rule: 'a tabela inteira', why: 'Só as posições que têm alguma chave, da menor para a maior, separadas por espaço.' },
+  { notation: '—', rule: 'tabela vazia', why: 'Nenhuma posição ocupada ainda.' },
+  { notation: 'sim / não', rule: 'houve rehash', why: 'Responda as duas linhas. Deixar em branco não é dizer não.' },
+  { notation: '0,75', rule: 'a carga', why: 'Vírgula decimal, e a casa a mais não muda nada: 0,75 e 0,750 valem igual.' },
+]
+
 /** Language boundary, declared because leaving it implicit is how drift starts. */
 export const languageBoundary = {
   pseudocode: 'pt' as const,   // é conteúdo: inserir(tabela, chave, valor)

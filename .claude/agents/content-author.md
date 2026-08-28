@@ -30,6 +30,15 @@ prosa que você escreveu exigir mudar um exercício, pare e diga qual e por quê
   antes do problema que ela resolve está errado, mesmo que a prosa esteja boa.
 - **Teto de quatro termos novos por ciclo.** Se não couber, o ciclo está grande demais —
   divida, não comprima.
+- **Toda letra tem legenda.** `symbols` é obrigatório e cobre tudo que aparece no
+  pseudocódigo e nas invariantes da unidade: `T`, `m`, `n`, `h`, `k, v`, `α`. Escreva o
+  significado em palavras, sem usar outra letra dentro da explicação. Se você precisou de
+  uma letra nova no meio da prosa, ou ela entra em `symbols`, ou a frase é reescrita com a
+  palavra.
+- **Palavra antes da letra, na prosa.** A letra é a abreviação, não o nome do conceito. O
+  primeiro parágrafo que fala de carga diz "carga"; `α` entra depois, como o jeito curto de
+  escrever a mesma coisa. Na interface e na prosa, palavra; no pseudocódigo e na invariante,
+  letra — compactar ali é o ponto.
 - **Toda implementação — ou técnica — declara `wrongWhen` e `everydayAnchor`.** O cenário
   em que aquela escolha é a errada não é um adendo; é metade do valor da unidade, e é a
   única forma que o princípio 4 toma numa unidade de método, onde não há custo.

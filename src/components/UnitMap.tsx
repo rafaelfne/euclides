@@ -116,6 +116,42 @@ export function UnitMap({ unit }: { unit: Unit }) {
           {unit.motivatingProblem}
         </p>
 
+        {/*
+          As bandas dizem onde cada ciclo VIVE na taxonomia; elas não são o
+          caminho. Lidas na ordem da tela, elas levavam ao rehash antes do load
+          factor — e o ciclo do rehash abre falando de α. A trilha abaixo é a
+          ordem de leitura, que é outra informação e precisa de outro lugar.
+        */}
+        <div style={{ marginBottom: 36 }}>
+          <div className="lbl" style={{ color: 'var(--ink-3)', marginBottom: 12 }}>Por onde começar</div>
+          <ol style={{ display: 'flex', flexWrap: 'wrap', gap: '8px 10px', listStyle: 'none', margin: 0, padding: 0 }}>
+            {unit.cycles.map((c, i) => {
+              const st = statuses[c.id] ?? 'pending'
+              const opcional = c.layer === 'deep-dive'
+              return (
+                <li key={c.id}>
+                  <Link
+                    href={`/units/${unit.id}/cycles/${c.id}`}
+                    style={{
+                      display: 'flex', alignItems: 'baseline', gap: 8, color: 'inherit',
+                      border: `1px solid ${opcional ? 'var(--ochre)' : 'var(--rule)'}`,
+                      background: st === 'clean' || st === 'review' ? 'var(--paper-3)' : 'var(--paper)',
+                      borderStyle: opcional ? 'dashed' : 'solid',
+                      padding: '7px 12px',
+                    }}
+                  >
+                    <span className="mono" style={{ fontSize: 11, color: 'var(--ink-4)' }}>{i + 1}</span>
+                    <span style={{ fontSize: 13.5, color: 'var(--ink-2)' }}>{c.title}</span>
+                    {opcional && (
+                      <span className="lbl" style={{ fontSize: 9, color: 'var(--ochre-ink)' }}>opcional</span>
+                    )}
+                  </Link>
+                </li>
+              )
+            })}
+          </ol>
+        </div>
+
         <Band label={spine.openingLabel} color="var(--blue)">
           <div style={{ border: '1.5px solid var(--blue)', background: 'var(--blue-bg)', padding: '17px 20px', display: 'flex', gap: 26, alignItems: 'flex-start' }}>
             <div style={{ flexGrow: 1 }}>

@@ -6,7 +6,7 @@
  * is checked by the build instead of asserted in a document. The real unit of
  * asymptotic analysis waits for a spec, like every other one.
  */
-import { unit as unitSchema, type Unit } from '../src/content/schema'
+import { unit as unitSchema, type MethodUnit, type Unit } from '../src/content/schema'
 import { CHECKS, checkAll } from '../src/lib/validate'
 import { hashUnit } from '../src/content/units/hash'
 import { allTerms } from '../src/content/glossary'
@@ -27,6 +27,11 @@ const fixture: Unit = {
   motivatingProblem:
     'Um colega afirma que a busca é O(1) e a revisão aprova. A afirmação não é falsa; ela ' +
     'está incompleta, e o que falta é o que decide se ela vale no seu caso.',
+
+  symbols: [
+    { symbol: 'n', means: 'o tamanho da entrada, e o texto tem de dizer o que ele conta' },
+    { symbol: 'T(n)', means: 'o custo do procedimento para uma entrada desse tamanho' },
+  ],
 
   criterion: {
     id: 'cost-claim',
@@ -165,7 +170,7 @@ check('banda de estrutura numa unidade de método reprova', bandFailures.length 
 
 const uncovered = {
   ...fixture,
-  techniques: fixture.techniques.map((t) => ({ ...t, produces: ['bound'] })),
+  techniques: (fixture as MethodUnit).techniques.map((t) => ({ ...t, produces: ['bound'] })),
 }
 const coverFailures = checkAll([uncovered], allTerms).filter((f) => f.check === 'cobertura')
 check('parte do critério que nenhuma técnica produz reprova', coverFailures.length === 3,
@@ -173,7 +178,7 @@ check('parte do critério que nenhuma técnica produz reprova', coverFailures.le
 
 const badPart = {
   ...fixture,
-  criterion: { ...fixture.criterion, whenOmitted: [{ partId: 'nao-existe', reads: 'x' }] },
+  criterion: { ...(fixture as MethodUnit).criterion, whenOmitted: [{ partId: 'nao-existe', reads: 'x' }] },
 }
 check('whenOmitted apontando parte inexistente reprova',
   checkAll([badPart], allTerms).some((f) => f.check === 'cobertura'))

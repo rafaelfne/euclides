@@ -14,6 +14,8 @@
 | [0010](0010-fluxo-hibrido-de-autoria.md) | Design fora do repo, autoria dentro | O gargalo é conteúdo, e as duas fases têm naturezas diferentes |
 | [0011](0011-fronteira-do-gate.md) | O que é gate, o que é relatório, e por quê | Os documentos ficaram fora do gate e derivaram antes do conteúdo |
 | [0012](0012-espinha-de-metodo.md) | Duas espinhas: estrutura e método, discriminadas por `kind` | Um terço do currículo não era exprimível no modelo de estrutura |
+| [0013](0013-notacao-declarada.md) | Nada que o aluno precise reproduzir fica sem declaração | O traço reprovava por casa decimal e mandava o aluno voltar amanhã |
+| [0014](0014-mapa-e-trilha.md) | O mapa mostra a taxonomia; a trilha mostra a ordem | O mapa levava ao rehash antes da carga, e o ciclo não tinha saída |
 
 ## Como escrever o próximo
 

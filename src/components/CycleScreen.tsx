@@ -40,6 +40,8 @@ const LAYER_LABEL: Record<Cycle['layer'], string | null> = {
  */
 export function CycleScreen({ unit, cycle, exercise }: { unit: Unit; cycle: Cycle; exercise: Exercise }) {
   const index = unit.cycles.findIndex((c) => c.id === cycle.id)
+  const prev = unit.cycles[index - 1]
+  const next = unit.cycles[index + 1]
   const terms = cycle.introducesTerms
     .map((id) => allTerms.find((t) => t.id === id))
     .filter((t): t is NonNullable<typeof t> => Boolean(t))
@@ -55,7 +57,15 @@ export function CycleScreen({ unit, cycle, exercise }: { unit: Unit; cycle: Cycl
         </div>
         <div style={{ display: 'flex', gap: 9 }}>
           {unit.cycles.map((c, i) => (
-            <span key={c.id} style={{ width: 22, height: 4, background: 'var(--ink)', opacity: i < index ? 1 : i === index ? 0.55 : 0.16 }} />
+            <Link
+              key={c.id}
+              href={`/units/${unit.id}/cycles/${c.id}`}
+              title={`${i + 1}. ${c.title}`}
+              aria-label={`Ciclo ${i + 1}: ${c.title}`}
+              style={{ display: 'block', padding: '6px 0' }}
+            >
+              <span style={{ display: 'block', width: 22, height: 4, background: 'var(--ink)', opacity: i < index ? 1 : i === index ? 0.55 : 0.16 }} />
+            </Link>
           ))}
         </div>
       </header>
@@ -117,6 +127,38 @@ export function CycleScreen({ unit, cycle, exercise }: { unit: Unit; cycle: Cycl
             : exercise.kind === 'choice'
               ? <ChoiceExercise unit={unit} exerciseId={exercise.id} prompt={exercise.prompt} choices={exercise.choices} />
               : <ChoiceExercise unit={unit} exerciseId={exercise.id} prompt={exercise.prompt} choices={exercise.consequences} />}
+
+          {/*
+            A sequência existia só no array. Sem isto a tela do ciclo terminava
+            no botão de verificar e o aluno voltava ao mapa para achar o próximo
+            à mão — e o mapa está ordenado por banda, não por leitura.
+          */}
+          <nav style={{ display: 'flex', justifyContent: 'space-between', gap: 20, marginTop: 46, paddingTop: 18, borderTop: '1px solid var(--rule)', maxWidth: 820 }}>
+            {prev ? (
+              <Link href={`/units/${unit.id}/cycles/${prev.id}`} style={{ color: 'inherit', maxWidth: 330 }}>
+                <div className="lbl" style={{ color: 'var(--ink-4)', marginBottom: 4 }}>← Anterior</div>
+                <div style={{ fontSize: 14.5, color: 'var(--ink-2)' }}>{prev.title}</div>
+              </Link>
+            ) : (
+              <Link href={`/units/${unit.id}`} style={{ color: 'inherit', maxWidth: 330 }}>
+                <div className="lbl" style={{ color: 'var(--ink-4)', marginBottom: 4 }}>← Mapa</div>
+                <div style={{ fontSize: 14.5, color: 'var(--ink-2)' }}>Unidade {unit.number}</div>
+              </Link>
+            )}
+            {next ? (
+              <Link href={`/units/${unit.id}/cycles/${next.id}`} style={{ color: 'inherit', maxWidth: 330, textAlign: 'right' }}>
+                <div className="lbl" style={{ color: 'var(--ink-4)', marginBottom: 4 }}>
+                  Próximo →{next.layer === 'deep-dive' ? ' (aprofundamento, opcional)' : ''}
+                </div>
+                <div style={{ fontSize: 14.5, color: 'var(--ink-2)' }}>{next.title}</div>
+              </Link>
+            ) : (
+              <Link href={`/units/${unit.id}`} style={{ color: 'inherit', maxWidth: 330, textAlign: 'right' }}>
+                <div className="lbl" style={{ color: 'var(--ink-4)', marginBottom: 4 }}>Fim da unidade →</div>
+                <div style={{ fontSize: 14.5, color: 'var(--ink-2)' }}>Voltar ao mapa</div>
+              </Link>
+            )}
+          </nav>
         </div>
 
         <aside style={{ width: 320, flexShrink: 0, borderLeft: '1px solid var(--rule)', padding: '34px 30px', alignSelf: 'stretch' }}>
@@ -126,6 +168,16 @@ export function CycleScreen({ unit, cycle, exercise }: { unit: Unit; cycle: Cycl
               <div className="mono" style={{ fontSize: 12.5, lineHeight: 1.65 }}>{cycle.invariant}</div>
             </div>
           )}
+
+          <div className="lbl" style={{ marginBottom: 11 }}>O que cada letra é</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 26 }}>
+            {unit.symbols.map((s) => (
+              <div key={s.symbol} style={{ display: 'flex', gap: 11, alignItems: 'baseline' }}>
+                <span className="mono" style={{ fontSize: 12, minWidth: 76 }}>{s.symbol}</span>
+                <span style={{ fontSize: 12, color: 'var(--ink-3)' }}>{s.means}</span>
+              </div>
+            ))}
+          </div>
 
           <div className="lbl" style={{ marginBottom: 11 }}>Convenções</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 26 }}>

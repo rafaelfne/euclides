@@ -21,6 +21,16 @@ export const hashUnit: Unit = {
     'array ordenado responde em O(log n) mas insere em O(n). Nenhum dá O(1). ' +
     'Por que não dá — e o que teria que ser verdade para dar?',
 
+  symbols: [
+    { symbol: 'T', means: 'a tabela inteira' },
+    { symbol: 'm', means: 'quantas posições a tabela tem' },
+    { symbol: 'n', means: 'quantos pares estão guardados nela' },
+    { symbol: 'h', means: 'a função que transforma uma chave em número' },
+    { symbol: 'k, v', means: 'a chave e o valor de um par' },
+    { symbol: 'α', means: 'a carga: pares guardados divididos por posições, ou n/m' },
+    { symbol: 'i', means: 'a posição onde uma chave caiu' },
+  ],
+
   adt: {
     id: 'map',
     name: 'Map',

@@ -38,8 +38,14 @@ Sequência:
    fecha dois ciclos e nenhum exercício fica sem ciclo. O validador checa os dois. Espaço
    de erro fechado, sempre.
 5. **Os ciclos.** Teto de quatro termos novos, cada um fechando no seu exercício.
-6. **A implementação de referência**, para todo exercício de traço.
-7. **O critério de domínio**, operacional.
+6. **A legenda das letras.** Toda letra que aparece no pseudocódigo, na invariante ou numa
+   coluna de traço entra em `symbols`, com o significado em palavras e sem outra letra
+   dentro. `m` é "quantas posições a tabela tem", não "o tamanho da tabela, ou seja n/α".
+   O schema exige, e a razão está no ADR-0013: para quem está reconstruindo base, cada
+   letra não explicada é uma variável a mais para segurar enquanto tenta seguir o
+   raciocínio — e o raciocínio é a única coisa que a trilha treina.
+7. **A implementação de referência**, para todo exercício de traço.
+8. **O critério de domínio**, operacional.
 
 ## O teste de cada peça
 
@@ -62,6 +68,13 @@ a primeira não fez, ela não existe.
 **Exercício:** você consegue listar as maneiras de errar? Se não, o exercício está mal
 posto — não é o aluno que está.
 
+**Traço:** um aluno que entendeu a matéria e nunca viu este exercício sabe COMO escrever a
+resposta? Toda coluna editável declara `placeholder` com o formato — nunca com um valor do
+gabarito — e o formato bate com o que o gerador emite. Teste: cubra o gerador e tente
+preencher a primeira linha. Se você hesitou sobre vírgula, casas decimais ou como se escreve
+uma posição ocupada, o aluno também vai hesitar, e ele vai receber uma devolutiva socrática
+por um erro de digitação.
+
 **Ciclo:** abre pelo problema ou pela estrutura? Quatro termos novos com dois parágrafos é
 diferente de quatro termos com oito; o validador só conta os termos.
 
@@ -75,6 +88,11 @@ Todo exercício de traço aponta uma função em `src/lib/reference/`. Se você 
 resultado esperado à mão, refaça — foi assim que a primeira versão da unidade de hash
 afirmou que o rehash disparava na inserção do 8, quando o próprio pseudocódigo dizia que
 era na do 4.
+
+E o gabarito computado não autoriza comparação cega: `sameCell` compara número por valor,
+porque `0,75` e `0,750` são a mesma resposta. Se um exercício novo precisar de um tipo de
+célula que não é número nem texto exato, decida a comparação antes de escrever o exercício —
+não depois de o aluno divergir.
 
 ## Ao terminar
 

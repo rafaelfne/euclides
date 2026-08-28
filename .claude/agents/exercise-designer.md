@@ -38,6 +38,15 @@ Seu trabalho é catalogar esses oito jeitos e escrever a pergunta de cada um.
   exportada num registro por unidade e agregada em `src/lib/reference/index.ts`. O id é
   prefixado pela unidade (`hash.chaining-insert-trace`) e o validador reprova quem
   referencia gerador de outra unidade. Se você digitou o resultado esperado à mão, refaça.
+- **O formato da resposta é declarado onde ela é escrita.** Toda coluna editável de um
+  exercício de traço tem `placeholder` com a forma — `0,000`, `sim ou não`,
+  `0:[12,20] 5:[45]` — e nunca com um valor que apareça no gabarito. As convenções gerais de
+  preenchimento estão em `traceConventions`, em `src/content/conventions.ts`; se o seu
+  exercício precisar de uma que não está lá, ela entra lá, não no enunciado.
+- **Confira o formato contra o gerador.** Rode a função de referência e olhe a saída. Se ela
+  emite um caractere que o aluno não digita — travessão, símbolo, espaço significativo —
+  troque no gerador. A primeira versão do traço de hash emitia `—` para "não houve rehash",
+  e quem deixava a célula em branco divergia no passo 1.
 - **Nenhuma misconception órfã.** Declarou no catálogo, exercite em algum lugar.
 
 Você escreve `src/content/units/<id>/exercises.ts` — exercícios e catálogo de armadilhas.

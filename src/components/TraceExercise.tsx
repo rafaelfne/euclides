@@ -6,6 +6,7 @@ import { misconceptionById } from '@/content'
 import { referenceGenerators } from '@/lib/reference'
 import { buildFeedback, findDivergence, type TraceStep } from '@/lib/socratic'
 import { recordAttempt } from '@/lib/progress'
+import { traceConventions } from '@/content/conventions'
 
 /** Columns the student fills in; `step` and `key` are given. */
 const GIVEN = new Set(['step', 'key'])
@@ -53,7 +54,28 @@ export function TraceExercise({ unit, exercise }: { unit: Unit; exercise: TraceE
         <span className="lbl">Exercício · traço de execução</span>
         <span className="lbl">{attempts === 0 ? 'sem tentativa' : `tentativa ${attempts}`}</span>
       </div>
-      <p style={{ fontSize: 15.5, marginTop: 0, marginBottom: 16 }}>{exercise.prompt}</p>
+      <p style={{ fontSize: 15.5, marginTop: 0, marginBottom: 14 }}>{exercise.prompt}</p>
+
+      {/*
+        Como se escreve a resposta, antes de pedir a resposta. Sem isto o aluno
+        inventa a notação, diverge no passo 1 por tipografia e recebe a
+        devolutiva de quem errou o raciocínio.
+      */}
+      <details style={{ marginBottom: 16, maxWidth: 820 }} open>
+        <summary className="lbl" style={{ cursor: 'pointer', color: 'var(--ink-3)', marginBottom: 8 }}>
+          Como preencher
+        </summary>
+        <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '7px 14px', fontSize: 13, alignItems: 'baseline', paddingLeft: 2 }}>
+          {traceConventions.map((c) => (
+            <div key={c.rule} style={{ display: 'contents' }}>
+              <span className="mono" style={{ fontSize: 12.5, whiteSpace: 'nowrap', color: 'var(--ink)' }}>{c.notation}</span>
+              <span style={{ color: 'var(--ink-3)' }}>
+                <span style={{ color: 'var(--ink-2)' }}>{c.rule}</span> — {c.why}
+              </span>
+            </div>
+          ))}
+        </div>
+      </details>
 
       <div style={{ overflowX: 'auto', border: '1px solid var(--rule)', background: '#F8F5EE' }}>
         <table style={{ borderCollapse: 'collapse', width: '100%', minWidth: 720 }}>
@@ -81,6 +103,7 @@ export function TraceExercise({ unit, exercise }: { unit: Unit; exercise: TraceE
                         <input
                           value={r[c.key] ?? ''}
                           onChange={(e) => set(i, c.key, e.target.value)}
+                          placeholder={c.placeholder ?? ''}
                           aria-label={`${c.label}, passo ${i + 1}`}
                           className="mono"
                           style={{

@@ -43,6 +43,8 @@ agregado em `src/lib/reference/index.ts`.
 - `npm test` passa, incluindo asserções novas sobre a implementação de referência
 - `npm run build` conclui e as páginas da unidade aparecem no export
 - O relatório do `terminology-auditor` não tem achado de gravidade alta
+- Todo exercício de traço declara `placeholder` em toda coluna editável, e `symbols` cobre
+  toda letra que aparece no pseudocódigo da unidade
 
 ## Ao terminar
 

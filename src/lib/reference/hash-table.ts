@@ -40,7 +40,7 @@ export function chainingInsertTrace(): TraceStep[] {
     steps.push({
       step: String(steps.length + 1),
       key: String(key),
-      rehash: resized ? 'sim' : '—',
+      rehash: resized ? 'sim' : 'não',
       n: String(table.n),
       m: String(table.m),
       alpha: (table.n / table.m).toFixed(3).replace('.', ','),

@@ -31,7 +31,7 @@ export function findDivergence(
     const got = submitted[i]
     if (!got) return { firstDivergentStep: i + 1, divergentField: null }
     for (const col of columns) {
-      if (normalize(got[col]) !== normalize(ref[col])) {
+      if (!sameCell(got[col], ref[col])) {
         return { firstDivergentStep: i + 1, divergentField: col }
       }
     }
@@ -40,6 +40,28 @@ export function findDivergence(
 }
 
 const normalize = (v: string | undefined) => (v ?? '').replace(/\s+/g, '').toLowerCase()
+
+/** Número em pt-BR, ou null quando a célula não é um número. */
+const asNumber = (v: string | undefined): number | null => {
+  const s = normalize(v).replace(',', '.')
+  return /^-?\d+(\.\d+)?$/.test(s) ? Number(s) : null
+}
+
+/**
+ * Compara uma célula do traço com a referência.
+ *
+ * Número é comparado por VALOR, não por tipografia: `0,75` e `0,750` são a
+ * mesma resposta, e quem escreve a primeira entendeu α tão bem quanto quem
+ * escreve a segunda. Reprovar por casa decimal é o motor errando, não o aluno —
+ * e o custo desse erro é alto, porque a devolutiva do terceiro degrau manda o
+ * aluno voltar amanhã sem que exista nada para ele reconsiderar. ADR-0013.
+ */
+const sameCell = (got: string | undefined, ref: string | undefined) => {
+  const a = asNumber(got)
+  const b = asNumber(ref)
+  if (a !== null && b !== null) return a === b
+  return normalize(got) === normalize(ref)
+}
 
 export interface Feedback {
   head: string

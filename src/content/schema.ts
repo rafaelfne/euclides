@@ -157,7 +157,17 @@ export const traceExercise = z.object({
   prompt: z.string().min(1),
   pseudocode: z.string().min(1),
   invariant: z.string().min(1),
-  columns: z.array(z.object({ key: z.string().min(1), label: z.string().min(1) })).min(2),
+  /**
+   * `placeholder` declara o FORMATO da célula, nunca o valor. Sem ele o aluno
+   * adivinha a notação do gabarito e diverge por tipografia — que foi como o
+   * primeiro traço desta trilha reprovou quem tinha entendido a matéria.
+   * Obrigatório em toda coluna editável; checado no build.
+   */
+  columns: z.array(z.object({
+    key: z.string().min(1),
+    label: z.string().min(1),
+    placeholder: z.string().min(1).optional(),
+  })).min(2),
   /** Name of the reference generator; resolved from the registry at runtime. */
   reference: z.string().min(1),
   misconceptionByStep: z.record(z.string(), z.string()),
@@ -188,6 +198,20 @@ export const exercise = z.discriminatedUnion('kind', [
 // ---------------------------------------------------------------------------
 // Unit
 // ---------------------------------------------------------------------------
+
+/**
+ * O que cada letra do pseudocódigo significa.
+ *
+ * `m`, `n`, `T`, `h` e `α` aparecem no pseudocódigo, na invariante e no traço
+ * sem que nada na tela diga o que são. Para quem está reconstruindo base, cada
+ * letra não explicada é uma variável a mais para segurar na memória enquanto
+ * tenta seguir o raciocínio — e o raciocínio é o que a trilha quer treinar.
+ */
+export const notationSymbol = z.object({
+  symbol: z.string().min(1),
+  /** Em palavras, sem outra letra dentro. */
+  means: z.string().min(1),
+})
 
 // ---------------------------------------------------------------------------
 // The method spine: criterion -> technique -> failure.
@@ -248,6 +272,8 @@ const unitCore = {
   prerequisites: z.array(z.string().min(1)).min(1),
   /** Principle 5: the problem comes before the structure. */
   motivatingProblem: z.string().min(1),
+  /** Legenda das letras usadas no pseudocódigo desta unidade. ADR-0013. */
+  symbols: z.array(notationSymbol).min(1),
   cycles: z.array(cycle).min(1),
   exercises: z.array(exercise).min(1),
   misconceptions: z.array(misconception).min(1),
@@ -298,6 +324,7 @@ export type GlossaryTerm = z.infer<typeof glossaryTerm>
 export type AbstractDataType = z.infer<typeof abstractDataType>
 export type Implementation = z.infer<typeof implementation>
 export type Cycle = z.infer<typeof cycle>
+export type NotationSymbol = z.infer<typeof notationSymbol>
 export type UnitKind = keyof typeof BANDS_BY_KIND
 export type JudgmentCriterion = z.infer<typeof judgmentCriterion>
 export type Technique = z.infer<typeof technique>
