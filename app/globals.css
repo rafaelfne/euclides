@@ -1,0 +1,68 @@
+/* Byrne's Euclid, 1847: cream paper, ink, three primaries with semantic duty.
+   Plain CSS with custom properties rather than a utility framework — the design
+   IS a small fixed token system, and a public static page pays for every kB. */
+:root {
+  --paper: #F2EDE3;
+  --paper-2: #EFEADF;
+  --paper-3: #EDE6D8;
+  --ink: #1A1714;
+  --ink-2: #4A423A;
+  --ink-3: #6B6055;
+  --ink-4: #8A7F72;
+  --rule: #C9BFAE;
+  --rule-2: #E2DACA;
+
+  --blue: #1F4E9C;      /* contrato */
+  --blue-bg: #EFF2F8;
+  --red: #C1352B;       /* implementação, erro */
+  --red-bg: #FAF0EE;
+  --ochre: #D9A036;     /* custo */
+  --ochre-ink: #A9761C;
+  --ochre-bg: #FAF4E6;
+
+  --serif: Spectral, Georgia, 'Times New Roman', serif;
+  --display: 'Bodoni Moda', Didot, Georgia, serif;
+  --mono: 'IBM Plex Mono', 'SF Mono', Menlo, monospace;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--blue); text-decoration: none; }
+a:hover { color: #16386F; text-decoration: underline; }
+
+.lbl {
+  font-size: 11px; letter-spacing: .18em; text-transform: uppercase;
+  font-weight: 600; color: var(--ink-4);
+}
+.mono { font-family: var(--mono); }
+.display { font-family: var(--display); font-weight: 500; }
+
+.shell { max-width: 1440px; margin: 0 auto; }
+.masthead {
+  display: flex; align-items: baseline; justify-content: space-between;
+  padding: 22px 48px 18px; border-bottom: 1px solid var(--rule);
+}
+
+/* --- pseudocode block --------------------------------------------------- */
+.pseudocode {
+  background: var(--ink);
+  padding: 18px 22px;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 13.5px;
+  line-height: 1.75;
+  white-space: pre;
+  tab-size: 4;
+}
+.pseudocode .tok-convention {
+  border-bottom: 1px dotted rgba(143, 178, 232, .55);
+  cursor: help;
+}

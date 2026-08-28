@@ -1,0 +1,36 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+
+      # The pedagogical validator runs FIRST and on its own step, so a failure
+      # reads as "the content violates a principle" and not as a build error.
+      - name: Validador pedagógico
+        run: npm run validate
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Implementação de referência e motor socrático
+        run: npm test
+
+      - name: Export estático
+        run: npx next build
+
+# Deploy NÃO mora aqui, de propósito: a hospedagem é Railway e o deploy é
+# disparado por lá. Este pipeline responde uma pergunta só — "este conteúdo
+# respeita os princípios e este código compila?" — e não deve ganhar um passo
+# de publicação.
