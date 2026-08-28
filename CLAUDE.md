@@ -27,7 +27,7 @@ que ele não é, notação não existe sem sua convenção.
 ## As regras operacionais
 
 **O validador é a autoridade, não o seu julgamento.** `npm run validate` roda antes de
-todo build e são onze checagens. Não há nível de aviso — aviso é regra que ninguém
+todo build e são doze checagens. Não há nível de aviso — aviso é regra que ninguém
 cumpre. Se o validador reprova, o conteúdo está errado; não relaxe a checagem.
 
 **Terminologia: a forma canônica é a que o aluno vai encontrar no mundo.** Documentação,

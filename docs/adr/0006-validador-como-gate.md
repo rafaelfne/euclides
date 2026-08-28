@@ -17,7 +17,7 @@ vazando para a tela.
 
 ## Decisão
 
-`npm run build` roda `npm run validate` antes de `next build`. Onze checagens, cada uma
+`npm run build` roda `npm run validate` antes de `next build`. Doze checagens, cada uma
 um princípio do projeto. **Não há nível de aviso** — aviso é regra que ninguém cumpre.
 
 Um hook `PostToolUse` roda o validador no instante em que conteúdo é editado, para o erro
@@ -56,6 +56,6 @@ O risco real é a tentação de relaxar uma checagem para destravar. Por isso a 
 
 ## Itens de ação
 
-1. [x] Onze checagens em `scripts/validate-content.ts`
+1. [x] Doze checagens em `scripts/validate-content.ts`
 2. [x] Hook `PostToolUse` em edições de conteúdo
 3. [x] CI roda o validador em passo próprio, separado do build

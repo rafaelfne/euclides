@@ -59,7 +59,7 @@ era na do 4.
 ## Ao terminar
 
 ```
-npm run validate    as onze checagens
+npm run validate    as doze checagens
 npm run typecheck
 npm test            referência e motor socrático
 npm run build

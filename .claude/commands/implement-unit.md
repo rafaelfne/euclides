@@ -30,7 +30,7 @@ Registre a unidade em `src/content/index.ts` e escreva a implementação de refe
 
 ## Critério de pronto
 
-- `npm run validate` passa — as onze checagens
+- `npm run validate` passa — as doze checagens
 - `npm run typecheck` limpo
 - `npm test` passa, incluindo asserções novas sobre a implementação de referência
 - `npm run build` conclui e as páginas da unidade aparecem no export

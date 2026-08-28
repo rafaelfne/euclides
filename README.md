@@ -20,7 +20,7 @@ motor revela onde o raciocínio quebrou em três degraus sem nunca revelar o val
 
 ## O validador pedagógico
 
-`npm run build` roda `npm run validate` antes do `next build`. Onze checagens,
+`npm run build` roda `npm run validate` antes do `next build`. Doze checagens,
 cada uma um princípio do projeto virado em erro de compilação:
 
 | checagem | o que protege |
@@ -30,6 +30,7 @@ cada uma um princípio do projeto virado em erro de compilação:
 | órfã | nenhuma ideia errada é declarada e não exercitada |
 | socrática | toda pergunta termina em `?` — é pergunta, não explicação |
 | carga | nenhum ciclo passa de 4 termos novos |
+| exercício | todo ciclo tem exercício e o critério de domínio referencia ids reais |
 | espinha | todo ciclo declara sua banda e a unidade abre pelo contrato |
 | custo | toda implementação declara custo de toda operação do contrato |
 | vocabulário | nenhuma abstração vaga fora do glossário |

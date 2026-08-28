@@ -20,7 +20,16 @@ const failures: Failure[] = []
 const passes: string[] = []
 
 const fail = (check: string, detail: string) => failures.push({ check, detail })
-const pass = (check: string) => passes.push(check)
+
+/**
+ * Declara a checagem aprovada — mas só se ela não tiver acusado nada. Sem esse
+ * filtro o relatório imprimia "ok socrática" e "FALHA [socrática]" na mesma
+ * saída, o que treina o leitor a não confiar na coluna de ok.
+ */
+const pass = (check: string) => {
+  const key = check.split(':')[0]!.trim()
+  if (!failures.some((f) => f.check === key)) passes.push(check)
+}
 
 const units: Unit[] = [hashUnit]
 const allTerms = [...glossary, ...crossUnitGlossary]
@@ -35,7 +44,7 @@ for (const u of units) {
     }
   }
 }
-if (!failures.length) pass('schema: toda unidade satisfaz o content model')
+pass('schema: toda unidade satisfaz o content model')
 
 // --- 2. distractors apontam misconceptions que existem -------------------
 for (const u of units) {
@@ -108,6 +117,7 @@ for (const u of units) {
     if (!ids.has(id)) fail('domínio', `mastery.requiresClean cita "${id}", que não existe`)
   }
 }
+pass('exercício: todo ciclo tem exercício escrito e o critério de domínio referencia ids reais')
 
 // --- 6b. a banda taxonômica de cada ciclo é coerente ---------------------
 for (const u of units) {
