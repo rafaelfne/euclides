@@ -12,7 +12,7 @@ import { BAND_TONE, TONE_TEXT } from './band-tokens'
  */
 export function UnitTabs({ unit, cycleId }: { unit: Unit; cycleId?: string }) {
   return (
-    <div className="flex items-stretch overflow-x-auto border-b border-rule-soft bg-rail">
+    <div className="flex shrink-0 items-stretch overflow-x-auto border-b border-rule-soft bg-rail">
       <Link
         href={`/units/${unit.id}`}
         className={cn(

@@ -93,7 +93,7 @@ export function UnitMap({ unit }: { unit: Unit }) {
   const countLabel = (n: number) => `${n} ${n === 1 ? 'ciclo' : 'ciclos'}`
 
   return (
-    <div className="flex flex-col gap-5 px-7 py-6">
+    <div className="flex flex-grow flex-col gap-5 overflow-y-auto px-7 py-6">
       <p className="max-w-[720px] text-[14.5px] leading-relaxed text-fg-2">{unit.motivatingProblem}</p>
 
       <div className="flex flex-col gap-2">

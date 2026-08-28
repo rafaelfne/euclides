@@ -28,8 +28,8 @@ export function CycleScreen({ unit, cycle, exercise }: { unit: Unit; cycle: Cycl
   const tone = BAND_TONE[cycle.band]
 
   return (
-    <div className="flex flex-grow items-start">
-      <div className="min-w-0 flex-grow px-7 py-6 pb-16">
+    <>
+      <div className="min-w-0 flex-grow overflow-y-auto px-7 py-6 pb-16">
         <div className="mb-2.5 flex items-center gap-2">
           <span className={cn('lbl', TONE_TEXT[tone])}>{BAND_LABEL[cycle.band]}</span>
           {LAYER_LABEL[cycle.layer] && <span className="lbl text-cost">· {LAYER_LABEL[cycle.layer]}</span>}
@@ -48,7 +48,7 @@ export function CycleScreen({ unit, cycle, exercise }: { unit: Unit; cycle: Cycl
 
         <div className="flex max-w-[820px] flex-col gap-3.5">
           {cycle.body.map((p, i) => (
-            <p key={i} className="m-0 text-[15px] leading-[1.72] text-fg-2">{p}</p>
+            <p key={i} className="m-0 text-[14.5px] leading-[1.75] text-fg-2">{p}</p>
           ))}
         </div>
 
@@ -111,7 +111,7 @@ export function CycleScreen({ unit, cycle, exercise }: { unit: Unit; cycle: Cycl
         </nav>
       </div>
 
-      <aside className="sticky top-0 w-[300px] shrink-0 self-stretch border-l border-rule-soft bg-rail px-5 py-6">
+      <aside className="w-[300px] shrink-0 overflow-y-auto border-l border-rule-soft bg-rail px-5 py-6">
         {cycle.invariant && (
           <Panel className="mb-6 border-contract-rule bg-contract-bg">
             <PanelHeader className="border-contract-rule bg-transparent">
@@ -149,6 +149,6 @@ export function CycleScreen({ unit, cycle, exercise }: { unit: Unit; cycle: Cycl
           </div>
         </div>
       </aside>
-    </div>
+    </>
   )
 }

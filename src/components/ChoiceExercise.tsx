@@ -54,7 +54,7 @@ export function ChoiceExercise({
                 key={i}
                 onClick={() => onPick(i)}
                 className={cn(
-                  'cursor-pointer border px-4 py-3 text-left font-serif text-[14px] leading-relaxed transition-colors',
+                  'cursor-pointer border px-4 py-3 text-left text-[13.5px] leading-relaxed transition-colors',
                   !isPicked && 'border-rule bg-panel-head text-fg-2 hover:bg-panel-hover hover:text-fg',
                   isPicked && c.correct && 'border-contract-rule bg-contract-bg text-fg',
                   isPicked && !c.correct && 'border-implementation-rule bg-implementation-bg text-fg',

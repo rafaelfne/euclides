@@ -7,7 +7,7 @@ export const metadata = { title: 'Lacunas — Euclides' }
 export default function GapsPage() {
   return (
     <AppShell>
-      <div className="px-7 py-8">
+      <div className="flex-grow overflow-y-auto px-7 py-8">
         <h1 className="m-0 mb-3 text-[26px] font-semibold leading-tight">Lacunas</h1>
         <p className="m-0 mb-2 max-w-[760px] text-[14.5px] leading-relaxed text-fg-2">
           O que está aberto, e por quê. Não há percentual aqui de propósito: resolver em quatro

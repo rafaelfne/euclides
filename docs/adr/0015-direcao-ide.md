@@ -28,6 +28,16 @@ Três coisas, e a terceira é a que sustenta as outras duas.
 rail de navegação com as oito unidades sempre visível, abas para os ciclos. Foi escolhida
 entre três alternativas desenhadas lado a lado — terminal puro, blueprint técnico e IDE.
 
+Rail e abas ficam parados e a rolagem pertence ao conteúdo, como num editor. Cada tela
+declara as próprias regiões de rolagem; a do ciclo tem duas, porque a legenda de símbolos
+precisa acompanhar a prosa em vez de sair da tela junto com ela — e ela existe justamente
+para ser consultada durante a leitura (ADR-0013).
+
+A tipografia é uma superfamília: IBM Plex Sans com IBM Plex Mono. A serifa saiu junto com o
+papel; manter uma serifa de texto ao lado de rótulos e código monoespaçados fazia rótulo e
+prosa parecerem dois projetos. Escolher a sans do mesmo desenho do mono que já estava lá é
+uma decisão, não um default — e evita as sans genéricas que todo dashboard usa.
+
 **2. Tailwind v4 e shadcn/ui.** Os primitivos entram copiados para `src/components/ui/`,
 que é como o shadcn funciona: o código é do projeto, não da dependência. Entraram só os
 que estão em uso — `Button`, `Panel`, `Badge`, `Input`, `Separator`, `Collapsible`.

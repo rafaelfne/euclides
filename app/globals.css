@@ -42,7 +42,12 @@
   --cost-bg: #211C13;
   --cost-rule: #4E3F21;
 
-  --serif: Spectral, Georgia, 'Times New Roman', serif;
+  /*
+    Superfamília, não duas escolhas soltas: o mono já era IBM Plex Mono, e a
+    sans do mesmo desenho compartilha métrica e desenho de letra. Rótulo e
+    código ao lado de prosa param de parecer dois projetos.
+  */
+  --sans: 'IBM Plex Sans', -apple-system, 'Segoe UI', sans-serif;
   --mono: 'IBM Plex Mono', 'SF Mono', Menlo, monospace;
 }
 
@@ -74,7 +79,7 @@
   --color-cost-bg: var(--cost-bg);
   --color-cost-rule: var(--cost-rule);
 
-  --font-serif: var(--serif);
+  --font-sans: var(--sans);
   --font-mono: var(--mono);
 }
 
@@ -84,9 +89,9 @@
   body {
     background: var(--shell);
     color: var(--fg);
-    font-family: var(--serif);
-    font-size: 15px;
-    line-height: 1.65;
+    font-family: var(--sans);
+    font-size: 14.5px;
+    line-height: 1.6;
     -webkit-font-smoothing: antialiased;
   }
   a { color: var(--contract); text-decoration: none; }
