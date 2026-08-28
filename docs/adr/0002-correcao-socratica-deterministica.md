@@ -36,7 +36,7 @@ quebrou não é socrático, é um portão.
 
 Restringir o formato do exercício parece uma concessão à ausência de LLM. Não é:
 **a restrição aumenta o rigor**. Texto livre deixa o aluno se esconder atrás de vagueza —
-"hash é mais rápido" <!-- vocab-ok: cita prosa ruim --> passa num ensaio e não passa num
+"hash é mais rápido" passa num ensaio e não passa num
 formulário que exige nomear a operação dominante e o custo assintótico nas duas
 estruturas.
 

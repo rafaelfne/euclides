@@ -2,13 +2,12 @@
 
 import Link from 'next/link'
 import type { Cycle, Exercise, Unit } from '@/content/schema'
-import { glossary, crossUnitGlossary } from '@/content/glossary'
+import { allTerms } from '@/content/glossary'
 import { conventions } from '@/content/conventions'
 import { Pseudocode } from './Pseudocode'
 import { ChoiceExercise } from './ChoiceExercise'
 import { TraceExercise } from './TraceExercise'
 
-const allTerms = [...glossary, ...crossUnitGlossary]
 
 /**
  * Enum values are code and code is English; labels are content and content is
@@ -20,6 +19,18 @@ const BAND_LABEL: Record<Cycle['band'], string> = {
   contract: 'Contrato',
   implementation: 'Implementação',
   cost: 'Custo',
+  criterion: 'Critério',
+  technique: 'Técnica',
+  failure: 'Falha',
+}
+
+/**
+ * `null` says the absence of a label is a decision, not an omission. The band
+ * is always shown; the layer sits beside it and never replaces it.
+ */
+const LAYER_LABEL: Record<Cycle['layer'], string | null> = {
+  essential: null,
+  'deep-dive': 'Aprofundamento',
 }
 
 /**
@@ -51,8 +62,11 @@ export function CycleScreen({ unit, cycle, exercise }: { unit: Unit; cycle: Cycl
 
       <div style={{ display: 'flex', alignItems: 'flex-start' }}>
         <div style={{ flexGrow: 1, padding: '34px 44px 60px 48px', minWidth: 0 }}>
-          <div className="lbl" style={{ color: cycle.layer === 'deep-dive' ? 'var(--ochre-ink)' : 'var(--red)', marginBottom: 10 }}>
-            {cycle.layer === 'deep-dive' ? 'Aprofundamento' : BAND_LABEL[cycle.band]}
+          <div className="lbl" style={{ display: 'flex', gap: 10, marginBottom: 10 }}>
+            <span style={{ color: 'var(--red)' }}>{BAND_LABEL[cycle.band]}</span>
+            {LAYER_LABEL[cycle.layer] && (
+              <span style={{ color: 'var(--ochre-ink)' }}>· {LAYER_LABEL[cycle.layer]}</span>
+            )}
           </div>
           <h1 className="display" style={{ fontSize: 34, fontWeight: 500, lineHeight: 1.15, margin: '0 0 16px' }}>
             {cycle.title}

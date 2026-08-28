@@ -7,6 +7,9 @@ import type { Misconception } from '../content/schema'
  * anticipation. This module never reveals a correct value. It reveals WHERE
  * the reasoning broke, then which field, then the question that attacks the
  * root. Three rungs, and the last one still withholds the answer.
+ *
+ * Rung 3 escalates through `misconception.escalation` and then STOPS. See
+ * ADR-0011 and `docs/discovery/02-motor-socratico.md`.
  */
 
 export type TraceStep = Record<string, string>
@@ -43,6 +46,8 @@ export interface Feedback {
   body: string
   /** Rung reached. Rendered so the student can see the help is bounded. */
   rung: number
+  /** True once the escalation ran out and the engine closed the exercise. */
+  exhausted: boolean
   misconceptionId: string | null
 }
 
@@ -50,11 +55,11 @@ export interface Feedback {
  * Builds the feedback for one attempt. `attempt` is 1-based.
  *
  * Rung 1 — where it broke, and what is still correct.
- * Rung 2 — which field.
- * Rung 3 — the misconception's question.
+ * Rung 2 — which field, or that the trace stopped short.
+ * Rung 3 — the misconception's question, escalating one entry per attempt.
  *
- * There is no rung 4. A student who exhausts the ladder is told to stop and
- * come back, which is a better outcome than an answer.
+ * There is no rung 4. A student who exhausts the escalation is told to stop
+ * and come back, which is a better outcome than an answer.
  */
 export function buildFeedback(
   divergence: Divergence,
@@ -71,31 +76,47 @@ export function buildFeedback(
   if (attempt <= 1) {
     return {
       rung: 1,
+      exhausted: false,
       head: `Seu traço diverge no passo ${step}.`,
       body: `${correctSoFar} Volte ao passo ${step} e reexecute a condição que o governa, linha por linha.`,
       misconceptionId: null,
     }
   }
-  if (attempt === 2 && divergence.divergentField) {
-    return {
-      rung: 2,
-      head: `A divergência está na coluna “${divergence.divergentField}”, no passo ${step}.`,
-      body: 'Os outros valores desse passo estão certos. Só esse campo não.',
-      misconceptionId: null,
-    }
+
+  if (attempt === 2) {
+    return divergence.divergentField
+      ? {
+          rung: 2,
+          exhausted: false,
+          head: `A divergência está na coluna “${divergence.divergentField}”, no passo ${step}.`,
+          body: 'Os outros valores desse passo estão certos. Só esse campo não.',
+          misconceptionId: null,
+        }
+      : {
+          rung: 2,
+          exhausted: false,
+          head: `Seu traço termina antes do passo ${step}.`,
+          body: `${correctSoFar} O que falta não é um valor corrigido: é o passo em si. Releia a condição que decide se há um passo ${step}.`,
+          misconceptionId: null,
+        }
   }
-  if (misconception) {
+
+  const escalationIndex = attempt - 3
+  if (misconception && escalationIndex < misconception.escalation.length) {
     return {
       rung: 3,
+      exhausted: false,
       head: misconception.socraticQuestion,
-      body: misconception.ladder[Math.min(attempt - 3, misconception.ladder.length - 1)]!,
+      body: misconception.escalation[escalationIndex]!,
       misconceptionId: misconception.id,
     }
   }
+
   return {
     rung: 3,
+    exhausted: true,
     head: 'Vamos parar aqui.',
-    body: `Releia a invariante e volte a este exercício amanhã. Insistir agora treina a tentativa, não o raciocínio.`,
-    misconceptionId: null,
+    body: 'Releia a invariante e volte a este exercício amanhã. Insistir agora treina a tentativa, não o raciocínio.',
+    misconceptionId: misconception?.id ?? null,
   }
 }

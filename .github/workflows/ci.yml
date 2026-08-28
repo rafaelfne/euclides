@@ -21,10 +21,15 @@ jobs:
       - name: Validador pedagógico
         run: npm run validate
 
+      # Os documentos ficam fora do gate de conteúdo e foram onde a primeira
+      # deriva apareceu. Passo próprio pelo mesmo motivo. Ver ADR-0011.
+      - name: Caminhos citados em documento
+        run: npm run docs:check
+
       - name: Typecheck
         run: npm run typecheck
 
-      - name: Implementação de referência e motor socrático
+      - name: Suítes de teste
         run: npm test
 
       - name: Export estático

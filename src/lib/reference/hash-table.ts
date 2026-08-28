@@ -50,7 +50,8 @@ export function chainingInsertTrace(): TraceStep[] {
   return steps
 }
 
-/** Registry the content references by name, so content stays data. */
-export const referenceGenerators: Record<string, () => TraceStep[]> = {
-  'chaining-insert-trace': chainingInsertTrace,
+/** Registry the content references by name, so content stays data. Ids are
+ * prefixed by unit so two units cannot silently claim the same generator. */
+export const hashReferenceGenerators: Record<string, () => TraceStep[]> = {
+  'hash.chaining-insert-trace': chainingInsertTrace,
 }

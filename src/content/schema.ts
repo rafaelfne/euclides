@@ -50,6 +50,7 @@ export const glossaryTerm = z.object({
     meaning: z.string().min(1),
   })),
   introducedIn: z.string().min(1),
+  plannedIn: z.string().min(1).optional(),
 })
 
 // ---------------------------------------------------------------------------
@@ -95,17 +96,29 @@ export const implementation = z.object({
 
 export const MAX_NEW_TERMS_PER_CYCLE = 4
 
+/**
+ * The two spines. A unit about a structure promises operations; a unit about a
+ * method promises a judgment. Both go from what is promised, through the
+ * competing ways of delivering it, to where the choice is wrong — which is why
+ * one `Cycle` serves both. See ADR-0012.
+ */
+export const BANDS_BY_KIND = {
+  structure: ['contract', 'implementation', 'cost'],
+  method: ['criterion', 'technique', 'failure'],
+} as const
+
 export const cycle = z.object({
   id: z.string().min(1),
   title: z.string().min(1),
   layer: z.enum(['essential', 'deep-dive']),
   /**
    * Where this cycle sits on the taxonomic spine. The map renders from this,
-   * so the navigation cannot drift from the taxonomy the unit teaches.
+   * so the navigation cannot drift from the taxonomy the unit teaches. Which
+   * values are legal depends on the unit's kind; checked at build.
    */
-  band: z.enum(['contract', 'implementation', 'cost']),
-  /** Required when band is 'implementation'; checked at build. */
-  implementationId: z.string().optional(),
+  band: z.enum(['contract', 'implementation', 'cost', 'criterion', 'technique', 'failure']),
+  /** The implementation or technique this cycle details. Required on the middle band. */
+  elaborates: z.string().optional(),
   /** Glossary ids first introduced here. Capped at build time. */
   introducesTerms: z.array(z.string()).max(MAX_NEW_TERMS_PER_CYCLE),
   body: z.array(z.string().min(1)).min(1),
@@ -128,8 +141,7 @@ export const misconception = z.object({
   label: z.string().min(1),
   /** Must end in "?" — checked at build. It is a question, not an explanation. */
   socraticQuestion: z.string().min(1),
-  /** Released per attempt. The last rung still does not give the answer. */
-  ladder: z.array(z.string().min(1)).min(1),
+  escalation: z.array(z.string().min(1)).min(1).max(3),
   reviewCycle: z.string().min(1),
 })
 
@@ -177,7 +189,58 @@ export const exercise = z.discriminatedUnion('kind', [
 // Unit
 // ---------------------------------------------------------------------------
 
-export const unit = z.object({
+// ---------------------------------------------------------------------------
+// The method spine: criterion -> technique -> failure.
+// ---------------------------------------------------------------------------
+
+/**
+ * What a unit about a method promises: not operations you may call, but the
+ * canonical form of a judgment the student must be able to produce.
+ *
+ * `whenOmitted` is to a criterion what `cannotAnswer` is to a contract — the
+ * negative space. It is also the generator of the unit's misconceptions:
+ * dropping `regime` from a cost claim is literally "hash é O(1)".
+ */
+export const judgmentCriterion = z.object({
+  id: z.string().min(1),
+  name: z.string().min(1),
+  /** The canonical form, in plain language. No cost — a criterion has none. */
+  produces: z.string().min(1),
+  parts: z.array(z.object({
+    id: z.string().min(1),
+    name: z.string().min(1),
+    /** What this part asserts. Semantic only, never a complexity. */
+    guarantee: z.string().min(1),
+  })).min(2),
+  whenOmitted: z.array(z.object({
+    partId: z.string().min(1),
+    /** How the judgment reads without it — the sentence that sounds right. */
+    reads: z.string().min(1),
+  })).min(1),
+})
+
+/** A way of deriving the judgment. Two compete, or there is no choice to teach. */
+export const technique = z.object({
+  id: z.string().min(1),
+  name: z.string().min(1),
+  derivesCriterion: z.string().min(1),
+  summary: z.string().min(1),
+  /** Criterion part ids this technique actually produces — checked at build. */
+  produces: z.array(z.string().min(1)).min(1),
+  /** Principle 4, in the only form it takes here: when this derivation is wrong. */
+  wrongWhen: z.array(z.object({
+    scenario: z.string().min(1),
+    useInstead: z.string().min(1),
+  })).min(1),
+  everydayAnchor: z.string().min(1),
+  invariant: z.string().min(1),
+})
+
+// ---------------------------------------------------------------------------
+// Unit — one shape per spine, discriminated. No optional field decides which.
+// ---------------------------------------------------------------------------
+
+const unitCore = {
   id: z.string().min(1),
   number: z.number().int().positive(),
   title: z.string().min(1),
@@ -185,8 +248,6 @@ export const unit = z.object({
   prerequisites: z.array(z.string().min(1)).min(1),
   /** Principle 5: the problem comes before the structure. */
   motivatingProblem: z.string().min(1),
-  adt: abstractDataType,
-  implementations: z.array(implementation).min(1),
   cycles: z.array(cycle).min(1),
   exercises: z.array(exercise).min(1),
   misconceptions: z.array(misconception).min(1),
@@ -195,7 +256,23 @@ export const unit = z.object({
     requiresClean: z.array(z.string().min(1)).min(1),
     revisitIntervalDays: z.number().int().positive(),
   }),
+}
+
+export const structureUnit = z.object({
+  kind: z.literal('structure'),
+  ...unitCore,
+  adt: abstractDataType,
+  implementations: z.array(implementation).min(2),
 })
+
+export const methodUnit = z.object({
+  kind: z.literal('method'),
+  ...unitCore,
+  criterion: judgmentCriterion,
+  techniques: z.array(technique).min(2),
+})
+
+export const unit = z.discriminatedUnion('kind', [structureUnit, methodUnit])
 
 // ---------------------------------------------------------------------------
 // Progress — localStorage, versioned, validated on read.
@@ -221,6 +298,11 @@ export type GlossaryTerm = z.infer<typeof glossaryTerm>
 export type AbstractDataType = z.infer<typeof abstractDataType>
 export type Implementation = z.infer<typeof implementation>
 export type Cycle = z.infer<typeof cycle>
+export type UnitKind = keyof typeof BANDS_BY_KIND
+export type JudgmentCriterion = z.infer<typeof judgmentCriterion>
+export type Technique = z.infer<typeof technique>
+export type StructureUnit = z.infer<typeof structureUnit>
+export type MethodUnit = z.infer<typeof methodUnit>
 export type Misconception = z.infer<typeof misconception>
 export type Choice = z.infer<typeof choice>
 export type Exercise = z.infer<typeof exercise>

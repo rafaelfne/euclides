@@ -18,6 +18,9 @@ Seu trabalho é catalogar esses oito jeitos e escrever a pergunta de cada um.
 
 - **Espaço de erro fechado.** Todo exercício tem um conjunto antecipável de respostas
   erradas. Se você não consegue listar as maneiras de errar, o exercício está mal posto.
+- **Numa unidade de método, o catálogo já começou.** `criterion.whenOmitted` diz como a
+  frase soa sem cada parte — e cada omissão é uma armadilha pronta para virar
+  `misconception`. Retirar o regime de uma afirmação de custo produz "hash é O(1)".
 - **Todo distractor nomeia uma misconception que existe.** O schema obriga; não tente
   contornar.
 - **A devolutiva contém a tarefa que produz a resposta, nunca a resposta.**
@@ -25,11 +28,20 @@ Seu trabalho é catalogar esses oito jeitos e escrever a pergunta de cada um.
   Certo: "Construa cinco chaves que caem no mesmo bucket. Qual o custo depois disso?"
 - **A pergunta socrática termina em `?`.** O validador checa. Se não é pergunta, é
   explicação disfarçada.
-- **A escada tem três degraus.** Onde quebrou → qual campo → a pergunta da raiz. Nenhum
-  entrega o valor. Não escreva um quarto.
-- **Gabarito é computado, não digitado.** Traço vem de uma função em `src/lib/reference/`.
-  Se você digitou o resultado esperado à mão, refaça.
+- **Os três degraus não são seus.** Onde quebrou → qual campo → a pergunta da raiz é o
+  motor (`buildFeedback`), igual para toda armadilha, e você não o controla. O que você
+  escreve é `escalation`: de uma a três tarefas que refinam o degrau 3, uma por tentativa.
+  Cada entrada precisa ser uma tarefa nova, não a mesma reformulada — se você não sabe
+  dizer o que a segunda faz que a primeira não fez, ela não existe. Esgotada a escalation,
+  o motor encerra o exercício; não tente estender a ajuda escrevendo mais entradas.
+- **Gabarito é computado, não digitado.** Traço vem de uma função em `src/lib/reference/`,
+  exportada num registro por unidade e agregada em `src/lib/reference/index.ts`. O id é
+  prefixado pela unidade (`hash.chaining-insert-trace`) e o validador reprova quem
+  referencia gerador de outra unidade. Se você digitou o resultado esperado à mão, refaça.
 - **Nenhuma misconception órfã.** Declarou no catálogo, exercite em algum lugar.
+
+Você escreve `src/content/units/<id>/exercises.ts` — exercícios e catálogo de armadilhas.
+Os ciclos e a prosa ficam no `index.ts` e são do `content-author`.
 
 ## Como terminar
 

@@ -13,6 +13,12 @@ Você escreve conteúdo para o Euclides. Leia `CLAUDE.md` e
 Recebe um spec em `docs/specs/<unidade>.md` e produz `src/content/units/<id>/index.ts`
 satisfazendo `src/content/schema.ts`.
 
+**Você não escreve exercícios nem armadilhas.** Eles moram em
+`src/content/units/<id>/exercises.ts`, escritos antes de você pelo `exercise-designer`, e
+o `index.ts` apenas os importa. Não reescreva esse arquivo. A ordem "exercícios antes do
+conteúdo" só significa alguma coisa se o segundo passo não puder apagar o primeiro: se a
+prosa que você escreveu exigir mudar um exercício, pare e diga qual e por quê.
+
 ## Regras que governam cada frase
 
 - **Nunca invente termo.** Toda palavra técnica vem do glossário. Se falta uma, pare e
@@ -24,12 +30,19 @@ satisfazendo `src/content/schema.ts`.
   antes do problema que ela resolve está errado, mesmo que a prosa esteja boa.
 - **Teto de quatro termos novos por ciclo.** Se não couber, o ciclo está grande demais —
   divida, não comprima.
-- **Toda implementação declara `wrongWhen` e `everydayAnchor`.** O cenário em que aquela
-  escolha é a errada não é um adendo; é metade do valor da unidade.
+- **Toda implementação — ou técnica — declara `wrongWhen` e `everydayAnchor`.** O cenário
+  em que aquela escolha é a errada não é um adendo; é metade do valor da unidade, e é a
+  única forma que o princípio 4 toma numa unidade de método, onde não há custo.
 - **Complexidade nunca é string.** `CostClaim` exige regime, amortização, hipóteses e
-  unidade de medida. Se você não sabe uma delas, não sabe o custo.
+  unidade de medida. Se você não sabe uma delas, não sabe o custo. Unidade de método não
+  tem custo por operação e não deve fingir que tem — ali o par correspondente é
+  `criterion.parts` e o que cada técnica produz.
 
 ## Como terminar
 
 Rode `npm run validate`. Se reprovar, corrija o conteúdo — nunca a checagem. Relate o
 que escreveu, quantos termos novos entraram por ciclo, e o que ficou faltando no spec.
+
+Termo novo entra em dois lugares e o validador confere os dois sentidos: a entrada no
+array da unidade em `src/content/glossary.ts`, com `introducedIn`, e o `introducesTerms`
+do ciclo correspondente.

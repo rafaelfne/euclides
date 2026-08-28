@@ -44,7 +44,8 @@ inexprimível, não desaconselhado.
   e a matriz sai de graça a partir dos dados.
 - **Fica mais difícil:** unidades cujo assunto não é uma estrutura (análise assintótica,
   recursão) não encaixam bem na espinha. Precisarão de uma banda diferente ou de uma
-  variante do modelo — problema conhecido e ainda não resolvido.
+  variante do modelo. **Resolvido pelo ADR-0012:** uma segunda espinha, critério → técnica
+  → falha, discriminada por `kind`, com o mesmo `Cycle` e o mesmo mapa.
 - **Consequência pedagógica:** o último ciclo de uma unidade ("quando esta escolha é a
   errada") deixa de ser lista decorada e vira dedução — tudo que o contrato não promete é
   onde a estrutura falha.
@@ -53,4 +54,4 @@ inexprimível, não desaconselhado.
 
 1. [x] `AbstractDataType` sem campo de custo
 2. [x] Checagem "espinha" no validador
-3. [ ] Decidir a variante do modelo para unidades sem estrutura central
+3. [x] Decidir a variante do modelo para unidades sem estrutura central — ADR-0012

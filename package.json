@@ -4,10 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npm run validate && next build",
+    "build": "npm run validate && npm run docs:check && next build",
     "validate": "tsx scripts/validate-content.ts",
     "typecheck": "tsc --noEmit",
-    "test": "tsx scripts/test-reference.ts"
+    "test": "tsx scripts/test-all.ts",
+    "docs:check": "tsx scripts/check-docs.ts"
   },
   "dependencies": {
     "next": "^15.1.0",

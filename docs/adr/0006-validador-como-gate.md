@@ -17,8 +17,15 @@ vazando para a tela.
 
 ## Decisão
 
-`npm run build` roda `npm run validate` antes de `next build`. Doze checagens, cada uma
-um princípio do projeto. **Não há nível de aviso** — aviso é regra que ninguém cumpre.
+`npm run build` roda `npm run validate` antes de `next build`. Cada checagem é um
+princípio do projeto. **Não há nível de aviso** — aviso é regra que ninguém cumpre.
+
+A lista de checagens é declarada em `CHECKS`, no topo de `scripts/validate-content.ts`, e
+o relatório é derivado dela: uma checagem imprime `ok` quando nada falhou sob o id dela.
+Isso não é estilo. Enquanto o relatório dependia de casar duas strings à mão, ele chegou
+a imprimir `ok` e `FALHA` para a mesma regra na mesma saída — e um `ok` que às vezes mente
+treina o leitor a não olhar a coluna, que é o oposto de ter um gate sem nível de aviso.
+Por isso nenhum documento cita mais um número de checagens: cite a lista.
 
 Um hook `PostToolUse` roda o validador no instante em que conteúdo é editado, para o erro
 aparecer com o raciocínio ainda carregado.
@@ -56,6 +63,8 @@ O risco real é a tentação de relaxar uma checagem para destravar. Por isso a 
 
 ## Itens de ação
 
-1. [x] Doze checagens em `scripts/validate-content.ts`
+1. [x] Checagens declaradas em `CHECKS`, em `scripts/validate-content.ts`, com relatório
+   derivado da lista
 2. [x] Hook `PostToolUse` em edições de conteúdo
 3. [x] CI roda o validador em passo próprio, separado do build
+4. [x] `npm run docs:check` cobre o que fica fora do gate de conteúdo (ADR-0011)

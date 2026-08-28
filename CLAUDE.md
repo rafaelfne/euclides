@@ -27,8 +27,14 @@ que ele não é, notação não existe sem sua convenção.
 ## As regras operacionais
 
 **O validador é a autoridade, não o seu julgamento.** `npm run validate` roda antes de
-todo build e são doze checagens. Não há nível de aviso — aviso é regra que ninguém
-cumpre. Se o validador reprova, o conteúdo está errado; não relaxe a checagem.
+todo build. A lista de checagens é declarada em `CHECKS`, no topo de
+`scripts/validate-content.ts`, e o relatório é derivado dela — não cite um número, cite a
+lista. Não há nível de aviso: aviso é regra que ninguém cumpre. Se o validador reprova, o
+conteúdo está errado; não relaxe a checagem.
+
+`npm run docs:check` cobre o que fica fora do gate de conteúdo: todo caminho de arquivo
+citado em `docs/` e `.claude/` precisa existir. Terminologia em prosa não entra aí — fica
+no `/audit-unit`, e o ADR-0011 diz por quê.
 
 **Terminologia: a forma canônica é a que o aluno vai encontrar no mundo.** Documentação,
 código-fonte, Stack Overflow. O glossário em `src/content/glossary.ts` arbitra cada caso
@@ -46,9 +52,22 @@ com `isNot` e ponto de introdução antes de usá-la.
 
 Valor de enum é código; rótulo de tela é conteúdo. Nunca renderize um enum direto.
 
+**Duas espinhas, escolhidas por `kind`.** Unidade sobre uma estrutura promete operações:
+`adt` e `implementations`, bandas contrato · implementação · custo. Unidade sobre um método
+promete um julgamento: `criterion` e `techniques`, bandas critério · técnica · falha. As
+duas vão do que é prometido, pelas formas concorrentes de entregar, até onde a escolha é a
+errada — por isso o `Cycle` é um só e o mapa é o mesmo. ADR-0012 tem a tabela e o que foi
+descartado. Não há campo opcional decidindo o formato; se você precisa de um, o kind está
+errado.
+
 **Nenhuma devolutiva contém a resposta.** Ela contém a *tarefa que produz* a resposta.
 `buildFeedback` em `src/lib/socratic.ts` tem três degraus e nenhum revela o valor
 correto. Não adicione um quarto degrau.
+
+Dois nomes distintos, porque já se atropelaram: **degrau** é do motor, igual para toda
+armadilha, e o autor não escreve nenhum; **escalation** é do conteúdo — de uma a três
+tarefas dentro do degrau 3, uma por tentativa. Esgotada a escalation, o motor encerra o
+exercício. Ajuda ilimitada é resposta entregue devagar.
 
 ## Como o conteúdo nasce
 
@@ -66,18 +85,30 @@ em vez de preencher a lacuna sozinho.
 ## Onde as coisas moram
 
 ```
-src/content/schema.ts        content model em zod — o contrato pedagógico
-src/content/glossary.ts      termos canônicos, com isNot e falsos amigos
-src/content/units/<id>/      conteúdo de uma unidade
-src/lib/socratic.ts          divergência de traço e a escada de três degraus
+src/content/schema.ts        content model em zod — as duas espinhas
+src/lib/validate.ts          as checagens, como módulo chamável
+src/content/index.ts         o registro de unidades — é daqui que o validador lê
+src/content/glossary.ts      termos por unidade, allTerms, e OVERLOADED_TERMS
+src/content/vocabulary.ts    abstrações vagas e as licenças de citação
+src/content/conventions.ts   a folha de notação do pseudocódigo
+src/content/units/<id>/index.ts      unidade, ciclos, ADT, implementações
+src/content/units/<id>/exercises.ts  exercícios e catálogo de armadilhas
+src/lib/socratic.ts          divergência de traço e os três degraus
+src/lib/reference/index.ts   o registro agregado dos geradores de gabarito
 src/lib/reference/           implementações que GERAM o gabarito (nunca digitado)
 src/lib/pseudocode.ts        tokenizador semântico do pseudocódigo
-scripts/validate-content.ts  o validador pedagógico
+scripts/validate-content.ts  o relatório do validador
+scripts/check-docs.ts        caminhos citados em documento existem
 docs/discovery/              por que este projeto existe e como ele pensa
 docs/adr/                    as decisões, com as alternativas descartadas
 docs/authoring/              o procedimento de autoria que os agentes seguem
 docs/specs/                  o spec de cada unidade, insumo de /implement-unit
 ```
+
+Uma unidade se registra em três lugares e o validador confere os três: a unidade em
+`src/content/index.ts`, os termos num array próprio em `src/content/glossary.ts` somado a
+`allTerms`, e os geradores de traço num registro por unidade agregado em
+`src/lib/reference/index.ts`, com id prefixado pela unidade.
 
 ## Como este projeto costuma ser quebrado
 
@@ -90,18 +121,21 @@ escrever conteúdo.
    exercício que a ative é conteúdo morto — e o validador reprova.
 3. **Substantivo abstrato no lugar de operação.** "Promete presença e recuperação" no
    lugar de `contém(chave)` e `obter(chave)`. Soa preciso e não é. A lista de palavras
-   proibidas está em `src/content/vocabulary.ts`; para usar uma, registre-a.
+   proibidas está em `src/content/vocabulary.ts`; para citar uma, registre a licença em
+   `allowedVagueUses` — unidade, palavra, o trecho e a razão. Nunca dentro da string: não
+   há renderizador que remova marcador, e ele chega ao aluno.
 4. **Enum em inglês vazando para a tela.** `BANDA · IMPLEMENTATION`. Todo enum
    renderizado precisa de mapa de rótulos exaustivo por tipo.
 
 ## Comandos
 
 ```
-npm run dev        desenvolvimento
-npm run validate   só o validador pedagógico
-npm run typecheck  tsc --strict
-npm test           implementação de referência e motor socrático
-npm run build      validador + export estático em out/
+npm run dev         desenvolvimento
+npm run validate    só o validador pedagógico
+npm run docs:check  caminhos citados em docs/ e .claude/
+npm run typecheck   tsc --strict
+npm test            todas as suítes em scripts/test-*.ts
+npm run build       validador + docs:check + export estático em out/
 ```
 
 ## O que este projeto não é

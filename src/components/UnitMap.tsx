@@ -2,9 +2,58 @@
 
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import type { Unit } from '@/content/schema'
+import { BANDS_BY_KIND, type Cycle, type Unit } from '@/content/schema'
 import { cycleStatus, read, type CycleStatus } from '@/lib/progress'
 import { CycleNode } from './CycleNode'
+
+
+/**
+ * The two spines render as one map on purpose: same three bands, same shapes,
+ * different nouns. Seeing an asymptotic-analysis unit laid out like the hash
+ * unit is the point of ADR-0012, not a rendering shortcut.
+ */
+interface SpineView {
+  openingLabel: string
+  openingTitle: string
+  openingCaption: string
+  promises: Array<{ key: string; lead: string; detail: string }>
+  openingFooter: string
+  middleLabel: string
+  middle: Array<{ id: string; name: string; summary: string }>
+  consequenceLabel: string
+  consequenceTitle: string
+  consequenceBody: string
+}
+
+function describeSpine(unit: Unit): SpineView {
+  if (unit.kind === 'structure') {
+    return {
+      openingLabel: 'Contrato',
+      openingTitle: unit.adt.name,
+      openingCaption: 'o que você pode chamar — e nada além disto',
+      promises: unit.adt.operations.map((op) => ({ key: op.name, lead: op.signature, detail: op.guarantee })),
+      openingFooter: `${unit.adt.answers} Não responde: ${unit.adt.cannotAnswer.join('; ').toLowerCase()}.`,
+      middleLabel: 'Implementações',
+      middle: unit.implementations.map((i) => ({ id: i.id, name: i.name, summary: i.summary })),
+      consequenceLabel: 'Custo',
+      consequenceTitle: 'Consequência, nunca promessa',
+      consequenceBody: 'O custo pertence à implementação. Tudo que o contrato não promete é onde a estrutura falha.',
+    }
+  }
+  return {
+    openingLabel: 'Critério',
+    openingTitle: unit.criterion.name,
+    openingCaption: unit.criterion.produces,
+    promises: unit.criterion.parts.map((p) => ({ key: p.id, lead: p.name, detail: p.guarantee })),
+    openingFooter: `Sem uma das partes o julgamento ainda soa certo: ${unit.criterion.whenOmitted
+      .map((o) => `“${o.reads}”`).join('; ')}.`,
+    middleLabel: 'Técnicas',
+    middle: unit.techniques.map((t) => ({ id: t.id, name: t.name, summary: t.summary })),
+    consequenceLabel: 'Falha',
+    consequenceTitle: 'Onde o julgamento quebra',
+    consequenceBody: 'A falha pertence à técnica. Toda parte que o critério exige e a técnica não produz é onde o julgamento passa por completo sem ser.',
+  }
+}
 
 export function UnitMap({ unit }: { unit: Unit }) {
   const [statuses, setStatuses] = useState<Record<string, CycleStatus>>({})
@@ -20,12 +69,15 @@ export function UnitMap({ unit }: { unit: Unit }) {
     setStatuses(next)
   }, [unit])
 
-  const inBand = (band: string, implId?: string) =>
-    unit.cycles.filter((c) => c.band === band && (!implId || c.implementationId === implId))
+  const spine = describeSpine(unit)
+  const [openingBand, middleBand, consequenceBand] = BANDS_BY_KIND[unit.kind]
 
-  const nodes = (band: 'contract' | 'implementation' | 'cost', implId?: string) => (
+  const inBand = (band: Cycle['band'], elaborates?: string) =>
+    unit.cycles.filter((c) => c.band === band && (!elaborates || c.elaborates === elaborates))
+
+  const nodes = (band: Cycle['band'], elaborates?: string) => (
     <div style={{ display: 'flex', gap: 14 }}>
-      {inBand(band, implId).map((c) => (
+      {inBand(band, elaborates).map((c) => (
         <Link key={c.id} href={`/units/${unit.id}/cycles/${c.id}`} style={{ color: 'inherit' }}>
           <CycleNode band={band} status={statuses[c.id] ?? 'pending'} label={c.id.split('.')[1]!} />
         </Link>
@@ -63,40 +115,40 @@ export function UnitMap({ unit }: { unit: Unit }) {
           {unit.motivatingProblem}
         </p>
 
-        <Band label="Contrato" color="var(--blue)">
+        <Band label={spine.openingLabel} color="var(--blue)">
           <div style={{ border: '1.5px solid var(--blue)', background: 'var(--blue-bg)', padding: '17px 20px', display: 'flex', gap: 26, alignItems: 'flex-start' }}>
             <div style={{ flexGrow: 1 }}>
               <div style={{ display: 'flex', alignItems: 'baseline', gap: 14, marginBottom: 13 }}>
-                <span style={{ fontSize: 21, fontWeight: 600 }}>{unit.adt.name}</span>
+                <span style={{ fontSize: 21, fontWeight: 600 }}>{spine.openingTitle}</span>
                 <span style={{ fontSize: 12.5, color: 'var(--ink-3)', fontStyle: 'italic' }}>
-                  o que você pode chamar — e nada além disto
+                  {spine.openingCaption}
                 </span>
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '8px 30px', marginBottom: 14 }}>
-                {unit.adt.operations.map((op) => (
-                  <div key={op.name} style={{ display: 'flex', gap: 11, alignItems: 'baseline' }}>
-                    <span className="mono" style={{ fontSize: 12.5, color: 'var(--blue)', flexShrink: 0 }}>{op.signature}</span>
-                    <span style={{ fontSize: 12.5, color: 'var(--ink-2)' }}>{op.guarantee}</span>
+                {spine.promises.map((p) => (
+                  <div key={p.key} style={{ display: 'flex', gap: 11, alignItems: 'baseline' }}>
+                    <span className="mono" style={{ fontSize: 12.5, color: 'var(--blue)', flexShrink: 0 }}>{p.lead}</span>
+                    <span style={{ fontSize: 12.5, color: 'var(--ink-2)' }}>{p.detail}</span>
                   </div>
                 ))}
               </div>
               <div style={{ borderTop: '1px solid #C6D2E6', paddingTop: 11, fontSize: 13.5, maxWidth: 640 }}>
-                {unit.adt.answers} Não responde: {unit.adt.cannotAnswer.join('; ').toLowerCase()}.
+                {spine.openingFooter}
               </div>
             </div>
-            {nodes('contract')}
+            {nodes(openingBand)}
           </div>
         </Band>
 
         <Connector />
 
-        <Band label="Implementações" color="var(--red)">
+        <Band label={spine.middleLabel} color="var(--red)">
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 20 }}>
-            {unit.implementations.map((impl) => (
-              <div key={impl.id} style={{ border: '1.5px solid var(--red)', background: 'var(--red-bg)', padding: '15px 18px' }}>
-                <div style={{ fontSize: 18, fontWeight: 600, marginBottom: 4 }}>{impl.name}</div>
-                <div style={{ fontSize: 13, color: 'var(--ink-2)', marginBottom: 12, minHeight: 36 }}>{impl.summary}</div>
-                {nodes('implementation', impl.id)}
+            {spine.middle.map((m) => (
+              <div key={m.id} style={{ border: '1.5px solid var(--red)', background: 'var(--red-bg)', padding: '15px 18px' }}>
+                <div style={{ fontSize: 18, fontWeight: 600, marginBottom: 4 }}>{m.name}</div>
+                <div style={{ fontSize: 13, color: 'var(--ink-2)', marginBottom: 12, minHeight: 36 }}>{m.summary}</div>
+                {nodes(middleBand, m.id)}
               </div>
             ))}
           </div>
@@ -104,15 +156,15 @@ export function UnitMap({ unit }: { unit: Unit }) {
 
         <Connector />
 
-        <Band label="Custo" color="var(--ochre-ink)">
+        <Band label={spine.consequenceLabel} color="var(--ochre-ink)">
           <div style={{ border: '1.5px solid var(--ochre)', background: 'var(--ochre-bg)', padding: '17px 20px', display: 'flex', gap: 26, alignItems: 'center' }}>
             <div style={{ flexGrow: 1 }}>
-              <div style={{ fontSize: 18, fontWeight: 600, marginBottom: 5 }}>Consequência, nunca promessa</div>
+              <div style={{ fontSize: 18, fontWeight: 600, marginBottom: 5 }}>{spine.consequenceTitle}</div>
               <div style={{ fontSize: 13.5, color: 'var(--ink-2)', maxWidth: 560 }}>
-                O custo pertence à implementação. Tudo que o contrato não promete é onde a estrutura falha.
+                {spine.consequenceBody}
               </div>
             </div>
-            {nodes('cost')}
+            {nodes(consequenceBand)}
           </div>
         </Band>
       </div>

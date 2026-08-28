@@ -21,7 +21,9 @@ export function ChoiceExercise({
   const misconception = chosen && !chosen.correct
     ? misconceptionById(unit, chosen.misconceptionId)
     : undefined
-  const rung = Math.max(0, Math.min(attempts - 1, (misconception?.ladder.length ?? 1)))
+  const escalation = misconception?.escalation ?? []
+  const escalationIndex = attempts - 2
+  const exhausted = misconception ? escalationIndex >= escalation.length : false
 
   const onPick = (i: number) => {
     const c = choices[i]!
@@ -62,16 +64,26 @@ export function ChoiceExercise({
         })}
       </div>
 
-      {chosen && !chosen.correct && misconception && (
+      {chosen && !chosen.correct && misconception && !exhausted && (
         <div style={{ borderLeft: '3px solid var(--red)', padding: '4px 0 4px 16px', marginTop: 16 }}>
           <div style={{ fontSize: 15, fontWeight: 600, color: '#A32A22', marginBottom: 6 }}>
             {misconception.socraticQuestion}
           </div>
-          {rung > 0 && (
+          {escalationIndex >= 0 && (
             <div style={{ fontSize: 14.5, color: 'var(--ink-2)' }}>
-              {misconception.ladder[Math.min(rung - 1, misconception.ladder.length - 1)]}
+              {escalation[escalationIndex]}
             </div>
           )}
+        </div>
+      )}
+
+      {chosen && !chosen.correct && misconception && exhausted && (
+        <div style={{ borderLeft: '3px solid var(--ink-4)', padding: '4px 0 4px 16px', marginTop: 16 }}>
+          <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 6 }}>Vamos parar aqui.</div>
+          <div style={{ fontSize: 14.5, color: 'var(--ink-2)' }}>
+            Releia o ciclo {misconception.reviewCycle.split('.')[1]} e volte a este exercício amanhã.
+            Insistir agora treina a tentativa, não o raciocínio.
+          </div>
         </div>
       )}
 

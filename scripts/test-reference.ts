@@ -33,7 +33,7 @@ check('o campo divergente é "content"', d.divergentField === 'content', String(
 
 const mis = hashUnit.misconceptions.find((m) => m.id === 'hash.rehash-copia-buckets')
 const rungs = [1, 2, 3].map((a) => buildFeedback(d, a, mis)!)
-check('a escada tem exatamente três degraus', rungs.map((r) => r.rung).join(',') === '1,2,3')
+check('o motor tem exatamente três degraus', rungs.map((r) => r.rung).join(',') === '1,2,3')
 check('o degrau 1 diz onde quebrou sem dizer o campo', !rungs[0]!.head.includes('conteúdo') && rungs[0]!.head.includes('passo 4'))
 check('nenhum degrau contém a resposta correta',
   !rungs.some((r) => `${r.head} ${r.body}`.includes('3:[3,11]')))
@@ -41,6 +41,22 @@ check('o degrau 3 é uma pergunta', rungs[2]!.head.trim().endsWith('?'), rungs[2
 
 const right = findDivergence(trace, trace, cols)
 check('um traço correto não gera devolutiva', right.firstDivergentStep === null && buildFeedback(right, 1, mis) === null)
+
+const lastEscalation = 2 + mis!.escalation.length
+const stop = buildFeedback(d, lastEscalation + 1, mis)!
+check('a escalada acaba e vira encerramento', stop.exhausted === true, `rung ${stop.rung}, exhausted ${stop.exhausted}`)
+check('o encerramento manda voltar amanhã, sem dar a resposta',
+  stop.body.includes('amanhã') && !`${stop.head} ${stop.body}`.includes('3:[3,11]'))
+check('nenhuma devolutiva vem com corpo vazio',
+  [1, 2, 3, 4, 5, 6, 12].every((a) => (buildFeedback(d, a, mis)!.body ?? '').length > 0))
+
+const short = findDivergence(trace.slice(0, 2), trace, cols)
+check('traço curto diverge no primeiro passo ausente', short.firstDivergentStep === 3 && short.divergentField === null)
+const shortRungs = [1, 2, 3].map((a) => buildFeedback(short, a, mis)!)
+check('traço curto não pula o degrau 2', shortRungs.map((r) => r.rung).join(',') === '1,2,3')
+check('o degrau 2 do traço curto tem corpo', shortRungs[1]!.body.length > 0)
+check('o degrau 2 do traço curto não nomeia coluna nenhuma',
+  !shortRungs[1]!.head.includes('coluna'), shortRungs[1]!.head)
 
 console.log(failures ? `\n  ${failures} falha(s)\n` : '\n  todas as checagens passaram\n')
 process.exit(failures ? 1 : 0)

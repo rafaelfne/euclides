@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import type { Unit, TraceExercise as TraceEx } from '@/content/schema'
 import { misconceptionById } from '@/content'
-import { referenceGenerators } from '@/lib/reference/hash-table'
+import { referenceGenerators } from '@/lib/reference'
 import { buildFeedback, findDivergence, type TraceStep } from '@/lib/socratic'
 import { recordAttempt } from '@/lib/progress'
 
@@ -100,10 +100,12 @@ export function TraceExercise({ unit, exercise }: { unit: Unit; exercise: TraceE
       </div>
 
       {feedback && (
-        <div style={{ border: '1.5px solid var(--red)', background: 'var(--red-bg)', padding: '16px 20px', marginTop: 16, maxWidth: 820 }}>
+        <div style={{ border: `1.5px solid ${feedback.exhausted ? 'var(--rule)' : 'var(--red)'}`, background: feedback.exhausted ? 'transparent' : 'var(--red-bg)', padding: '16px 20px', marginTop: 16, maxWidth: 820 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', gap: 16 }}>
-            <div style={{ fontSize: 15, fontWeight: 600, color: '#A32A22' }}>{feedback.head}</div>
-            <span className="lbl" style={{ fontSize: 9.5, color: 'var(--ink-4)', whiteSpace: 'nowrap' }}>degrau {feedback.rung} de 3</span>
+            <div style={{ fontSize: 15, fontWeight: 600, color: feedback.exhausted ? 'var(--ink)' : '#A32A22' }}>{feedback.head}</div>
+            <span className="lbl" style={{ fontSize: 9.5, color: 'var(--ink-4)', whiteSpace: 'nowrap' }}>
+              {feedback.exhausted ? 'escada esgotada' : `degrau ${feedback.rung} de 3`}
+            </span>
           </div>
           <div style={{ fontSize: 14.5, color: 'var(--ink-2)', marginTop: 7 }}>{feedback.body}</div>
         </div>

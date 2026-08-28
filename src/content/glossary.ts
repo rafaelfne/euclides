@@ -9,7 +9,7 @@ import type { GlossaryTerm } from './schema'
  * `isNot` is required by the schema. It is the negative space that stops one
  * word from quietly meaning four things.
  */
-export const glossary: GlossaryTerm[] = [
+export const hashGlossary: GlossaryTerm[] = [
   { id: 'adt', canonical: 'tipo abstrato de dados', canonicalLanguage: 'pt',
     alsoKnownAs: ['TAD', 'abstract data type', 'ADT'],
     definition: 'O contrato: quais operações existem e o que cada uma garante.',
@@ -24,6 +24,17 @@ export const glossary: GlossaryTerm[] = [
       { context: 'Java', meaning: '`Map` é a interface; `HashMap` e `TreeMap` a implementam com garantias diferentes. O tipo declarado não revela o custo.' },
       { context: 'Ruby', meaning: '`Hash` é o nome da própria estrutura, equivalente ao `dict` do Python.' },
     ], introducedIn: 'hash.c0' },
+
+  { id: 'hash', canonical: 'hash', canonicalLanguage: 'en',
+    alsoKnownAs: ['tabela hash', 'hash table'],
+    definition: 'Conforme o contexto: a função que mapeia chave em endereço, o valor que ela devolve, ou a estrutura inteira que usa esse valor como endereço.',
+    isNot: ['não é sinônimo de Map — Map é o contrato, hash é uma forma de implementá-lo', 'não é criptografia: a função de hash de uma tabela não precisa ser irreversível nem resistente a colisão'],
+    falseFriends: [
+      { context: 'criptografia', meaning: 'SHA-256 e afins são hash com garantias de irreversibilidade e resistência a colisão. Uma tabela não precisa de nenhuma das duas, e pagaria caro por elas.' },
+      { context: 'Git', meaning: 'o hash de um commit identifica conteúdo, não endereça um bucket. É hash criptográfico usado como identidade.' },
+      { context: 'Ruby', meaning: '`Hash` é o nome da estrutura de dicionário — o contrato, não a política de endereçamento.' },
+      { context: 'sistemas distribuídos', meaning: '“hash de partição” escolhe em qual máquina o dado mora. Mesma ideia, outra escala.' },
+    ], introducedIn: 'hash.c1' },
 
   { id: 'hash-function', canonical: 'função de hash', canonicalLanguage: 'pt',
     alsoKnownAs: ['hash function'],
@@ -50,13 +61,19 @@ export const glossary: GlossaryTerm[] = [
     alsoKnownAs: ['balde', 'slot', 'entrada'],
     definition: 'Uma posição da tabela, que guarda zero ou mais pares.',
     isNot: ['não guarda exatamente um par — essa é a suposição que quebra em colisão'],
-    falseFriends: [], introducedIn: 'hash.c3' },
+    falseFriends: [
+      { context: 'object storage', meaning: 'um bucket do S3 é um contêiner nomeado de arquivos. Homônimo total: não há função de hash escolhendo em qual bucket o arquivo cai.' },
+      { context: 'rate limiting', meaning: 'o token bucket é um algoritmo de vazão. A palavra vem da metáfora de balde que enche e esvazia, não de endereçamento.' },
+    ], introducedIn: 'hash.c3' },
 
   { id: 'chaining', canonical: 'chaining', canonicalLanguage: 'en',
     alsoKnownAs: ['encadeamento', 'separate chaining', 'encadeamento separado'],
     definition: 'Política de colisão em que cada bucket guarda a lista dos pares que caíram ali.',
     isNot: ['não elimina colisão — apenas decide o que fazer com ela'],
-    falseFriends: [], introducedIn: 'hash.c3' },
+    falseFriends: [
+      { context: 'APIs fluentes', meaning: 'method chaining encadeia chamadas num objeto. Nenhuma relação com resolução de colisão.' },
+      { context: 'blockchain', meaning: 'a “corrente” é de blocos ligados por hash criptográfico. Empresta as duas palavras e não empresta o mecanismo.' },
+    ], introducedIn: 'hash.c3' },
 
   { id: 'position-invariant', canonical: 'invariante de posição', canonicalLanguage: 'pt',
     alsoKnownAs: [],
@@ -68,7 +85,10 @@ export const glossary: GlossaryTerm[] = [
     alsoKnownAs: ['fator de carga', 'α'],
     definition: 'A razão n/m entre pares armazenados e número de posições.',
     isNot: ['não é a fração da memória ocupada', 'não é limitado a 1 com chaining', 'não é a probabilidade de colisão'],
-    falseFriends: [], introducedIn: 'hash.c4' },
+    falseFriends: [
+      { context: 'sistemas operacionais', meaning: 'o load average mede processos na fila de execução. Mesma palavra “carga”, outra grandeza, outra unidade.' },
+      { context: 'infraestrutura', meaning: 'load balancer distribui requisições entre máquinas. Não há razão n/m envolvida.' },
+    ], introducedIn: 'hash.c4' },
 
   { id: 'uniform-hashing', canonical: 'hashing uniforme', canonicalLanguage: 'pt',
     alsoKnownAs: ['uniform hashing', 'simple uniform hashing'],
@@ -110,13 +130,19 @@ export const glossary: GlossaryTerm[] = [
     alsoKnownAs: ['sondagem', 'linear probing'],
     definition: 'A sequência de posições visitadas a partir do endereço inicial até achar espaço.',
     isNot: ['não é busca linear na tabela inteira — segue uma ordem determinada por h'],
-    falseFriends: [], introducedIn: 'hash.c7' },
+    falseFriends: [
+      { context: 'Kubernetes', meaning: 'liveness e readiness probe são checagens periódicas de saúde. Aqui probing é percorrer posições de um array.' },
+      { context: 'monitoração', meaning: 'uma probe de rede mede latência. Nenhuma relação com sequência de sondagem.' },
+    ], introducedIn: 'hash.c7' },
 
   { id: 'clustering', canonical: 'clustering', canonicalLanguage: 'en',
     alsoKnownAs: ['agrupamento', 'primary clustering'],
     definition: 'Posições ocupadas adjacentes que se fundem em blocos, alongando toda sondagem que cai neles.',
     isNot: ['não é colisão — é o efeito acumulado dela sob probing'],
-    falseFriends: [], introducedIn: 'hash.c7' },
+    falseFriends: [
+      { context: 'infraestrutura', meaning: 'um cluster é um conjunto de máquinas. Homônimo total, e é o contexto em que o aluno mais encontra a palavra.' },
+      { context: 'estatística', meaning: 'clustering é agrupar pontos por similaridade. Aqui o agrupamento é de posições ocupadas e ninguém o quis.' },
+    ], introducedIn: 'hash.c7' },
 
   { id: 'tombstone', canonical: 'tombstone', canonicalLanguage: 'en',
     alsoKnownAs: ['marca de remoção'],
@@ -131,18 +157,33 @@ export const glossary: GlossaryTerm[] = [
     falseFriends: [], introducedIn: 'hash.c8' },
 ]
 
-/** `heap` and `stack` live here already because their false friends bite early. */
-export const crossUnitGlossary: GlossaryTerm[] = [
+/**
+ * Terms whose false friends bite before their own unit exists. They carry
+ * `introducedIn: PLANNED` and a `plannedIn` the validator cannot resolve yet
+ * — and that fails the build as soon as the cycle it names starts to exist.
+ */
+export const plannedGlossary: GlossaryTerm[] = [
   { id: 'heap', canonical: 'heap', canonicalLanguage: 'en', alsoKnownAs: ['heap binário'],
     definition: 'Árvore binária quase completa em que todo nó respeita uma relação de ordem com os filhos.',
     isNot: ['não é árvore de busca', 'não acha elemento arbitrário melhor que O(n)'],
     falseFriends: [{ context: 'gerência de memória', meaning: 'a região de alocação dinâmica de um processo — nome coincidente, significado sem relação nenhuma.' }],
-    introducedIn: 'trees.c4' },
+    introducedIn: 'planned', plannedIn: 'trees.c4' },
   { id: 'stack', canonical: 'pilha', canonicalLanguage: 'pt', alsoKnownAs: ['stack', 'LIFO'],
     definition: 'Contrato com inserção e remoção pela mesma extremidade.',
     isNot: ['não é uma implementação — array e lista ligada servem, com custos diferentes'],
     falseFriends: [
       { context: 'execução de programa', meaning: 'a call stack guarda os frames de chamada: é uma aplicação do contrato, não sinônimo dele.' },
       { context: 'infraestrutura', meaning: '“stack” como conjunto de tecnologias. Homônimo total.' },
-    ], introducedIn: 'linear.c2' },
+    ], introducedIn: 'planned', plannedIn: 'linear.c2' },
 ]
+
+export const PLANNED = 'planned'
+
+/**
+ * Words a student meets meaning four different things. Registering one here
+ * makes `falseFriends` mandatory for it — the rest of the glossary may leave
+ * the field empty rather than invent an entry.
+ */
+export const OVERLOADED_TERMS = ['hash', 'heap', 'stack', 'bucket', 'chaining', 'load-factor', 'probing', 'clustering']
+
+export const allTerms: GlossaryTerm[] = [...hashGlossary, ...plannedGlossary]

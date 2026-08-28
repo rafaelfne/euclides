@@ -16,29 +16,40 @@ publicar.
 
 Não há LLM em runtime. A correção socrática é **antecipação em tempo de
 autoria**: as ideias erradas são catalogadas, cada distractor aponta uma, e o
-motor revela onde o raciocínio quebrou em três degraus sem nunca revelar o valor.
+motor revela onde o raciocínio quebrou em três degraus sem nunca revelar o valor — e,
+esgotada a escalada da armadilha, encerra o exercício em vez de repetir a última dica.
 
 ## O validador pedagógico
 
-`npm run build` roda `npm run validate` antes do `next build`. Doze checagens,
-cada uma um princípio do projeto virado em erro de compilação:
+`npm run build` roda `npm run validate` antes do `next build`. Cada checagem é um
+princípio do projeto virado em erro de compilação:
 
 | checagem | o que protege |
 |---|---|
+| registro | existe unidade registrada, e o gate lê o mesmo registro que o app |
 | schema | o content model inteiro |
 | distractor | toda alternativa errada nomeia uma ideia errada existente |
 | órfã | nenhuma ideia errada é declarada e não exercitada |
 | socrática | toda pergunta termina em `?` — é pergunta, não explicação |
 | carga | nenhum ciclo passa de 4 termos novos |
-| exercício | todo ciclo tem exercício e o critério de domínio referencia ids reais |
-| espinha | todo ciclo declara sua banda e a unidade abre pelo contrato |
+| exercício | todo ciclo tem exercício, e todo exercício fecha um ciclo |
+| domínio | o critério de domínio referencia exercícios que existem |
+| revisão | toda ideia errada aponta um ciclo de revisão que existe |
+| espinha | a banda pertence ao kind da unidade, e a unidade abre pela banda de abertura |
 | custo | toda implementação declara custo de toda operação do contrato |
+| cobertura | toda parte do critério é produzida por alguma técnica |
 | vocabulário | nenhuma abstração vaga fora do glossário |
 | convenção | todo pseudocódigo respeita a folha de notação |
-| referência | todo traço é gerado por implementação que roda |
-| glossário | ids únicos e pontos de introdução válidos |
+| referência | todo traço é gerado por implementação que roda, da própria unidade |
+| glossário | ids únicos, e a introdução de um termo declarada dos dois lados |
+| sobrecarga | todo termo sobrecarregado declara seus falsos amigos |
 
-Não há nível de aviso. Um aviso é uma regra que ninguém cumpre.
+A lista viva é `CHECKS`, no topo de `scripts/validate-content.ts`; o relatório é derivado
+dela, e por isso esta tabela não traz um total — o número na prosa foi a primeira coisa a
+ficar desatualizada. Não há nível de aviso. Um aviso é uma regra que ninguém cumpre.
+
+`npm run docs:check` é o gate irmão, para o que fica fora de `src/content/`: todo caminho
+de arquivo citado em `docs/` e `.claude/` precisa existir. Ver ADR-0011.
 
 ## Fronteira de idioma
 
@@ -52,9 +63,10 @@ Não há nível de aviso. Um aviso é uma regra que ninguém cumpre.
 ## Comandos
 
 ```
-npm run dev        desenvolvimento
-npm run validate   só o validador pedagógico
-npm run typecheck  tsc --strict
-npm test           implementação de referência e motor socrático
-npm run build      validador + export estático em out/
+npm run dev         desenvolvimento
+npm run validate    só o validador pedagógico
+npm run docs:check  caminhos citados em docs/ e .claude/
+npm run typecheck   tsc --strict
+npm test            todas as suítes em scripts/test-*.ts
+npm run build       validador + docs:check + export estático em out/
 ```

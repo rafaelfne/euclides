@@ -12,6 +12,8 @@
 | [0008](0008-css-puro.md) | CSS puro com custom properties | Os tokens são o design system; página pública paga por kB |
 | [0009](0009-persistencia-local.md) | Progresso em localStorage | Backend derrubaria o export estático |
 | [0010](0010-fluxo-hibrido-de-autoria.md) | Design fora do repo, autoria dentro | O gargalo é conteúdo, e as duas fases têm naturezas diferentes |
+| [0011](0011-fronteira-do-gate.md) | O que é gate, o que é relatório, e por quê | Os documentos ficaram fora do gate e derivaram antes do conteúdo |
+| [0012](0012-espinha-de-metodo.md) | Duas espinhas: estrutura e método, discriminadas por `kind` | Um terço do currículo não era exprimível no modelo de estrutura |
 
 ## Como escrever o próximo
 

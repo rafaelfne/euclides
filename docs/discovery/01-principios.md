@@ -1,8 +1,13 @@
 # Os sete princípios
 
 Não são valores; são restrições. Cada um custa alguma coisa, e o custo é o que os torna
-úteis. Sete deles têm checagem correspondente no validador — o que não é mecanizável está
-marcado.
+úteis.
+
+Nenhum dos sete é mecanizado por inteiro, e a contagem honesta é esta: cinco têm checagem
+correspondente no validador (2, 3, 4, 5, 6), dois deles só em parte (3 e 5); o 1 é
+mecanizado de lado, pelas convenções de pseudocódigo; o 7 é declaradamente não
+mecanizável. O que cada um deixa de fora está marcado abaixo, e é ali que `/audit-unit`
+trabalha.
 
 ## 1. Agnóstico a linguagem
 
@@ -12,6 +17,10 @@ conteúdo.
 **O que custa:** o exercício de implementação obriga a escolher uma linguagem. Resolvido
 declarando a fronteira — o exercício canônico é em pseudocódigo, e a implementação é
 opcional para o critério de domínio.
+
+**Mecanizado, de lado:** o validador não sabe se um conceito ficou preso a uma linguagem,
+mas a checagem de convenção reprova `return`, `%`, `==` e `null` em todo pseudocódigo. É
+a fronteira, não o princípio.
 
 ## 2. Prática deliberada acima de consumo
 
@@ -25,7 +34,8 @@ exercício não compila.
 Aponte onde o raciocínio quebrou e faça a pergunta que leva à correção.
 
 **Mecanizado, parcialmente:** o validador exige que toda pergunta socrática termine em
-`?` e que todo distractor nomeie uma armadilha. O que nenhum validador pega é uma
+`?`, que todo distractor nomeie uma armadilha, e que a `escalation` tenha no máximo três
+entradas — sem teto, a ajuda cresce até virar resposta. O que nenhum validador pega é uma
 devolutiva que *explica* em vez de perguntar — isso é trabalho de auditoria.
 
 ## 4. Complexidade sempre

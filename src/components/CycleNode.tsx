@@ -1,9 +1,21 @@
 'use client'
 
+import type { Cycle } from '@/content/schema'
 import type { CycleStatus } from '@/lib/progress'
 
-const SHAPE_BY_BAND = { contract: 'square', implementation: 'triangle', cost: 'circle' } as const
-const COLOR_BY_BAND = { contract: '#1F4E9C', implementation: '#C1352B', cost: '#A9761C' } as const
+/**
+ * Position on the spine, not the noun: the opening band is a square in both
+ * kinds, the middle a triangle, the consequence a circle. A student who
+ * learned the map on one unit reads the other without relearning it.
+ */
+const SHAPE_BY_BAND: Record<Cycle['band'], 'square' | 'triangle' | 'circle'> = {
+  contract: 'square', implementation: 'triangle', cost: 'circle',
+  criterion: 'square', technique: 'triangle', failure: 'circle',
+}
+const COLOR_BY_BAND: Record<Cycle['band'], string> = {
+  contract: '#1F4E9C', implementation: '#C1352B', cost: '#A9761C',
+  criterion: '#1F4E9C', technique: '#C1352B', failure: '#A9761C',
+}
 
 const FILL: Record<CycleStatus, { fill: number; ring: number }> = {
   pending: { fill: 0, ring: 0 },
@@ -20,7 +32,7 @@ const FILL: Record<CycleStatus, { fill: number; ring: number }> = {
 export function CycleNode({
   band, status, label, size = 34,
 }: {
-  band: keyof typeof SHAPE_BY_BAND
+  band: Cycle['band']
   status: CycleStatus
   label: string
   size?: number

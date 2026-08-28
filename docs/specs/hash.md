@@ -78,6 +78,17 @@ O(n).
 Operacionalmente: `hash.e1` e `hash.e3` resolvidos **sem ativar nenhuma armadilha**, numa
 revisita feita ao menos sete dias depois.
 
+## Decisões de conteúdo que a implementação não deixa ver
+
+**A implementação de referência do traço `hash.e1` usa `h(k) = k`.** É deliberado: o que
+o traço ensina é rehash, invariante de posição e a evolução de α; uma h realista só
+acrescentaria aritmética que o aluno teria de simular à mão a cada passo, e o erro dele
+passaria a ser de conta, não de raciocínio.
+
+O custo é que a aposta anunciada no ciclo `hash.c1` — transformar chave em endereço — o
+aluno lê na prosa e nunca executa no traço. Se um exercício futuro precisar exercitar a
+função em si, ele é outro exercício, com outro gerador; não é uma troca de `h` neste.
+
 ## Lacunas conhecidas
 
 - Exercício de implementação verificada (property-based) ainda não escrito

@@ -10,15 +10,33 @@ avaliar. Invertido de propósito: a prosa existe para preparar o exercício, e e
 exercício primeiro revela o que a prosa precisa cobrir. Um conceito que não aparece em
 nenhum exercício é conteúdo que ninguém vai usar.
 
+A ordem é estrutural, não só textual: exercícios e armadilhas moram em
+`src/content/units/<id>/exercises.ts` e o `index.ts` os importa. Quem escreve a prosa não
+tem por que abrir o outro arquivo, e a sobrescrita aparece no diff.
+
 Sequência:
 
-1. **O contrato.** Que operações, que garantias, e — mais importante — o que ele
-   explicitamente **não** promete. A lista de ausências é a resposta do último ciclo.
-2. **As implementações concorrentes.** No mínimo duas. O trade-off vive na diferença
-   entre elas; uma implementação sozinha não ensina escolha.
+0. **O kind.** A unidade é sobre uma estrutura ou sobre um método? Estrutura promete
+   operações que se pode chamar; método promete um julgamento que o aluno tem de produzir.
+   Ordenação é estrutura — o contrato é `ordenar(coleção)` e a estabilidade mora no que ele
+   não promete. Análise assintótica é método. ADR-0012 decide, e o resto da sequência lê
+   igual nos dois: promessa, formas concorrentes de entregar, onde a escolha é a errada.
+
+1. **O contrato, ou o critério.** Estrutura: que operações, que garantias, e — mais
+   importante — o que ele explicitamente **não** promete. Método: qual a forma canônica do
+   julgamento, quais partes ela exige, e como a frase soa quando cada parte é omitida
+   (`whenOmitted`). Nos dois casos a lista de ausências é a resposta do último ciclo — e,
+   na unidade de método, ela também é o catálogo de armadilhas.
+2. **As implementações concorrentes, ou as técnicas.** No mínimo duas — o schema exige,
+   não é recomendação. O trade-off vive na diferença entre elas; uma implementação sozinha não
+   ensina escolha, e o `useInstead` de todo `wrongWhen` apontaria para fora da unidade,
+   onde o aluno não pode conferir nada.
 3. **O catálogo de armadilhas.** O que um dev de dois anos erra aqui. Cada uma ganha
-   `socraticQuestion` e escada.
-4. **Os exercícios.** Um por ciclo. Espaço de erro fechado, sempre.
+   `socraticQuestion` e `escalation` — de uma a três tarefas, uma por tentativa depois que
+   a pergunta já foi feita. Os três degraus do motor são outra coisa e você não os escreve.
+4. **Os exercícios.** Um por ciclo, exatamente um, nos dois sentidos: nenhum exercício
+   fecha dois ciclos e nenhum exercício fica sem ciclo. O validador checa os dois. Espaço
+   de erro fechado, sempre.
 5. **Os ciclos.** Teto de quatro termos novos, cada um fechando no seu exercício.
 6. **A implementação de referência**, para todo exercício de traço.
 7. **O critério de domínio**, operacional.
@@ -37,7 +55,9 @@ as operações são `contém(chave)` e `obter(chave)`.
 generalidade?
 
 **Armadilha:** a pergunta socrática termina em `?` e descreve uma **tarefa**, não uma
-explicação? Teste: se o aluno pode ler a pergunta e não fazer nada, é explicação.
+explicação? Teste: se o aluno pode ler a pergunta e não fazer nada, é explicação. E cada
+entrada da `escalation` é uma tarefa nova? Se você não sabe dizer o que a segunda faz que
+a primeira não fez, ela não existe.
 
 **Exercício:** você consegue listar as maneiras de errar? Se não, o exercício está mal
 posto — não é o aluno que está.
@@ -59,11 +79,15 @@ era na do 4.
 ## Ao terminar
 
 ```
-npm run validate    as doze checagens
+npm run validate    as checagens declaradas em CHECKS
+npm run docs:check  nenhum caminho citado em documento está morto
 npm run typecheck
-npm test            referência e motor socrático
+npm test            todas as suítes em scripts/test-*.ts
 npm run build
 ```
+
+`npm test` descobre as suítes por glob de propósito: a versão anterior listava um arquivo
+e um terceiro teste ficou dois commits existindo, passando e nunca rodando.
 
 Depois `/audit-unit <id>`, que cobre o que não é mecanizável.
 
