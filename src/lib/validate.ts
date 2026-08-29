@@ -20,6 +20,7 @@ export const CHECKS = [
   ['registro', 'registro: existe unidade registrada em src/content/index.ts'],
   ['schema', 'schema: toda unidade satisfaz o content model'],
   ['distractor', 'distractor: toda alternativa incorreta nomeia uma misconception existente'],
+  ['equilíbrio', 'equilíbrio: a alternativa correta não se denuncia pelo comprimento'],
   ['órfã', 'órfã: toda misconception é exercitada por algum exercício'],
   ['socrática', 'socrática: toda pergunta termina em "?"'],
   ['carga', `carga: nenhum ciclo passa de ${MAX_NEW_TERMS_PER_CYCLE} termos novos`],
@@ -85,6 +86,18 @@ export function checkAll(units: Unit[], terms: GlossaryTerm[]): Failure[] {
       const correct = choicesOf(ex).filter((c) => c.correct)
       if (choicesOf(ex).length && correct.length !== 1) {
         fail('distractor', `${ex.id}: tem ${correct.length} alternativas corretas, deve ter exatamente 1`)
+      }
+
+      // A justificativa da correta mora em `why` justamente para não inflar o
+      // texto dela: quando morava no texto, a correta era a mais longa em 93%
+      // dos exercícios e dava para acertar tudo pelo comprimento.
+      const all = choicesOf(ex)
+      const right = all.find((c) => c.correct)
+      if (right) {
+        const longest = Math.max(...all.map((c) => c.text.length))
+        if (right.text.length === longest && all.length > 1) {
+          fail('equilíbrio', `${ex.id}: a alternativa correta é a mais longa (${right.text.length} contra ${all.filter((c) => !c.correct).map((c) => c.text.length).join(', ')})`)
+        }
       }
     }
   }

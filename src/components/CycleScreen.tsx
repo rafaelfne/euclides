@@ -13,7 +13,7 @@ import { TraceExercise } from './TraceExercise'
 import { BugExercise } from './BugExercise'
 import { Badge } from './ui/badge'
 import { Panel, PanelBody, PanelHeader, PanelTitle } from './ui/panel'
-import { exerciseState } from '@/lib/progress'
+import { exerciseState, PROGRESS_EVENT } from '@/lib/progress'
 import { BAND_LABEL, BAND_TONE, LAYER_LABEL, TONE_TEXT } from './band-tokens'
 
 /**
@@ -132,7 +132,12 @@ export function CycleScreen({ unit, cycle, exercise }: { unit: Unit; cycle: Cycl
  */
 function TradeOffMatrix({ unit, exerciseId }: { unit: Unit; exerciseId: string }) {
   const [solved, setSolved] = useState(false)
-  useEffect(() => { setSolved(Boolean(exerciseState(unit.id, exerciseId)?.solved)) }, [unit.id, exerciseId])
+  useEffect(() => {
+    const sync = () => setSolved(Boolean(exerciseState(unit.id, exerciseId)?.solved))
+    sync()
+    window.addEventListener(PROGRESS_EVENT, sync)
+    return () => window.removeEventListener(PROGRESS_EVENT, sync)
+  }, [unit.id, exerciseId])
 
   if (!solved) {
     return (

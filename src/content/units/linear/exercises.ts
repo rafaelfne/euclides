@@ -50,7 +50,8 @@ export const linearExercises: Exercise[] = [
     kind: 'choice', id: 'linear.e0',
     prompt: 'O contrato Lista oferece obter, inserir e remover por posição, e tamanho. Qual pergunta ele responde diretamente?',
     choices: [
-      { correct: true, text: 'O que está na posição 7' },
+      { correct: true, text: 'O que está na posição 7',
+        why: 'As quatro operações são todas por posição. Achar um valor ou o menor deles exige percorrer, e isso o contrato não promete.' },
       { correct: false, text: 'Em que posição está o valor 42', misconceptionId: 'linear.indice-em-lista-ligada' },
       { correct: false, text: 'Qual é o menor valor guardado', misconceptionId: 'linear.insercao-no-comeco-e-barata' },
     ],
@@ -59,7 +60,8 @@ export const linearExercises: Exercise[] = [
     kind: 'choice', id: 'linear.e1',
     prompt: 'Uma pilha e uma fila recebem, nesta ordem: entra A, entra B, sai um, entra C, sai um, sai um. Quais são as duas saídas?',
     choices: [
-      { correct: true, text: 'Pilha: B, C, A. Fila: A, B, C. Uma não é o inverso da outra — a intercalação das operações separa as duas' },
+      { correct: true, text: 'Pilha: B, C, A. Fila: A, B, C. Uma não é o inverso da outra',
+        why: 'A intercalação das operações separa as duas' },
       { correct: false, text: 'Pilha: C, B, A. Fila: A, B, C — uma é sempre o inverso da outra', misconceptionId: 'linear.pilha-e-fila-invertidas' },
       { correct: false, text: 'As duas devolvem A, B, C: a ordem de saída depende da ordem de entrada, não da estrutura', misconceptionId: 'linear.pilha-e-fila-invertidas' },
     ],
@@ -68,7 +70,8 @@ export const linearExercises: Exercise[] = [
     kind: 'choice', id: 'linear.e2',
     prompt: 'Uma fila de jobs foi implementada com um array, enfileirando no fim e desenfileirando da posição 0. Com dez mil pendentes ela começou a atrasar, sem que a carga tivesse mudado. Por quê?',
     choices: [
-      { correct: true, text: 'Desenfileirar da posição 0 desloca todos os outros uma casa: o custo por job cresce com o tamanho da fila, e a carga não precisou mudar para o atraso aparecer' },
+      { correct: true, text: 'Desenfileirar da posição 0 desloca todos os outros uma casa',
+        why: 'O custo por job cresce com o tamanho da fila, então a carga não precisou mudar para o atraso aparecer.' },
       { correct: false, text: 'O array precisou realocar várias vezes para caber dez mil elementos, e cada realocação copia tudo', misconceptionId: 'linear.capacidade-e-tamanho' },
       { correct: false, text: 'Arrays não servem para fila porque não há operação de fila neles; o defeito é conceitual e não de custo', misconceptionId: 'linear.pilha-e-fila-invertidas' },
     ],
@@ -102,7 +105,8 @@ export const linearExercises: Exercise[] = [
     kind: 'choice', id: 'linear.e4',
     prompt: 'Uma lista ligada tem mil nós. Você tem em mãos o nó da posição 500 e quer removê-lo. Qual o custo, e qual o custo de "remova o nó que contém o valor X"?',
     choices: [
-      { correct: true, text: 'Com o nó em mãos, constante. Por valor, O(n): alguém precisa percorrer até achá-lo, e é esse custo que a frase "remoção é O(1)" omite' },
+      { correct: true, text: 'Com o nó em mãos, constante; por valor, O(n)',
+        why: '"Remoção é O(1)" é verdade depois que alguém pagou para achar o nó, e é esse custo que a frase omite.' },
       { correct: false, text: 'Constante nos dois casos — é a vantagem da lista ligada sobre o array', misconceptionId: 'linear.ponteiro-em-maos' },
       { correct: false, text: 'O(n) nos dois casos, porque a lista ligada não tem acesso por índice', misconceptionId: 'linear.indice-em-lista-ligada' },
     ],
@@ -111,7 +115,8 @@ export const linearExercises: Exercise[] = [
     kind: 'choice', id: 'linear.e5',
     prompt: 'A tabela de custos favorece a lista ligada na inserção, e na prática o array dinâmico costuma vencer ao percorrer coleções grandes. O que a tabela não declarou?',
     choices: [
-      { correct: true, text: 'Que os acessos custam o mesmo em qualquer endereço — um bloco contíguo lê posições vizinhas, e a lista ligada salta para endereços quaisquer' },
+      { correct: true, text: 'Que os acessos custam o mesmo em qualquer endereço',
+        why: 'Um bloco contíguo lê posições vizinhas, e a lista ligada salta para endereços quaisquer' },
       { correct: false, text: 'Nada: a tabela está certa, e a prática contradiz a teoria por causa de detalhes de implementação da linguagem', misconceptionId: 'linear.lista-ligada-e-sempre-melhor' },
       { correct: false, text: 'Que a lista ligada aloca um nó por elemento, o que a torna O(n log n) no percurso', misconceptionId: 'linear.lista-ligada-e-sempre-melhor' },
     ],
@@ -130,7 +135,8 @@ export const linearExercises: Exercise[] = [
 }`,
     faultyLines: [4],
     consequences: [
-      { correct: true, text: 'A escrita acontece sem comparar n com a capacidade do bloco: a partir do nono elemento a pilha passa a gravar fora do que foi alocado, e nada avisa enquanto os testes usarem menos de oito' },
+      { correct: true, text: 'A escrita acontece sem comparar n com a capacidade do bloco',
+        why: 'A partir do nono elemento a pilha grava fora do que foi alocado, e nada avisa enquanto os testes usarem menos de oito.' },
       { correct: false, text: 'Nada de grave: o bloco cresce sozinho quando a posição escrita passa do fim', misconceptionId: 'linear.capacidade-e-tamanho' },
       { correct: false, text: 'O defeito é desempilhar sem verificar se a pilha está vazia; empilhar está correto', misconceptionId: 'linear.capacidade-e-tamanho' },
     ],

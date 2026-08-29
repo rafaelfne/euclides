@@ -50,7 +50,8 @@ export const synthesisExercises: Exercise[] = [
     kind: 'choice', id: 'synthesis.e0',
     prompt: '"Preciso guardar sessões ativas, responder se uma sessão existe a cada requisição, e expirar as vinte mais antigas por minuto." Qual é o primeiro passo da escolha?',
     choices: [
-      { correct: true, text: 'Listar as operações do enunciado com a frequência de cada uma: existe é por requisição, as vinte mais antigas é por minuto — a diferença entre as duas é de ordens de grandeza' },
+      { correct: true, text: 'Listar as operações do enunciado com a frequência de cada uma',
+        why: '"Existe" é por requisição e "as vinte mais antigas" é por minuto: a diferença entre as duas é de ordens de grandeza, e é ela que pesa.' },
       { correct: false, text: 'Reconhecer que é um cache de sessão e usar tabela hash, que é a estrutura para isso', misconceptionId: 'synthesis.escolha-por-reconhecimento' },
       { correct: false, text: 'Escolher pela operação que parece mais custosa — expirar as vinte mais antigas — e otimizar para ela', misconceptionId: 'synthesis.dominante-por-intuicao' },
     ],
@@ -59,7 +60,8 @@ export const synthesisExercises: Exercise[] = [
     kind: 'choice', id: 'synthesis.e1',
     prompt: 'Alguém justifica assim: "usei tabela hash porque contém é O(1)". O que falta para isso ser uma escolha e não uma preferência?',
     choices: [
-      { correct: true, text: 'O custo da mesma operação na candidata descartada, com regime e hipóteses — sem o outro lado não há comparação' },
+      { correct: true, text: 'O custo da mesma operação na candidata descartada, com regime e hipóteses',
+        why: 'Sem o outro lado não há comparação' },
       { correct: false, text: 'Nada: O(1) é o melhor custo possível, e nenhuma alternativa pode superá-lo', misconceptionId: 'synthesis.custo-sem-alternativa' },
       { correct: false, text: 'A medição em produção que confirme o O(1)', misconceptionId: 'synthesis.custo-sem-alternativa' },
     ],
@@ -68,7 +70,8 @@ export const synthesisExercises: Exercise[] = [
     kind: 'choice', id: 'synthesis.e2',
     prompt: 'A operação dominante é obter por chave, e a tabela hash ganha com folga. O enunciado menciona, numa frase, um relatório mensal "por ordem de criação". O que fazer com essa frase?',
     choices: [
-      { correct: true, text: 'Registrá-la como a ausência que se está aceitando: o Map não promete ordem, e essa é a operação que vai custar caro quando alguém pedir o relatório' },
+      { correct: true, text: 'Registrá-la como a ausência que se está aceitando',
+        why: 'O Map não promete ordem. Escrever isso não muda a escolha — faz dela decisão em vez de descuido.' },
       { correct: false, text: 'Ignorá-la: uma vez por mês não pesa contra milhões de consultas por dia', misconceptionId: 'synthesis.ausencia-ignorada' },
       { correct: false, text: 'Trocar para árvore balanceada, já que ela responde as duas', misconceptionId: 'synthesis.escolha-por-reconhecimento' },
     ],
@@ -77,7 +80,8 @@ export const synthesisExercises: Exercise[] = [
     kind: 'choice', id: 'synthesis.e3',
     prompt: 'Um cache precisa responder "esse item está aqui?" em tempo constante e "qual o item usado há mais tempo?" também em tempo constante. Nenhuma estrutura isolada responde as duas. O que isso indica?',
     choices: [
-      { correct: true, text: 'Que a resposta é composição: tabela hash da chave para o nó, e lista ligada mantendo a ordem de uso — cada uma responde uma das perguntas, e as duas apontam para os mesmos dados' },
+      { correct: true, text: 'Que a resposta é composição: tabela hash da chave para o nó, e lista ligada mantendo a ordem de uso',
+        why: 'Cada uma responde uma das perguntas, e as duas apontam para os mesmos dados' },
       { correct: false, text: 'Que uma das duas exigências precisa ser relaxada, porque nenhuma estrutura oferece as duas garantias', misconceptionId: 'synthesis.composicao-nao-considerada' },
       { correct: false, text: 'Que a estrutura certa é a árvore balanceada, que fica entre as duas', misconceptionId: 'synthesis.composicao-nao-considerada' },
     ],
@@ -86,7 +90,8 @@ export const synthesisExercises: Exercise[] = [
     kind: 'choice', id: 'synthesis.e4',
     prompt: 'Você escolheu varredura linear sobre um array para uma coleção de até duzentos itens. Como escrever a condição que torna essa escolha revisável?',
     choices: [
-      { correct: true, text: '"Vale enquanto a coleção couber em algumas centenas e a consulta for por igualdade; acima disso, ou se aparecer consulta por faixa, a escolha muda" — com o número escrito' },
+      { correct: true, text: 'Escrever o limite: centenas de itens, e só por igualdade',
+        why: 'Acima disso, ou se aparecer consulta por faixa, a escolha muda. O número escrito é o que separa a condição de uma intenção.' },
       { correct: false, text: '"Vale por enquanto; revisar quando começar a ficar lento"', misconceptionId: 'synthesis.escolha-sem-validade' },
       { correct: false, text: 'Não é preciso: a escolha foi justificada pelo custo, e o custo não muda', misconceptionId: 'synthesis.escolha-sem-validade' },
     ],
@@ -103,7 +108,8 @@ function maisAntigoPendente(pedidos) {
 }`,
     faultyLines: [4],
     consequences: [
-      { correct: true, text: 'Ordena a coleção inteira para ler um elemento: a pergunta era o mínimo, que uma varredura responde em n − 1 comparações, e a ordenação cobra n log n para devolver a mesma resposta' },
+      { correct: true, text: 'Ordena a coleção inteira para ler um elemento',
+        why: 'A pergunta era o mínimo: uma varredura responde em n − 1 comparações, e a ordenação cobra n log n pela mesma resposta.' },
       { correct: false, text: 'O defeito é o comparador, que deveria desempatar por identificador para o resultado ser determinístico', misconceptionId: 'synthesis.dominante-por-intuicao' },
       { correct: false, text: 'Nada de grave: a saída está certa, e ordenar é a forma legível de achar o mínimo', misconceptionId: 'synthesis.escolha-por-reconhecimento' },
     ],

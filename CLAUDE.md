@@ -60,6 +60,12 @@ errada — por isso o `Cycle` é um só e o mapa é o mesmo. ADR-0012 tem a tabe
 descartado. Não há campo opcional decidindo o formato; se você precisa de um, o kind está
 errado.
 
+**A alternativa correta não pode se denunciar pelo formato.** A ordem é embaralhada pelo
+id do exercício, e a justificativa mora em `why`, revelada depois de resolver — nunca
+colada no texto da alternativa. A checagem `equilíbrio` reprova a correta que for a mais
+longa. Um exercício que se acerta pelo comprimento zera o sinal do painel de lacunas, que
+é o que mede se o aluno aprendeu.
+
 **Nenhuma devolutiva contém a resposta.** Ela contém a *tarefa que produz* a resposta.
 `buildFeedback` em `src/lib/socratic.ts` tem três degraus e nenhum revela o valor
 correto. Não adicione um quarto degrau.

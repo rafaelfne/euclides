@@ -50,7 +50,8 @@ export const asymptoticsExercises: Exercise[] = [
     kind: 'choice', id: 'asymptotics.e0',
     prompt: '"Essa busca é O(1)." A frase não é falsa. O que falta nela para sobreviver a uma revisão?',
     choices: [
-      { correct: true, text: 'O regime, as hipóteses sob as quais o limite vale, se ele é por operação ou amortizado, e o que n está contando' },
+      { correct: true, text: 'O regime, as hipóteses, a amortização e o que n conta',
+        why: 'São quatro qualificadores independentes, e a frase omite os quatro.' },
       { correct: false, text: 'Nada: O(1) é a informação inteira, e o resto é formalidade acadêmica', misconceptionId: 'asymptotics.sem-regime' },
       { correct: false, text: 'Só o regime — as outras três não mudam a decisão de quem lê', misconceptionId: 'asymptotics.sem-regime' },
     ],
@@ -59,7 +60,8 @@ export const asymptoticsExercises: Exercise[] = [
     kind: 'choice', id: 'asymptotics.e1',
     prompt: 'Duas implementações de um mesmo filtro: uma custa cerca de 1000·n, outra cerca de n². As coleções reais têm entre 20 e 200 elementos. Qual afirmação decide a escolha?',
     choices: [
-      { correct: true, text: 'Elas empatam perto de n = 1000, e todo o intervalo real está abaixo disso — a assintótica não decide aqui, e a constante decide' },
+      { correct: true, text: 'Elas empatam perto de n = 1000, e todo o intervalo real está abaixo disso',
+        why: 'A assintótica não decide aqui, e a constante decide' },
       { correct: false, text: 'A primeira, porque O(n) domina O(n²) e a constante é ignorada na notação', misconceptionId: 'asymptotics.constante-nao-importa' },
       { correct: false, text: 'A segunda, porque n² com n pequeno é sempre menor que qualquer coisa linear', misconceptionId: 'asymptotics.constante-nao-importa' },
     ],
@@ -68,7 +70,8 @@ export const asymptoticsExercises: Exercise[] = [
     kind: 'choice', id: 'asymptotics.e2',
     prompt: 'Uma função procura uma chave numa lista de n URLs, comparando strings. A conta deu O(n). O que essa conta assumiu sem declarar?',
     choices: [
-      { correct: true, text: 'Que comparar duas URLs custa o mesmo independentemente do comprimento delas — n conta elementos e ignora o tamanho de cada um' },
+      { correct: true, text: 'Que comparar duas URLs custa sempre o mesmo',
+        why: 'N conta elementos e ignora o tamanho de cada um. Com strings de comprimentos diferentes, a operação somada como unitária não é unitária.' },
       { correct: false, text: 'Que a lista está desordenada; ordenada seria O(log n)', misconceptionId: 'asymptotics.sem-unidade' },
       { correct: false, text: 'Nada: comparar duas strings é uma operação, e uma operação é O(1)', misconceptionId: 'asymptotics.sem-unidade' },
     ],
@@ -77,7 +80,8 @@ export const asymptoticsExercises: Exercise[] = [
     kind: 'choice', id: 'asymptotics.e3',
     prompt: 'Um procedimento divide a entrada ao meio e se chama nas duas metades, gastando tempo linear para juntar. Como escrever o custo dele?',
     choices: [
-      { correct: true, text: 'T(n) = 2·T(n/2) + n, com T(1) constante — e sem essa segunda parte a relação não descreve nada que pare' },
+      { correct: true, text: 'T(n) = 2·T(n/2) + n, com T(1) constante',
+        why: 'E sem essa segunda parte a relação não descreve nada que pare' },
       { correct: false, text: 'T(n) = 2·T(n/2) + n, que já é a relação completa', misconceptionId: 'asymptotics.recorrencia-sem-base' },
       { correct: false, text: 'T(n) = n·log n, porque é assim que essa recorrência sempre resolve', misconceptionId: 'asymptotics.recorrencia-sem-base' },
     ],
@@ -86,7 +90,8 @@ export const asymptoticsExercises: Exercise[] = [
     kind: 'choice', id: 'asymptotics.e4',
     prompt: 'Uma tabela hash tem custo O(1) no caso médio e O(n) no pior. Um serviço público recebe as chaves de quem chama. Qual dos dois números decide o dimensionamento?',
     choices: [
-      { correct: true, text: 'O pior caso, porque quem escolhe as chaves pode escolhê-las para colidir — e aí o pior caso deixa de ser improvável e passa a ser o normal' },
+      { correct: true, text: 'O pior caso, porque quem escolhe as chaves pode escolhê-las para colidir',
+        why: 'E aí o pior caso deixa de ser improvável e passa a ser o normal' },
       { correct: false, text: 'O caso médio, porque o pior caso é uma possibilidade teórica que quase nunca ocorre', misconceptionId: 'asymptotics.pior-caso-e-raro' },
       { correct: false, text: 'Nenhum dos dois isoladamente: a média entre eles descreve o comportamento real', misconceptionId: 'asymptotics.sem-regime' },
     ],
@@ -103,7 +108,8 @@ push(value) {
 }`,
     faultyLines: [1],
     consequences: [
-      { correct: true, text: 'O qualificador está trocado: não há sorteio nenhum aqui. O custo alto acontece em posições conhecidas e é espalhado pelas inserções baratas — isso é amortizado, e a frase deveria dizer O(1) amortizado no pior caso' },
+      { correct: true, text: 'O qualificador está trocado: não há sorteio nenhum aqui',
+        why: 'O custo alto acontece em posições conhecidas e é espalhado pelas inserções baratas. Isso é amortizado, e a frase deveria dizer O(1) amortizado no pior caso.' },
       { correct: false, text: 'A afirmação está correta: na média das inserções o custo é constante, e é isso que "em média" quer dizer', misconceptionId: 'asymptotics.amortizado-e-caso-medio' },
       { correct: false, text: 'O defeito é o limite, não o qualificador: com o redimensionamento a inserção é O(n) e nunca O(1)', misconceptionId: 'asymptotics.amortizado-e-caso-medio' },
     ],
@@ -112,7 +118,8 @@ push(value) {
     kind: 'choice', id: 'asymptotics.e6',
     prompt: 'Você precisa afirmar o custo de um laço simples sobre uma coleção. Qual técnica responde, e o que ela não decide sozinha?',
     choices: [
-      { correct: true, text: 'Contar as operações do laço responde limite, regime e unidade de medida — e cala sobre amortização, que só aparece quando alguma operação redistribui custo ao longo da sequência' },
+      { correct: true, text: 'Contar as operações do laço responde limite, regime e unidade de medida',
+        why: 'E cala sobre amortização, que só aparece quando alguma operação redistribui custo ao longo da sequência' },
       { correct: false, text: 'Só a recorrência responde com rigor; a contagem direta é uma aproximação informal', misconceptionId: 'asymptotics.recorrencia-sem-base' },
       { correct: false, text: 'A contagem responde as quatro partes: um laço simples não tem nada de amortizado a declarar', misconceptionId: 'asymptotics.amortizado-e-caso-medio' },
     ],

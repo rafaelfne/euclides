@@ -57,7 +57,8 @@ export const sortingExercises: Exercise[] = [
     kind: 'choice', id: 'sorting.e0',
     prompt: 'Uma função de ordenação devolveu a coleção em ordem crescente. O que essa saída, sozinha, permite concluir?',
     choices: [
-      { correct: true, text: 'Que nenhum elemento vem antes de um menor — e nada além disso sobre o que aconteceu com os iguais, com a memória ou com a ordem original' },
+      { correct: true, text: 'Que nenhum elemento vem antes de um menor',
+        why: 'E nada além disso sobre o que aconteceu com os iguais, com a memória ou com a ordem original' },
       { correct: false, text: 'Que os elementos iguais mantiveram a ordem em que estavam', misconceptionId: 'sorting.sort-e-estavel' },
       { correct: false, text: 'Que o algoritmo é o mais adequado para essa coleção, já que o resultado está correto', misconceptionId: 'sorting.ordenar-para-achar-um' },
     ],
@@ -66,7 +67,8 @@ export const sortingExercises: Exercise[] = [
     kind: 'choice', id: 'sorting.e1',
     prompt: 'A lista de pedidos foi ordenada por data e depois ordenada por cliente. Os pedidos de um mesmo cliente saíram fora da ordem de data. O que aconteceu?',
     choices: [
-      { correct: true, text: 'A segunda ordenação não preservou a ordem relativa entre pedidos que comparam como iguais por cliente' },
+      { correct: true, text: 'A segunda ordenação não preservou a ordem entre iguais',
+        why: 'Para dois pedidos do mesmo cliente o comparador disse "empate", e o que um algoritmo faz com empate não está no contrato.' },
       { correct: false, text: 'O comparador de cliente está errado: ele deveria desempatar por data', misconceptionId: 'sorting.comparador-inconsistente' },
       { correct: false, text: 'Ordenar duas vezes sempre desfaz a primeira ordenação, independentemente do algoritmo', misconceptionId: 'sorting.sort-e-estavel' },
     ],
@@ -75,7 +77,8 @@ export const sortingExercises: Exercise[] = [
     kind: 'choice', id: 'sorting.e2',
     prompt: 'Insertion sort recebe uma coleção em que só dois elementos vizinhos estão trocados. Quanto trabalho ele faz?',
     choices: [
-      { correct: true, text: 'Percorre a coleção uma vez e desloca um elemento — o laço interno quase não roda, porque a parte à esquerda já está ordenada' },
+      { correct: true, text: 'Percorre a coleção uma vez e desloca um elemento',
+        why: 'O laço interno quase não roda, porque a parte à esquerda já está ordenada' },
       { correct: false, text: 'O mesmo trabalho de sempre: o caso médio dele é O(n²)', misconceptionId: 'sorting.adaptativo-e-caso-medio' },
       { correct: false, text: 'Detecta que a coleção está quase ordenada e troca para outro algoritmo', misconceptionId: 'sorting.adaptativo-e-caso-medio' },
     ],
@@ -114,7 +117,8 @@ export const sortingExercises: Exercise[] = [
     kind: 'choice', id: 'sorting.e4',
     prompt: 'Quicksort com o primeiro elemento como pivô recebe uma coleção que já chega ordenada. Qual afirmação sobrevive a uma revisão?',
     choices: [
-      { correct: true, text: 'O(n²) no pior caso, e esta entrada é o pior caso: cada partição separa um elemento do resto' },
+      { correct: true, text: 'O(n²) no pior caso, e esta entrada é o pior caso',
+        why: 'Com o pivô no primeiro elemento, cada partição separa um elemento do resto: são n rodadas, não log n.' },
       { correct: false, text: 'O(n log n), porque essa é a complexidade do quicksort', misconceptionId: 'sorting.quicksort-e-n-log-n' },
       { correct: false, text: 'O(n), porque a coleção já está ordenada e não há troca a fazer', misconceptionId: 'sorting.adaptativo-e-caso-medio' },
     ],
@@ -123,7 +127,8 @@ export const sortingExercises: Exercise[] = [
     kind: 'choice', id: 'sorting.e5',
     prompt: 'Um quicksort recursivo não aloca array nenhum além da entrada. Quanto espaço extra ele usa no pior caso?',
     choices: [
-      { correct: true, text: 'O(n), na pilha de chamadas: com o pivô sempre no extremo, ficam n chamadas abertas ao mesmo tempo' },
+      { correct: true, text: 'O(n), na pilha de chamadas',
+        why: 'Nenhum array é alocado, e cada chamada aberta ocupa um quadro. Com o pivô no extremo são n chamadas abertas ao mesmo tempo.' },
       { correct: false, text: 'O(1), porque ele ordena no próprio array', misconceptionId: 'sorting.in-place-e-sem-memoria' },
       { correct: false, text: 'O(n), porque a intercalação precisa de uma cópia', misconceptionId: 'sorting.in-place-e-sem-memoria' },
     ],
@@ -132,7 +137,8 @@ export const sortingExercises: Exercise[] = [
     kind: 'choice', id: 'sorting.e6',
     prompt: 'Uma coleção de um milhão de itens, consultada por chave. Em que caso vale ordenar antes em vez de varrer a cada consulta?',
     choices: [
-      { correct: true, text: 'Quando a coleção muda pouco e as consultas são muitas: paga-se n log n uma vez para que cada consulta seguinte custe log n' },
+      { correct: true, text: 'Quando a coleção muda pouco e as consultas são muitas',
+        why: 'Paga-se n log n uma vez para que cada consulta seguinte custe log n. Para uma consulta só, a varredura ganha.' },
       { correct: false, text: 'Sempre: log n por consulta é melhor que n, e isso decide a questão', misconceptionId: 'sorting.ordenar-para-achar-um' },
       { correct: false, text: 'Nunca, porque manter a coleção ordenada a cada inserção custa mais que varrer', misconceptionId: 'sorting.ordenar-para-achar-um' },
     ],
@@ -147,7 +153,8 @@ export const sortingExercises: Exercise[] = [
 })`,
     faultyLines: [3],
     consequences: [
-      { correct: true, text: 'A comparação devolve verdadeiro ou falso, que viram 1 e 0 — a função nunca diz "a vem antes de b", e a saída depende de detalhes do algoritmo em vez do comparador' },
+      { correct: true, text: 'A comparação devolve verdadeiro ou falso, que viram 1 e 0',
+        why: 'A função nunca diz "a vem antes de b", e a saída depende de detalhes do algoritmo em vez do comparador' },
       { correct: false, text: 'Nada de grave: verdadeiro e falso ordenam do mesmo jeito, só invertido', misconceptionId: 'sorting.comparador-inconsistente' },
       { correct: false, text: 'A ordenação deixa de ser estável, mas a ordem por prioridade continua correta', misconceptionId: 'sorting.comparador-inconsistente' },
     ],
@@ -156,7 +163,8 @@ export const sortingExercises: Exercise[] = [
     kind: 'choice', id: 'sorting.e8',
     prompt: 'O `sort` padrão de várias linguagens combina insertion sort em trechos curtos com intercalação dos trechos. Por que a combinação, em vez de um dos dois?',
     choices: [
-      { correct: true, text: 'Cada um cobre a fraqueza do outro: a intercalação garante o pior caso, e o insertion sort aproveita os trechos que já chegam ordenados' },
+      { correct: true, text: 'Cada um cobre a fraqueza do outro',
+        why: 'A intercalação garante o pior caso; o insertion sort aproveita os trechos que já chegam ordenados, que ela sozinha ignoraria.' },
       { correct: false, text: 'Para recuperar a estabilidade, que a intercalação sozinha não oferece', misconceptionId: 'sorting.estabilidade-custa' },
       { correct: false, text: 'Porque a intercalação sozinha teria custo maior em troca de ser estável', misconceptionId: 'sorting.estabilidade-custa' },
     ],

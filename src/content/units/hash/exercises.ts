@@ -66,7 +66,8 @@ export const hashExercises: Exercise[] = [
     kind: 'choice', id: 'hash.e1b',
     prompt: 'Duas chaves diferentes produziram o mesmo endereço. O que isso indica?',
     choices: [
-      { correct: true, text: 'Que o domínio das chaves é maior que o número de endereços — nenhuma função de hash escapa disso' },
+      { correct: true, text: 'Que o domínio das chaves é maior que o número de endereços',
+        why: 'Nenhuma função de hash escapa disso' },
       { correct: false, text: 'Que a função de hash está mal escolhida e deveria ser trocada', misconceptionId: 'hash.colisao-e-bug' },
       { correct: false, text: 'Que a tabela precisa ser redimensionada imediatamente', misconceptionId: 'hash.load-factor-memoria' },
     ],
@@ -83,7 +84,8 @@ this.n++
 }`,
     faultyLines: [4],
     consequences: [
-      { correct: true, text: 'n passa a contar duplicatas, o que infla α e dispara o rehash antes da hora — a tabela fica mais lenta e maior, mas a busca continua funcionando' },
+      { correct: true, text: 'n passa a contar duplicatas e infla α',
+        why: 'O rehash dispara antes da hora: a tabela fica maior e mais cara, e a busca continua funcionando — que é o motivo de o defeito passar despercebido.' },
       { correct: false, text: 'A busca passa a falhar para chaves que existem na tabela', misconceptionId: 'hash.duplicata-inofensiva' },
       { correct: false, text: 'Nada de grave: é apenas desperdício de memória', misconceptionId: 'hash.duplicata-inofensiva' },
     ],
@@ -92,7 +94,8 @@ this.n++
     kind: 'choice', id: 'hash.e0',
     prompt: 'Um cache de sessão precisa de várias coisas. Qual delas o contrato Map, sozinho, responde diretamente?',
     choices: [
-      { correct: true, text: 'Se uma sessão específica existe' },
+      { correct: true, text: 'Se uma sessão específica existe',
+        why: 'É a única das três que cabe em contém(chave). As outras duas pedem ordem, que o Map não promete.' },
       { correct: false, text: 'Quais são as vinte sessões mais antigas', misconceptionId: 'hash.ordem' },
       { correct: false, text: 'Em que ordem as sessões foram criadas', misconceptionId: 'hash.ordem' },
     ],
@@ -101,7 +104,8 @@ this.n++
     kind: 'choice', id: 'hash.e1a',
     prompt: 'A expressão h(chave) mod m devolve um índice. O que exatamente esse índice garante?',
     choices: [
-      { correct: true, text: 'Que você chega a um bucket em uma operação — e nada sobre o que está dentro dele' },
+      { correct: true, text: 'Que você chega ao bucket em uma operação',
+        why: 'E nada sobre o que está dentro dele. O endereço resolve onde procurar, não quanto custa procurar ali.' },
       { correct: false, text: 'Que o valor procurado está naquela posição', misconceptionId: 'hash.colisao-e-bug' },
       { correct: false, text: 'Que a busca inteira custa O(1)', misconceptionId: 'hash.o1-sem-qualificar' },
     ],
@@ -110,7 +114,8 @@ this.n++
     kind: 'choice', id: 'hash.e1c',
     prompt: 'Com m = 4 e o bucket 3 contendo [3, 7, 11], quantas comparações de chave a busca por 11 faz?',
     choices: [
-      { correct: true, text: 'Três — calcular o endereço é uma operação, comparar chaves dentro do bucket é outra' },
+      { correct: true, text: 'Três',
+        why: 'Calcular o endereço é uma operação, comparar chaves dentro do bucket é outra' },
       { correct: false, text: 'Uma, porque a busca numa tabela hash é O(1)', misconceptionId: 'hash.o1-sem-qualificar' },
       { correct: false, text: 'Nenhuma, o endereço já entrega o par diretamente', misconceptionId: 'hash.colisao-e-bug' },
     ],
@@ -119,7 +124,8 @@ this.n++
     kind: 'choice', id: 'hash.e2a',
     prompt: 'Tabela com chaining, m = 1000 e n = 750, portanto α = 0,75. Estime antes de calcular: quantos buckets você espera encontrar vazios?',
     choices: [
-      { correct: true, text: 'Cerca de 470 — quase metade, porque as colisões concentram vários pares em poucos buckets' },
+      { correct: true, text: 'Cerca de 470',
+        why: 'Quase metade, porque as colisões concentram vários pares em poucos buckets' },
       { correct: false, text: '250, já que 75% da tabela está ocupada', misconceptionId: 'hash.load-factor-memoria' },
       { correct: false, text: 'Nenhum: com α abaixo de 1 todo bucket recebe pelo menos um par', misconceptionId: 'hash.load-factor-memoria' },
     ],
@@ -128,7 +134,8 @@ this.n++
     kind: 'choice', id: 'hash.e7',
     prompt: 'Com m = 8 e linear probing, as chaves 8, 16 e 24 ocupam as posições 0, 1 e 2. Você remove o 16 esvaziando a posição 1. O que acontece com a busca por 24?',
     choices: [
-      { correct: true, text: 'Ela para na posição 1, encontra vazio, e conclui que 24 não está na tabela' },
+      { correct: true, text: 'Ela para na posição 1 e conclui que 24 não existe',
+        why: 'A posição vazia encerra a sondagem, e 24 tinha chegado à 2 sondando a partir da 1.' },
       { correct: false, text: 'Encontra 24 normalmente, porque ele continua na posição 2', misconceptionId: 'hash.delecao-ingenua' },
       { correct: false, text: 'A tabela se reorganiza sozinha para fechar o buraco', misconceptionId: 'hash.delecao-ingenua' },
     ],
@@ -137,7 +144,8 @@ this.n++
     kind: 'choice', id: 'hash.e5',
     prompt: 'Cache de sessão: contém(sessao) a cada requisição, e um job que expira as vinte mais antigas por minuto. Qual estrutura escolher?',
     choices: [
-      { correct: true, text: 'Nenhuma das duas sozinha — tabela hash para contém, e uma lista por ordem de chegada para as mais antigas' },
+      { correct: true, text: 'Nenhuma das duas sozinha',
+        why: 'Tabela hash para contém, e uma lista por ordem de chegada para as mais antigas' },
       { correct: false, text: 'Tabela hash, que responde contém em O(1) e é a operação dominante', misconceptionId: 'hash.ordem' },
       { correct: false, text: 'Lista por ordem de chegada, que já tem as mais antigas na ponta', misconceptionId: 'hash.ordem' },
     ],

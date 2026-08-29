@@ -57,7 +57,8 @@ export const tracingExercises: Exercise[] = [
     kind: 'choice', id: 'tracing.e0',
     prompt: 'Alguém diz "eu li o código e entendi o que ele faz". O que essa afirmação precisa carregar para ser verificável por outra pessoa?',
     choices: [
-      { correct: true, text: 'Quais nomes carregam o estado, o valor de cada um a cada rodada, a condição que decide se há próxima rodada, e o que a função devolve' },
+      { correct: true, text: 'As variáveis, o estado por rodada, a condição e a saída',
+        why: 'São quatro partes, e cada uma que falta produz uma frase que soa certa.' },
       { correct: false, text: 'O valor devolvido para uma entrada de exemplo — é isso que "o que ele faz" significa', misconceptionId: 'tracing.estado-nao-observado' },
       { correct: false, text: 'O número de rodadas, que é o tamanho da coleção', misconceptionId: 'tracing.laco-roda-n-vezes' },
     ],
@@ -66,7 +67,8 @@ export const tracingExercises: Exercise[] = [
     kind: 'choice', id: 'tracing.e1',
     prompt: 'Um laço percorre uma lista de pendências e remove as já concluídas de dentro da própria lista. Metade das concluídas continua lá no fim. Por quê?',
     choices: [
-      { correct: true, text: 'Remover desloca os elementos seguintes uma casa para trás, e o índice avança na mesma rodada — o elemento que ocupou a posição removida nunca é examinado' },
+      { correct: true, text: 'Remover desloca os elementos seguintes uma casa para trás, e o índice avança na mesma rodada',
+        why: 'O elemento que ocupou a posição removida nunca é examinado' },
       { correct: false, text: 'A condição de parada usa o tamanho original, então o laço termina cedo demais', misconceptionId: 'tracing.laco-roda-n-vezes' },
       { correct: false, text: 'Remover durante a iteração não afeta o percurso; o defeito está na condição que decide se a pendência está concluída', misconceptionId: 'tracing.mutacao-durante-iteracao' },
     ],
@@ -104,7 +106,8 @@ export const tracingExercises: Exercise[] = [
     kind: 'choice', id: 'tracing.e3',
     prompt: 'Um laço soma os elementos de uma coleção. Qual propriedade sustenta o raciocínio sobre ele, sem precisar simular rodada por rodada?',
     choices: [
-      { correct: true, text: 'Ao começar a rodada de i, a soma acumulada já é a soma das posições 0 até i − 1 — e isso vale antes da primeira rodada, com soma zero e nenhuma posição visitada' },
+      { correct: true, text: 'Ao começar a rodada de i, a soma já cobre as posições 0 até i − 1',
+        why: 'Isso vale antes da primeira rodada, com soma zero e nenhuma posição visitada — e é o que separa uma invariante de uma conclusão.' },
       { correct: false, text: 'Ao terminar o laço, a soma acumulada é a soma de todos os elementos', misconceptionId: 'tracing.invariante-so-no-fim' },
       { correct: false, text: 'A soma acumulada cresce a cada rodada, o que garante que ela chega ao total', misconceptionId: 'tracing.invariante-so-no-fim' },
     ],
@@ -113,7 +116,8 @@ export const tracingExercises: Exercise[] = [
     kind: 'choice', id: 'tracing.e4',
     prompt: 'Uma função devolve o maior elemento de uma coleção. Ela começa com maior ← A[0] e percorre a partir de i = 1. Que entrada quebra essa função?',
     choices: [
-      { correct: true, text: 'A coleção vazia: A[0] é lido antes de qualquer verificação, e não existe posição 0' },
+      { correct: true, text: 'A coleção vazia',
+        why: 'A[0] é lido antes de qualquer verificação, e numa coleção vazia não existe posição 0.' },
       { correct: false, text: 'A coleção com um elemento só: o laço não roda e a função devolve lixo', misconceptionId: 'tracing.vazio-nao-considerado' },
       { correct: false, text: 'A coleção em ordem decrescente: o primeiro elemento nunca é substituído e o laço percorre à toa', misconceptionId: 'tracing.off-by-one' },
     ],
@@ -122,7 +126,8 @@ export const tracingExercises: Exercise[] = [
     kind: 'choice', id: 'tracing.e5',
     prompt: 'Um laço tem condição i < |A| e avança com i ← i + 3. A coleção tem dez elementos. Quantas rodadas acontecem?',
     choices: [
-      { correct: true, text: 'Quatro: i vale 0, 3, 6 e 9, e para em 12 — o passo do laço decide, não o tamanho da coleção' },
+      { correct: true, text: 'Quatro: i vale 0, 3, 6 e 9, e para em 12',
+        why: 'O passo do laço decide, não o tamanho da coleção' },
       { correct: false, text: 'Dez, uma por elemento, porque o laço percorre a coleção', misconceptionId: 'tracing.laco-roda-n-vezes' },
       { correct: false, text: 'Três: i vale 0, 3 e 6, porque 9 mais 3 passa do fim', misconceptionId: 'tracing.off-by-one' },
     ],
@@ -140,7 +145,8 @@ export const tracingExercises: Exercise[] = [
 }`,
     faultyLines: [3],
     consequences: [
-      { correct: true, text: 'Os dois lados estão na ordem errada: o acesso acontece antes da verificação de fronteira, e com a lista vazia a primeira avaliação já falha' },
+      { correct: true, text: 'Os dois lados estão na ordem errada',
+        why: 'O acesso acontece antes da verificação de fronteira. Como o "e" avalia da esquerda para a direita, a lista vazia falha já na primeira avaliação.' },
       { correct: false, text: 'Nada de grave: os dois lados de um "e" são avaliados de qualquer forma, então a ordem não importa', misconceptionId: 'tracing.curto-circuito' },
       { correct: false, text: 'O defeito é o operador: deveria ser "ou", para que a verificação de fronteira seja considerada', misconceptionId: 'tracing.curto-circuito' },
     ],

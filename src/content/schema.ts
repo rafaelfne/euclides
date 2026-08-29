@@ -145,9 +145,18 @@ export const misconception = z.object({
   reviewCycle: z.string().min(1),
 })
 
-/** A wrong choice without a named misconception is a lazy distractor. */
+/**
+ * A wrong choice without a named misconception is a lazy distractor.
+ *
+ * `why` existe porque a justificativa morava dentro do texto da alternativa
+ * correta, depois de um travessão — e isso a tornava a mais longa em 93% dos
+ * exercícios. O aluno acertava pelo comprimento sem ler o conteúdo, o que zera
+ * o sinal do painel de lacunas. A justificativa é revelada DEPOIS de resolver;
+ * a distratora não precisa da sua, porque a armadilha que ela nomeia já diz o
+ * que ela erra.
+ */
 export const choice = z.discriminatedUnion('correct', [
-  z.object({ correct: z.literal(true), text: z.string().min(1) }),
+  z.object({ correct: z.literal(true), text: z.string().min(1), why: z.string().min(1) }),
   z.object({ correct: z.literal(false), text: z.string().min(1), misconceptionId: z.string().min(1) }),
 ])
 

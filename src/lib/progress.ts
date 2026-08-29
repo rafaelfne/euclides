@@ -23,8 +23,14 @@ export function read(): Progress {
   }
 }
 
+/** Quem escuta é quem mostra progresso fora do exercício: a matriz de
+ *  trade-off, o mapa e o rail. Sem isto eles só liam na montagem, e a matriz
+ *  prometia destravar ao resolver sem nunca destravar na mesma visita. */
+export const PROGRESS_EVENT = 'euclides:progress'
+
 export function write(next: Progress): void {
   try { window.localStorage.setItem(KEY, JSON.stringify(next)) } catch { /* modo privado */ }
+  try { window.dispatchEvent(new Event(PROGRESS_EVENT)) } catch { /* sem window */ }
 }
 
 export type ExerciseState = Progress['units'][string]['exercises'][string]

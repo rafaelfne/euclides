@@ -66,7 +66,9 @@ entrada da `escalation` é uma tarefa nova? Se você não sabe dizer o que a seg
 a primeira não fez, ela não existe.
 
 **Exercício:** você consegue listar as maneiras de errar? Se não, o exercício está mal
-posto — não é o aluno que está.
+posto — não é o aluno que está. E a alternativa correta se distingue das outras só pelo
+conteúdo? Se ela é a mais longa, ou a única com justificativa colada, o aluno acerta pelo
+formato — mova a justificativa para `why`, que é onde ela é revelada depois.
 
 **Traço:** um aluno que entendeu a matéria e nunca viu este exercício sabe COMO escrever a
 resposta? Toda coluna editável declara `placeholder` com o formato — nunca com um valor do

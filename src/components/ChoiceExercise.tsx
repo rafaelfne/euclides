@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import type { Unit, Choice } from '@/content/schema'
 import { misconceptionById } from '@/content'
+import { Badge } from './ui/badge'
 import { exerciseState, recordAttempt } from '@/lib/progress'
 import { seededShuffle } from '@/lib/shuffle'
 import { cn } from '@/lib/utils'
@@ -101,10 +102,40 @@ export function ChoiceExercise({
         )}
 
         {chosen?.correct && (
-          <div className="border-l-2 border-contract pl-4 text-[13.5px] leading-relaxed text-fg-2">
-            {attempts === 1
-              ? 'Resolvido na primeira tentativa, sem ativar nenhuma ideia errada. Isto conta para o critério de domínio.'
-              : `Resolvido em ${attempts} tentativas. Chegar lá não é o mesmo que dominar — este exercício volta na revisita.`}
+          <div className="flex flex-col gap-3.5">
+            <div className="border-l-2 border-contract pl-4 text-[13.5px] leading-relaxed text-fg-2">
+              {attempts === 1
+                ? 'Resolvido na primeira tentativa, sem ativar nenhuma ideia errada. Isto conta para o critério de domínio.'
+                : `Resolvido em ${attempts} tentativas. Chegar lá não é o mesmo que dominar — este exercício volta na revisita.`}
+            </div>
+
+            {/*
+              O acerto não ensinava nada: o aluno saía sem saber por que as
+              outras falham, e é ali que as distratoras deste app rendem — cada
+              uma nomeia uma armadilha real. Revelado só depois de resolver, o
+              princípio 3 continua de pé.
+            */}
+            <div className="border border-rule bg-panel-head px-4 py-3.5">
+              <div className="lbl mb-2.5">Por que cada uma</div>
+              <div className="flex flex-col gap-2.5">
+                {shown.map((c, i) => {
+                  const m = c.correct ? undefined : misconceptionById(unit, c.misconceptionId)
+                  return (
+                    <div key={i} className="flex flex-col gap-1">
+                      <div className="flex items-baseline gap-2">
+                        <Badge tone={c.correct ? 'contract' : 'implementation'}>
+                          {c.correct ? 'certa' : 'armadilha'}
+                        </Badge>
+                        <span className="text-[12.5px] leading-snug text-fg-3">{c.text}</span>
+                      </div>
+                      <span className="pl-1 text-[12.5px] leading-relaxed text-fg-2">
+                        {c.correct ? c.why : m?.label}
+                      </span>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
           </div>
         )}
       </PanelBody>

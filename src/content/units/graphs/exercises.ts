@@ -50,7 +50,8 @@ export const graphsExercises: Exercise[] = [
     kind: 'choice', id: 'graphs.e0',
     prompt: 'O contrato Grafo oferece vizinhos, existeAresta, adicionarAresta e vertices. Qual das perguntas abaixo ele responde diretamente?',
     choices: [
-      { correct: true, text: 'Quais vértices estão ligados diretamente a este' },
+      { correct: true, text: 'Quais vértices estão ligados diretamente a este',
+        why: 'Vizinhança direta é a única pergunta do contrato. Caminho e alcance são algoritmos escritos sobre ele.' },
       { correct: false, text: 'Se existe algum caminho entre dois vértices', misconceptionId: 'graphs.alcance-e-operacao' },
       { correct: false, text: 'Quantos caminhos distintos ligam dois vértices — num grafo há sempre um só, como na árvore', misconceptionId: 'graphs.arvore-e-grafo' },
     ],
@@ -59,7 +60,8 @@ export const graphsExercises: Exercise[] = [
     kind: 'choice', id: 'graphs.e1',
     prompt: 'Uma hierarquia de times foi modelada como grafo. Alguém pôs o time A dentro do B e o B dentro do A. O que essa modelagem permite que uma árvore não permitiria?',
     choices: [
-      { correct: true, text: 'Um ciclo: existe um caminho que sai de um vértice e volta a ele, e por isso "já passei por aqui" deixa de ser impossível' },
+      { correct: true, text: 'Um ciclo: um caminho que sai de um vértice e volta a ele',
+        why: 'Numa árvore há exatamente um caminho entre dois nós, então "já passei por aqui" é impossível. Aqui deixa de ser.' },
       { correct: false, text: 'Nada de diferente: uma árvore também admite que dois nós apontem um para o outro', misconceptionId: 'graphs.arvore-e-grafo' },
       { correct: false, text: 'Arestas com peso, que a árvore não tem', misconceptionId: 'graphs.caminho-mais-curto-com-peso' },
     ],
@@ -68,7 +70,8 @@ export const graphsExercises: Exercise[] = [
     kind: 'choice', id: 'graphs.e2',
     prompt: 'Uma lista de adjacência guarda, para cada vértice, a lista dos vizinhos dele. Quanto custa perguntar se existe aresta de u para v?',
     choices: [
-      { correct: true, text: 'O grau de u — é preciso percorrer a lista dele. Barato quando o grau é pequeno, que é o caso na maioria dos grafos reais' },
+      { correct: true, text: 'O grau de u',
+        why: 'É preciso percorrer a lista dele. Barato quando o grau é pequeno, que é o caso na maioria dos grafos reais' },
       { correct: false, text: 'Constante: a lista de adjacência guarda as arestas indexadas pelos dois vértices', misconceptionId: 'graphs.matriz-para-esparso' },
       { correct: false, text: 'O número de vértices, porque é preciso varrer todos para achar u', misconceptionId: 'graphs.matriz-para-esparso' },
     ],
@@ -77,7 +80,8 @@ export const graphsExercises: Exercise[] = [
     kind: 'choice', id: 'graphs.e3',
     prompt: 'Uma matriz de adjacência para dez mil vértices ocupa cem milhões de células, independentemente do número de arestas. Quando essa escolha se justifica?',
     choices: [
-      { correct: true, text: 'Quando o grafo é denso e a pergunta dominante é "existe aresta entre estes dois" — ali a matriz responde numa conta, e o espaço reservado está de fato sendo usado' },
+      { correct: true, text: 'Quando o grafo é denso e a pergunta dominante é "existe aresta entre estes dois"',
+        why: 'Ali a matriz responde numa conta, e o espaço reservado está de fato sendo usado' },
       { correct: false, text: 'Sempre que houver memória: a matriz responde tudo em tempo constante, inclusive listar os vizinhos de um vértice', misconceptionId: 'graphs.matriz-para-esparso' },
       { correct: false, text: 'Quando o grafo tem ciclos, porque a lista de adjacência não os representa', misconceptionId: 'graphs.arvore-e-grafo' },
     ],
@@ -116,7 +120,8 @@ export const graphsExercises: Exercise[] = [
     kind: 'choice', id: 'graphs.e5',
     prompt: 'Você precisa do caminho com menos escalas entre dois aeroportos. As escalas não têm duração associada. Qual percurso responde, e por quê?',
     choices: [
-      { correct: true, text: 'Busca em largura: ela avança por camadas, então ao alcançar um vértice pela primeira vez chegou pelo caminho com menos arestas' },
+      { correct: true, text: 'Busca em largura, porque ela avança por camadas',
+        why: 'Ao alcançar um vértice pela primeira vez, ela chegou pelo caminho com menos arestas. A busca em profundidade não dá essa garantia.' },
       { correct: false, text: 'Busca em profundidade: ela encontra um caminho completo antes, e o primeiro caminho encontrado é o mais curto', misconceptionId: 'graphs.bfs-e-dfs-equivalentes' },
       { correct: false, text: 'Qualquer uma das duas: as duas visitam todos os vértices alcançáveis e devolvem o mesmo resultado', misconceptionId: 'graphs.bfs-e-dfs-equivalentes' },
     ],
@@ -125,7 +130,8 @@ export const graphsExercises: Exercise[] = [
     kind: 'choice', id: 'graphs.e6',
     prompt: 'A mesma busca em largura roda sobre lista de adjacência e sobre matriz. Como o custo difere?',
     choices: [
-      { correct: true, text: 'Na lista, O(V+E): cada vértice sai da fila uma vez e cada aresta é olhada uma vez. Na matriz, O(V²): para cada vértice retirado é preciso varrer uma linha inteira, mesmo que ele tenha um vizinho só' },
+      { correct: true, text: 'Na lista, O(V+E); na matriz, O(V²)',
+        why: 'Na lista cada vértice sai da fila uma vez e cada aresta é olhada uma vez. Na matriz, cada vértice retirado obriga a varrer uma linha inteira, mesmo tendo um vizinho só.' },
       { correct: false, text: 'O mesmo nas duas: o percurso visita os mesmos vértices na mesma ordem', misconceptionId: 'graphs.bfs-e-dfs-equivalentes' },
       { correct: false, text: 'A matriz é melhor nas duas contas, porque consultar uma célula é constante', misconceptionId: 'graphs.matriz-para-esparso' },
     ],
@@ -146,7 +152,8 @@ export const graphsExercises: Exercise[] = [
 }`,
     faultyLines: [7],
     consequences: [
-      { correct: true, text: 'Os vizinhos entram na fila sem consultar o conjunto: num grafo com ciclo a fila nunca esvazia, e o conjunto devolvido está certo enquanto o laço não termina' },
+      { correct: true, text: 'Os vizinhos entram na fila sem consultar o conjunto',
+        why: 'Num grafo com ciclo a fila nunca esvazia. O conjunto devolvido está certo — o laço é que não termina para devolvê-lo.' },
       { correct: false, text: 'Nada de grave: marcar na retirada em vez de na entrada só faz alguns vértices serem visitados duas vezes', misconceptionId: 'graphs.percurso-sem-visitados' },
       { correct: false, text: 'O defeito é usar fila em vez de pilha: com pilha o ciclo seria detectado ao voltar', misconceptionId: 'graphs.bfs-e-dfs-equivalentes' },
     ],

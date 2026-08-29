@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { BANDS_BY_KIND, type Cycle, type Unit } from '@/content/schema'
-import { cycleStatus, read, type CycleStatus } from '@/lib/progress'
+import { cycleStatus, read, PROGRESS_EVENT, type CycleStatus } from '@/lib/progress'
 import { cn } from '@/lib/utils'
 import { CycleNode } from './CycleNode'
 import { Badge } from './ui/badge'
@@ -55,12 +55,17 @@ export function UnitMap({ unit }: { unit: Unit }) {
   // Lido depois da montagem: o export estático serve o mesmo HTML para todos, e
   // o progresso pertence a um navegador.
   useEffect(() => {
-    const p = read()
-    const next: Record<string, CycleStatus> = {}
-    for (const c of unit.cycles) {
-      next[c.id] = cycleStatus(p, unit.id, c.exerciseId, unit.mastery.revisitIntervalDays)
+    const sync = () => {
+      const p = read()
+      const next: Record<string, CycleStatus> = {}
+      for (const c of unit.cycles) {
+        next[c.id] = cycleStatus(p, unit.id, c.exerciseId, unit.mastery.revisitIntervalDays)
+      }
+      setStatuses(next)
     }
-    setStatuses(next)
+    sync()
+    window.addEventListener(PROGRESS_EVENT, sync)
+    return () => window.removeEventListener(PROGRESS_EVENT, sync)
   }, [unit])
 
   const spine = describeSpine(unit)

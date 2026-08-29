@@ -22,7 +22,16 @@ Seu trabalho é catalogar esses oito jeitos e escrever a pergunta de cada um.
   frase soa sem cada parte — e cada omissão é uma armadilha pronta para virar
   `misconception`. Retirar o regime de uma afirmação de custo produz "hash é O(1)".
 - **Todo distractor nomeia uma misconception que existe.** O schema obriga; não tente
-  contornar.
+  contornar. E é essa armadilha que o app revela ao aluno depois que ele acerta — o rótulo
+  dela precisa dizer o erro, não a categoria.
+- **A justificativa da correta vai em `why`, nunca no texto dela.** Quando ela morava no
+  texto, depois de um travessão, a alternativa correta era a mais longa em 93% dos
+  exercícios e dava para acertar tudo pelo comprimento sem ler nada. A checagem
+  `equilíbrio` reprova a correta que for a mais longa; o `why` aparece só depois de
+  resolver, então o princípio 3 continua de pé.
+- **A ordem que você escreve não é a ordem que o aluno vê.** As alternativas são
+  embaralhadas por id do exercício. Não escreva "a primeira alternativa" em enunciado
+  nenhum.
 - **A devolutiva contém a tarefa que produz a resposta, nunca a resposta.**
   Errado: "o correto é O(n) porque todas as chaves colidem."
   Certo: "Construa cinco chaves que caem no mesmo bucket. Qual o custo depois disso?"
