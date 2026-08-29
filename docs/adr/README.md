@@ -19,6 +19,7 @@
 | [0015](0015-direcao-ide.md) | Direção de IDE, com Tailwind e shadcn/ui | Decisão de produto: o app deve parecer ferramenta, não material didático |
 | [0016](0016-rampa-de-entrada.md) | A rampa é mecanizada onde dá, declarada onde não dá | Dava para acertar 54 de 54 exercícios pelo formato, sem ler nada |
 | [0017](0017-figura-e-dado.md) | A figura é dado declarado; o SVG é o renderizador | Um caminho SVG afirma coisas que nenhuma checagem confere |
+| [0018](0018-fronteira-do-tom.md) | Acolhimento é dado derivado, ou não entra | Amaciar a frase dissolve o princípio 7; derivar o fato, não |
 
 ## Como escrever o próximo
 

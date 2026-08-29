@@ -94,9 +94,9 @@ sabe se a peça é boa** — só que ela existe.
   na primeira visita, tradução em linguagem cotidiana por ciclo, estimativa de duração,
   visualizações nos cinco pontos em que uma imagem faz o trabalho de três parágrafos, e a
   alternância entre pseudocódigo e linguagem real. Nenhuma delas é bug; todas são produto.
-- **A observar:** a severidade do tom. O princípio 7 é inegociável e não é o mesmo que
-  ausência de acolhimento — "é normal errar aqui" é informação verdadeira, não afago. A
-  fronteira entre os dois é julgamento, e é do Rafael.
+- **A observar, e agora decidido:** a severidade do tom. O princípio 7 é inegociável e não
+  é o mesmo que ausência de acolhimento. A fronteira ficou no ADR-0018: acolhimento é
+  afirmação verificável sobre dado que o app já tem, ou não entra.
 
 ## Itens de ação
 

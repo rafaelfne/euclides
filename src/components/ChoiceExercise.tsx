@@ -8,6 +8,7 @@ import { exerciseState, recordAttempt } from '@/lib/progress'
 import { seededShuffle } from '@/lib/shuffle'
 import { cn } from '@/lib/utils'
 import { Panel, PanelBody, PanelHeader, PanelMeta, PanelTitle } from './ui/panel'
+import { TrapNote } from './TrapNote'
 
 /**
  * The distractor mechanic. Feedback never contains the answer — it contains
@@ -55,7 +56,19 @@ export function ChoiceExercise({
     <Panel>
       <PanelHeader>
         <PanelTitle>Exercício</PanelTitle>
-        <PanelMeta>{attempts === 0 ? 'sem tentativa' : `tentativa ${attempts}`}</PanelMeta>
+        <PanelMeta>
+          {attempts === 0
+            ? 'sem tentativa'
+            : misconception
+              ? `tentativa ${attempts} · ${
+                  exhausted
+                    ? 'escada esgotada'
+                    : escalationIndex < 0
+                      ? 'pergunta socrática'
+                      : `tarefa ${escalationIndex + 1} de ${escalation.length}`
+                }`
+              : `tentativa ${attempts}`}
+        </PanelMeta>
       </PanelHeader>
       <PanelBody className="flex flex-col gap-4">
         <p className="m-0 text-[15px] leading-relaxed text-fg">{prompt}</p>
@@ -82,6 +95,9 @@ export function ChoiceExercise({
 
         {chosen && !chosen.correct && misconception && !exhausted && (
           <div className="border-l-2 border-implementation pl-4">
+            <div className="mb-2">
+              <TrapNote unit={unit} />
+            </div>
             <div className="mb-1.5 text-[14.5px] font-semibold text-implementation">
               {misconception.socraticQuestion}
             </div>
@@ -97,6 +113,9 @@ export function ChoiceExercise({
             <div className="text-[13.5px] leading-relaxed text-fg-3">
               Releia o ciclo {misconception.reviewCycle.split('.')[1]} e volte a este exercício amanhã.
               Insistir agora treina a tentativa, não o raciocínio.
+            </div>
+            <div className="mt-2">
+              <TrapNote unit={unit} />
             </div>
           </div>
         )}

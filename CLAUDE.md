@@ -45,6 +45,12 @@ com `isNot` e ponto de introdução antes de usá-la.
 fatores, a faixa — e o componente emite o SVG. Um caminho autorado afirma coisas que
 nenhuma checagem confere, e cor autorada não sobrevive a redesenho. ADR-0017.
 
+**Acolhimento é afirmação verificável, ou não entra.** O princípio 7 proíbe elogio vago, não
+proíbe informação verdadeira sobre dificuldade. A diferença é mecânica: "muita gente erra
+aqui" o app não sabe; "uma das 6 armadilhas desta unidade" o catálogo prova. Não existe
+campo de encorajamento no conteúdo, e nenhuma frase de conforto é autorada — o que consola
+é o dado. ADR-0018.
+
 **A prosa do ciclo aceita `**assim**` e mais nada.** É a única marcação interpretada, e a
 checagem `ênfase` reprova asterisco desemparelhado ou usado fora do `body` de um ciclo.
 Antes disso a prosa era texto puro e os asteriscos apareciam literais na tela.

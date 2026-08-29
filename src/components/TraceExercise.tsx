@@ -5,6 +5,7 @@ import type { Unit, TraceExercise as TraceEx } from '@/content/schema'
 import { misconceptionById } from '@/content'
 import { referenceGenerators } from '@/lib/reference'
 import { buildFeedback, findDivergence, type TraceStep } from '@/lib/socratic'
+import { TrapNote } from './TrapNote'
 import { exerciseState, recordAttempt } from '@/lib/progress'
 import { traceConventions } from '@/content/conventions'
 import { cn } from '@/lib/utils'
@@ -174,6 +175,11 @@ export function TraceExercise({ unit, exercise }: { unit: Unit; exercise: TraceE
               </span>
             </div>
             <div className="mt-1.5 text-[13.5px] leading-relaxed text-fg-2">{feedback.body}</div>
+            {feedback.misconceptionId && (
+              <div className="mt-2.5">
+                <TrapNote unit={unit} />
+              </div>
+            )}
           </div>
         )}
 
