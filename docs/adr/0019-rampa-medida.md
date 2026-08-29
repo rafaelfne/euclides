@@ -158,5 +158,6 @@ por isso que ele existe.
 7. [x] Vocabulário do app no glossário; estreia de termo ligada na prosa
 8. [x] `/como-funciona`, com todo número derivado do conteúdo
 9. [x] Cartão por rodada abaixo de `lg` na tabela de traço
-10. [ ] Revisar o catálogo de armadilhas contra o aluno real, a dívida do ADR-0018 que
-    nenhuma dessas decisões toca
+10. [ ] Conferir o catálogo de armadilhas contra alguém usando o app: as 52 são previsões,
+    escritas a partir de erros de livro e de fórum. É a dívida do ADR-0018, e nenhuma
+    decisão desta rampa toca nela

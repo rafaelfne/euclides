@@ -49,11 +49,16 @@ removê-la exige assinatura Pro.
 
 ### Precisa de você, e não dá para delegar
 
-**As 52 armadilhas são candidatas de campo, não observação de um aluno real.** Eu as escrevi
-a partir de erros comuns na literatura; nenhuma veio de ver alguém errando. O painel de
-lacunas mede exatamente o que o catálogo descreve, então se o catálogo descreve os erros
-errados, ele mede bem a coisa errada. Aparece como item aberto no ADR-0018 e no ADR-0019, e
-nenhuma das 29 checagens toca nisso.
+**Eu escrevi as 52 armadilhas a partir de erros que aparecem em livro e em fórum. Ninguém
+observou uma pessoa usando este app e errando.** Elas são previsões minhas.
+
+Isso tem duas consequências que ninguém consegue ver de dentro do app. Uma armadilha que
+ninguém comete ocupa um exercício sem medir nada. E um erro que alguém comete e não está no
+catálogo não é registrado em lugar nenhum: o painel de lacunas não mostra, e o app não sabe.
+
+Está aberto no ADR-0018 (a fronteira do tom) e no ADR-0019 (a rampa medida). Nenhuma das 29
+checagens alcança isso: elas conferem que a armadilha está bem escrita e é exercitada, não
+que alguém a comete.
 
 Ofereci construir o instrumento para levantar isso — um registro por exercício do que foi
 respondido e em qual tentativa, exportável — e a oferta segue de pé.
@@ -79,9 +84,10 @@ julgamento pedagógico e não entra por checagem.
 
 ### Itens que dependem de uso, não de código
 
-Remedir a direção visual depois de um mês de conteúdo novo (ADR-0015) e revisar os intervalos
-de revisita de 3, 10 e 30 dias quando houver uso real para olhar (ADR-0024). Os dois estão
-parados esperando gente usar o app, não trabalho meu.
+Remedir a direção visual depois de um mês escrevendo conteúdo nela (ADR-0015), e revisar os
+intervalos de revisita de 3, 10 e 30 dias depois de alguém passar por eles algumas vezes
+(ADR-0024). Os números foram escolhidos sem evidência de que 3, 10 e 30 sejam melhores que
+outros três. Os dois esperam alguém usar o app, não trabalho meu.
 
 ## Duas coisas sobre como eu escrevo
 

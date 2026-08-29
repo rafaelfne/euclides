@@ -84,4 +84,5 @@ ninguém, não notifica, e some quando está vazia.
 3. [x] `MasterySeal`, aceso no critério, com marca extra na consolidação
 4. [x] `dueRevisits` com degraus que sobem por volta honrada; `/revisitas` e o aviso na home
 5. [x] `scripts/test-traps.ts`, com "ler não desarma" e "esperar não pula degrau"
-6. [ ] Revisar os intervalos quando houver uso real para olhar
+6. [ ] Revisar os intervalos de 3, 10 e 30 dias depois de alguém passar por eles algumas
+   vezes. Foram escolhidos sem evidência de que sejam melhores que outros três números

@@ -100,5 +100,7 @@ precisaria de julgamento, e é por essa porta que o nível de aviso volta. Fica 
 1. [x] `TrapNote`, derivado de `unit.misconceptions`, com link para o caderno
 2. [x] Contador de ajuda restante na tela de escolha, no vocabulário do conteúdo (tarefa),
    não no do motor (degrau)
-3. [ ] Rever o catálogo de armadilhas contra o aluno real, a dívida que esta decisão
-   torna mais visível, e a única que não dá para delegar
+3. [ ] Conferir o catálogo de armadilhas contra alguém usando o app. As 52 foram escritas a
+   partir de erros que aparecem em livro e em fórum, e ninguém observou uma pessoa errando
+   aqui. Esta decisão torna a dívida mais visível, porque agora a tela cita o catálogo pelo
+   tamanho
