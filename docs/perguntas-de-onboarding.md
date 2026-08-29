@@ -18,8 +18,8 @@ documento e código, com a evidência anexada.
    vem depois.
 
 **Estado do repositório na leitura:** commit `bca77ac`, branch claude/repo-onboarding-validation-1524ca.
-O documento é um retrato daquele commit: parte dos achados já foi corrigida na própria branch
-antes deste arquivo entrar na `main`.
+O documento é um retrato daquele commit, com as respostas dadas em 28/08/2026. Parte dos
+achados já foi corrigida antes deste arquivo entrar na `main`.
 `npm ci`, `npm run validate`, `npm run typecheck`, `npm test` e `npm run build` passam todos.
 
 ---
@@ -46,7 +46,24 @@ conserto do gate?
 
 **Resposta:**
 
+> **O registro é `src/content/index.ts`. O validador está errado**, e o `implement-unit.md` está certo.
 >
+> O que existe hoje em `scripts/validate-content.ts:34` é uma *segunda* lista de unidades, mantida à
+> mão, que por acaso coincide com a primeira. Duas listas do mesmo fato é a definição de deriva; a
+> pergunta não é se elas vão divergir, é quando.
+>
+> Corrigir isso não é relaxar a checagem. Relaxar é diminuir a exigência sobre o conteúdo; aqui o
+> conjunto validado **cresce** — passam a valer, para toda unidade registrada, também as checagens que
+> dependem de `units` para derivar o universo (a 5, que resolve `introducesTerms` contra os ciclos
+> existentes, e a 11, que resolve `introducedIn`). A regra do `CLAUDE.md` protege o rigor, não o
+> código; um gate que não lê o conteúdo não está rigoroso, está cego.
+>
+> Ação: `import { units } from '../src/content/index'` e apagar a lista local.
+>
+> **E, junto, uma segunda correção que essa leitura revela:** com a lista vazia o validador imprime
+> `12 checagens, nenhuma violação` e sai 0. Todo laço é `for (const u of units)`. Um gate que aprova o
+> vazio aprova o pior caso de todos — o registro esquecido. Some `if (!units.length) fail('registro',
+> 'nenhuma unidade registrada')`.
 
 ## Q2 — Onde mora o gerador de referência da segunda unidade?
 
@@ -63,7 +80,21 @@ escrito, ou a expectativa é outra?
 
 **Resposta:**
 
+> **O agregador estava previsto e não foi escrito. O `CLAUDE.md` e o `exercise-designer.md` estão
+> certos — os dois falam da pasta `src/lib/reference/`; quem aponta para um arquivo de unidade é o
+> validador** (`scripts/validate-content.ts:16`). É o mesmo defeito do Q1 uma camada abaixo: o gate
+> acoplado a uma unidade específica.
 >
+> Ação: criar `src/lib/reference/index.ts` que reexporta um `referenceGenerators` unificado, e o
+> validador importa dele. O agregador precisa falhar em id duplicado — dois arquivos exportando
+> `insert-trace` fariam um sobrescrever o outro em silêncio, e o traço errado passaria por todas as
+> checagens (a 10 só exige que o gerador rode e produza as colunas).
+>
+> Decisão adicional, para não depender de vigilância: **id de gerador passa a ser prefixado pela
+> unidade** (`hash.chaining-insert-trace`, `graphs.bfs-trace`). Migrar o único id existente agora custa
+> uma linha de conteúdo e uma de registro; depois de três unidades custa uma varredura. O validador
+> pode então checar que o prefixo do gerador bate com a unidade que o referencia — colar um traço de
+> outra unidade num exercício vira erro de build, não achado de revisão.
 
 ## Q3 — Onde entram os termos do glossário da unidade nova, e a escotilha do check 11 fica?
 
@@ -86,7 +117,34 @@ tipo `introducedIn: 'planned'`?
 
 **Resposta:**
 
+> **(a) Array por unidade, todos no mesmo arquivo, mais um agregador.**
 >
+> `glossary.ts` exporta `hashGlossary`, `<proxima>Glossary`, `crossUnitGlossary` e um `allTerms` que os
+> junta e é o que o validador e os componentes consomem. Um arquivo porque o `CLAUDE.md` diz que o
+> glossário "arbitra cada caso uma vez" — a arbitragem é entre unidades, e ela fica mais barata quando
+> os candidatos a colisão estão à vista um do outro. Arrays separados porque a procedência do termo é
+> informação (ela responde "posso usar isso no ciclo 2 da unidade 3?").
+>
+> `crossUnitGlossary` **não** é o depósito de tudo que atravessa: é para o termo que mais de uma
+> unidade *já registrada* usa. E é aqui que a pergunta expõe outra coisa — `heap` e `stack` não são
+> termos cross-unit, são termos de unidades que não existem. Estão no array errado, sob o rótulo
+> errado, e é isso que a escotilha do check 11 está encobrindo.
+>
+> **(b) A escotilha é provisória e já falhou.** Ela não protege termos de unidade futura por desenho:
+> ela desliga a checagem para todo `introducedIn` que não comece com `hash.`. Um `introducedIn:
+> 'hahs.c3'` (typo) passa. Uma unidade nova chamada `graphs` nasce com a validação inteira desligada.
+>
+> Substituição, com estado explícito como a pergunta propõe:
+>
+> - `introducedIn` continua obrigatório e passa a resolver contra os ciclos de **todas** as unidades
+>   registradas — sem exceção por prefixo.
+> - Termo de unidade futura declara `introducedIn: 'planned'` (literal aceito no schema) e um
+>   `plannedIn: 'trees.c4'` livre, que o validador não resolve porque não pode.
+> - Duas checagens novas, baratas, que dão dente ao estado: um termo `planned` **não pode** aparecer em
+>   `introducesTerms` de nenhum ciclo (se apareceu, ele nasceu — atualize o registro); e quando a
+>   unidade `trees` for registrada, um termo cujo `plannedIn` aponta para um ciclo dela que já existe
+>   **falha** até virar `introducedIn` de verdade. O estado provisório passa a ter data de validade
+>   imposta pelo gate, não pela memória de quem escreve.
 
 ## Q4 — `misconception.ladder` tem quantas entradas?
 
@@ -113,7 +171,37 @@ a palavra "escada" em todos os documentos.
 
 **Resposta:**
 
+> **(a) Confirmado, e a leitura do código está certa.** `ladder` não são os três degraus. Os três
+> degraus são os `rung` de `buildFeedback`, fixos, iguais para toda armadilha, e independentes do
+> conteúdo. `ladder` é consumida dentro do degrau 3, indexada por `attempt - 3`: é a escalada de
+> tentativas *depois* que a pergunta socrática já foi feita.
 >
+> Quem está errado é o `exercise-designer.md`. A frase "A escada tem três degraus (...) Não escreva um
+> quarto" aparece na seção de regras que o agente aplica ao **escrever conteúdo**, onde o único campo
+> com esse nome é `ladder`. O agente lê aquilo como instrução sobre `ladder` — e a unidade de hash é a
+> prova de que ele leu assim ou de que ignorou: seis `ladder` com uma entrada, uma com duas, nenhuma
+> com três. O texto deveria dizer que os três degraus são do motor, já estão escritos, e que o autor
+> não os controla.
+>
+> **(b) Uma entrada por padrão; duas quando a armadilha tem um segundo movimento.**
+>
+> O exemplo bom já está no repo: `hash.rehash-copia-buckets` tem duas porque a armadilha tem dois
+> tempos — primeiro dirigir a atenção a uma chave concreta, depois nomear o fato desconcertante (o
+> defeito é *parcial*, e é por isso que sobrevive ao teste manual). As outras seis têm uma porque a
+> pergunta da raiz já é o movimento inteiro. A regra que eu escreveria no agente: *cada entrada precisa
+> ser uma tarefa nova, não a mesma tarefa reformulada; se você não consegue dizer o que a segunda faz
+> que a primeira não fez, ela não existe.*
+>
+> **(c) Sim, `.max(3)`.** Sem teto, o autor frustrado com o aluno que não chega lá resolve adicionando
+> degraus — que é o quarto degrau proibido entrando por outra porta, sem tocar em `socratic.ts`. Três
+> mapeia para as tentativas 3, 4 e 5; da sexta em diante ver a mesma frase repetida já é o sinal de
+> parar (ver a ressalva no Q16, porque hoje o código não para).
+>
+> **(d) Sim, precisa de outro nome.** A palavra "escada" hoje nomeia duas coisas em todos os
+> documentos, e o Q4 existir é o custo disso. Proposta: `escalation` no schema e "escalada" na prosa,
+> reservando "escada"/`rung` para os três degraus de `buildFeedback`. Toca schema, um arquivo de
+> conteúdo, `socratic.ts`, `test-reference.ts` e três documentos — é barato agora, com uma unidade, e
+> fica caro exatamente na hora em que a segunda unidade estiver escrita.
 
 ---
 
@@ -134,7 +222,26 @@ roadmap por mecanismo? E de onde veio o `bug` — é um sexto mecanismo não doc
 
 **Resposta:**
 
+> **Não desenhe M3/M4/M5. O documento é que está adiantado em relação ao código, e mente por omissão**
+> ao apresentar os cinco como "o motor" para um agente que precisa escolher um formato hoje.
 >
+> Sobre o `bug`: **não é um sexto mecanismo, é M2 em outro suporte.** O schema entrega isso —
+> `consequences: z.array(choice).min(2)` é a mesma estrutura de `choiceExercise.choices`, com o mesmo
+> `misconceptionId` obrigatório no distractor, e o validador trata os dois pelo mesmo caminho
+> (`ex.kind === 'choice' ? ex.choices : ex.kind === 'bug' ? ex.consequences : []`). A diferença é o
+> enunciado: em vez de escolher entre afirmações, o aluno aponta a linha e depois nomeia a
+> consequência. Isso é exatamente o objetivo declarado do projeto — julgar código sem executar — então
+> o `bug` merece estar no documento, como aplicação de M2 a código, e não ficar de fora dele.
+>
+> E há uma distinção que o documento apaga e que muda o custo de cada um: M1, M2 e `bug` funcionam num
+> app estático porque o espaço de erro é fechado *e* a verificação é comparação. M3 exige o aluno
+> **implementar** — sandbox de execução no cliente, geração de entradas, shrinking. Não é "mais um
+> `kind`", é outro produto. M4 é viável sem isso (slots tipados com distractors mapeados são M2
+> composto). M5 não precisa de motor nenhum, precisa de uma tela e de persistência que já existe.
+>
+> Ação: cada mecanismo ganha estado no `02-motor-socratico.md` — M1 implementado como `trace`, M2 como
+> `choice` e `bug`, M4 viável sem infraestrutura nova, M5 pendente de tela, M3 dependente de decisão de
+> produto (sandbox). Sem isso, todo agente novo vai propor um exercício M3 e descobrir tarde.
 
 ## Q6 — `content-author` sobrescreve o que `exercise-designer` escreveu?
 
@@ -152,7 +259,22 @@ em algum lugar?
 
 **Resposta:**
 
+> **Edita. E isso precisa estar escrito no agente, porque hoje não está.**
 >
+> A ordem "exercícios antes do conteúdo" do `guia-de-unidade.md` só significa alguma coisa se o segundo
+> passo não puder apagar o primeiro. Um `content-author` que reescreve o arquivo inteiro inverte a
+> tese: a prosa deixa de existir para preparar o exercício e passa a arrastá-lo atrás de si.
+>
+> O `content-author.md` deve dizer, em voz ativa: *você recebe um arquivo que já contém `exercises` e
+> `misconceptions` escritos por outro agente. Não reescreva esses dois arrays. Se a prosa que você
+> escreveu exigir mudar um exercício, pare e diga qual e por quê — a mudança é do exercise-designer.*
+>
+> **A separação de arquivos não está prevista em lugar nenhum do repo — e deveria estar.** Recomendo
+> `src/content/units/<id>/exercises.ts` (exercícios + catálogo de armadilhas) e
+> `src/content/units/<id>/index.ts` (unidade, ciclos, ADT, implementações, importando o primeiro). Com
+> isso a regra deixa de ser textual e vira estrutural: o agente errado tocando o arquivo errado aparece
+> no diff, e o hook do `PostToolUse` vê o path. Regra que depende de o agente lembrar da regra é
+> exatamente o que o ADR-0006 diz que não funciona.
 
 ## Q7 — Qual a sintaxe de `vocab-ok:` dentro de uma string de conteúdo?
 
@@ -174,7 +296,33 @@ string (um campo irmão, uma lista de exceções por path)?
 
 **Resposta:**
 
+> **Não há forma canônica dentro da string, e não deve haver. Nem doc nem código estão "errados" — a
+> peça nunca foi construída, e o `terminology-auditor.md` documenta como pronta uma escotilha que só
+> funciona em Markdown.**
 >
+> Contra o `stripVocabEscape` nos componentes: seriam N pontos de remoção (prosa de ciclo, enunciado,
+> alternativa, invariante, `whatToNotice`, `wrongWhen`...), cada um deles um lugar para esquecer. O
+> esquecimento imprime `vocab-ok:` na tela do aluno — e ninguém nota até um leitor externo notar. É a
+> deriva 4 de novo: a correção que depende de todo renderizador lembrar dela.
+>
+> Proposta: **a razão sai da string e vira lista de exceções por path**, em `src/content/vocabulary.ts`:
+>
+>     export const allowedVagueUses = [
+>       { path: 'hash.cycles[6].body[1]', word: 'mais rápido', reason: 'citação de prosa ruim, não uso' },
+>     ]
+>
+> O validador já caminha o conteúdo com o path na mão (`walk`), então a checagem 8 passa a consultar
+> `(path, word)`. Três ganhos: a razão nunca chega ao aluno, a lista de exceções é auditável de uma vez
+> só (é a pergunta "o que este projeto se permitiu?" respondida em dez linhas), e a escotilha deixa de
+> liberar a string inteira — libera uma palavra num lugar.
+>
+> O ponto fraco óbvio é a fragilidade do path: mover um parágrafo invalida a entrada. **Isso vira
+> feature com uma checagem a mais: entrada de exceção que não casa com nada é falha.** O conteúdo se
+> move, a exceção fica órfã, o build reprova, e o autor é obrigado a reconfirmar que aquela palavra
+> ainda é citação e não uso. É a única forma de a exceção não virar permissão permanente.
+>
+> `VOCAB_ESCAPE` some do fluxo de conteúdo. O comentário HTML no `02-motor-socratico.md` pode ficar
+> como marcação humana, mas o `terminology-auditor.md` precisa parar de chamá-lo de escotilha.
 
 ## Q8 — "No mínimo duas implementações" é regra ou recomendação?
 
@@ -190,7 +338,22 @@ vigilância humana não basta.
 
 **Resposta:**
 
+> **Vira `.min(2)` no schema. O guia está certo; o schema é que está frouxo.**
 >
+> O argumento não é de simetria, é do princípio 4: `wrongWhen` exige "o cenário em que essa escolha é a
+> errada" e uma `useInstead` nomeada. Com uma implementação só, o `useInstead` aponta para fora da
+> unidade e o aluno lê uma afirmação que não pode conferir em lugar nenhum — a comparação vira
+> retórica. O trade-off só é ensinável quando os dois lados estão escritos com o mesmo nível de
+> detalhe, custo por operação e invariante.
+>
+> E é a única regra estrutural do guia sem mecanismo, num repositório cujo ADR-0006 nasceu da
+> constatação de que quem escreveu as regras as quebrou quatro vezes. Deixá-la como recomendação é
+> escolher a hipótese que o próprio projeto já descartou.
+>
+> O custo real: uma unidade legitimamente monolítica (se existir) passa a precisar de uma segunda
+> implementação. Na prática isso empurra para o conteúdo certo — a alternativa quase sempre é de outra
+> família (array ordenado contra tabela hash, lista de adjacência contra matriz), e é justamente aí que
+> mora a decisão que o aluno vai tomar no trabalho.
 
 ## Q9 — Um exercício por ciclo é 1:1 ou pode compartilhar?
 
@@ -204,7 +367,25 @@ por ciclo".
 
 **Resposta:**
 
+> **É regra, e vira checagem — mas a checagem que falta não é só a que a pergunta descreve.**
 >
+> 1:1 porque o ciclo é a unidade de carga cognitiva e o exercício é o fechamento dele. Dois ciclos
+> apontando o mesmo exercício significa uma de duas coisas, e as duas são defeito: os ciclos não estão
+> de fato separados (deveriam ser um), ou o exercício é genérico o bastante para servir aos dois — e um
+> exercício que serve a dois ciclos não verifica o que distingue nenhum deles.
+>
+> Duas checagens, não uma:
+>
+> - **injetividade** — nenhum `exerciseId` aparece em dois ciclos;
+> - **exercício órfão** — todo exercício é referenciado por algum ciclo.
+>
+> A segunda é a simetria que falta: a checagem 3 pega a misconception declarada e nunca exercitada, mas
+> um exercício escrito e nunca alcançado por ciclo nenhum passa em silêncio hoje. É o mesmo conteúdo
+> morto, do outro lado da relação.
+>
+> A unidade de hash já satisfaz as duas (nove ciclos, nove exercícios distintos) — o que torna o custo
+> de escrever a checagem agora igual a zero, e o custo de descobrir a violação depois igual a uma
+> reescrita de unidade.
 
 ## Q10 — A checagem `domínio` é a décima terceira, e o relatório ainda mente sobre ela
 
@@ -230,7 +411,26 @@ todos os documentos), ou o `fail()` passa a usar a chave `exercício` (e continu
 
 **Resposta:**
 
+> **`domínio` vira checagem própria, com seu `ok`, e a contagem passa a treze em todos os documentos.**
 >
+> Reusar a chave `exercício` seria mais barato e é a opção errada: as duas regras respondem perguntas
+> diferentes — "todo ciclo tem fechamento?" e "o critério de domínio aponta exercícios que existem?" —
+> e um `ok` só passaria a afirmar duas coisas com uma frase. O relatório é o produto do validador para
+> quem lê; fundir checagens para preservar um número em três markdowns é otimizar o número, não o
+> relatório.
+>
+> Documentos a atualizar: `CLAUDE.md`, `docs/adr/0006-validador-como-gate.md` (contexto, decisão e item de ação 1),
+> `.claude/commands/implement-unit.md`, `docs/authoring/guia-de-unidade.md`.
+>
+> **Mas o defeito de fundo é outro, e ele vai voltar.** O commit `bca77ac` corrigiu o sintoma
+> (`pass()` filtrando por chave) e deixou de pé a causa: o relatório depende de o autor lembrar de
+> casar a string de `fail()` com a de `pass()`, à mão, em dois lugares distantes do arquivo. A décima
+> quarta checagem vai errar de novo.
+>
+> Correção estrutural, que eu faria junto: declarar as checagens numa lista (`{ id, descrição }`),
+> `fail` aceitar só `id` tipado, e o relatório ser **derivado** dessa lista — imprime `ok` para todo id
+> sem falha e `FALHA` para os demais. Aí a contagem vira `CHECKS.length`, os documentos podem citar a
+> lista em vez de um número, e a divergência que o Q10 encontrou passa a ser impossível de escrever.
 
 ## Q11 — Ciclo `deep-dive` esconde a própria banda. Intencional?
 
@@ -251,7 +451,25 @@ badges separados?
 
 **Resposta:**
 
+> **Deriva. E o próprio repositório dá a prova de que não é design: no mapa da unidade a banda de
+> `hash.c7` aparece normalmente** — `CycleNode` recebe `band` e a codifica em forma e cor, para todo
+> ciclo, inclusive os `deep-dive`. Se esconder a banda fosse decisão pedagógica, as duas telas
+> concordariam. Elas discordam, e a tela do ciclo é a que perde informação.
 >
+> Além disso, `layer` renderizado por ternário é literalmente a deriva 4 do `CLAUDE.md`: enum
+> renderizado sem mapa exaustivo. Um terceiro valor de `layer` amanhã não quebra o build — cai
+> silenciosamente no ramo `essential` e vira rótulo de banda.
+>
+> Correção: dois badges, cada enum com seu mapa.
+>
+>     const LAYER_LABEL: Record<Cycle['layer'], string | null> = {
+>       essential: null,          // banda basta; rotular "Essencial" é ruído
+>       'deep-dive': 'Aprofundamento',
+>     }
+>
+> Exaustivo por tipo (um `layer` novo quebra a compilação até ser nomeado), e o `null` diz em voz alta
+> que a ausência de rótulo é escolha, não esquecimento. A banda passa a ser sempre exibida; o
+> aprofundamento entra ao lado dela, não no lugar dela.
 
 ---
 
@@ -272,7 +490,25 @@ disparar por path tocado em vez de por ferramenta.
 
 **Resposta:**
 
+> **Não aceitar, e não incluir `Bash` cru no matcher. A alternativa que a própria pergunta levanta — o
+> hook decidir por path tocado — é a certa, e ela é implementável apesar de o payload de `Bash` não
+> trazer `file_path`.**
 >
+> O hook já tem a estrutura: hoje ele extrai `file_path` do payload e sai com 0 se o path não interessa.
+> Basta um segundo caminho para quando não há `file_path`:
+>
+>     if [ -z "$path" ]; then
+>       git diff --name-only; git diff --cached --name-only; git ls-files -o --exclude-standard
+>     fi | grep -qE 'src/content/|src/lib/socratic|src/lib/reference/|scripts/validate-content' || exit 0
+>
+> Custo por chamada de shell: um `git diff --name-only`, milissegundos. O validador só roda quando
+> conteúdo mudou de fato — que é a condição que o ADR-0006 quis capturar, e que o matcher por
+> ferramenta só aproxima.
+>
+> Vale registrar a proporção: isto é sobre **timing**, não sobre garantia. O build e o CI seguram o
+> conteúdo de qualquer jeito; o que a edição por shell custa hoje é o erro chegar tarde, com o
+> raciocínio já descarregado. É deste tamanho o problema — e por isso ele não justifica rodar o
+> validador em toda chamada de `Bash`.
 
 ## Q13 — `scripts/test-pseudocode.ts` não roda em lugar nenhum
 
@@ -286,7 +522,23 @@ literalmente verdade e esconde o terceiro arquivo.
 
 **Resposta:**
 
+> **Entra no `npm test` e no CI. Não foi descartado — o tokenizador que ele testa é dependência viva:
+> `src/lib/pseudocode.ts` é o que o componente `Pseudocode` usa para renderizar todo bloco de
+> pseudocódigo da trilha.**
 >
+> Um teste que existe, passa e não roda é pior que nenhum: ele produz a impressão de cobertura sem a
+> cobertura. E a checagem 9 do validador é uma lista de proibições por regex — ela pega `==` e
+> `return`, e não pega o tokenizador classificando `mod` como identificador. São guardas
+> complementares, e uma delas está desligada.
+>
+> Ação: `"test": "tsx scripts/test-reference.ts && tsx scripts/test-pseudocode.ts"` resolve hoje; um
+> runner que descobre `scripts/test-*.ts` resolve o próximo esquecimento — e vai haver um próximo,
+> porque a unidade nova traz asserções novas. Prefiro o runner pelo mesmo motivo do Q10: o modo de
+> falha aqui é humano e repetido.
+>
+> Junto, corrigir a frase do guia e do `CLAUDE.md`: "referência, motor socrático e tokenizador de
+> pseudocódigo". Hoje ela é literalmente verdadeira e por isso ninguém a lê como incompleta — o pior
+> tipo de documentação errada.
 
 ## Q14 — `falseFriends` está vazio em 16 dos 21 termos, e `hash` não tem entrada
 
@@ -303,7 +555,30 @@ alguma classe de termo, ou a regra 5 do auditor é julgamento puro sem contrapar
 
 **Resposta:**
 
+> **(a) Sim, `hash` ganha entrada própria — e a ausência dela é deriva de conteúdo, não do documento.**
+> A regra 5 do auditor nomeia `hash` explicitamente; o glossário registra `hash-function` e
+> `hash-flooding` e deixa de fora a palavra que o aluno vai encontrar sozinha em toda parte. Os falsos
+> amigos existem e são exatamente o tipo de coisa que o projeto diz combater: `Hash` como a estrutura
+> inteira em Ruby, hash criptográfico, hash de commit no Git, hash de partição em sistemas
+> distribuídos, e o uso coloquial "hasheia isso" que às vezes significa a função e às vezes o valor.
+> O `isNot` obrigatório resolve boa parte da confusão que hoje está distribuída em três verbetes.
 >
+> **(b) `falseFriends` obrigatório para todo termo, não.** Muitos termos não têm falso amigo real, e a
+> obrigação universal produziria entrada inventada — que é pior que campo vazio, porque parece
+> conteúdo. O que falta é a regra 5 ter contraparte no gate em vez de ser julgamento puro: uma lista
+> explícita de termos sobrecarregados (`OVERLOADED_TERMS`) que o validador exige com
+> `falseFriends.length >= 1`.
+>
+> Olhando o glossário atual, os candidatos com falso amigo verdadeiro e não preenchido:
+>
+> - `clustering` — cluster de máquinas. Homônimo total, e o aluno vive nesse contexto.
+> - `probing` — liveness/readiness probe em Kubernetes; e "probe" de monitoração.
+> - `bucket` — bucket de object storage (S3). É o falso amigo mais provável do público-alvo.
+> - `chaining` — method chaining, e blockchain. Nenhum tem relação com política de colisão.
+> - `load-factor` — "carga" de sistema (load average). Mesma palavra, outra métrica.
+>
+> Preencher esses cinco e registrar `hash` fecha a regra 5 com conteúdo real; a lista
+> `OVERLOADED_TERMS` impede que a próxima unidade repita o padrão.
 
 ## Q15 — Os documentos estão fora do gate e já derivaram
 
@@ -328,7 +603,31 @@ parcialmente o ADR-0006, que trata o validador como gate de *conteúdo*.
 
 **Resposta:**
 
+> **As três correções pontuais primeiro, porque são defeitos objetivos e independentes de qualquer
+> decisão de processo:** "balde" no `02-motor-socratico.md:39` (contradiz o canônico `bucket` e, pior,
+> está no documento que o `exercise-designer` é mandado ler antes de escrever); o caminho morto na
+> primeira instrução do `terminology-auditor.md`; e a contagem no `01-principios.md`.
 >
+> Sobre a terceira, o número certo depende de como se conta, e a frase deveria dizer isso em vez de um
+> número: cinco princípios têm mecanização (2, 3, 4, 5, 6), dois deles parciais (3 e 5), o 1 é
+> mecanizado de lado — pelas convenções de pseudocódigo, checagem 9 — e o 7 é declaradamente não
+> mecanizável. Escrever "sete deles têm checagem" num documento sobre honestidade de nível é o tipo de
+> erro que o próprio princípio 7 existe para pegar.
+>
+> **Depois, uma checagem — mas não dentro do validador pedagógico.** Um script separado
+> (`npm run docs:check`, passo próprio no CI) que verifica **caminho de arquivo citado em `docs/**` e
+> `.claude/**` existe**. É barato, tem zero falso positivo, e teria pego a deriva 2 no commit em que
+> ela nasceu. Isso não contradiz o ADR-0006: o `validate-content.ts` continua sendo o gate de
+> *conteúdo*, com o escopo que o ADR define. É outro script, com outra pergunta, no mesmo pipeline.
+>
+> **A parte de terminologia em prosa fica de fora do gate, e fica no `/audit-unit`** — que já é
+> relatório e já tem essa tarefa na regra 1 do auditor. O motivo é o "balde" do ADR-0005: a forma não
+> canônica em prosa é legítima quando é citação, menção ou `alsoKnownAs`, e um gate que não distingue
+> uso de menção empurraria o autor a apagar exatamente os exemplos que ensinam a distinção. O que muda
+> é o escopo do auditor: ele precisa ler `docs/` e `.claude/`, não só `src/content/`.
+>
+> Vale um ADR curto (0011) registrando essa fronteira — o que é gate, o que é relatório, e por quê —
+> porque a pergunta vai voltar na primeira vez que alguém propuser validar prosa.
 
 ---
 
@@ -345,68 +644,34 @@ teria descoberto só ao errar?
 
 **Resposta:**
 
+> Quatro coisas. A primeira é a que eu teria descoberto só ao errar, e ela contradiz o documento mais
+> central do projeto.
 >
-
----
-
-# Parte 5 — o que foi implementado
-
-Todas as decisões da Parte 1 à Parte 4 foram aplicadas. Três respostas foram corrigidas
-antes de virar código, e dois defeitos novos apareceram durante a implementação.
-
-## Correções às respostas
-
-**Q1, segunda metade — a afirmação estava errada.** "Com a lista vazia o validador imprime
-`12 checagens, nenhuma violação` e sai 0" não se sustenta: testado, ele reprova com 19
-violações e sai 1, porque o glossário é importado independente de `units` e os termos
-`hash.*` param de resolver. O guard `registro` entrou mesmo assim — a proteção que existe
-hoje é acidental e some no dia em que alguém esvaziar as duas coisas juntas.
-
-**Q7, a chave da exceção — trocada.** A resposta propunha `path` do `walk`
-(`hash.cycles[6].body[1]`), que é índice de array: inserir um parágrafo invalida toda
-exceção abaixo dele e obriga a reconfirmar licenças que não mudaram de sentido — o que
-treina carimbo, não atenção. A chave implementada é `quote`, um trecho da própria frase
-citada. Reordenar não quebra nada; reescrever a frase orfana a licença e reprova o build,
-que é exatamente quando a licença deveria ser reconfirmada.
-
-**Q15, "zero falso positivo" — não era zero.** A primeira execução do `docs:check` acusou
-13 caminhos, 12 deles falsos: caminho relativo ao documento que cita, placeholder `$1` de
-slash command, e nome de arquivo sem diretório citado em prosa. O checador resolve os três
-casos e o último virou regra explícita: um `index.ts` solto é um nome, não um local.
-Sobrou o único achado verdadeiro, o `03-taxonomia-e-terminologia.md`.
-
-## Defeitos encontrados durante a implementação
-
-**O `ChoiceExercise` tinha o mesmo bug do Q16.1, e ninguém o tinha olhado.**
-`Math.min(rung - 1, ladder.length - 1)` grudava na última entrada para sempre: o aluno que
-erra a mesma alternativa dez vezes lê a mesma frase dez vezes. Corrigido junto, com o
-mesmo encerramento.
-
-**O hook novo saía em silêncio por `pipefail`.** A detecção por path fazia
-`{ git diff; git ls-files; } | grep -q`, e o SIGPIPE que o `git` leva quando o `grep -q`
-sai cedo derrubava a pipeline sob `set -o pipefail` — o `|| exit 0` disparava e o
-validador nunca rodava. Só apareceu porque o caminho de falha foi testado; a versão que
-"funcionava" passava em todo teste de caminho feliz.
-
-## Uma decisão que mudou de escopo
-
-**Q16.2, termo usado antes de introduzido.** A resposta propunha mecanizar procurando a
-forma canônica nos ciclos anteriores ao `introducedIn`. Implementado até onde é exato e
-não além: o validador exige que `introducedIn` e o `introducesTerms` do ciclo concordem
-nos dois sentidos, o que pega reordenação de ciclos e registro incompleto sem um único
-falso positivo.
-
-A varredura de prosa ficou de fora, e o motivo é concreto: a unidade de hash tem duas
-referências antecipadas deliberadas — `buckets` em `hash.c2` e `rehash` em `hash.c3`, esta
-última precedida de "Guarde essa frase". Um gate que não distingue referência antecipada
-de deriva mandaria apagar as duas. É o mesmo raciocínio da fronteira 3 do ADR-0011, e a
-regra 3 do `terminology-auditor` foi reescrita para dizer qual metade é dele.
-
-## Estado
-
-`npm run validate` (16 checagens), `npm run docs:check`, `npm run typecheck`, `npm test`
-(2 suítes) e `npm run build` passam. Nove violações injetadas — reviewCycle inexistente,
-termo sobrecarregado sem falsos amigos, exercício fechando dois ciclos, gerador sem
-prefixo de unidade, `escalation` com quatro entradas, ciclo que deixa de declarar um termo,
-registro vazio, licença de citação órfã, e termo `planned` cujo ciclo passou a existir —
-reprovam com a mensagem certa e exit 1.
+> **1. A escada não para. O aluno com armadilha mapeada nunca recebe o "vamos parar aqui".**
+> `02-motor-socratico.md` fecha afirmando que quem esgota a escada recebe "vamos parar aqui, releia a
+> invariante e volte amanhã — que é um desfecho melhor do que uma resposta", e o `CLAUDE.md` repete a
+> tese. No código, com `misconception` presente, `buildFeedback` devolve degrau 3 para sempre, com
+> `ladder[Math.min(attempt - 3, ladder.length - 1)]` grudado no último item. Na décima tentativa o
+> aluno lê a mesma frase que leu na terceira. O desfecho de parada só existe no ramo em que **não há**
+> misconception — ou seja, é oferecido exatamente ao exercício menos preparado e negado ao mais bem
+> desenhado. Aqui o código está errado e o documento certo: depois de esgotada a `escalation`, o degrau
+> 3 deve dar lugar ao encerramento. E `test-reference.ts` não pega isso porque só exercita as
+> tentativas 1, 2 e 3.
+>
+> **2. A ordem dos ciclos é a ordem do array, e nada verifica isso contra o glossário.** `introducedIn`
+> diz onde um termo nasce; nenhuma checagem confirma que ele não é *usado* antes disso — a regra 3 do
+> `terminology-auditor` é julgamento. Reordenar dois ciclos é uma operação de trinta segundos que
+> invalida silenciosamente o mapa de introdução da unidade inteira. É mecanizável: procurar a forma
+> canônica (e as `alsoKnownAs`) no `body` dos ciclos anteriores ao `introducedIn`.
+>
+> **3. O gerador de referência da unidade de hash usa `h(k) = k`.** É defensável — o traço ensina
+> rehash e invariante de posição, e uma h realista só adicionaria aritmética — mas é uma decisão
+> pedagógica não registrada em lugar nenhum, num projeto cujo ciclo `hash.c1` se chama "A aposta:
+> transformar chave em endereço". O aluno vê a aposta descrita na prosa e nunca a executa no traço.
+> Registrar (no spec ou num comentário no gerador) que a identidade é deliberada, e por quê.
+>
+> **4. A checagem que mais me faria falta ao escrever conteúdo não existe: nada verifica o
+> `reviewCycle` da misconception.** `misconception.reviewCycle` é `z.string().min(1)` e nenhuma
+> checagem resolve esse id contra os ciclos — é o mesmo defeito do `mastery.requiresClean` que o Q10
+> descreve, num campo onde ninguém olhou ainda. Um `reviewCycle` inválido não quebra nada no build e
+> manda o aluno para uma revisão que não existe.
