@@ -42,7 +42,7 @@ export function UnitTabs({ unit, cycleId }: { unit: Unit; cycleId?: string }) {
   }, [unit])
 
   return (
-    <div className="hidden shrink-0 items-stretch overflow-x-auto border-b border-rule-soft bg-rail md:flex">
+    <div className="hidden min-w-0 items-stretch overflow-x-auto md:flex">
       <Link
         href={`/units/${unit.id}`}
         className={cn(

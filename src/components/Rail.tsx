@@ -2,7 +2,6 @@ import Link from 'next/link'
 import { units } from '@/content'
 import { cn } from '@/lib/utils'
 import { UnitStateDot } from './UnitStateDot'
-import { BandBadge } from './BandBadge'
 import { Logo } from './Logo'
 import { ProfileAvatar } from './ProfileAvatar'
 
@@ -13,14 +12,11 @@ import { ProfileAvatar } from './ProfileAvatar'
 export function Rail({ unitId }: { unitId?: string }) {
   return (
     <nav className="hidden h-screen w-[212px] shrink-0 flex-col overflow-y-auto border-r border-rule-soft bg-rail lg:flex">
-      <div className="sticky top-0 z-10 shrink-0 border-b border-rule-soft bg-rail">
-        <div className="flex items-center justify-between gap-2 px-4 py-2.5">
-          <Link href="/" title="Euclides" aria-label="Euclides" className="m-tap flex shrink-0 items-center">
-            <Logo size={56} />
-          </Link>
-          <ProfileAvatar />
-        </div>
-        <div className="px-4 pb-2.5"><BandBadge compact /></div>
+      <div className="sticky top-0 z-10 flex shrink-0 items-center justify-between gap-2 border-b border-rule-soft bg-rail px-4 py-2.5">
+        <Link href="/" title="Euclides" aria-label="Euclides" className="m-tap flex shrink-0 items-center">
+          <Logo size={56} />
+        </Link>
+        <ProfileAvatar />
       </div>
 
       <div className="flex flex-col gap-px py-3">
