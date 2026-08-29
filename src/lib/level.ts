@@ -79,8 +79,15 @@ export function unitState(unit: Unit, p: Progress, now: number): UnitState {
  * A regra de cada faixa aparece ao lado do nome, sempre, para que ninguém
  * precise adivinhar o que falta.
  */
+export type BandId =
+  | 'code-reader'
+  | 'code-tracer'
+  | 'complexity-analyst'
+  | 'code-reviewer'
+  | 'design-reviewer'
+
 export interface Band {
-  id: string
+  id: BandId
   name: string
   rule: string
   /** Devolve as unidades que ainda faltam para alcançar esta faixa. */

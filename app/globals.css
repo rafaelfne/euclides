@@ -49,6 +49,27 @@
   --cost-rule: #4E3F21;
 
   /*
+    A rampa da faixa. Uma família de cor, cinco passos, e não cinco matizes.
+
+    As faixas são uma escada: cinco matizes soltos afirmariam cinco categorias
+    diferentes, que é falso, e disputariam com azul, vermelho e ocre, que já
+    significam contrato, implementação e custo — os mesmos três aparecem como
+    ponto de estado de unidade na mesma barra. Verde estava livre e é o único
+    eixo novo. Cada passo passa em 4,5:1 contra a pill e contra as quatro
+    superfícies, o piso do ADR-0019.
+  */
+  --band-1: #8A94A3;
+  --band-1-bg: #1C1F26;
+  --band-2: #63A88C;
+  --band-2-bg: #12201B;
+  --band-3: #74C295;
+  --band-3-bg: #13241B;
+  --band-4: #8FD489;
+  --band-4-bg: #17271A;
+  --band-5: #B6E578;
+  --band-5-bg: #1D2C18;
+
+  /*
     Superfamília, não duas escolhas soltas: o mono já era IBM Plex Mono, e a
     sans do mesmo desenho compartilha métrica e desenho de letra. Rótulo e
     código ao lado de prosa param de parecer dois projetos.
@@ -84,6 +105,17 @@
   --color-cost: var(--cost);
   --color-cost-bg: var(--cost-bg);
   --color-cost-rule: var(--cost-rule);
+
+  --color-band-1: var(--band-1);
+  --color-band-1-bg: var(--band-1-bg);
+  --color-band-2: var(--band-2);
+  --color-band-2-bg: var(--band-2-bg);
+  --color-band-3: var(--band-3);
+  --color-band-3-bg: var(--band-3-bg);
+  --color-band-4: var(--band-4);
+  --color-band-4-bg: var(--band-4-bg);
+  --color-band-5: var(--band-5);
+  --color-band-5-bg: var(--band-5-bg);
 
   --font-sans: var(--sans);
   --font-mono: var(--mono);
