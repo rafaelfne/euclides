@@ -25,6 +25,7 @@
 | [0021](0021-perfil-local.md) | Perfil local, e o que a ausência de conta obriga | Sem servidor, exportar e apagar deixam de ser cortesia e viram obrigação |
 | [0022](0022-nivelamento.md) | Nivelamento que recomenda, e estado que não sobe pelo relógio | Nota vira a coisa perseguida; consolidada exige voltar, não esperar |
 | [0023](0023-contadores-honestos.md) | Três contadores, e o teste que todo número novo tem de passar | Número sem a regra que o move é pontuação disfarçada |
+| [0024](0024-bestiario-e-revisita.md) | O bestiário, o selo, e a fila que conta voltas em vez de dias | Ler a explicação não desarma; sequência de dias sobe por login |
 
 ## Como escrever o próximo
 

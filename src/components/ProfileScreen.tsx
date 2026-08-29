@@ -13,6 +13,8 @@ import { cn } from '@/lib/utils'
 import { Panel, PanelBody, PanelHeader, PanelTitle } from './ui/panel'
 import { BandBadge } from './BandBadge'
 import { CountersRow } from './Counters'
+import { SealRow } from './MasterySeal'
+import { RevisitQueue } from './RevisitQueue'
 import { UnitStateDot } from './UnitStateDot'
 
 /**
@@ -83,6 +85,17 @@ export function ProfileScreen() {
           lugar nenhum. O app funciona idêntico sem nome.
         </p>
       </div>
+
+      <Panel>
+        <PanelHeader><PanelTitle>Selos de domínio</PanelTitle></PanelHeader>
+        <PanelBody className="flex flex-col gap-3">
+          <SealRow units={units} />
+          <span className="text-[12.5px] leading-relaxed text-fg-4">
+            Um selo acende quando os exercícios do critério saem na primeira tentativa, e
+            ganha a marca em ocre quando a revisita é honrada. Não há selo de participação.
+          </span>
+        </PanelBody>
+      </Panel>
 
       <Panel>
         <PanelHeader><PanelTitle>O que o app mede</PanelTitle></PanelHeader>

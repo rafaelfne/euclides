@@ -7,6 +7,7 @@ import { cycleStatus, read, PROGRESS_EVENT, type CycleStatus } from '@/lib/progr
 import { cn } from '@/lib/utils'
 import { humanMinutes, unitMinutes } from '@/lib/duration'
 import { UnitStateDot } from './UnitStateDot'
+import { MasterySeal } from './MasterySeal'
 import { CycleNode } from './CycleNode'
 import { Badge } from './ui/badge'
 import { Panel, PanelBody, PanelHeader, PanelMeta, PanelTitle } from './ui/panel'
@@ -101,7 +102,10 @@ export function UnitMap({ unit }: { unit: Unit }) {
 
   return (
     <div className="flex flex-grow flex-col gap-5 overflow-y-auto px-4 py-6 sm:px-7">
-      <p className="max-w-[720px] text-[14.5px] leading-relaxed text-fg-2">{unit.motivatingProblem}</p>
+      <div className="flex items-start gap-4">
+        <p className="m-0 max-w-[720px] text-[14.5px] leading-relaxed text-fg-2">{unit.motivatingProblem}</p>
+        <MasterySeal unit={unit} />
+      </div>
 
       <div className="flex flex-col gap-2">
         <div className="flex items-baseline gap-3">

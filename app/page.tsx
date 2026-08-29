@@ -7,6 +7,7 @@ import { ResumeCard } from '@/components/ResumeCard'
 import { unitMinutes, humanMinutes } from '@/lib/duration'
 import { UnitStateDot } from '@/components/UnitStateDot'
 import { PlacementInvite } from '@/components/PlacementInvite'
+import { RevisitQueue } from '@/components/RevisitQueue'
 
 export default function Home() {
   return (
@@ -35,6 +36,7 @@ export default function Home() {
           <span className="ml-auto font-mono text-[12px] text-contract">→</span>
         </Link>
 
+        <RevisitQueue compact />
         <ResumeCard />
         <PlacementInvite />
 

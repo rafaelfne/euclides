@@ -4,58 +4,96 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import type { Unit } from '@/content/schema'
 import { read, PROGRESS_EVENT } from '@/lib/progress'
+import { trapBook, TRAP_STATE_LABEL, TRAP_STATE_RULE, type TrapEntry, type TrapState } from '@/lib/traps'
 import { cn } from '@/lib/utils'
-import { Badge } from './ui/badge'
 import { Panel, PanelBody, PanelHeader, PanelMeta, PanelTitle } from './ui/panel'
 
 /**
- * O caderno de armadilhas: todas as frases que soam certas, num lugar só.
+ * O bestiário: todas as frases que soam certas, com o estado de cada uma.
  *
- * Elas já existiam indexadas por unidade, cada uma com rótulo, pergunta
- * socrática e ciclo de revisão, o que faltava era a vista. Marcar as que o
- * aluno já ativou transforma a lista num caderno dele, e não num índice.
+ * Três estados, e o do meio é o que importa. `ativada` não é uma marca de
+ * vergonha nem um item de lista para riscar lendo: ela só sai dali quando o
+ * mesmo exercício voltar limpo depois do intervalo. Ver ADR-0024.
+ *
+ * A regra de cada estado vai na tela junto do rótulo, pela mesma razão dos
+ * contadores: estado sem regra convida a supor que ele sobe sozinho.
  */
+const TONE: Record<TrapState, { border: string; text: string; bg: string }> = {
+  'nao-encontrada': { border: 'border-rule', text: 'text-fg-4', bg: '' },
+  ativada: { border: 'border-implementation', text: 'text-implementation', bg: 'bg-implementation-bg' },
+  desarmada: { border: 'border-contract', text: 'text-contract', bg: '' },
+}
+
+const FILTERS: Array<[TrapState | 'todas', string]> = [
+  ['todas', 'todas'],
+  ['ativada', 'ativadas'],
+  ['desarmada', 'desarmadas'],
+  ['nao-encontrada', 'não encontradas'],
+]
+
 export function TrapBook({ units }: { units: Unit[] }) {
-  const [triggered, setTriggered] = useState<Set<string>>(new Set())
-  const [onlyMine, setOnlyMine] = useState(false)
+  const [entries, setEntries] = useState<TrapEntry[]>([])
+  const [filter, setFilter] = useState<TrapState | 'todas'>('todas')
+  const [recent, setRecent] = useState<string | null>(null)
 
   useEffect(() => {
     const sync = () => {
-      const p = read()
-      const ids = new Set<string>()
-      for (const u of Object.values(p.units)) {
-        for (const ex of Object.values(u.exercises)) {
-          ex.misconceptionsTriggered.forEach((m) => ids.add(m))
-        }
-      }
-      setTriggered(ids)
+      const rows = trapBook(units, read())
+      setEntries(rows)
+
+      /*
+        A mais recém-ativada ganha o destaque que decai.
+        Ele existe para achar a linha nova num caderno de 52, e some sozinho
+        depois de achada. Reaproveita `m-decay` do ADR-0019.
+      */
+      const last = rows
+        .filter((r) => r.state === 'ativada' && r.lastTriggered)
+        .sort((a, b) => (a.lastTriggered! < b.lastTriggered! ? 1 : -1))[0]
+      const fresh = last && Date.now() - new Date(last.lastTriggered!).getTime() < 60_000
+      setRecent(fresh ? last.misconception.id : null)
     }
     sync()
     window.addEventListener(PROGRESS_EVENT, sync)
     return () => window.removeEventListener(PROGRESS_EVENT, sync)
-  }, [])
+  }, [units])
 
-  const total = units.reduce((n, u) => n + u.misconceptions.length, 0)
+  const count = (s: TrapState) => entries.filter((e) => e.state === s).length
+  const shown = entries.filter((e) => filter === 'todas' || e.state === filter)
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="mb-2 flex flex-wrap items-center gap-3">
-        <span className="text-[13px] text-fg-3">
-          {total} armadilhas catalogadas · {triggered.size} você já ativou
+      <div className="mb-1 flex flex-col gap-3">
+        <div className="flex items-baseline gap-3">
+          <span className="font-mono text-[22px] text-contract">
+            {count('desarmada')} de {entries.length}
+          </span>
+          <span className="lbl">desarmadas</span>
+        </div>
+        <span className="max-w-[560px] text-[12.5px] leading-relaxed text-fg-4">
+          {TRAP_STATE_RULE.desarmada}. Ler a explicação não desarma nenhuma.
         </span>
-        <button
-          onClick={() => setOnlyMine((v) => !v)}
-          className={cn(
-            'border px-3 py-1 font-mono text-[12px] tracking-[0.16em] uppercase',
-            onlyMine ? 'border-implementation-rule bg-implementation-bg text-implementation' : 'border-rule bg-panel text-fg-3 hover:text-fg',
-          )}
-        >
-          {onlyMine ? 'mostrando só as minhas' : 'só as que eu ativei'}
-        </button>
+
+        <div className="flex flex-wrap gap-1.5">
+          {FILTERS.map(([id, label]) => (
+            <button
+              key={id}
+              onClick={() => setFilter(id)}
+              className={cn(
+                'm-tap cursor-pointer border px-3 py-1 font-mono text-[12px] tracking-[0.14em] uppercase',
+                filter === id
+                  ? 'border-contract-rule bg-contract-bg text-fg'
+                  : 'border-rule bg-panel text-fg-3 hover:text-fg',
+              )}
+            >
+              {label}
+              {id !== 'todas' && <span className="ml-1.5 text-fg-4">{count(id as TrapState)}</span>}
+            </button>
+          ))}
+        </div>
       </div>
 
       {units.map((unit) => {
-        const rows = unit.misconceptions.filter((m) => !onlyMine || triggered.has(m.id))
+        const rows = shown.filter((e) => e.unit.id === unit.id)
         if (!rows.length) return null
         return (
           <Panel key={unit.id} className="max-w-[900px]">
@@ -64,23 +102,30 @@ export function TrapBook({ units }: { units: Unit[] }) {
               <PanelMeta>Unidade {String(unit.number).padStart(2, '0')}</PanelMeta>
             </PanelHeader>
             <PanelBody className="flex flex-col gap-3.5">
-              {rows.map((m) => {
-                const mine = triggered.has(m.id)
+              {rows.map(({ misconception: m, state }) => {
+                const tone = TONE[state]
                 return (
                   <div
                     key={m.id}
-                    className={cn('border-l-2 pl-4', mine ? 'border-implementation' : 'border-rule')}
+                    className={cn(
+                      'border-l-2 py-1 pl-4',
+                      tone.border,
+                      tone.bg,
+                      recent === m.id && 'm-decay border',
+                    )}
                   >
                     <div className="flex flex-wrap items-baseline gap-2">
                       <span className="text-[13.5px] font-semibold text-fg">{m.label}</span>
-                      {mine && <Badge tone="implementation">você ativou</Badge>}
+                      <span className={cn('lbl', tone.text)} title={TRAP_STATE_RULE[state]}>
+                        {TRAP_STATE_LABEL[state]}
+                      </span>
                     </div>
                     <div className="mt-1 text-[13px] leading-relaxed text-fg-2">
                       “{m.socraticQuestion}”
                     </div>
                     <Link
                       href={`/units/${unit.id}/cycles/${m.reviewCycle}`}
-                      className="mt-1 inline-block font-mono text-[12px] text-contract"
+                      className="m-tap mt-1 inline-block font-mono text-[12px] text-contract"
                     >
                       desfaz em {m.reviewCycle}
                     </Link>
@@ -92,10 +137,11 @@ export function TrapBook({ units }: { units: Unit[] }) {
         )
       })}
 
-      {onlyMine && triggered.size === 0 && (
+      {!shown.length && (
         <p className="max-w-[640px] text-[14px] leading-relaxed text-fg-2">
-          Nenhuma armadilha ativada ainda neste navegador. Isso não quer dizer que você não as
-          tem, quer dizer que você ainda não encontrou o exercício que as ativa.
+          {filter === 'ativada'
+            ? 'Nenhuma armadilha ativada neste navegador. Isso não quer dizer que você não as tem, quer dizer que você ainda não encontrou o exercício que as ativa.'
+            : 'Nenhuma armadilha neste estado ainda.'}
         </p>
       )}
     </div>
