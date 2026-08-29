@@ -117,7 +117,7 @@ export function UnitMap({ unit }: { unit: Unit }) {
                     st === 'clean' || st === 'review' ? 'border-l-2 border-l-contract' : '',
                   )}
                 >
-                  <span className={cn('font-mono text-[10px]', optional ? 'opacity-70' : 'text-fg-5')}>
+                  <span className={cn('font-mono text-[12px]', optional ? 'opacity-70' : 'text-fg-5')}>
                     {String(i + 1).padStart(2, '0')}
                   </span>
                   <span>{c.title}</span>

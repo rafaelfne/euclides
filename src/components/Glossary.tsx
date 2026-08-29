@@ -83,7 +83,7 @@ export function Glossary({ terms }: { terms: GlossaryTerm[] }) {
                     {t.introducedIn !== PLANNED && (
                       <Link
                         href={`/units/${unitOf.get(t.introducedIn)?.id}/cycles/${t.introducedIn}`}
-                        className="ml-auto font-mono text-[10.5px] text-fg-4 hover:text-contract"
+                        className="ml-auto font-mono text-[12px] text-fg-4 hover:text-contract"
                       >
                         nasce em {t.introducedIn}
                       </Link>

@@ -195,6 +195,7 @@ export const figure = z.discriminatedUnion('kind', [
 // Cycles — the unit of study, and of cognitive load.
 // ---------------------------------------------------------------------------
 
+export const MAX_ONE_LINE_WORDS = 20
 export const MAX_NEW_TERMS_PER_CYCLE = 4
 
 /**
@@ -222,14 +223,23 @@ export const cycle = z.object({
   elaborates: z.string().optional(),
   /** Glossary ids first introduced here. Capped at build time. */
   introducesTerms: z.array(z.string()).max(MAX_NEW_TERMS_PER_CYCLE),
+  /**
+   * A afirmação do ciclo em uma frase, sem jargão, com verbo concreto.
+   *
+   * Ela existe para quem ainda não tem referente para o vocabulário do app, e
+   * o teto de palavras é a checagem `síntese` — acima disso ela vira mais um
+   * parágrafo, e o ciclo já tem parágrafos. Ver ADR-0019.
+   */
+  oneLine: z.string().min(1),
   body: z.array(z.string().min(1)).min(1),
   pseudocode: z.string().optional(),
   invariant: z.string().optional(),
   figure: figure.optional(),
+  /** Obrigatório desde o ADR-0019: não há ciclo que vá do aforismo ao exercício. */
   workedExample: z.object({
     problem: z.string().min(1),
     whatToNotice: z.string().min(1),
-  }).optional(),
+  }),
   /** Every cycle ends in an exercise. Not optional — principle 2. */
   exerciseId: z.string().min(1),
 })

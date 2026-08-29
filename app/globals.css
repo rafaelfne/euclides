@@ -24,11 +24,17 @@
   --rule: #2E343E;
   --rule-soft: #262B33;
 
+  /*
+    A rampa inteira passa em 4,5:1 contra as quatro superfícies do app. Os três
+    tons de baixo eram 2,68, 2,05 e 2,54 — e caíam justamente em navegação,
+    rótulo e estado, que é o texto de quem ainda não sabe o que procurar.
+    ADR-0019.
+  */
   --fg: #D8DBE0;
   --fg-2: #A7AEBA;
-  --fg-3: #7A828F;
-  --fg-4: #565D69;
-  --fg-5: #454C57;
+  --fg-3: #939DAC;
+  --fg-4: #8A94A3;
+  --fg-5: #808996;
 
   --contract: #7EA6E0;
   --contract-bg: #171E2A;
@@ -103,8 +109,8 @@
   /* Rótulo de seção. O tracking largo é o que separa cromo de conteúdo. */
   .lbl {
     font-family: var(--mono);
-    font-size: 9.5px;
-    letter-spacing: 0.18em;
+    font-size: 11px;
+    letter-spacing: 0.15em;
     text-transform: uppercase;
     color: var(--fg-4);
   }
@@ -125,4 +131,61 @@
     border-bottom: 1px dotted rgba(126, 166, 224, 0.5);
     cursor: help;
   }
+}
+
+
+/*
+  A camada de movimento. ADR-0019.
+
+  Regra única: movimento é argumento, e argumento se lê no ritmo de quem lê.
+  Nada em laço, nada decorativo, nada que o aluno não possa parar.
+
+  `prefers-reduced-motion` não desliga informação — desliga só a interpolação.
+  Um passo que aparecia deslizando passa a aparecer inteiro, e o conteúdo é o
+  mesmo. Desligar o passo seria esconder dado de quem pediu menos movimento.
+*/
+@layer components {
+  .m-tap {
+    transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease;
+  }
+  .m-tap:active { transform: translateY(1px); }
+
+  .m-rise { animation: rise 200ms ease-out both; }
+  .m-pulse { animation: pulse 220ms ease-out; }
+  .m-fade-in { animation: fade 160ms ease-out both; }
+
+  /* O sublinhado da aba desliza porque a aba anterior e a próxima são a mesma
+     trilha; um salto sugere duas trilhas. */
+  .m-underline { transition: transform 180ms cubic-bezier(0.2, 0, 0, 1), opacity 140ms ease; }
+
+  /* O destaque da armadilha recém-ativada decai sozinho: ele existe para achar
+     a linha nova no caderno, e depois de achada vira ruído. */
+  .m-decay { animation: decay 1200ms ease-out both; }
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 var(--contract); }
+  100% { box-shadow: 0 0 0 4px transparent; }
+}
+@keyframes decay {
+  0%, 30% { background-color: var(--cost-bg); border-color: var(--cost); }
+  100% { background-color: transparent; border-color: var(--rule); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+  .m-tap:active { transform: none; }
 }

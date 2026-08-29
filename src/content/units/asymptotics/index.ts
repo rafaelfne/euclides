@@ -104,17 +104,23 @@ export const asymptoticsUnit: Unit = {
   cycles: [
     { id: 'asymptotics.c0', title: 'A afirmação que passa na revisão e não vale nada', layer: 'essential', band: 'criterion',
       introducesTerms: ['big-o', 'cost-claim'],
+      oneLine: "Dizer o custo sem dizer o regime e as hipóteses não afirma quase nada.",
       body: [
         '"Hash é O(1)." A frase não é falsa. Ela está incompleta em quatro lugares, e cada omissão produz uma frase que soa igualmente precisa.',
         'Uma afirmação de custo verificável carrega cinco partes: o limite, o regime, se ele é amortizado, sob quais hipóteses vale, e o que n conta. Este ciclo apresenta as cinco; os próximos atacam uma de cada vez, e cada um deles começa pela frase que a omissão produz.',
         'Não é formalidade. O schema deste projeto exige as cinco partes em toda afirmação de custo que aparece na trilha — você vai encontrá-las preenchidas em todas as outras unidades. Aqui você aprende a produzi-las.',
       ],
+      workedExample: {
+        problem: "\"Buscar é O(1)\" contra \"buscar é O(1) amortizado no caso médio, supondo hash uniforme, com n contando pares na tabela\". A segunda tem 5 partes; a primeira tem 1.",
+        whatToNotice: "As duas frases descrevem a mesma tabela. Só a segunda deixa você prever o que acontece quando as chaves são escolhidas por quem ataca o sistema.",
+      },
       exerciseId: 'asymptotics.e0' },
 
     { id: 'asymptotics.c1', title: 'O que a notação joga fora, e quando isso importa', layer: 'essential', band: 'criterion',
       introducesTerms: ['asymptotic', 'constant-factor'],
+      oneLine: "Mil vezes n é maior que n ao quadrado até n chegar a mil.",
       body: [
-        'A notação descreve como o custo cresce, não quanto ele é. Ela descarta constantes de propósito, porque a constante depende da máquina e o crescimento não.',
+        'A notação descreve como o custo cresce, não quanto ele é. Ela descarta constantes de propósito: 1000·n e n são a mesma coisa para ela, porque a constante depende da máquina e o crescimento não.',
         'A consequência: para n pequeno, a comparação assintótica não decide nada. Mil vezes n é maior que n ao quadrado até n chegar a mil. Se as suas coleções têm duzentos elementos, a afirmação que ganha na notação é a que perde na máquina.',
         'É por isso que "é O(n), então é a escolha certa" não é um argumento — e é a primeira vez nesta trilha em que a resposta correta é "depende, e o eixo é este".',
       ],
@@ -132,19 +138,29 @@ export const asymptoticsUnit: Unit = {
           'origem. À esquerda do cruzamento a curva quadrática está por baixo: a afirmação que ' +
           'ganha na notação é a que perde na máquina, e o gráfico mostra por quanto.',
       },
+      workedExample: {
+        problem: "Com n = 200: 1000·n dá 200 mil, e n² dá 40 mil. O algoritmo \"melhor\" na notação custa 5 vezes mais.",
+        whatToNotice: "Ache o n em que os dois empatam antes de escolher. Se as suas coleções vivem abaixo dele, a notação está respondendo sobre um tamanho que você não tem.",
+      },
       exerciseId: 'asymptotics.e1' },
 
     { id: 'asymptotics.c2', title: 'O que n conta, e o que ele ignora', layer: 'essential', band: 'criterion',
       introducesTerms: ['measured-in'],
+      oneLine: "A conta soma elementos e costuma ignorar o tamanho de cada elemento.",
       body: [
-        'Toda afirmação de custo conta alguma coisa e ignora outra, e quase nunca diz qual é qual. "Procurar numa lista é O(n)" conta elementos e ignora o tamanho de cada elemento.',
+        'Toda afirmação de custo conta alguma coisa e ignora outra, e quase nunca diz qual é qual. "Procurar numa lista de 1000 é O(n)" conta os 1000 elementos e ignora o tamanho de cada um.',
         'Isso é aceitável quando comparar dois elementos custa o mesmo sempre — inteiros, por exemplo. Deixa de ser quando os elementos são URLs de tamanhos diferentes: a operação que a conta chamou de unitária passa a depender de uma segunda grandeza que a afirmação não menciona.',
         'A pergunta que resolve: uma operação que a sua conta somou como uma só realmente custa o mesmo em todas as entradas?',
       ],
+      workedExample: {
+        problem: "Procurar entre 1000 inteiros e entre 1000 URLs de 200 caracteres é O(n) nos dois. Comparar dois inteiros custa 1 operação; comparar duas URLs pode custar 200.",
+        whatToNotice: "O n é o mesmo e o custo real difere em duas ordens de grandeza. A pergunta é sempre qual operação a conta chamou de unitária.",
+      },
       exerciseId: 'asymptotics.e2' },
 
     { id: 'asymptotics.c3', title: 'Quando a conta não fecha: recorrência', layer: 'essential', band: 'technique', elaborates: 'recurrence',
       introducesTerms: ['recurrence', 'base-case'],
+      oneLine: "Quando o procedimento chama a si mesmo, escreva o custo em função do subproblema.",
       body: [
         'Contar rodadas funciona enquanto o procedimento não chama a si mesmo. Quando ele chama, o número de níveis depende da entrada, e não há o que somar diretamente.',
         'A saída é escrever o custo em função do custo do subproblema: dividir ao meio e chamar duas vezes, gastando tempo linear para juntar, é T(n) = 2·T(n/2) + n. Resolver essa relação dá n log n.',
@@ -164,8 +180,9 @@ export const asymptoticsUnit: Unit = {
 
     { id: 'asymptotics.c4', title: 'A árvore de recursão, desenhada', layer: 'essential', band: 'technique', elaborates: 'recurrence',
       introducesTerms: ['recursion-tree'],
+      oneLine: "As chamadas dobram, o tamanho cai pela metade, e o custo do nível fica igual.",
       body: [
-        'Escrever a relação é metade do trabalho. A outra metade é resolvê-la, e "resolver essa relação dá n log n" dito sem derivação é exatamente o reconhecimento de padrão que o ciclo anterior condena.',
+        'Escrever a relação é metade do trabalho. A outra metade é resolvê-la, e "resolver essa relação dá n log n" dito sem derivação é exatamente o reconhecimento de padrão que o ciclo anterior condena. Para n = 8, os níveis são 3, e cada um custa 8.',
         'A derivação cabe num desenho. Cada nível da árvore tem duas grandezas: quantas chamadas existem ali e de que tamanho é cada uma. O custo do nível é o produto das duas, e é isso que a coluna do meio do exercício pede.',
         'Duas coisas aparecem quando a tabela fica pronta, e nenhuma das duas é óbvia antes. A primeira: o custo por nível **não cresce** — as chamadas dobram e o tamanho cai pela metade, e o produto fica igual. A segunda: o número de níveis não é n, é quantas vezes dá para dividir n ao meio até chegar ao caso base, que é log n.',
         'O total é o custo de um nível vezes o número de níveis. É daí que n log n sai, e não de reconhecer a forma da relação.',
@@ -183,15 +200,21 @@ export const asymptoticsUnit: Unit = {
 
     { id: 'asymptotics.c5', title: 'Regime: o pior caso não é o caso raro', layer: 'essential', band: 'failure',
       introducesTerms: [],
+      oneLine: "O pior caso do quicksort ingênuo é a entrada já ordenada, que é a mais comum.",
       body: [
-        'Pior caso, caso médio e melhor caso qualificam o **custo**, não a frequência da entrada. Dizer que algo é O(n²) no pior caso não afirma que esse caso é improvável.',
+        'Pior caso, caso médio e melhor caso qualificam o **custo**, não a frequência da entrada. Dizer que algo é O(n²) no pior caso não afirma que esse caso é improvável — ele pode ser 100% das suas entradas.',
         'O exemplo que desfaz a confusão de uma vez: o pior caso do quicksort com pivô no primeiro elemento é a entrada já ordenada — a mais comum que existe num sistema real. O pior caso ali não é raro; é o caso normal.',
         'E quando a entrada vem de fora, a distinção deixa de ser acadêmica: quem escolhe as chaves pode escolhê-las para ativar o pior caso de propósito. É a mesma família de problema que a unidade de tabelas hash chama de hash flooding.',
       ],
+      workedExample: {
+        problem: "Quicksort com pivô no primeiro elemento, sobre [1, 2, 3, 4, 5]: as partições ficam de tamanho 0 e 4, depois 0 e 3, e assim por diante. São 4 níveis em vez de 3, e o custo vai a n².",
+        whatToNotice: "Nada nessa entrada é estranho — ela é o que sai de qualquer consulta ordenada. \"Pior caso\" qualificou o custo e não disse nada sobre a frequência.",
+      },
       exerciseId: 'asymptotics.e4' },
 
     { id: 'asymptotics.c6', title: 'Amortizado não é caso médio', layer: 'essential', band: 'technique', elaborates: 'aggregate-amortized',
       introducesTerms: ['amortized-analysis'],
+      oneLine: "Mil inserções custam O(n) no total, e isso não é o mesmo que caso médio.",
       body: [
         'Um array dinâmico dobra de capacidade quando enche. A inserção que dobra copia tudo e custa O(n); as outras custam O(1). Somando mil inserções, o total é O(n), e por inserção dá constante.',
         'Isso é amortização, e ela não é caso médio. Caso médio fala de uma distribuição de entradas possíveis, e responde "se eu sortear uma entrada, quanto custa". Amortização fala de uma sequência fixa e conhecida de operações, sem sorteio nenhum: as inserções caras acontecem em posições que dá para apontar no dedo.',
@@ -205,8 +228,9 @@ export const asymptoticsUnit: Unit = {
 
     { id: 'asymptotics.c7', title: 'Escolher a técnica pela forma do código', layer: 'essential', band: 'technique', elaborates: 'operation-counting',
       introducesTerms: [],
+      oneLine: "A forma do código escolhe a técnica: laço conta, chamada recorre, dobra agrega.",
       body: [
-        'As três técnicas não competem: elas respondem partes diferentes, e a forma do código diz qual usar.',
+        'As 3 técnicas não competem: elas respondem partes diferentes, e a forma do código diz qual usar.',
         'Laço simples, sem chamada a si mesmo e sem nada que redistribua custo: contagem de operações responde limite, regime, hipóteses e unidade de medida, e responde em uma linha.',
         'Chamada a si mesmo: recorrência. Alguma operação que dobra, reconstrói ou reorganiza: agregação, e é a única das três que produz a parte da amortização diretamente.',
         'Usar recorrência num laço simples não está errado — está caro, e é sinal de que a forma do código não foi lida antes da conta começar.',

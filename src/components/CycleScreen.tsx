@@ -51,6 +51,15 @@ export function CycleScreen({ unit, cycle, exercise }: { unit: Unit; cycle: Cycl
           </div>
         )}
 
+        {/*
+          A frase de abertura vem ANTES da prosa e nunca depois: quem não tem
+          referente para o vocabulário do app precisa dela para decidir se
+          continua lendo, e quem tem passa o olho e pula. ADR-0019.
+        */}
+        <p className="m-0 mb-5 max-w-[820px] border-l-2 border-contract pl-4 text-[17px] leading-snug text-fg">
+          {cycle.oneLine}
+        </p>
+
         <div className="flex max-w-[820px] flex-col gap-3.5">
           {cycle.body.map((p, i) => (
             <p key={i} className="m-0 text-[14.5px] leading-[1.75] text-fg-2"><Prose>{p}</Prose></p>
@@ -69,8 +78,7 @@ export function CycleScreen({ unit, cycle, exercise }: { unit: Unit; cycle: Cycl
           </div>
         )}
 
-        {cycle.workedExample && (
-          <Panel className="mt-6 max-w-[820px] border-cost-rule bg-cost-bg">
+        <Panel className="mt-6 max-w-[820px] border-cost-rule bg-cost-bg">
             <PanelHeader className="border-cost-rule bg-transparent">
               <PanelTitle className="text-cost">Exemplo trabalhado</PanelTitle>
             </PanelHeader>
@@ -78,8 +86,7 @@ export function CycleScreen({ unit, cycle, exercise }: { unit: Unit; cycle: Cycl
               <span className="text-[13.5px] text-fg-2">{cycle.workedExample.problem}</span>
               <span className="text-[13.5px] italic text-fg-3">{cycle.workedExample.whatToNotice}</span>
             </PanelBody>
-          </Panel>
-        )}
+        </Panel>
 
         <div className="mt-8 max-w-[860px]">
           {exercise.kind === 'trace'

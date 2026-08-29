@@ -31,7 +31,25 @@ export function ChoiceExercise({
   // a tela não o lia.
   useEffect(() => {
     const st = exerciseState(unit.id, exerciseId)
-    if (st) setAttempts(st.attempts)
+    if (!st) return
+    setAttempts(st.attempts)
+
+    // A alternativa escolhida não é guardada, e não precisa ser: ela é DERIVÁVEL
+    // do que o progresso já sabe. Resolvido devolve a correta; não resolvido
+    // devolve a alternativa da última armadilha ativada. Sem isto o exercício
+    // voltava com o contador de tentativas e sem a explicação — o aluno perdia
+    // o melhor conteúdo do ciclo exatamente ao voltar para revisar. ADR-0019.
+    if (st.solved) {
+      const i = shown.findIndex((c) => c.correct)
+      if (i >= 0) setPicked(i)
+      return
+    }
+    const last = st.misconceptionsTriggered[st.misconceptionsTriggered.length - 1]
+    if (!last) return
+    const i = shown.findIndex((c) => !c.correct && c.misconceptionId === last)
+    if (i >= 0) setPicked(i)
+    // `shown` é estável: seededShuffle é função pura do id do exercício.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [unit.id, exerciseId])
 
   const chosen = picked === null ? null : shown[picked]!
@@ -81,7 +99,7 @@ export function ChoiceExercise({
                 key={i}
                 onClick={() => onPick(i)}
                 className={cn(
-                  'cursor-pointer border px-4 py-3 text-left text-[13.5px] leading-relaxed transition-colors',
+                  'm-tap cursor-pointer border px-4 py-3 text-left text-[13.5px] leading-relaxed',
                   !isPicked && 'border-rule bg-panel-head text-fg-2 hover:bg-panel-hover hover:text-fg',
                   isPicked && c.correct && 'border-contract-rule bg-contract-bg text-fg',
                   isPicked && !c.correct && 'border-implementation-rule bg-implementation-bg text-fg',
@@ -94,7 +112,7 @@ export function ChoiceExercise({
         </div>
 
         {chosen && !chosen.correct && misconception && !exhausted && (
-          <div className="border-l-2 border-implementation pl-4">
+          <div className="m-rise border-l-2 border-implementation pl-4">
             <div className="mb-2">
               <TrapNote unit={unit} />
             </div>
@@ -108,7 +126,7 @@ export function ChoiceExercise({
         )}
 
         {chosen && !chosen.correct && misconception && exhausted && (
-          <div className="border-l-2 border-rule pl-4">
+          <div className="m-rise border-l-2 border-rule pl-4">
             <div className="mb-1.5 text-[14.5px] font-semibold text-fg">Vamos parar aqui.</div>
             <div className="text-[13.5px] leading-relaxed text-fg-3">
               Releia o ciclo {misconception.reviewCycle.split('.')[1]} e volte a este exercício amanhã.
@@ -121,7 +139,7 @@ export function ChoiceExercise({
         )}
 
         {chosen?.correct && (
-          <div className="flex flex-col gap-3.5">
+          <div className="m-rise flex flex-col gap-3.5">
             <div className="border-l-2 border-contract pl-4 text-[13.5px] leading-relaxed text-fg-2">
               {attempts === 1
                 ? 'Resolvido na primeira tentativa, sem ativar nenhuma ideia errada. Isto conta para o critério de domínio.'

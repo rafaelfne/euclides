@@ -41,7 +41,7 @@ export function UnitTabs({ unit, cycleId }: { unit: Unit; cycleId?: string }) {
       <Link
         href={`/units/${unit.id}`}
         className={cn(
-          'shrink-0 border-r border-rule-soft px-4 py-2.5 font-mono text-[11px] whitespace-nowrap',
+          'shrink-0 border-r border-rule-soft px-4 py-2.5 font-mono text-[12px] whitespace-nowrap',
           cycleId ? 'text-fg-4 hover:bg-panel-head hover:text-fg-2' : '-mb-px border-b border-b-shell bg-shell text-fg',
         )}
       >
@@ -64,7 +64,7 @@ export function UnitTabs({ unit, cycleId }: { unit: Unit; cycleId?: string }) {
             )}
           >
             <span className={cn('h-1.5 w-1.5 shrink-0 rounded-full', DOT[st])} aria-hidden />
-            <span className={cn('font-mono text-[10.5px]', active && TONE_TEXT[BAND_TONE[c.band]])}>{short}</span>
+            <span className={cn('font-mono text-[12px]', active && TONE_TEXT[BAND_TONE[c.band]])}>{short}</span>
             <span className={cn('max-w-[190px] truncate', active ? 'text-fg' : 'text-fg-4')}>{c.title}</span>
           </Link>
         )

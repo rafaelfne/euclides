@@ -28,7 +28,7 @@ export function Rail({ unitId }: { unitId?: string }) {
                   : 'border-transparent text-fg-3 hover:bg-panel-head hover:text-fg-2',
               )}
             >
-              <span className={cn('font-mono text-[10.5px]', active ? 'text-contract' : 'text-fg-5')}>
+              <span className={cn('font-mono text-[12px]', active ? 'text-contract' : 'text-fg-5')}>
                 {String(u.number).padStart(2, '0')}
               </span>
               <span className="leading-snug">{u.title}</span>

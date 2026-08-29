@@ -9,7 +9,7 @@
  * level, because a warning is a rule nobody enforces.
  */
 import {
-  unit as unitSchema, MAX_NEW_TERMS_PER_CYCLE, BANDS_BY_KIND,
+  unit as unitSchema, MAX_NEW_TERMS_PER_CYCLE, MAX_ONE_LINE_WORDS, BANDS_BY_KIND,
   type Unit, type Choice, type GlossaryTerm,
 } from '../content/schema'
 import { OVERLOADED_TERMS, PLANNED } from '../content/glossary'
@@ -30,6 +30,8 @@ export const CHECKS = [
   ['revisão', 'revisão: toda misconception aponta um ciclo de revisão que existe'],
   ['espinha', 'espinha: todo ciclo declara sua banda e a unidade abre pelo contrato'],
   ['exemplo', 'exemplo: toda implementação ou técnica estreia com exemplo trabalhado'],
+  ['síntese', `síntese: todo ciclo abre com uma frase de no máximo ${MAX_ONE_LINE_WORDS} palavras`],
+  ['instância', 'instância: os dois primeiros parágrafos do ciclo trazem um número real'],
   ['figura', 'figura: toda figura declara curvas distintas e uma faixa que cabe no eixo'],
   ['custo', 'custo: toda implementação declara custo de toda operação do contrato'],
   ['cobertura', 'cobertura: toda parte do critério é produzida por alguma técnica'],
@@ -60,14 +62,31 @@ export function checkAll(units: Unit[], terms: GlossaryTerm[]): Failure[] {
     fail('registro', 'nenhuma unidade registrada — o gate não tem o que ler')
   }
 
-  // --- schema ---------------------------------------------------------------
+  /*
+    --- schema ---------------------------------------------------------------
+
+    As checagens seguintes leem campo direto, sem guarda, porque o schema já
+    garantiu que ele existe. Uma unidade que NÃO passa aqui é retirada do resto
+    da rodada: sem isso, um campo obrigatório recém-declarado derrubava o
+    validador com TypeError em vez de reprovar com o nome do campo — e um gate
+    que quebra não é um gate. Aconteceu duas vezes; ADR-0019.
+  */
+  let schemaBroke = false
   for (const u of units) {
     const parsed = unitSchema.safeParse(u)
-    if (!parsed.success) {
-      for (const issue of parsed.error.issues) {
-        fail('schema', `${u.id}: ${issue.path.join('.')} — ${issue.message}`)
-      }
+    if (parsed.success) continue
+    schemaBroke = true
+    for (const issue of parsed.error.issues) {
+      fail('schema', `${u.id}: ${issue.path.join('.')} — ${issue.message}`)
     }
+  }
+  // Sem isto, um campo obrigatório recém-declarado produzia 100 violações de
+  // glossário que não existem — as outras checagens leem o dado supondo o
+  // schema, e o relatório delas com o schema quebrado é ruído que esconde a
+  // causa. Conserte o schema, rode de novo, veja o resto.
+  if (schemaBroke) {
+    fail('schema', 'as outras checagens não rodaram: elas pressupõem o schema')
+    return failures
   }
 
   // --- distractors apontam misconceptions que existem -----------------------
@@ -259,6 +278,31 @@ export function checkAll(units: Unit[], terms: GlossaryTerm[]): Failure[] {
         if (f.removeAt === f.values.length - 1) {
           fail('figura', `${c.id}: remover a última posição não desloca nada, e a figura existe para mostrar o deslocamento`)
         }
+      }
+    }
+
+    /*
+      A rampa de entrada, cobrada em vez de recomendada.
+
+      `síntese` limita a frase de abertura: acima do teto ela vira mais um
+      parágrafo, e o ciclo já tem parágrafos.
+
+      `instância` é a regra que ataca 44 dos 62 ciclos com um movimento só —
+      nenhum ciclo publica sem um número real nos dois primeiros parágrafos.
+      Categoria sem caso é economia de tempo para quem já tem referente, e
+      palavra sem referente para quem não tem. Ver ADR-0019.
+    */
+    for (const c of u.cycles) {
+      const words = c.oneLine.trim().split(/\s+/).length
+      if (words > MAX_ONE_LINE_WORDS) {
+        fail('síntese', `${c.id}: a frase de abertura tem ${words} palavras (teto ${MAX_ONE_LINE_WORDS})`)
+      }
+      if (!/[.!?]$/.test(c.oneLine.trim())) {
+        fail('síntese', `${c.id}: a frase de abertura não termina em ponto`)
+      }
+      const opening = c.body.slice(0, 2).join(' ')
+      if (!/\d/.test(opening)) {
+        fail('instância', `${c.id}: nenhum número real nos dois primeiros parágrafos`)
       }
     }
 

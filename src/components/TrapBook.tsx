@@ -46,7 +46,7 @@ export function TrapBook({ units }: { units: Unit[] }) {
         <button
           onClick={() => setOnlyMine((v) => !v)}
           className={cn(
-            'border px-3 py-1 font-mono text-[10.5px] tracking-[0.16em] uppercase',
+            'border px-3 py-1 font-mono text-[12px] tracking-[0.16em] uppercase',
             onlyMine ? 'border-implementation-rule bg-implementation-bg text-implementation' : 'border-rule bg-panel text-fg-3 hover:text-fg',
           )}
         >
@@ -80,7 +80,7 @@ export function TrapBook({ units }: { units: Unit[] }) {
                     </div>
                     <Link
                       href={`/units/${unit.id}/cycles/${m.reviewCycle}`}
-                      className="mt-1 inline-block font-mono text-[10.5px] text-contract"
+                      className="mt-1 inline-block font-mono text-[12px] text-contract"
                     >
                       desfaz em {m.reviewCycle}
                     </Link>

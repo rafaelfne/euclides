@@ -125,14 +125,20 @@ export const hashUnit: Unit = {
   cycles: [
     { id: 'hash.c0', title: 'O contrato, antes da estrutura', layer: 'essential', band: 'contract',
       introducesTerms: ['adt', 'map'],
+      oneLine: "O Map associa chave a valor e não promete ordem nenhuma.",
       body: [
-        'Antes de qualquer estrutura, o contrato. Um Map associa chave a valor e oferece quatro operações — e é tudo o que ele oferece.',
+        'Antes de qualquer estrutura, o contrato. Um Map associa chave a valor e oferece 4 operações — e é tudo o que ele oferece.',
         'O que interessa aqui não é a lista de operações; é a lista do que o contrato NÃO cobre. Ordem não está lá. Nem mínimo, nem faixa, nem “os vinte primeiros”. Guarde essa ausência: no último ciclo ela volta como a resposta inteira.',
       ],
+      workedExample: {
+        problem: "Guarde 3 pares em um Map: \"b\"→1, \"a\"→2, \"c\"→3. Peça o valor de \"a\": 1 operação. Peça \"a menor chave\": nenhuma das 4 operações responde.",
+        whatToNotice: "A ausência de ordem não é limitação de implementação, é o contrato. Guarde essa lista — ela é a resposta do último ciclo.",
+      },
       exerciseId: 'hash.e0' },
 
     { id: 'hash.c1', title: 'A aposta: transformar chave em endereço', layer: 'essential', band: 'implementation', elaborates: 'chaining',
       introducesTerms: ['hash', 'hash-function'],
+      oneLine: "Se a chave virar um índice, o acesso vira 1 operação.",
       body: [
         'Acesso em O(1) só existe por índice. Se a chave virasse um índice, o problema estaria resolvido — e toda tabela hash é exatamente essa aposta.',
       ],
@@ -145,16 +151,22 @@ export const hashUnit: Unit = {
 
     { id: 'hash.c2', title: 'Colisão é matemática, não defeito', layer: 'essential', band: 'implementation', elaborates: 'chaining',
       introducesTerms: ['collision', 'pigeonhole'],
+      oneLine: "Com 4 buckets e 5 chaves, duas colidem. Não há h que evite isso.",
       body: [
-        'Quantas strings existem? Quantos buckets você tem? A resposta à segunda pergunta é finita e a da primeira não é, o que torna a colisão inevitável para qualquer h.',
+        'Quantas strings existem? Quantos buckets você tem? Com 1000 buckets e 1001 chaves distintas, pelo menos 2 caem no mesmo lugar — e isso vale para qualquer h que se escreva.',
         'Isso muda o problema: não se trata de evitar colisão, e sim de decidir o que fazer quando ela ocorre.',
       ],
+      workedExample: {
+        problem: "Existem infinitas strings possíveis e uma tabela tem, digamos, 1000 buckets. Guardando 1001 chaves distintas, pelo menos duas caem no mesmo bucket, para qualquer h que se escreva.",
+        whatToNotice: "Repare que o argumento não olha para a função h. Colisão é consequência de contar, não de escolher mal.",
+      },
       exerciseId: 'hash.e1b' },
 
     { id: 'hash.c3', title: 'Chaining e a invariante de posição', layer: 'essential', band: 'implementation', elaborates: 'chaining',
       introducesTerms: ['bucket', 'chaining', 'position-invariant'],
+      oneLine: "Todo par no bucket i satisfaz h(k) mod m = i, e é isso que o rehash quebra.",
       body: [
-        'Cada bucket guarda a lista dos pares que colidiram ali. A busca calcula o endereço uma vez e depois compara chaves dentro do bucket.',
+        'Cada bucket guarda a lista dos pares que colidiram ali. A busca calcula o endereço 1 vez e depois compara chaves dentro do bucket — 3 chaves no bucket são 3 comparações.',
         'A propriedade que sustenta tudo o que vem depois é discreta: todo par armazenado no bucket i satisfaz h(k) mod m = i. Guarde essa frase — ela é o motivo de o rehash precisar reinserir em vez de copiar.',
       ],
       pseudocode: `função buscar(T, chave)
@@ -178,16 +190,22 @@ export const hashUnit: Unit = {
 
     { id: 'hash.c4', title: 'Load factor', layer: 'essential', band: 'cost',
       introducesTerms: ['load-factor', 'uniform-hashing'],
+      oneLine: "Com m = 1000 e n = 750, α é 0,75 e centenas de buckets ainda estão vazios.",
       body: [
         'O load factor é a razão α = n/m entre pares armazenados e posições disponíveis. Com chaining ele pode passar de 1 sem que nada quebre.',
         'Ele não mede quanto da memória está ocupada. Numa tabela com m = 1000 e n = 750, estime quantos buckets estão vazios antes de calcular — e depois calcule.',
       ],
+      workedExample: {
+        problem: "m = 1000, n = 750, α = 0,75. Com espalhamento uniforme, cerca de 472 buckets ficam vazios — quase metade da tabela.",
+        whatToNotice: "α = 0,75 sugere \"três quartos cheia\" e a tabela está com metade das posições sem nada. α mede pares por posição, não ocupação.",
+      },
       exerciseId: 'hash.e2a' },
 
     { id: 'hash.c5', title: 'Rehash e o custo amortizado', layer: 'essential', band: 'implementation', elaborates: 'chaining',
       introducesTerms: ['rehash', 'amortized'],
+      oneLine: "A tabela dobra e reinsere tudo; copiar quebraria a invariante de posição.",
       body: [
-        'Quando α passa do limite, a tabela dobra e reinsere. Reinsere, não copia: mudar m quebra a invariante de posição para todos os pares ao mesmo tempo.',
+        'Quando α passa do limite, a tabela dobra e reinsere. Reinsere, não copia: com m indo de 4 para 8, a chave 11 sai do bucket 3 e vai para o 3 de novo, mas a chave 4 sai do 0 e vai para o 4.',
         'O rehash custa O(n+m) pontualmente. Como ele acontece a cada duplicação, o custo por inserção continua constante quando espalhado ao longo da sequência.',
       ],
       pseudocode: `função inserir(T, chave, valor)
@@ -209,14 +227,20 @@ export const hashUnit: Unit = {
 
     { id: 'hash.c6', title: 'O custo, com todos os qualificadores', layer: 'essential', band: 'cost',
       introducesTerms: ['worst-case', 'average-case'],
+      oneLine: "A frase \"hash é O(1)\" omite 4 coisas, e cada omissão muda o que ela afirma.",
       body: [
         'A frase “hash é O(1)” omite quatro coisas: o regime, a hipótese de hashing uniforme, a amortização vinda do rehash, e o que n mede — porque ela ignora o custo de hashear a própria chave.',
         'Neste ciclo cada um dos quatro é nomeado, e você reescreve a afirmação de forma que ela sobreviva a uma code review.',
       ],
+      workedExample: {
+        problem: "Reescreva \"hash é O(1)\": vira \"O(1) amortizado no caso médio, supondo hashing uniforme, com n contando pares e o custo de hashear a chave ignorado\".",
+        whatToNotice: "A versão completa tem 4 qualificadores que a curta não tinha. Cada um deles é uma condição que pode não valer no seu sistema.",
+      },
       exerciseId: 'hash.e3' },
 
     { id: 'hash.c7', title: 'Open addressing e a deleção que apaga demais', layer: 'deep-dive', band: 'implementation', elaborates: 'open-addressing',
       introducesTerms: ['open-addressing', 'probing', 'clustering', 'tombstone'],
+      oneLine: "Entre α = 0,8 e α = 0,9 as sondagens vão de 12,5 para 48,1.",
       body: [
         'Outra implementação do mesmo contrato, com perfil oposto: sem ponteiros, melhor localidade de cache, e degradação muito mais abrupta.',
         'Entre α = 0,8 e α = 0,9 a busca sem sucesso vai de 12,5 para 48,1 sondagens medidas, enquanto o chaining sai de 1,40 para 1,45. E remover não pode esvaziar a posição: isso interrompe a cadeia de sondagem e some com o que veio depois.',
@@ -229,9 +253,14 @@ export const hashUnit: Unit = {
 
     { id: 'hash.c8', title: 'Quando a tabela hash é a escolha errada', layer: 'essential', band: 'cost',
       introducesTerms: ['hash-flooding'],
+      oneLine: "A tabela hash falha exatamente onde o Map não prometeu nada.",
       body: [
-        'Volte ao contrato do primeiro ciclo. Tudo que o Map não promete é exatamente onde esta estrutura falha — e a lista de ausências que você guardou lá é a resposta inteira deste ciclo.',
+        'Volte às 4 operações do primeiro ciclo. Tudo que elas não prometem é exatamente onde esta estrutura falha — e a lista de ausências que você guardou lá é a resposta inteira deste ciclo.',
       ],
+      workedExample: {
+        problem: "Peça \"os 20 usuários mais recentes\" a um Map com 50 mil pares: a única saída é percorrer os 50 mil e ordenar.",
+        whatToNotice: "A estrutura não está lenta — ela está respondendo uma pergunta que o contrato dela nunca prometeu. Compare com a lista de ausências do ciclo 0.",
+      },
       exerciseId: 'hash.e5' },
   ],
 

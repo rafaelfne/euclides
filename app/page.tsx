@@ -26,7 +26,7 @@ export default function Home() {
                   className="flex h-full flex-col gap-1.5 border border-rule bg-panel px-4 py-3.5 text-inherit hover:bg-panel-hover"
                 >
                   <div className="flex items-baseline gap-2.5">
-                    <span className="font-mono text-[10.5px] text-fg-5">
+                    <span className="font-mono text-[12px] text-fg-5">
                       {String(u.number).padStart(2, '0')}
                     </span>
                     <span className="text-[17px] font-semibold">{u.title}</span>
