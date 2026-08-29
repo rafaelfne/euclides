@@ -82,8 +82,10 @@ O risco é o atalho virar requisito. A defesa é a regra: todo atalho tem botão
   aparece no trabalho.
 - **Fica mais difícil:** escrever um exercício de traço da unidade 01 sem dizer qual linha
   escreve o quê.
-- **Fica exposto:** `lineByColumn` não é conferido contra o pseudocódigo. Uma linha
-  renumerada deixa o painel acendendo a errada, e nenhuma checagem percebe.
+- **Estava exposto, e fechou em 29/08/2026:** `lineByColumn` não era conferido contra o
+  pseudocódigo, e uma linha renumerada deixava o painel acendendo a errada sem que nenhuma
+  checagem percebesse. A checagem `acesa` reprova linha além do fim, linha em branco e
+  coluna que o traço não tem.
 - **A observar:** se o diff muda o desempenho no exercício. Se a mesma pessoa erra mais no
   formato de PR, o formato estava escondendo alguma coisa que o bloco mostrava.
 
@@ -93,4 +95,4 @@ O risco é o atalho virar requisito. A defesa é a regra: todo atalho tem botão
 2. [x] `lineByColumn`, `ExecutionPanel` com linha acesa e variáveis observadas; `tracing.e2`
 3. [x] ⌘K sobre o índice existente; `j`/`k`, `1`–`9`, `Enter`
 4. [x] Atalhos documentados no `/como-funciona`
-5. [ ] Checar `lineByColumn` contra o número de linhas do pseudocódigo do ciclo
+5. [x] Checar `lineByColumn` contra o número de linhas do pseudocódigo do ciclo

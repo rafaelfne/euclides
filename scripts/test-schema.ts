@@ -206,6 +206,55 @@ const badPart = {
 check('whenOmitted apontando parte inexistente reprova',
   checkAll([...units, badPart], allTerms).some((f) => f.check === 'cobertura'))
 
+/*
+  As duas checagens do ADR-0026 e do ADR-0028, pelo lado negativo.
+
+  Elas nasceram para pegar erro que o conteúdo correto não mostra: uma linha
+  renumerada e uma linguagem sem tokenizador passavam caladas. Um teste que só
+  visse o conteúdo real veria as duas passando e não provaria nada.
+*/
+const comPainel = units.find((u) => u.exercises.some((e) => e.kind === 'trace' && e.lineByColumn))!
+const exPainel = comPainel.exercises.find((e) => e.kind === 'trace' && e.lineByColumn)!
+const cicloDoPainel = comPainel.cycles.find((c) => c.exerciseId === exPainel.id)!
+const totalDeLinhas = cicloDoPainel.pseudocode!.split('\n').length
+
+const trocaExercicio = (u: Unit, id: string, patch: object): Unit => ({
+  ...u,
+  exercises: u.exercises.map((e) => (e.id === id ? { ...e, ...patch } : e)),
+}) as Unit
+
+const linhaAlem = trocaExercicio(comPainel, exPainel.id, {
+  lineByColumn: { ...(exPainel as { lineByColumn: Record<string, number> }).lineByColumn, __alem: totalDeLinhas + 1 },
+})
+check('linha acesa além do fim do pseudocódigo reprova',
+  checkAll([...units.filter((u) => u.id !== comPainel.id), linhaAlem], allTerms).some((f) => f.check === 'acesa'))
+
+const colunaFantasma = trocaExercicio(comPainel, exPainel.id, {
+  lineByColumn: { nao_existe_essa_coluna: 1 },
+})
+check('linha acesa para coluna que o traço não tem reprova',
+  checkAll([...units.filter((u) => u.id !== comPainel.id), colunaFantasma], allTerms).some((f) => f.check === 'acesa'))
+
+const semPseudocodigo: Unit = {
+  ...comPainel,
+  cycles: comPainel.cycles.map((c) => (c.id === cicloDoPainel.id ? { ...c, pseudocode: undefined } : c)),
+} as Unit
+check('lineByColumn sem pseudocódigo no ciclo reprova',
+  checkAll([...units.filter((u) => u.id !== comPainel.id), semPseudocodigo], allTerms).some((f) => f.check === 'acesa'))
+
+const comDefeito = units.find((u) => u.exercises.some((e) => e.kind === 'bug'))!
+const exDefeito = comDefeito.exercises.find((e) => e.kind === 'bug')!
+
+const semTokenizador = trocaExercicio(comDefeito, exDefeito.id, { language: 'python' })
+check('exercício de defeito em linguagem sem tokenizador reprova',
+  checkAll([...units.filter((u) => u.id !== comDefeito.id), semTokenizador], allTerms).some((f) => f.check === 'realce'))
+
+const linhaInexistente = trocaExercicio(comDefeito, exDefeito.id, {
+  faultyLines: [(exDefeito as { code: string }).code.split('\n').length + 5],
+})
+check('exercício de defeito apontando linha além do código reprova',
+  checkAll([...units.filter((u) => u.id !== comDefeito.id), linhaInexistente], allTerms).some((f) => f.check === 'realce'))
+
 check('a lista de checagens é a mesma para os dois kinds', CHECKS.length > 0)
 
 console.log(failures ? `\n  ${failures} falha(s)\n` : '\n  todas as checagens passaram\n')

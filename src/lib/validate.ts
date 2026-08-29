@@ -17,6 +17,7 @@ import { vagueAbstractions, allowedVagueUses, forwardCitations } from '../conten
 import { referenceGenerators } from './reference'
 import { bfsOrder, dfsOrder, vertices } from './traversal'
 import { untranslated } from './transliterate'
+import { TOKENIZERS } from './highlight'
 import { probes } from '../content/placement'
 
 export const CHECKS = [
@@ -49,6 +50,8 @@ export const CHECKS = [
   ['estreia', 'estreia: nenhum termo aparece na prosa antes do ciclo que o estreia'],
   ['sonda', 'sonda: toda sonda do nivelamento aponta um exercício de escolha que existe na unidade dela'],
   ['incidente', 'incidente: toda unidade fecha, no último ciclo, o incidente que abriu'],
+  ['acesa', 'acesa: toda linha que o painel de execução acende existe no pseudocódigo do ciclo'],
+  ['realce', 'realce: todo exercício de defeito declara uma linguagem que tem tokenizador'],
 ] as const
 
 /** Colunas que o exercício já entrega preenchidas; ver `GIVEN` em TraceExercise. */
@@ -524,6 +527,67 @@ export function checkAll(units: Unit[], terms: GlossaryTerm[]): Failure[] {
       }
       for (const step of Object.keys(ex.misconceptionByStep)) {
         if (Number(step) > steps.length) fail('referência', `${ex.id}: misconception no passo ${step}, traço tem ${steps.length}`)
+      }
+    }
+  }
+
+  /*
+    --- acesa ---------------------------------------------------------------
+
+    `lineByColumn` diz qual linha do pseudocódigo o painel acende para cada
+    coluna do traço, e nada conferia esse número contra o pseudocódigo. Uma
+    linha renumerada — um `senão` a mais, uma linha em branco removida — deixa
+    o painel acendendo a linha errada, calado. É o ponto exposto do ADR-0026, e
+    a unidade 01 é precisamente sobre saber qual linha escreveu qual valor.
+
+    Linha em branco também reprova: acender o vazio não afirma nada.
+  */
+  for (const u of units) {
+    for (const ex of u.exercises) {
+      if (ex.kind !== 'trace' || !ex.lineByColumn) continue
+      const cycle = u.cycles.find((c) => c.exerciseId === ex.id)
+      if (!cycle) continue
+      if (!cycle.pseudocode) {
+        fail('acesa', `${ex.id}: declara lineByColumn e o ciclo ${cycle.id} não tem pseudocódigo`)
+        continue
+      }
+      const lines = cycle.pseudocode.split('\n')
+      const keys = new Set(ex.columns.map((c) => c.key))
+      for (const [key, line] of Object.entries(ex.lineByColumn)) {
+        if (!keys.has(key)) {
+          fail('acesa', `${ex.id}: lineByColumn aponta a coluna "${key}", que o traço não tem`)
+          continue
+        }
+        if (line > lines.length) {
+          fail('acesa', `${ex.id}: coluna "${key}" acende a linha ${line}, e o pseudocódigo de ${cycle.id} tem ${lines.length}`)
+          continue
+        }
+        if (!lines[line - 1]!.trim()) {
+          fail('acesa', `${ex.id}: coluna "${key}" acende a linha ${line}, que está em branco em ${cycle.id}`)
+        }
+      }
+    }
+  }
+
+  /*
+    --- realce --------------------------------------------------------------
+
+    O exercício de defeito declara `language` e a tela colore por um tokenizador
+    só. Linguagem sem tokenizador sai colorida pelas regras de outra, e num
+    exercício que pede para achar o defeito o realce errado aponta para o lugar
+    errado. ADR-0028.
+  */
+  for (const u of units) {
+    for (const ex of u.exercises) {
+      if (ex.kind !== 'bug') continue
+      if (!(ex.language in TOKENIZERS)) {
+        fail('realce', `${ex.id}: linguagem "${ex.language}" não tem tokenizador (${Object.keys(TOKENIZERS).join(', ')})`)
+      }
+      const lines = ex.code.split('\n')
+      for (const n of [...ex.faultyLines, ...(ex.addedLines ?? [])]) {
+        if (n > lines.length) {
+          fail('realce', `${ex.id}: aponta a linha ${n}, e o código tem ${lines.length}`)
+        }
       }
     }
   }

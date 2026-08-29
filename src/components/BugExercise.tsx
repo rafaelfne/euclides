@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import type { BugHuntExercise, Unit } from '@/content/schema'
-import { tokenizeJavaScript } from '@/lib/javascript'
+import { TOKENIZERS } from '@/lib/highlight'
 import { TOKEN_COLORS, TOKEN_WEIGHT } from '@/lib/pseudocode'
 import { cn } from '@/lib/utils'
 import { ChoiceExercise } from './ChoiceExercise'
@@ -34,6 +34,7 @@ export function BugExercise({ unit, exercise }: { unit: Unit; exercise: BugHuntE
   const [tries, setTries] = useState(0)
 
   const lines = exercise.code.split('\n')
+  const tokenize = TOKENIZERS[exercise.language]
   const isDiff = Boolean(exercise.addedLines?.length)
   const found = picked !== null && exercise.faultyLines.includes(picked)
 
@@ -95,8 +96,8 @@ export function BugExercise({ unit, exercise }: { unit: Unit; exercise: BugHuntE
                           {n}
                         </td>
                         <td className="w-full whitespace-pre px-3 py-0.5">
-                          {line
-                            ? tokenizeJavaScript(line).map((t, k) => (
+                          {line && tokenize
+                            ? tokenize(line).map((t, k) => (
                                 <span
                                   key={k}
                                   className={t.kind === 'convention' ? 'tok-convention' : undefined}
@@ -106,7 +107,7 @@ export function BugExercise({ unit, exercise }: { unit: Unit; exercise: BugHuntE
                                   {t.text}
                                 </span>
                               ))
-                            : ' '}
+                            : line || ' '}
                         </td>
                       </tr>
                     )

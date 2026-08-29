@@ -91,4 +91,4 @@ quem está aprendendo, e essa é a forma que eles vão continuar tendo.
 4. [x] `scripts/test-javascript.ts`: integridade linha a linha nos oito exercícios E no
    pseudocódigo transliterado dos 62 ciclos, mais os operadores compostos que não podem ser
    fatiados
-5. [ ] Checagem que reprove exercício de defeito numa linguagem sem tokenizador
+5. [x] Checagem que reprove exercício de defeito numa linguagem sem tokenizador
