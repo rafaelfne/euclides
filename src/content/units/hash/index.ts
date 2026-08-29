@@ -165,6 +165,13 @@ export const hashUnit: Unit = {
     { id: 'hash.c3', title: 'Chaining e a invariante de posição', layer: 'essential', band: 'implementation', elaborates: 'chaining',
       introducesTerms: ['bucket', 'chaining', 'position-invariant'],
       oneLine: "Todo par no bucket i satisfaz h(k) mod m = i, e é isso que o rehash quebra.",
+      plainly:
+        'Você tem os e-mails já cadastrados e precisa responder "esse e-mail já existe?" sem ' +
+        'percorrer todos. A saída é calcular, a partir do próprio e-mail, um número que diz ' +
+        'onde procurar. Dois e-mails diferentes podem dar o mesmo número; quando isso ' +
+        'acontece, aquele lugar guarda os dois e a busca compara um por um só ali dentro. A ' +
+        'conta que escolhe o lugar é sempre uma; o que varia é quantos vizinhos caíram no ' +
+        'mesmo lugar.',
       body: [
         'Cada bucket guarda a lista dos pares que colidiram ali. A busca calcula o endereço 1 vez e depois compara chaves dentro do bucket, 3 chaves no bucket são 3 comparações.',
         'A propriedade que sustenta tudo o que vem depois é discreta: todo par armazenado no bucket i satisfaz h(k) mod m = i. Guarde essa frase, ela é o motivo de o rehash precisar reinserir em vez de copiar.',

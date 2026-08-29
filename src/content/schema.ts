@@ -300,6 +300,7 @@ export const figure = z.discriminatedUnion('kind', [
 // ---------------------------------------------------------------------------
 
 export const MAX_ONE_LINE_WORDS = 20
+export const MAX_PLAINLY_WORDS = 90
 export const MAX_NEW_TERMS_PER_CYCLE = 4
 
 /**
@@ -335,6 +336,19 @@ export const cycle = z.object({
    * parágrafo, e o ciclo já tem parágrafos. Ver ADR-0019.
    */
   oneLine: z.string().min(1),
+  /**
+   * O ciclo dito em linguagem cotidiana, para quem chega sem o vocabulário.
+   *
+   * É a dívida declarada no ADR-0016, e ela é aditiva: não substitui a prosa
+   * nem a frase de abertura. A prosa usa o termo canônico porque é ele que o
+   * aluno vai encontrar em documentação e em code review (ADR-0005); este
+   * parágrafo mostra o fenômeno ANTES de qualquer nome, ancorado em trabalho
+   * real, e é o que alguém diria num quadro branco antes de abrir o código.
+   *
+   * Opcional, e aparece só no modo iniciante: quem já julgou aquele conteúdo
+   * não quer a versão longa entre a abertura e a prosa (ADR-0027).
+   */
+  plainly: z.string().min(1).optional(),
   body: z.array(z.string().min(1)).min(1),
   pseudocode: z.string().optional(),
   /**

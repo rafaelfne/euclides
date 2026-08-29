@@ -119,6 +119,13 @@ export const asymptoticsUnit: Unit = {
     { id: 'asymptotics.c1', title: 'O que a notação joga fora, e quando isso importa', layer: 'essential', band: 'criterion',
       introducesTerms: ['asymptotic', 'constant-factor'],
       oneLine: "Mil vezes n é maior que n ao quadrado até n chegar a mil.",
+      plainly:
+        'Duas implementações do mesmo filtro: uma faz mil operações para cada elemento, a ' +
+        'outra faz uma operação para cada par de elementos. No papel a segunda cresce pior, e ' +
+        'em coleção grande ela perde feio. Só que com duzentos elementos a primeira faz ' +
+        'duzentas mil operações e a segunda faz quarenta mil — a que cresce pior é a que ' +
+        'ganha. A comparação da teoria só passa a valer quando a coleção fica grande o ' +
+        'bastante, e esse "grande o bastante" é um número que você consegue calcular.',
       body: [
         'A notação descreve como o custo cresce, não quanto ele é. Ela descarta constantes de propósito: 1000·n e n são a mesma coisa para ela, porque a constante depende da máquina e o crescimento não.',
         'A consequência: para n pequeno, a comparação assintótica não decide nada. Mil vezes n é maior que n ao quadrado até n chegar a mil. Se as suas coleções têm duzentos elementos, a afirmação que ganha na notação é a que perde na máquina.',

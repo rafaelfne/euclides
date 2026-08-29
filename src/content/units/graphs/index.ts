@@ -177,6 +177,12 @@ export const graphsUnit: Unit = {
     { id: 'graphs.c4', title: 'Percorrer sem voltar: o conjunto de visitados', layer: 'essential', band: 'cost',
       introducesTerms: ['bfs', 'visited'],
       oneLine: "Sem o conjunto de visitados, um grafo com ciclo nunca esvazia a fila.",
+      plainly:
+        'A tela de permissões trava e ninguém sabe por quê. O código anda por uma estrutura ' +
+        'em que cada item aponta para outros, e em algum lugar alguém aponta de volta para ' +
+        'onde a busca já passou. O percurso chega lá, segue o ponteiro, volta ao ponto de ' +
+        'partida e recomeça — para sempre. O conserto não é uma condição de parada nova; é ' +
+        'anotar por onde já se passou e não passar de novo.',
       body: [
         'Percorrer um grafo é a consequência mais importante de tê-lo escolhido, e é onde o contrato mostra o que custa. A busca em largura usa 1 fila: tira um vértice, olha os vizinhos, põe na fila os que ainda não viu.',
         '"Os que ainda não viu" é a peça que a árvore não precisava. Como pode haver caminho de volta, um vértice pode ser alcançado duas vezes, e sem um conjunto de visitados a fila nunca esvazia. O laço infinito da tela de permissões é exatamente isto.',
