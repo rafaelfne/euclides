@@ -1,11 +1,3 @@
-'use client'
-
-import { useMemo } from 'react'
-import {
-  ReactFlow, Background, type Edge, type Node, type NodeProps, Handle, Position,
-} from '@xyflow/react'
-import dagre from 'dagre'
-import '@xyflow/react/dist/style.css'
 import type { Figure } from '@/content/schema'
 import { Stepper } from './Stepper'
 
@@ -23,10 +15,20 @@ import { Stepper } from './Stepper'
  * multiplicam por `branches` enquanto o tamanho divide por `divisor`; e **o
  * número de níveis é log na base do divisor**, não n. Ver ADR-0025.
  *
- * A marca d'água do React Flow fica. Removê-la exige assinatura Pro, e o
- * projeto não tem uma.
+ * A disposição é aritmética, e não um algoritmo de layout: a árvore de
+ * recursão é completa e uniforme por definição, então o nível `i` tem
+ * `branches^i` chamadas igualmente espaçadas. Era isso que o dagre calculava.
  */
 type Level = { level: number; calls: number; size: number; cost: number }
+
+const NODE_W = 46
+const NODE_H = 26
+const GAP_X = 12
+const LEVEL_H = 62
+const PAD = 10
+
+/** Acima disto o nível vira uma faixa: 32 caixas não ensinam o que 8 ensinam. */
+const MAX_DRAWN = 8
 
 function levelsOf(figure: Extract<Figure, { kind: 'recursion' }>): Level[] {
   const out: Level[] = []
@@ -43,71 +45,25 @@ function levelsOf(figure: Extract<Figure, { kind: 'recursion' }>): Level[] {
   return out
 }
 
-type CallData = { size: number; muted: boolean }
+const drawnAt = (calls: number) => Math.min(calls, MAX_DRAWN)
 
-function CallNode({ data }: NodeProps<Node<CallData>>) {
-  return (
-    <div
-      className="flex items-center justify-center border font-mono text-[11px]"
-      style={{
-        width: 46, height: 26,
-        borderColor: data.muted ? 'var(--rule)' : 'var(--contract)',
-        background: data.muted ? 'var(--panel)' : 'var(--contract-bg)',
-        color: data.muted ? 'var(--fg-5)' : 'var(--fg)',
-      }}
-    >
-      <Handle type="target" position={Position.Top} style={{ opacity: 0 }} />
-      {data.size === 1 ? 'n' : `n/${data.size}`}
-      <Handle type="source" position={Position.Bottom} style={{ opacity: 0 }} />
-    </div>
-  )
+const rowWidth = (drawn: number) => drawn * NODE_W + (drawn - 1) * GAP_X
+
+/** O x do centro da caixa k, com a linha centrada na largura do desenho. */
+function centerX(k: number, drawn: number, width: number) {
+  return (width - rowWidth(drawn)) / 2 + k * (NODE_W + GAP_X) + NODE_W / 2
 }
 
-const nodeTypes = { call: CallNode }
-
-export function RecursionFigure({ figure, autoPlay }: { figure: Extract<Figure, { kind: 'recursion' }>; autoPlay?: boolean }) {
-  const levels = useMemo(() => levelsOf(figure), [figure])
-
-  const build = (upTo: number): { nodes: Node<CallData>[]; edges: Edge[] } => {
-    const g = new dagre.graphlib.Graph()
-    g.setGraph({ rankdir: 'TB', nodesep: 12, ranksep: 34 })
-    g.setDefaultEdgeLabel(() => ({}))
-
-    const nodes: Node<CallData>[] = []
-    const edges: Edge[] = []
-
-    levels.forEach((l, i) => {
-      // Acima de 8 chamadas o nível vira uma faixa: desenhar 32 caixas de 46px
-      // não ensina nada que 8 não ensinem, e estoura a largura.
-      const drawn = Math.min(l.calls, 8)
-      for (let k = 0; k < drawn; k++) {
-        const id = `${i}-${k}`
-        nodes.push({
-          id, type: 'call', position: { x: 0, y: 0 },
-          // O rótulo é a fração, não o valor: é assim que a recorrência é lida.
-          data: { size: Math.round(figure.n / l.size), muted: i > upTo },
-        })
-        g.setNode(id, { width: 46, height: 26 })
-        if (i > 0) {
-          const parent = `${i - 1}-${Math.min(Math.floor(k / figure.branches), Math.min(levels[i - 1]!.calls, 8) - 1)}`
-          edges.push({
-            id: `${parent}->${id}`, source: parent, target: id,
-            style: { stroke: i > upTo ? 'var(--rule)' : 'var(--contract-rule)', strokeWidth: 1.2 },
-          })
-          g.setEdge(parent, id)
-        }
-      }
-    })
-
-    dagre.layout(g)
-    for (const n of nodes) {
-      const p = g.node(n.id)
-      n.position = { x: p.x - 23, y: p.y - 13 }
-    }
-    return { nodes, edges }
-  }
-
-  const total = levels.length
+export function RecursionFigure({
+  figure, autoPlay,
+}: {
+  figure: Extract<Figure, { kind: 'recursion' }>
+  autoPlay?: boolean
+}) {
+  const levels = levelsOf(figure)
+  const widest = Math.max(...levels.map((l) => drawnAt(l.calls)))
+  const width = rowWidth(widest) + PAD * 2
+  const height = levels.length * LEVEL_H
 
   return (
     <div className="border border-rule bg-panel">
@@ -119,60 +75,114 @@ export function RecursionFigure({ figure, autoPlay }: { figure: Extract<Figure, 
 
       <Stepper
         autoPlay={autoPlay}
-        count={total}
+        count={levels.length}
         labelFor={(k) => {
           const l = levels[k]!
           return `nível ${l.level}: ${l.calls} ${l.calls === 1 ? 'chamada' : 'chamadas'} × ${l.size} = ${l.cost}`
         }}
       >
-        {(upTo) => {
-          const { nodes, edges } = build(upTo)
-          return (
-            <div className="flex flex-col gap-0 md:flex-row">
-              <div className="h-[260px] min-w-0 flex-1 border-b border-rule md:border-r md:border-b-0">
-                <ReactFlow
-                  nodes={nodes}
-                  edges={edges}
-                  nodeTypes={nodeTypes}
-                  nodesDraggable={false}
-                  nodesConnectable={false}
-                  elementsSelectable={false}
-                  panOnDrag={false}
-                  zoomOnScroll={false}
-                  zoomOnPinch={false}
-                  zoomOnDoubleClick={false}
-                  preventScrolling={false}
-                  fitView
-                  fitViewOptions={{ padding: 0.14 }}
-                  proOptions={{ hideAttribution: false }}
-                >
-                  <Background gap={18} size={1} color="var(--rule-soft)" />
-                </ReactFlow>
-              </div>
+        {(upTo) => (
+          <div className="flex flex-col gap-0 md:flex-row">
+            <div className="min-w-0 flex-1 overflow-x-auto border-b border-rule p-3 md:border-r md:border-b-0">
+              <svg
+                viewBox={`0 0 ${width} ${height}`}
+                className="w-full min-w-[260px]"
+                role="img"
+                aria-label={`Árvore de recursão com ${levels.length} níveis; a tabela ao lado traz os mesmos números.`}
+              >
+                {levels.flatMap((l, i) => {
+                  if (i === 0) return []
+                  const drawn = drawnAt(l.calls)
+                  const above = drawnAt(levels[i - 1]!.calls)
+                  return Array.from({ length: drawn }, (_, k) => {
+                    const parent = Math.min(Math.floor(k / figure.branches), above - 1)
+                    return (
+                      <line
+                        key={`e${i}-${k}`}
+                        x1={centerX(parent, above, width)}
+                        y1={(i - 1) * LEVEL_H + PAD + NODE_H}
+                        x2={centerX(k, drawn, width)}
+                        y2={i * LEVEL_H + PAD}
+                        stroke={i > upTo ? 'var(--rule-soft)' : 'var(--contract-rule)'}
+                        strokeWidth="1.2"
+                      />
+                    )
+                  })
+                })}
 
-              {/* O equivalente textual, e ele é a mesma conta. */}
-              <table className="w-full shrink-0 border-collapse text-left md:w-[300px]">
-                <thead>
-                  <tr>
-                    {['nível', 'chamadas', 'tamanho', 'custo'].map((h) => (
-                      <th key={h} className="lbl border-b border-rule px-2.5 py-1.5 font-normal">{h}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {levels.slice(0, upTo + 1).map((l) => (
-                    <tr key={l.level} className={l.level === upTo ? 'bg-contract-bg' : undefined}>
-                      <td className="border-b border-rule-soft px-2.5 py-1 font-mono text-[12px] text-fg-3">{l.level}</td>
-                      <td className="border-b border-rule-soft px-2.5 py-1 font-mono text-[12px] text-fg-2">{l.calls}</td>
-                      <td className="border-b border-rule-soft px-2.5 py-1 font-mono text-[12px] text-fg-2">{l.size}</td>
-                      <td className="border-b border-rule-soft px-2.5 py-1 font-mono text-[12px] text-contract">{l.cost}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                {levels.flatMap((l, i) => {
+                  const drawn = drawnAt(l.calls)
+                  const muted = i > upTo
+                  return Array.from({ length: drawn }, (_, k) => {
+                    const cx = centerX(k, drawn, width)
+                    const y = i * LEVEL_H + PAD
+                    return (
+                      <g key={`n${i}-${k}`}>
+                        <rect
+                          x={cx - NODE_W / 2}
+                          y={y}
+                          width={NODE_W}
+                          height={NODE_H}
+                          fill={muted ? 'var(--panel)' : 'var(--contract-bg)'}
+                          stroke={muted ? 'var(--rule)' : 'var(--contract)'}
+                          strokeWidth="1"
+                        />
+                        <text
+                          x={cx}
+                          y={y + NODE_H / 2 + 4}
+                          textAnchor="middle"
+                          fill={muted ? 'var(--fg-5)' : 'var(--fg)'}
+                          fontSize="11"
+                          fontFamily="var(--mono)"
+                        >
+                          {/* O rótulo é a fração, não o valor: é assim que a recorrência é lida. */}
+                          {l.size === figure.n ? 'n' : `n/${Math.round(figure.n / l.size)}`}
+                        </text>
+                      </g>
+                    )
+                  })
+                })}
+
+                {levels.map((l, i) =>
+                  l.calls > MAX_DRAWN ? (
+                    <text
+                      key={`m${i}`}
+                      x={width - PAD}
+                      y={i * LEVEL_H + PAD + NODE_H / 2 + 4}
+                      textAnchor="end"
+                      fill="var(--fg-5)"
+                      fontSize="10"
+                      fontFamily="var(--mono)"
+                    >
+                      de {l.calls}
+                    </text>
+                  ) : null,
+                )}
+              </svg>
             </div>
-          )
-        }}
+
+            {/* O equivalente textual, e ele é a mesma conta. */}
+            <table className="w-full shrink-0 border-collapse text-left md:w-[300px]">
+              <thead>
+                <tr>
+                  {['nível', 'chamadas', 'tamanho', 'custo'].map((h) => (
+                    <th key={h} className="lbl border-b border-rule px-2.5 py-1.5 font-normal">{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {levels.slice(0, upTo + 1).map((l) => (
+                  <tr key={l.level} className={l.level === upTo ? 'bg-contract-bg' : undefined}>
+                    <td className="border-b border-rule-soft px-2.5 py-1 font-mono text-[12px] text-fg-3">{l.level}</td>
+                    <td className="border-b border-rule-soft px-2.5 py-1 font-mono text-[12px] text-fg-2">{l.calls}</td>
+                    <td className="border-b border-rule-soft px-2.5 py-1 font-mono text-[12px] text-fg-2">{l.size}</td>
+                    <td className="border-b border-rule-soft px-2.5 py-1 font-mono text-[12px] text-contract">{l.cost}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </Stepper>
 
       <div className="border-t border-rule px-3.5 py-2 font-mono text-[11.5px] text-fg-3">

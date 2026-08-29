@@ -20,23 +20,33 @@ tabela do exercício conferia uma derivação que o aluno nunca via.
 Cada um tem **equivalente tabular ao lado**, não escondido atrás de um `details`: a tabela
 é o que o exercício cobra, e ela é a mesma conta que o desenho mostra.
 
-### `recursion` entra com React Flow, e é a única que entra
+### `recursion` entrou com React Flow, e saiu em 29/08/2026
 
-Ela é genuinamente um grafo com layout hierárquico, e escrever um layouter de árvore à mão
-seria reimplementar dagre pior. As outras sete são SVG e CSS, porque nenhuma delas é um
-grafo: barras, células e retângulos não precisam de motor de layout.
+**Revertido.** As oito figuras são SVG inline, sem dependência de desenho.
 
-**A marca d'água fica.** Removê-la exige assinatura Pro do xyflow, e o projeto não tem uma.
-A decisão foi tomada e revertida na mesma sessão, e fica registrada aqui para não voltar.
+A decisão original dizia que a árvore de recursão é genuinamente um grafo com layout
+hierárquico, e que escrever o layouter à mão seria reimplementar dagre pior. As duas
+premissas estavam erradas, e a segunda foi a que custou.
 
-### O orçamento estourou, e vale dizer o número
+A árvore de recursão **não precisa de layout**: ela é completa e uniforme por definição, o
+nível `i` tem `branches^i` chamadas igualmente espaçadas, e a posição de cada caixa é uma
+conta de uma linha. Não há nada para um motor de layout resolver.
 
-O plano fixou ~40 KB gzip por diagrama. React Flow mais dagre dão **78 KB gzip**, medidos no
-export. Aceito, com três condições que mudam o que o número significa:
+E a aposta que sustentava o preço não se confirmou. O ADR aceitou 78 KB porque o custo seria
+pago uma vez e serviria "toda figura de grafo que nascer depois". Nasceram duas —
+`rotation` em `trees.c3` e `visited` em `graphs.c4` — e **nenhuma das duas usou a
+dependência**. Uma são duas árvores lado a lado; a outra são dois grafos de três vértices.
+Com a única consumidora reescrita em 190 linhas de SVG, os 78 KB serviam uma figura só.
 
-- entra por `dynamic({ ssr: false })`, então quem abre qualquer outro ciclo não paga nada;
-- é pago **uma vez**, e serve toda figura de grafo que nascer depois;
-- as outras sete continuam abaixo do orçamento, porque são SVG inline.
+Sai junto a marca d'água, que era consequência de a dependência estar lá: removê-la exigia
+assinatura Pro, e a decisão de removê-la foi tomada e revertida na mesma sessão. Sem React
+Flow não há marca a discutir.
+
+### O orçamento estourou, e depois voltou
+
+O plano fixou ~40 KB gzip por diagrama. React Flow mais dagre davam **78 KB gzip**, medidos
+no export, e o ADR aceitou o estouro por causa da aposta acima. Com a reversão, as oito
+figuras estão abaixo do orçamento, porque as oito são SVG inline.
 
 ### As checagens novas, e o que cada uma impede
 

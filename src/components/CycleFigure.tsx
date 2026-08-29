@@ -10,17 +10,7 @@ import { TraversalFigure } from './TraversalFigure'
 import { VisitedFigure } from './VisitedFigure'
 import { DoublingFigure } from './DoublingFigure'
 import { StabilityFigure } from './StabilityFigure'
-import dynamic from 'next/dynamic'
-
-/*
-  React Flow entra por `dynamic` sem SSR: ele mede o container para o `fitView`,
-  e o export estático não tem container para medir. O peso também fica fora do
-  bundle de quem abre um ciclo sem árvore de recursão. ADR-0025.
-*/
-const RecursionFigure = dynamic(
-  () => import('./RecursionFigure').then((m) => m.RecursionFigure),
-  { ssr: false, loading: () => <div className="h-[300px] border border-rule bg-panel" /> },
-)
+import { RecursionFigure } from './RecursionFigure'
 
 /**
  * Despacho por `kind`, exaustivo: um tipo de figura novo não compila até ter

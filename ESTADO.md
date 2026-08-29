@@ -9,7 +9,7 @@ Branch `claude/repo-onboarding-validation-1524ca`, **37 commits à frente de `ma
 mesclado. Um arquivo fora do controle de versão de propósito: `PERGUNTAS-DE-ONBOARDING.md`,
 que foi o handoff de onboarding e nunca teve destino decidido.
 
-O gate passa inteiro: `npm run validate` (29 checagens), `npm run docs:check`,
+O gate passa inteiro: `npm run validate` (31 checagens), `npm run docs:check`,
 `npm run typecheck`, `npm test` (13 suítes), `npm run build` (82 páginas).
 
 **O build derruba o servidor de desenvolvimento.** Existe um guard que recusa `npm run build`
@@ -18,16 +18,15 @@ o dev antes e avise antes de parar.
 
 ## O que existe
 
-8 unidades, 62 ciclos, 62 exercícios, 52 armadilhas, 100 termos no glossário, 8 figuras.
+8 unidades, 62 ciclos, 62 exercícios, 52 armadilhas, 100 termos no glossário, 10 figuras.
 Todo ciclo tem frase de abertura, número concreto na abertura e exemplo trabalhado.
 
 Rotas: `/`, `/como-funciona`, `/sondagem`, `/perfil`, `/revisitas`, `/traps`, `/glossary`,
 `/gaps`, `/units/[unit]`, `/units/[unit]/cycles/[cycle]`.
 
-Duas dependências entraram nesta sessão e as duas foram autorizadas: `@xyflow/react` e
-`dagre`, 78 KB gzip juntas, carregadas por `dynamic` sem SSR e usadas por **uma figura só**
-— a árvore de recursão. Se nenhuma segunda figura de grafo nascer, vale reabrir a decisão e
-escrever o layout à mão.
+Nenhuma dependência de desenho. `@xyflow/react` e `dagre` entraram e saíram no mesmo dia:
+as duas figuras de grafo que iam justificar os 78 KB nasceram sem tocar neles, e a árvore de
+recursão foi reescrita em SVG. As dez figuras são SVG inline.
 
 ## Decisões que não devem ser refeitas
 
@@ -42,8 +41,8 @@ nunca escrita ao lado (ADR-0019 e ADR-0025).
 
 Duas foram revertidas dentro da própria sessão, e a reversão está escrita nos dois ADRs:
 o alternador Iniciante/Revisão, descartado no ADR-0019 e adotado no ADR-0027; e a remoção da
-marca d'água do React Flow, autorizada e depois cancelada — **a atribuição fica**, porque
-removê-la exige assinatura Pro.
+marca d'água do React Flow, autorizada e depois cancelada. A segunda deixou de existir quando
+o React Flow saiu (ADR-0025).
 
 ## O que está aberto
 
@@ -67,14 +66,9 @@ respondido e em qual tentativa, exportável — e a oferta segue de pé.
 
 **Três checagens que fecham pontos cegos conhecidos.** Meia hora ao todo, cada uma impede um
 erro silencioso: `lineByColumn` conferido contra o número de linhas do pseudocódigo, porque
-hoje uma linha renumerada deixa o painel de execução acendendo a errada (ADR-0026); exercício
-de defeito em linguagem sem tokenizador, que sai com realce errado (ADR-0028); e podar
-`revisits`, que cresce sem limite (ADR-0023).
-
-**Cinco figuras da lista original.** Rotação em `trees.c3`, ciclo sem visitados em
-`graphs.c4`, a cadeia da tabela hash animada, insertion sort em `sorting.c2`, e o controle
-deslizante de n em `asymptotics.c1`. As duas primeiras são as que justificariam o peso do
-React Flow.
+**Três figuras da lista original.** A cadeia da tabela hash animada, insertion sort em
+`sorting.c2` e o controle deslizante de n em `asymptotics.c1`. A rotação em `trees.c3` e o
+conjunto de visitados em `graphs.c4` já entraram.
 
 **Reofertar a sondagem** quando o progresso mudar muito depois dela. Hoje `placement` é
 escrito uma vez e nunca revisto (ADR-0022).
