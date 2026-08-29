@@ -4,6 +4,7 @@ import type { Figure } from '@/content/schema'
 import { GrowthFigure } from './GrowthFigure'
 import { ShiftFigure } from './ShiftFigure'
 import { TreeFigure } from './TreeFigure'
+import { RotationFigure } from './RotationFigure'
 import { BucketsFigure } from './BucketsFigure'
 import { TraversalFigure } from './TraversalFigure'
 import { DoublingFigure } from './DoublingFigure'
@@ -30,6 +31,7 @@ export function CycleFigure({ figure, autoPlay = false }: { figure: Figure; auto
     case 'growth': return <GrowthFigure figure={figure} />
     case 'shift': return <ShiftFigure figure={figure} autoPlay={autoPlay} />
     case 'tree': return <TreeFigure figure={figure} autoPlay={autoPlay} />
+    case 'rotation': return <RotationFigure figure={figure} />
     case 'buckets': return <BucketsFigure figure={figure} autoPlay={autoPlay} />
     case 'traversal': return <TraversalFigure figure={figure} autoPlay={autoPlay} />
     case 'recursion': return <RecursionFigure figure={figure} autoPlay={autoPlay} />

@@ -16,6 +16,7 @@ import { OVERLOADED_TERMS, PLANNED, APP } from '../content/glossary'
 import { vagueAbstractions, allowedVagueUses, forwardCitations } from '../content/vocabulary'
 import { referenceGenerators } from './reference'
 import { bfsOrder, dfsOrder, vertices } from './traversal'
+import { build, heightOf, inorder, rebalanceOnce } from './bst'
 import { untranslated } from './transliterate'
 import { TOKENIZERS } from './highlight'
 import { probes } from '../content/placement'
@@ -251,6 +252,29 @@ export function checkAll(units: Unit[], terms: GlossaryTerm[]): Failure[] {
           }
         }
       }
+      if (f.kind === 'rotation') {
+        if (new Set(f.keys).size !== f.keys.length) {
+          fail('figura', `${c.id}: a figura repete uma chave, e a árvore de busca não guarda duplicata`)
+        }
+        const before = build(f.keys)
+        const { root: after, rotation } = rebalanceOnce(before)
+        if (!rotation) {
+          fail('figura', `${c.id}: a sequência ${f.keys.join(' ')} não desequilibra nada, e a figura não teria rotação para mostrar`)
+        } else {
+          // As duas afirmações do ciclo, conferidas na própria derivação: a
+          // altura cai E a ordem fica. Uma rotação que reordena chaves não é
+          // rotação, é uma árvore diferente com o mesmo nome.
+          if (heightOf(after) >= heightOf(before)) {
+            fail('figura', `${c.id}: a rotação não baixa a altura (${heightOf(before)} antes, ${heightOf(after)} depois)`)
+          }
+          const antes = inorder(before).join(',')
+          const depois = inorder(after).join(',')
+          if (antes !== depois) {
+            fail('figura', `${c.id}: a travessia em ordem muda com a rotação (${antes} vira ${depois})`)
+          }
+        }
+      }
+
       if (f.kind === 'buckets') {
         if (new Set(f.keys).size !== f.keys.length) {
           fail('figura', `${c.id}: a figura repete uma chave, e a tabela guarda uma entrada por chave`)

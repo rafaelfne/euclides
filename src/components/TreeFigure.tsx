@@ -1,4 +1,5 @@
 import type { Figure } from '@/content/schema'
+import { build, heightOf, place } from '@/lib/bst'
 import { Stepper } from './Stepper'
 
 /**
@@ -8,50 +9,6 @@ import { Stepper } from './Stepper'
  * É o que permite `scripts/test-traces.ts` conferir a altura da figura contra a
  * do gerador de referência de `trees.e1`, que insere a mesma sequência.
  */
-type Node = { key: number; left: Node | null; right: Node | null }
-
-function insert(root: Node | null, key: number): Node {
-  if (!root) return { key, left: null, right: null }
-  if (key < root.key) root.left = insert(root.left, key)
-  else root.right = insert(root.right, key)
-  return root
-}
-
-const heightOf = (n: Node | null): number => (n ? 1 + Math.max(heightOf(n.left), heightOf(n.right)) : -1)
-
-type Placed = { key: number; x: number; y: number; parent: { x: number; y: number } | null }
-
-/**
- * Coluna pela ordem simétrica, linha pela profundidade, a disposição clássica,
- * e a única em que a árvore degenerada fica visivelmente diagonal.
- */
-function place(root: Node | null): Placed[] {
-  const column = new Map<number, number>()
-  let next = 0
-  const inorder = (n: Node | null) => {
-    if (!n) return
-    inorder(n.left)
-    column.set(n.key, next++)
-    inorder(n.right)
-  }
-  inorder(root)
-
-  const nodes: Placed[] = []
-  const visit = (n: Node | null, depth: number, parent: Node | null) => {
-    if (!n) return
-    nodes.push({
-      key: n.key,
-      x: column.get(n.key)!,
-      y: depth,
-      parent: parent ? { x: column.get(parent.key)!, y: depth - 1 } : null,
-    })
-    visit(n.left, depth + 1, n)
-    visit(n.right, depth + 1, n)
-  }
-  visit(root, 0, null)
-  return nodes
-}
-
 const COL = 42
 const LEVEL = 46
 const R = 15
@@ -62,8 +19,7 @@ export function TreeFigure({ figure, autoPlay }: { figure: Extract<Figure, { kin
   const render = (upTo: number) => {
     const trees = figure.sequences.map((seq) => {
       const keys = seq.keys.slice(0, upTo + 1)
-      let root: Node | null = null
-      for (const k of keys) root = insert(root, k)
+      const root = build(keys)
       return { label: seq.label, nodes: place(root), height: heightOf(root), keys }
     })
     return (

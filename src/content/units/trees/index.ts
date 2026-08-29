@@ -233,6 +233,15 @@ export const treesUnit: Unit = {
         problem: 'Inserir 1, 2 e 3 numa AVL e aplicar a rotação que o desequilíbrio dispara.',
         whatToNotice: 'A travessia em ordem é 1, 2, 3 antes e depois. A altura cai de 2 para 1, e é só isso que mudou.',
       },
+      figure: {
+        kind: 'rotation',
+        keys: [1, 2, 3],
+        caption:
+          'A mesma árvore dos dois lados, e a travessia em ordem embaixo devolve a mesma ' +
+          'sequência nas duas. O que a rotação muda é a altura; o que ela não muda é a ordem, ' +
+          'e é essa segunda metade que torna a operação legítima. Os nós em azul são os que ' +
+          'trocaram de nível.',
+      },
       exerciseId: 'trees.e3' },
 
     { id: 'trees.c4', title: 'Garantido não é o mesmo que esperado', layer: 'essential', band: 'cost',

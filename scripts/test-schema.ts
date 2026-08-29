@@ -255,6 +255,26 @@ const linhaInexistente = trocaExercicio(comDefeito, exDefeito.id, {
 check('exercício de defeito apontando linha além do código reprova',
   checkAll([...units.filter((u) => u.id !== comDefeito.id), linhaInexistente], allTerms).some((f) => f.check === 'realce'))
 
+const trocaCiclo = (u: Unit, id: string, patch: object): Unit => ({
+  ...u,
+  cycles: u.cycles.map((c) => (c.id === id ? { ...c, ...patch } : c)),
+}) as Unit
+
+const comRotacao = units.find((u) => u.cycles.some((c) => c.figure?.kind === 'rotation'))!
+const cicloRotacao = comRotacao.cycles.find((c) => c.figure?.kind === 'rotation')!
+
+const jaEquilibrada = trocaCiclo(comRotacao, cicloRotacao.id, {
+  figure: { ...cicloRotacao.figure, keys: [2, 1, 3] },
+})
+check('figura de rotação sobre árvore já equilibrada reprova',
+  checkAll([...units.filter((u) => u.id !== comRotacao.id), jaEquilibrada], allTerms).some((f) => f.check === 'figura'))
+
+const chaveRepetida = trocaCiclo(comRotacao, cicloRotacao.id, {
+  figure: { ...cicloRotacao.figure, keys: [1, 2, 2, 3] },
+})
+check('figura de rotação com chave repetida reprova',
+  checkAll([...units.filter((u) => u.id !== comRotacao.id), chaveRepetida], allTerms).some((f) => f.check === 'figura'))
+
 check('a lista de checagens é a mesma para os dois kinds', CHECKS.length > 0)
 
 console.log(failures ? `\n  ${failures} falha(s)\n` : '\n  todas as checagens passaram\n')

@@ -159,6 +159,23 @@ export const figure = z.discriminatedUnion('kind', [
   }),
 
   /**
+   * A rotação: a mesma árvore antes e depois, com a ordem intacta.
+   *
+   * O conteúdo declara só a sequência de chegada. Qual nó está desequilibrado,
+   * qual rotação isso pede, as duas alturas e as duas travessias em ordem saem
+   * de `src/lib/bst.ts`. É o que impede o desenho de discordar do dado: trocar
+   * uma chave move a figura sozinha, e não há caminho SVG para desmentir.
+   *
+   * A checagem `figura` reprova sequência que não desequilibra nada, porque uma
+   * figura de rotação sobre árvore já equilibrada não mostra rotação nenhuma.
+   */
+  z.object({
+    kind: z.literal('rotation'),
+    caption: z.string().min(1),
+    keys: z.array(z.number()).min(3),
+  }),
+
+  /**
    * A tabela com chaining: m buckets, e as chaves caindo por h(k) mod m.
    *
    * A distribuição é derivada, o conteúdo declara m e as chaves. A figura
