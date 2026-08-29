@@ -157,6 +157,23 @@ export const figure = z.discriminatedUnion('kind', [
       keys: z.array(z.number()).min(3),
     })).length(2),
   }),
+
+  /**
+   * A tabela com chaining: m buckets, e as chaves caindo por h(k) mod m.
+   *
+   * A distribuição é derivada — o conteúdo declara m e as chaves. A figura
+   * existe para a colisão, então a checagem exige que haja pelo menos uma:
+   * um desenho em que nenhuma chave colide ilustra o caso que a unidade diz
+   * ser impossível evitar.
+   */
+  z.object({
+    kind: z.literal('buckets'),
+    caption: z.string().min(1),
+    m: z.number().int().positive(),
+    keys: z.array(z.number().int().nonnegative()).min(3),
+    /** A chave cuja busca a figura anota, quando há uma. */
+    searchFor: z.number().int().nonnegative().optional(),
+  }),
 ])
 
 // ---------------------------------------------------------------------------

@@ -163,6 +163,13 @@ export const hashUnit: Unit = {
         se k = chave então retorne v    // primeira ocorrência vence
     retorne NÃO_ENCONTRADO`,
       invariant: 'Todo par (k, v) em bucket[i] satisfaz h(k) mod m = i.',
+      figure: {
+        kind: 'buckets',
+        m: 4,
+        keys: [3, 7, 11],
+        searchFor: 11,
+        caption: 'Três chaves, um endereço só: 3, 7 e 11 deixam resto 3 na divisão por 4, e por isso ocupam o mesmo bucket. Nada aí está errado — o endereço leva ao bucket em uma operação, e é dentro dele que a busca compara chave por chave. Repare que os outros três buckets estão vazios: a colisão não é a tabela cheia, é a função levando chaves diferentes ao mesmo lugar.',
+      },
       workedExample: {
         problem: 'Busca por 11 com m = 4 e o bucket 3 contendo [3, 7, 11].',
         whatToNotice: 'O endereço custa uma operação; as comparações de chave são três. Repare no que o endereço resolve e no que ele não resolve.',

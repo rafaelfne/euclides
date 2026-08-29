@@ -221,6 +221,19 @@ export function checkAll(units: Unit[], terms: GlossaryTerm[]): Failure[] {
           }
         }
       }
+      if (f.kind === 'buckets') {
+        if (new Set(f.keys).size !== f.keys.length) {
+          fail('figura', `${c.id}: a figura repete uma chave, e a tabela guarda uma entrada por chave`)
+        }
+        const occupied = new Set(f.keys.map((k) => k % f.m))
+        if (occupied.size === f.keys.length) {
+          fail('figura', `${c.id}: nenhuma das ${f.keys.length} chaves colide com m = ${f.m}, e a figura existe para mostrar a colisão`)
+        }
+        if (f.searchFor !== undefined && !f.keys.includes(f.searchFor)) {
+          fail('figura', `${c.id}: a busca anotada procura ${f.searchFor}, que não está na tabela`)
+        }
+      }
+
       if (f.kind === 'shift') {
         if (f.removeAt >= f.values.length) {
           fail('figura', `${c.id}: remove a posição ${f.removeAt} de um bloco com ${f.values.length}`)

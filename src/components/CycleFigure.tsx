@@ -2,6 +2,7 @@ import type { Figure } from '@/content/schema'
 import { GrowthFigure } from './GrowthFigure'
 import { ShiftFigure } from './ShiftFigure'
 import { TreeFigure } from './TreeFigure'
+import { BucketsFigure } from './BucketsFigure'
 
 /**
  * Despacho por `kind`, exaustivo: um tipo de figura novo não compila até ter
@@ -13,5 +14,6 @@ export function CycleFigure({ figure }: { figure: Figure }) {
     case 'growth': return <GrowthFigure figure={figure} />
     case 'shift': return <ShiftFigure figure={figure} />
     case 'tree': return <TreeFigure figure={figure} />
+    case 'buckets': return <BucketsFigure figure={figure} />
   }
 }

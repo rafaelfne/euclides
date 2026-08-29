@@ -12,6 +12,7 @@ import { recursionTreeTrace } from '../src/lib/reference/asymptotics'
 import { removeFirstTrace } from '../src/lib/reference/linear'
 import { bstInsertTrace } from '../src/lib/reference/trees'
 import { bfsTrace } from '../src/lib/reference/graphs'
+import { chainingInsertTrace } from '../src/lib/reference/hash-table'
 import { units } from '../src/content/index'
 import { findDivergence, buildFeedback } from '../src/lib/socratic'
 
@@ -135,6 +136,20 @@ for (const u of units) {
         String(height) === fromGenerator[fromGenerator.length - 1]!.height,
         `figura ${height}, gabarito ${fromGenerator[fromGenerator.length - 1]!.height}`)
     }
+  }
+}
+
+for (const u of units) {
+  for (const c of u.cycles) {
+    if (c.figure?.kind !== 'buckets' || u.id !== 'hash') continue
+    const figure = c.figure
+    const drawn = Array.from({ length: figure.m }, (_, i) => figure.keys.filter((k) => k % figure.m === i))
+      .map((b, i) => (b.length ? `${i}:[${b.join(',')}]` : null))
+      .filter(Boolean)
+      .join(' ')
+    const reached = chainingInsertTrace().find((s) => s.content === drawn)
+    check(`${c.id}: a tabela desenhada é um estado que o gabarito de fato atinge`,
+      Boolean(reached), `figura ${drawn}`)
   }
 }
 

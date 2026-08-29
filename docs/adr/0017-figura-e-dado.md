@@ -103,8 +103,13 @@ sobre ela não discordar do exercício ao lado dela.
   autorado não teria como ser conferido contra nada.
 
   O critério estava errado, não a decisão: reaproveitamento nunca foi o benefício. O
-  benefício é a figura não poder discordar do gabarito. Se um quarto `kind` nascer sem
-  poder ser amarrado a nada, aí sim a opção A merece ser reaberta para aquele caso.
+  benefício é a figura não poder discordar do gabarito. O quarto `kind`, `buckets`, nasceu
+  depois desta revisão e confirmou o critério corrigido: a tabela que ele desenha tem de ser
+  um estado que `hash.e1` de fato atinge, e a asserção reprova uma figura que mostre uma
+  distribuição que a inserção nunca produz.
+
+  Se um `kind` nascer sem poder ser amarrado a nada, aí sim a opção A merece ser reaberta
+  para aquele caso.
 
 ## Itens de ação
 
@@ -114,5 +119,9 @@ sobre ela não discordar do exercício ao lado dela.
    de fato desloca
 4. [x] `shift`, com asserção de que a figura e o gerador de referência concordam
 5. [x] `tree`, com a checagem de que as duas sequências comparam o mesmo conjunto de chaves
-6. [ ] Decidir os `kind` das duas restantes — colisão e chaining, largura contra
-   profundidade. A segunda é a que provavelmente não amarra em nada.
+6. [x] `buckets`, com a checagem de que a figura de colisão de fato tem uma colisão, e a
+   asserção de que a tabela desenhada é um estado que o gabarito atinge
+7. [ ] Decidir o `kind` da última — largura contra profundidade. É a que provavelmente não
+   amarra em nada: `graphs.e4` gera a ordem em largura, e a de profundidade não existe como
+   referência. Se um gerador nascer só para a figura, o argumento que sustentou os quatro
+   primeiros não se aplica a ela.
