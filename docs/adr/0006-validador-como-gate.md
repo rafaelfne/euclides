@@ -11,19 +11,19 @@ runtime. Alguma coisa precisa ocupar esse lugar, ou os princípios viram decora�
 README.
 
 Evidência de que a vigilância humana não basta: durante o desenho da primeira unidade, as
-mesmas regras foram quebradas **quatro vezes por quem as escreveu** — bilinguismo sem
+mesmas regras foram quebradas **quatro vezes por quem as escreveu**, bilinguismo sem
 regra, armadilha órfã, substantivo abstrato no lugar de operação, e enum em inglês
 vazando para a tela.
 
 ## Decisão
 
 `npm run build` roda `npm run validate` antes de `next build`. Cada checagem é um
-princípio do projeto. **Não há nível de aviso** — aviso é regra que ninguém cumpre.
+princípio do projeto. **Não há nível de aviso**, aviso é regra que ninguém cumpre.
 
 A lista de checagens é declarada em `CHECKS`, no topo de `scripts/validate-content.ts`, e
 o relatório é derivado dela: uma checagem imprime `ok` quando nada falhou sob o id dela.
 Isso não é estilo. Enquanto o relatório dependia de casar duas strings à mão, ele chegou
-a imprimir `ok` e `FALHA` para a mesma regra na mesma saída — e um `ok` que às vezes mente
+a imprimir `ok` e `FALHA` para a mesma regra na mesma saída, e um `ok` que às vezes mente
 treina o leitor a não olhar a coluna, que é o oposto de ter um gate sem nível de aviso.
 Por isso nenhum documento cita mais um número de checagens: cite a lista.
 
@@ -32,21 +32,21 @@ aparecer com o raciocínio ainda carregado.
 
 ## Opções consideradas
 
-### A — Lint com avisos
+### A, Lint com avisos
 **Descartada.** Um aviso que não quebra nada acumula até virar ruído, e o conteúdo entra
 mesmo assim.
 
-### B — Gate duro no build
+### B, Gate duro no build
 Adotada. Se o validador reprova, o conteúdo está errado.
 
-### C — Revisão humana no PR
+### C, Revisão humana no PR
 **Descartada como mecanismo principal.** É o mesmo humano que quebrou as regras quatro
 vezes. Serve como camada extra, não como a camada.
 
 ## Análise de trade-off
 
 O custo é atrito: o build recusa conteúdo incompleto. Na primeira execução ele reprovou
-imediatamente — nove ciclos, três exercícios, seis ciclos sem fechamento e três armadilhas
+imediatamente, nove ciclos, três exercícios, seis ciclos sem fechamento e três armadilhas
 órfãs. Foi exatamente o comportamento desejado.
 
 O risco real é a tentação de relaxar uma checagem para destravar. Por isso a regra está no
@@ -55,11 +55,11 @@ O risco real é a tentação de relaxar uma checagem para destravar. Por isso a 
 ## Consequências
 
 - **Fica mais fácil:** confiar no conteúdo publicado sem reler tudo.
-- **Fica mais difícil:** commitar trabalho pela metade — o que é intencional e às vezes
+- **Fica mais difícil:** commitar trabalho pela metade, o que é intencional e às vezes
   incômodo.
 - **A observar:** algumas violações são de julgamento e não de forma (um ciclo que abre
   pela estrutura em vez do problema). Essas ficam no `/audit-unit`, que é relatório e não
-  gate — e essa fronteira precisa continuar honesta.
+  gate, e essa fronteira precisa continuar honesta.
 
 ## Itens de ação
 

@@ -27,7 +27,7 @@ reconhecer padrões rápido; este otimiza para desconfiar de um padrão que pare
 Uma frase, e ela é operacional:
 
 > Diante de um trecho de código gerado por IA, o aluno consegue dizer o que ele faz,
-> qual seu custo, onde ele quebra e o que trocaria — **sem executar**.
+> qual seu custo, onde ele quebra e o que trocaria, **sem executar**.
 
 Cada palavra puxa uma decisão de produto. "Sem executar" é por que existe teste de mesa
 interativo. "Onde ele quebra" é por que todo `CostClaim` carrega hipóteses. "O que

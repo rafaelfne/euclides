@@ -17,8 +17,13 @@ const DOT: Record<CycleStatus, string> = {
 
 /**
  * A barra de abas do ADR-0015. O mapa é sempre a primeira aba, e os ciclos
- * seguem na ordem de leitura — a mesma que a trilha "Por onde começar" usa,
+ * seguem na ordem de leitura, a mesma que a trilha "Por onde começar" usa,
  * porque a ordem de `unit.cycles` é a decisão editorial e não a taxonômica.
+ *
+ * A aba mostra o código e o ponto de estado, e o título vive no `title` do
+ * link. Com o título na aba, oito abas não cabiam na barra sem truncar, e um
+ * título truncado no meio não identifica nada, ele só ocupa a largura que
+ * fazia as outras abas saírem da tela.
  */
 export function UnitTabs({ unit, cycleId }: { unit: Unit; cycleId?: string }) {
   const [statuses, setStatuses] = useState<Record<string, CycleStatus>>({})
@@ -65,7 +70,6 @@ export function UnitTabs({ unit, cycleId }: { unit: Unit; cycleId?: string }) {
           >
             <span className={cn('h-1.5 w-1.5 shrink-0 rounded-full', DOT[st])} aria-hidden />
             <span className={cn('font-mono text-[12px]', active && TONE_TEXT[BAND_TONE[c.band]])}>{short}</span>
-            <span className={cn('max-w-[190px] truncate', active ? 'text-fg' : 'text-fg-4')}>{c.title}</span>
           </Link>
         )
       })}

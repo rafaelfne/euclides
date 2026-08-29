@@ -14,7 +14,7 @@ export const vagueAbstractions = [
   'performance', 'eficiência', 'robustez', 'escalabilidade', 'otimização',
   'flexibilidade', 'previsibilidade', 'confiabilidade', 'manutenibilidade',
   'expressividade', 'elegância',
-  // vagueza comparativa — sem eixo declarado não afirma nada
+  // vagueza comparativa, sem eixo declarado não afirma nada
   'mais rápido', 'mais lento', 'muito eficiente', 'melhor desempenho',
 ]
 
@@ -33,7 +33,7 @@ export interface VagueUseException {
  * the very example that teaches the point.
  *
  * The reason lives here rather than inside the string because a marker inside
- * the string reaches the student — no renderer strips it. Keyed by `quote`
+ * the string reaches the student, no renderer strips it. Keyed by `quote`
  * rather than by a walk path so that moving a paragraph does not invalidate
  * every exception below it; rewriting the sentence, which is when the licence
  * should be reconfirmed, still orphans the entry and fails the build.

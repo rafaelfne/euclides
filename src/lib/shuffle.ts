@@ -3,11 +3,11 @@
  *
  * A ordem autorada das alternativas era um vazamento: a correta estava na
  * primeira posição em 100% dos 54 exercícios. Um aluno descobre isso em dez
- * minutos e passa a acertar tudo sem ler nada — o que zera o sinal do painel
+ * minutos e passa a acertar tudo sem ler nada, o que zera o sinal do painel
  * de lacunas, que é o coração do produto.
  *
  * Determinístico por dois motivos: o HTML é gerado no build e precisa bater
- * com o cliente, e a ordem não pode mudar a cada recarga — senão o aluno
+ * com o cliente, e a ordem não pode mudar a cada recarga, senão o aluno
  * sorteia até cair numa disposição que ele reconhece.
  */
 function hash(seed: string): number {

@@ -17,7 +17,7 @@ export const asymptoticsMisconceptions: Misconception[] = [
     reviewCycle: 'asymptotics.c2' },
 
   { id: 'asymptotics.amortizado-e-caso-medio', label: 'Amortizado confundido com caso médio',
-    socraticQuestion: 'Um array dobra de capacidade quando enche. Das mil inserções seguidas, quantas são caras — e isso depende de sorteio nenhum?',
+    socraticQuestion: 'Um array dobra de capacidade quando enche. Das mil inserções seguidas, quantas são caras, e isso depende de sorteio nenhum?',
     escalation: [
       'Caso médio fala de uma distribuição de entradas possíveis. Aqui a sequência é fixa e o custo alto é certo em posições conhecidas. Qual dos dois qualificadores descreve isso?',
     ],
@@ -75,7 +75,7 @@ export const asymptoticsExercises: Exercise[] = [
     conventions: [
       { notation: '0', rule: 'o primeiro nível', why: 'A chamada de cima é o nível 0, não o 1: o número do nível é quantas vezes a entrada já foi dividida.' },
       { notation: '4 × 2', rule: 'o custo de um nível', why: 'Quantas chamadas existem naquele nível, vezes o tamanho de cada uma. Escreva o resultado, não a conta.' },
-      { notation: '(última linha)', rule: 'onde a árvore para', why: 'No nível em que o tamanho chega a 1 — é o caso base, e é ele que decide quantos níveis existem.' },
+      { notation: '(última linha)', rule: 'onde a árvore para', why: 'No nível em que o tamanho chega a 1, é o caso base, e é ele que decide quantos níveis existem.' },
     ],
     reference: 'asymptotics.recursion-tree-trace',
     misconceptionByStep: { '3': 'asymptotics.custo-por-nivel-cresce' },
@@ -87,7 +87,7 @@ export const asymptoticsExercises: Exercise[] = [
       { correct: true, text: 'O regime, as hipóteses, a amortização e o que n conta',
         why: 'São quatro qualificadores independentes, e a frase omite os quatro.' },
       { correct: false, text: 'Nada: O(1) é a informação inteira, e o resto é formalidade acadêmica', misconceptionId: 'asymptotics.sem-regime' },
-      { correct: false, text: 'Só o regime — as outras três não mudam a decisão de quem lê', misconceptionId: 'asymptotics.sem-regime' },
+      { correct: false, text: 'Só o regime, as outras três não mudam a decisão de quem lê', misconceptionId: 'asymptotics.sem-regime' },
     ],
   },
   {

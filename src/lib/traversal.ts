@@ -6,7 +6,7 @@ export type Edge = { from: string; to: string }
  * Este módulo existe para a figura de `graphs.c5`, e é DELIBERADAMENTE separado
  * de `src/lib/reference/graphs.ts`: lá o grafo é uma constante e a saída é um
  * traço com fila e visitados; aqui o grafo vem do conteúdo e a saída é só a
- * ordem. `scripts/test-traces.ts` afirma que os dois caminhos concordam — se
+ * ordem. `scripts/test-traces.ts` afirma que os dois caminhos concordam, se
  * concordassem por construção, a asserção não valeria nada.
  */
 export function adjacency(edges: Edge[]): Map<string, string[]> {
@@ -48,7 +48,7 @@ export function dfsOrder(edges: Edge[], origin: string): string[] {
   return order
 }
 
-/** As camadas da busca em largura — é delas que sai a posição de cada vértice. */
+/** As camadas da busca em largura, é delas que sai a posição de cada vértice. */
 export function layers(edges: Edge[], origin: string): string[][] {
   const map = adjacency(edges)
   const depth = new Map([[origin, 0]])

@@ -7,7 +7,7 @@
 ## Contexto
 
 O projeto é pt-BR e o código é escrito por quem trabalha em inglês. Sem uma fronteira
-declarada, a mistura acontece nos dois sentidos — e aconteceu: um rótulo de tela chegou a
+declarada, a mistura acontece nos dois sentidos, e aconteceu: um rótulo de tela chegou a
 exibir `BANDA · IMPLEMENTATION`, com o valor do enum em inglês vazando para o aluno.
 
 ## Decisão
@@ -27,7 +27,7 @@ novo quebra o build até ser nomeado em português.
 
 Pseudocódigo em português e sandbox em inglês parece incoerente, e é deliberado: o
 pseudocódigo é conteúdo (serve ao raciocínio) e o sandbox é código (serve à entrega). A
-travessia entre os dois vira momento de ensino — a mesma operação, um nome para pensar e
+travessia entre os dois vira momento de ensino, a mesma operação, um nome para pensar e
 outro para entregar.
 
 Rotas em inglês são consequência direta da regra, e evitam caracteres acentuados em URL.
@@ -35,7 +35,7 @@ Rotas em inglês são consequência direta da regra, e evitam caracteres acentua
 ## Consequências
 
 - **Fica mais fácil:** um contribuidor que não lê português ainda navega o código.
-- **Fica mais difícil:** cada enum exibido precisa de mapa de rótulos — pequeno imposto,
+- **Fica mais difícil:** cada enum exibido precisa de mapa de rótulos, pequeno imposto,
   cobrado toda vez.
 
 ## Itens de ação

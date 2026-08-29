@@ -29,7 +29,7 @@ function describeSpine(unit: Unit): SpineView {
   if (unit.kind === 'structure') {
     return {
       openingTitle: unit.adt.name,
-      openingCaption: 'o que você pode chamar — e nada além disto',
+      openingCaption: 'o que você pode chamar, e nada além disto',
       promises: unit.adt.operations.map((op) => ({ key: op.name, lead: op.signature, detail: op.guarantee })),
       openingFooter: `${unit.adt.answers} Não responde: ${unit.adt.cannotAnswer.join('; ').toLowerCase()}.`,
       middle: unit.implementations.map((i) => ({ id: i.id, name: i.name, summary: i.summary })),

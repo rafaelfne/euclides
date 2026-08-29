@@ -18,7 +18,7 @@ probe.once('listening', () => probe.close())
 probe.once('error', (err: NodeJS.ErrnoException) => {
   if (err.code !== 'EADDRINUSE') throw err
   console.error(`
-  A porta ${PORT} está ocupada — o servidor de desenvolvimento provavelmente está de pé.
+  A porta ${PORT} está ocupada, o servidor de desenvolvimento provavelmente está de pé.
 
   Rodar o build agora corrompe o cache que o dev usa: a próxima página volta sem
   CSS e o console acusa módulo faltando. Pare o dev, ou:

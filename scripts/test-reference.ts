@@ -4,7 +4,7 @@ import { hashUnit } from '../src/content/units/hash'
 
 let failures = 0
 const check = (name: string, ok: boolean, detail = '') => {
-  console.log(`  ${ok ? 'ok   ' : 'FALHA'} ${name}${detail && !ok ? ` — ${detail}` : ''}`)
+  console.log(`  ${ok ? 'ok   ' : 'FALHA'} ${name}${detail && !ok ? `, ${detail}` : ''}`)
   if (!ok) failures++
 }
 
@@ -41,7 +41,7 @@ check('o degrau 3 é uma pergunta', rungs[2]!.head.trim().endsWith('?'), rungs[2
 
 const semZeroFinal = trace.map((s) => ({ ...s, alpha: s.alpha!.replace(/0$/, '') }))
 const dNum = findDivergence(semZeroFinal, trace, cols)
-check('0,75 conta como 0,750 — número compara por valor, não por escrita',
+check('0,75 conta como 0,750, número compara por valor, não por escrita',
   dNum.firstDivergentStep === null, String(dNum.firstDivergentStep))
 
 check('o gerador não emite caractere que o aluno não digita',

@@ -3,7 +3,7 @@ import { unitById } from '@/content'
 
 /**
  * O rail some abaixo de `lg`. Sem esta barra o aluno em tela estreita ficava
- * sem caminho de volta para a trilha — a home era alcançável só pelo botão do
+ * sem caminho de volta para a trilha, a home era alcançável só pelo botão do
  * navegador.
  */
 export function MobileBar({ unitId }: { unitId?: string }) {

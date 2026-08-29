@@ -12,7 +12,7 @@ import { Panel, PanelBody, PanelHeader, PanelMeta, PanelTitle } from './ui/panel
 /**
  * O glossário navegável.
  *
- * Ele já arbitrava cada termo uma vez — forma canônica, o que o termo NÃO é, e
+ * Ele já arbitrava cada termo uma vez, forma canônica, o que o termo NÃO é, e
  * os falsos amigos que fazem uma palavra significar quatro coisas. O que
  * faltava era o aluno poder consultá-lo sem estar dentro do ciclo que o
  * introduz. `isNot` é o campo que mais rende aqui, e era o menos visível.

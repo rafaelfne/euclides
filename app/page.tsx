@@ -11,7 +11,7 @@ export default function Home() {
           <h1 className="m-0 text-[34px] font-semibold leading-tight">Euclides</h1>
           <p className="m-0 text-[15px] leading-relaxed text-fg-2">
             Fundamentos para julgar código sem executá-lo. Nos <em>Elementos</em>, nada é assumido
-            que não esteja declarado — aqui também não: toda complexidade vem com regime e
+            que não esteja declarado, aqui também não: toda complexidade vem com regime e
             hipóteses, todo termo vem com o que ele não é.
           </p>
         </div>

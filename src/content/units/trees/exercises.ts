@@ -17,7 +17,7 @@ export const treesMisconceptions: Misconception[] = [
     reviewCycle: 'trees.c2' },
 
   { id: 'trees.arvore-ordena-valores', label: 'Esperar que a ordem valha para o valor guardado',
-    socraticQuestion: 'A árvore guarda pares chave-valor e a invariante compara chaves. Percorrendo em ordem, o que sai ordenado — as chaves, os valores, ou os dois?',
+    socraticQuestion: 'A árvore guarda pares chave-valor e a invariante compara chaves. Percorrendo em ordem, o que sai ordenado, as chaves, os valores, ou os dois?',
     escalation: [
       'A comparação que decide onde o par foi parar usou qual dos dois? Se o valor nunca foi comparado com nada, o que a estrutura pode afirmar sobre ele?',
     ],
@@ -102,7 +102,7 @@ export const treesExercises: Exercise[] = [
     prompt: 'Uma rotação foi aplicada a uma subárvore. O que ela mudou e o que ela preservou?',
     choices: [
       { correct: true, text: 'Mudou a altura e quem é pai de quem; preservou a ordem',
-        why: 'A travessia em ordem devolve a mesma sequência de chaves antes e depois — é a condição para a operação ser legítima.' },
+        why: 'A travessia em ordem devolve a mesma sequência de chaves antes e depois, é a condição para a operação ser legítima.' },
       { correct: false, text: 'Reordenou as chaves para equilibrar os dois lados, e é por isso que a altura cai', misconceptionId: 'trees.rotacao-muda-ordem' },
       { correct: false, text: 'Mudou a profundidade da raiz, que é o que a altura mede', misconceptionId: 'trees.altura-e-profundidade' },
     ],

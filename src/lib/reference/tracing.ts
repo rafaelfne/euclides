@@ -5,7 +5,7 @@ import type { TraceStep } from '../socratic'
  *
  * The loop advances by two, not by one. Everything the unit teaches hangs on
  * that: a student who reads "percorre a coleção" and assumes one round per
- * element diverges at the second round, and the divergence is in `i` — the
+ * element diverges at the second round, and the divergence is in `i`, the
  * variable he did not observe.
  */
 

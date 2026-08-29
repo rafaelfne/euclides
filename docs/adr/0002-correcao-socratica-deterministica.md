@@ -9,7 +9,7 @@
 ADR-0001 tirou o LLM do runtime. Resta cumprir o princípio 3 sem ele.
 
 A observação que destrava: **correção socrática não é inteligência em runtime, é
-antecipação em tempo de autoria**. Um professor experiente não improvisa a pergunta — ele
+antecipação em tempo de autoria**. Um professor experiente não improvisa a pergunta, ele
 já viu os oito jeitos de errar aquilo. O LLM só é necessário quando o espaço de erro é
 aberto.
 
@@ -21,21 +21,21 @@ pistas. Cinco mecanismos cobrem os tipos de exercício; nenhum revela o valor co
 
 ## Opções consideradas
 
-### A — Texto livre com correção heurística
+### A, Texto livre com correção heurística
 Casamento de palavras-chave na resposta do aluno. **Descartada:** frágil, e pior que
-inútil quando erra — devolve confiança falsa.
+inútil quando erra, devolve confiança falsa.
 
-### B — Espaço de erro fechado com armadilhas catalogadas
+### B, Espaço de erro fechado com armadilhas catalogadas
 Adotada. O feedback nunca contém a resposta; contém **a tarefa que produz** a resposta.
 
-### C — Só verificação binária (certo/errado)
+### C, Só verificação binária (certo/errado)
 **Descartada:** viola o princípio 3 pelo outro lado. Dizer "errado" sem apontar onde
 quebrou não é socrático, é um portão.
 
 ## Análise de trade-off
 
 Restringir o formato do exercício parece uma concessão à ausência de LLM. Não é:
-**a restrição aumenta o rigor**. Texto livre deixa o aluno se esconder atrás de vagueza —
+**a restrição aumenta o rigor**. Texto livre deixa o aluno se esconder atrás de vagueza, 
 "hash é mais rápido" passa num ensaio e não passa num
 formulário que exige nomear a operação dominante e o custo assintótico nas duas
 estruturas.
@@ -47,7 +47,7 @@ diferida, exportável para correção fora dali.
 
 - **Fica mais fácil:** auditar a qualidade da devolutiva; ela é texto versionado.
 - **Fica mais difícil:** desenhar exercício. Se você não consegue listar as maneiras de
-  errar, o exercício está mal posto — o que é um sinal útil e desconfortável.
+  errar, o exercício está mal posto, o que é um sinal útil e desconfortável.
 - **Regra dura:** a escada tem três degraus e não ganha um quarto. Quem esgota recebe
   "vamos parar aqui, volte amanhã", que é melhor desfecho que uma resposta.
 

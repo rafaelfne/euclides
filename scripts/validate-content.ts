@@ -13,7 +13,7 @@ import { allTerms } from '../src/content/glossary'
 const failures = checkAll(units, allTerms)
 const failedIds = new Set(failures.map((f) => f.check))
 
-console.log('\n  validador pedagógico — Euclides\n')
+console.log('\n  validador pedagógico, Euclides\n')
 for (const [id, label] of CHECKS) {
   console.log(`  ${failedIds.has(id) ? 'FALHA' : 'ok   '} ${label}`)
 }

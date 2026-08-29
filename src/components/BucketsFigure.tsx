@@ -3,7 +3,7 @@ import { Stepper } from './Stepper'
 
 /**
  * A tabela com chaining. A distribuição é derivada de m e das chaves, com a
- * mesma h(k) = k que a implementação de referência de `hash.e1` usa — e é por
+ * mesma h(k) = k que a implementação de referência de `hash.e1` usa, e é por
  * isso que `scripts/test-traces.ts` consegue conferir a figura contra o passo
  * do traço em que a tabela tem exatamente estas chaves.
  */

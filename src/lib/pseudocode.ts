@@ -2,12 +2,12 @@
  * Syntax highlighting for the track's pseudocode.
  *
  * No off-the-shelf highlighter knows `função`, `←`, `mod` or `NÃO_ENCONTRADO`,
- * so this one is written from scratch — and that turns out to be the point.
+ * so this one is written from scratch, and that turns out to be the point.
  * Colouring here is SEMANTIC, not decorative: tokens are coloured by the role
  * they play in reasoning, not by lexical category.
  *
  * The `convention` class carries the weight. Assignment, comparison, `mod` and
- * `|A|` are exactly the notation a student silently mis-reads — a `=` taken for
+ * `|A|` are exactly the notation a student silently mis-reads, a `=` taken for
  * assignment, a `mod` taken for a language's `%`. Giving them their own colour,
  * tied to the declared conventions panel, is Euclid's rule in the syntax
  * itself: nothing assumed that is not declared.
@@ -15,8 +15,8 @@
 
 export type TokenKind =
   | 'control'     // função, se, então, para cada, enquanto, retorne
-  | 'convention'  // ← = ≠ ≤ mod |…| — the declared notation
-  | 'sentinel'    // NULO, NÃO_ENCONTRADO — contract values, not variables
+  | 'convention'  // ← = ≠ ≤ mod |…|, the declared notation
+  | 'sentinel'    // NULO, NÃO_ENCONTRADO, contract values, not variables
   | 'number'
   | 'comment'
   | 'plain'
@@ -28,7 +28,7 @@ export interface Token {
   declares?: string
 }
 
-/** Longest first — `para cada` must win over `para`. */
+/** Longest first, `para cada` must win over `para`. */
 const CONTROL_PHRASES = ['para cada', 'senão se']
 
 const CONTROL_WORDS = new Set([
@@ -40,15 +40,15 @@ const SENTINELS = new Set(['NULO', 'NÃO_ENCONTRADO', 'VERDADEIRO', 'FALSO', 'VA
 
 /** Every entry here must also exist in the declared conventions sheet. */
 export const CONVENTION_MEANINGS: Record<string, string> = {
-  '←': 'atribuição — nunca comparação',
-  '=': 'comparação de igualdade — nunca atribuição',
+  '←': 'atribuição, nunca comparação',
+  '=': 'comparação de igualdade, nunca atribuição',
   '≠': 'diferente de',
   '≤': 'menor ou igual',
   '≥': 'maior ou igual',
   '<': 'menor que',
   '>': 'maior que',
-  '|': 'tamanho — vale para coleção e para chave',
-  'mod': 'resto da divisão — a operação matemática, não o operador de uma linguagem',
+  '|': 'tamanho, vale para coleção e para chave',
+  'mod': 'resto da divisão, a operação matemática, não o operador de uma linguagem',
   '×': 'multiplicação',
 }
 
@@ -115,7 +115,7 @@ export function tokenize(source: string): Token[] {
     // número
     if (DIGIT.test(ch)) {
       let j = i
-      while (j < source.length && /[0-9.,]/.test(source[j]!)) j++
+      while (j < source.length && /[0-9.]/.test(source[j]!)) j++
       push(source.slice(i, j), 'number')
       i = j
       continue

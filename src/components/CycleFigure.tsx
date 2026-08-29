@@ -7,7 +7,7 @@ import { TraversalFigure } from './TraversalFigure'
 
 /**
  * Despacho por `kind`, exaustivo: um tipo de figura novo não compila até ter
- * renderizador. É a mesma regra dos mapas de banda — o enum nunca chega à tela
+ * renderizador. É a mesma regra dos mapas de banda, o enum nunca chega à tela
  * sem alguém ter dito o que ele desenha.
  */
 export function CycleFigure({ figure }: { figure: Figure }) {

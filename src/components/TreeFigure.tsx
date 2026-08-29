@@ -22,7 +22,7 @@ const heightOf = (n: Node | null): number => (n ? 1 + Math.max(heightOf(n.left),
 type Placed = { key: number; x: number; y: number; parent: { x: number; y: number } | null }
 
 /**
- * Coluna pela ordem simétrica, linha pela profundidade — a disposição clássica,
+ * Coluna pela ordem simétrica, linha pela profundidade, a disposição clássica,
  * e a única em que a árvore degenerada fica visivelmente diagonal.
  */
 function place(root: Node | null): Placed[] {

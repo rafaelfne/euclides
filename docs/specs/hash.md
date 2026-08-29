@@ -1,4 +1,4 @@
-# Spec — Unidade 4: Tabelas Hash
+# Spec, Unidade 4: Tabelas Hash
 
 **Status:** implementada
 **Serve de modelo** para os próximos specs. A estrutura abaixo é o contrato mínimo que
@@ -12,12 +12,12 @@ existe?" em tempo que não cresça com o cadastro.
 O que o aluno já tem: array não ordenado responde em O(n); array ordenado responde em
 O(log n) mas insere em O(n); BST balanceada faz O(log n) nas duas. Nenhum dá O(1).
 
-A pergunta que abre a unidade — e que o aluno precisa responder sozinho: **por que não dá,
+A pergunta que abre a unidade, e que o aluno precisa responder sozinho: **por que não dá,
 e o que teria que ser verdade para dar?**
 
 ## Contrato
 
-`Map` — associa chave a valor.
+`Map`, associa chave a valor.
 
 | operação | garantia |
 |---|---|
@@ -28,18 +28,18 @@ e o que teria que ser verdade para dar?**
 
 **Responde:** perguntas sobre uma chave por vez.
 
-**Não responde** — e esta lista é a resposta do último ciclo: qual a menor ou a maior
+**Não responde**, e esta lista é a resposta do último ciclo: qual a menor ou a maior
 chave; quais chaves estão numa faixa; em que ordem foram inseridas; quais são as k
 primeiras segundo qualquer critério.
 
 ## Implementações comparadas
 
-**Chaining** — cada bucket guarda a lista dos pares que colidiram ali.
+**Chaining**, cada bucket guarda a lista dos pares que colidiram ali.
 Invariante: todo par em `bucket[i]` satisfaz `h(k) mod m = i`.
 Âncora: o índice padrão do PostgreSQL é B-tree e não hash, porque índice hash responde
 `=` e nada mais.
 
-**Open addressing** — tudo no próprio array, sondando a próxima posição livre.
+**Open addressing**, tudo no próprio array, sondando a próxima posição livre.
 Perfil oposto: melhor localidade de cache, degradação muito mais abrupta. Entre α = 0,8 e
 α = 0,9 a busca sem sucesso vai de 12,5 para 48,1 sondagens medidas, contra 1,40 → 1,45 do
 chaining.
@@ -64,7 +64,7 @@ chaining.
 `load-factor-memoria` · `delecao-ingenua` · `ordem`
 
 A mais valiosa é `rehash-copia-buckets`, e vale registrar por quê: se o rehash copia
-buckets em vez de reinserir, **o defeito é parcial** — no traço de exemplo, 3 e 11 seguem
+buckets em vez de reinserir, **o defeito é parcial**, no traço de exemplo, 3 e 11 seguem
 encontráveis e só o 7 some. É exatamente por isso que esse bug passa em teste manual e
 aparece em produção.
 
@@ -85,7 +85,7 @@ o traço ensina é rehash, invariante de posição e a evolução de α; uma h r
 acrescentaria aritmética que o aluno teria de simular à mão a cada passo, e o erro dele
 passaria a ser de conta, não de raciocínio.
 
-O custo é que a aposta anunciada no ciclo `hash.c1` — transformar chave em endereço — o
+O custo é que a aposta anunciada no ciclo `hash.c1`, transformar chave em endereço, o
 aluno lê na prosa e nunca executa no traço. Se um exercício futuro precisar exercitar a
 função em si, ele é outro exercício, com outro gerador; não é uma troca de `h` neste.
 
@@ -93,5 +93,5 @@ função em si, ele é outro exercício, com outro gerador; não é uma troca de
 
 - Exercício de implementação verificada (property-based) ainda não escrito
 - `hash.e7` cobre deleção ingênua mas não cobre clustering diretamente
-- Falta um exercício que ataque `hash.chave-mutavel` — armadilha desenhada e ainda não
+- Falta um exercício que ataque `hash.chave-mutavel`, armadilha desenhada e ainda não
   catalogada no código

@@ -3,7 +3,7 @@
  *
  * The load-bearing assertions are the negative ones: no `escalation` entry the
  * student has not earned, and no correct choice text. A leak here would not
- * break a screen — it would quietly hand over the answers the whole engine was
+ * break a screen, it would quietly hand over the answers the whole engine was
  * built to withhold.
  */
 import type { Progress } from '../src/content/schema'
@@ -13,7 +13,7 @@ import { buildSessionExport, collectGaps } from '../src/lib/session-export'
 
 let failures = 0
 const check = (name: string, ok: boolean, detail = '') => {
-  console.log(`  ${ok ? 'ok   ' : 'FALHA'} ${name}${detail && !ok ? ` — ${detail}` : ''}`)
+  console.log(`  ${ok ? 'ok   ' : 'FALHA'} ${name}${detail && !ok ? `, ${detail}` : ''}`)
   if (!ok) failures++
 }
 

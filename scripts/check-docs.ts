@@ -3,7 +3,7 @@
  * path in the first instruction of an agent, a non-canonical term inside the
  * feedback example an agent is told to imitate.
  *
- * This checks only what is exact — that every repo path a document cites
+ * This checks only what is exact, that every repo path a document cites
  * exists. Terminology in prose stays with `/audit-unit`, because a checker
  * that cannot tell citation from use would delete the examples that teach the
  * distinction. See ADR-0011.
@@ -61,11 +61,11 @@ for (const file of files) {
   })
 }
 
-console.log('\n  checagem de documentos — caminhos citados\n')
+console.log('\n  checagem de documentos, caminhos citados\n')
 console.log(`  ${files.length} documento(s) lido(s)`)
 if (findings.length) {
   console.log('')
-  for (const f of findings) console.log(`  FALHA ${f.file}:${f.line} — \`${f.cited}\`: ${f.why}`)
+  for (const f of findings) console.log(`  FALHA ${f.file}:${f.line}, \`${f.cited}\`: ${f.why}`)
   console.log(`\n  ${findings.length} caminho(s) morto(s). Build interrompido.\n`)
   process.exit(1)
 }

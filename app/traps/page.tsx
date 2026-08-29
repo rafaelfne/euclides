@@ -2,7 +2,7 @@ import { units } from '@/content'
 import { AppShell } from '@/components/AppShell'
 import { TrapBook } from '@/components/TrapBook'
 
-export const metadata = { title: 'Armadilhas — Euclides' }
+export const metadata = { title: 'Armadilhas, Euclides' }
 
 export default function TrapsPage() {
   return (
@@ -15,7 +15,7 @@ export default function TrapsPage() {
         </p>
         <p className="m-0 mb-7 max-w-[760px] text-[13px] leading-relaxed text-fg-3">
           A pergunta ao lado de cada armadilha é a que o app faz quando você a ativa. Ela não é a
-          resposta — é a tarefa que produz a resposta, e ela funciona igual lida aqui.
+          resposta, é a tarefa que produz a resposta, e ela funciona igual lida aqui.
         </p>
         <TrapBook units={units} />
       </div>

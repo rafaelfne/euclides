@@ -12,7 +12,7 @@ import { Panel, PanelBody, PanelHeader, PanelMeta, PanelTitle } from './ui/panel
  * O caderno de armadilhas: todas as frases que soam certas, num lugar só.
  *
  * Elas já existiam indexadas por unidade, cada uma com rótulo, pergunta
- * socrática e ciclo de revisão — o que faltava era a vista. Marcar as que o
+ * socrática e ciclo de revisão, o que faltava era a vista. Marcar as que o
  * aluno já ativou transforma a lista num caderno dele, e não num índice.
  */
 export function TrapBook({ units }: { units: Unit[] }) {
@@ -95,7 +95,7 @@ export function TrapBook({ units }: { units: Unit[] }) {
       {onlyMine && triggered.size === 0 && (
         <p className="max-w-[640px] text-[14px] leading-relaxed text-fg-2">
           Nenhuma armadilha ativada ainda neste navegador. Isso não quer dizer que você não as
-          tem — quer dizer que você ainda não encontrou o exercício que as ativa.
+          tem, quer dizer que você ainda não encontrou o exercício que as ativa.
         </p>
       )}
     </div>

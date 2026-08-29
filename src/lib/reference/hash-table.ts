@@ -2,7 +2,7 @@ import type { TraceStep } from '../socratic'
 
 /**
  * Reference implementation. It exists to GENERATE the correct trace, so the
- * app never stores an answer key an author typed by hand — the answer is
+ * app never stores an answer key an author typed by hand, the answer is
  * computed, which is why the exercise cannot drift from the pseudocode.
  */
 
@@ -16,7 +16,7 @@ function resize(table: { m: number; buckets: Bucket[] }, newM: number) {
   table.m = newM
   table.buckets = Array.from({ length: newM }, (): Bucket => [])
   // REINSERTS. Copying buckets would break the position invariant for every
-  // pair at once — and only partially, which is what makes that bug survive
+  // pair at once, and only partially, which is what makes that bug survive
   // manual testing.
   for (const [k, v] of pairs) table.buckets[h(k) % table.m]!.push([k, v])
 }

@@ -13,7 +13,7 @@ export const hashMisconceptions: Misconception[] = [
     socraticQuestion: 'Reescreva a invariante de posição trocando m por 2m. Ela continua valendo para os pares que você copiou?',
     escalation: [
       'Pegue uma chave concreta que estava no bucket 3 com m = 4. Onde ela deveria estar com m = 8?',
-      'Note que algumas chaves continuam encontráveis e outras não. Por que o defeito é parcial — e o que isso significa para o seu teste manual?',
+      'Note que algumas chaves continuam encontráveis e outras não. Por que o defeito é parcial, e o que isso significa para o seu teste manual?',
     ],
     reviewCycle: 'hash.c5' },
   { id: 'hash.duplicata-inofensiva', label: 'Duplicata tratada como inofensiva',
@@ -21,7 +21,7 @@ export const hashMisconceptions: Misconception[] = [
     escalation: ['E se α infla antes da hora, o que dispara antes da hora?'],
     reviewCycle: 'hash.c3' },
   { id: 'hash.load-factor-memoria', label: 'Load factor confundido com ocupação de memória',
-    socraticQuestion: 'Numa tabela com m = 1000 e n = 750, estime quantos buckets estão vazios antes de calcular. Depois calcule — as duas coisas são a mesma?',
+    socraticQuestion: 'Numa tabela com m = 1000 e n = 750, estime quantos buckets estão vazios antes de calcular. Depois calcule, as duas coisas são a mesma?',
     escalation: ['Com chaining, dois pares podem morar no mesmo bucket. Isso muda a relação entre α e posições ocupadas?'],
     reviewCycle: 'hash.c4' },
   { id: 'hash.delecao-ingenua', label: 'Deleção que esvazia a posição em open addressing',
@@ -54,7 +54,7 @@ export const hashExercises: Exercise[] = [
       { key: 'content', label: 'onde cada chave está', placeholder: '0:[12,20] 5:[45]' },
     ],
     conventions: [
-      { notation: '0:[12,20]', rule: 'uma posição ocupada', why: 'O número da posição, dois-pontos, e as chaves que estão nela. Só as chaves — o valor guardado não entra no traço.' },
+      { notation: '0:[12,20]', rule: 'uma posição ocupada', why: 'O número da posição, dois-pontos, e as chaves que estão nela. Só as chaves, o valor guardado não entra no traço.' },
       { notation: '0:[12,20] 5:[45]', rule: 'a tabela inteira', why: 'Só as posições que têm alguma chave, da menor para a maior, separadas por espaço.' },
       { notation: '—', rule: 'tabela vazia', why: 'Nenhuma posição ocupada ainda.' },
       { notation: 'sim / não', rule: 'houve rehash', why: 'Responda as seis linhas. Deixar em branco não é dizer não.' },
@@ -85,7 +85,7 @@ this.n++
     faultyLines: [4],
     consequences: [
       { correct: true, text: 'n passa a contar duplicatas e infla α',
-        why: 'O rehash dispara antes da hora: a tabela fica maior e mais cara, e a busca continua funcionando — que é o motivo de o defeito passar despercebido.' },
+        why: 'O rehash dispara antes da hora: a tabela fica maior e mais cara, e a busca continua funcionando, que é o motivo de o defeito passar despercebido.' },
       { correct: false, text: 'A busca passa a falhar para chaves que existem na tabela', misconceptionId: 'hash.duplicata-inofensiva' },
       { correct: false, text: 'Nada de grave: é apenas desperdício de memória', misconceptionId: 'hash.duplicata-inofensiva' },
     ],

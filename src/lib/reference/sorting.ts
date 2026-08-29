@@ -6,7 +6,7 @@ import type { TraceStep } from '../socratic'
  *
  * Elements are written `<chave><etiqueta>`: the key is what the comparator
  * sees, the letter is where the element came from. The letter is the whole
- * point — with equal keys, only it reveals which side the merge took, and
+ * point, with equal keys, only it reveals which side the merge took, and
  * that is where stability lives.
  */
 
@@ -24,7 +24,7 @@ const RIGHT = ['1d', '5e', '7f'].map(parse)
  *
  * The tie at step 3 is the exercise. Both heads have key 5; a stable merge
  * takes the LEFT one, and a student who takes the right one produces a trace
- * that is sorted, plausible, and not stable — which is exactly the bug the
+ * that is sorted, plausible, and not stable, which is exactly the bug the
  * motivating problem describes.
  */
 export function mergeStepTrace(): TraceStep[] {

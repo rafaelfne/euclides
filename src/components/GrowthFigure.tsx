@@ -4,7 +4,7 @@ import type { CurveShape, Figure } from '@/content/schema'
  * O gráfico de crescimento, desenhado a partir de dado declarado.
  *
  * `EVAL` é exaustivo por forma: uma forma nova não compila até ser definida
- * aqui. É a mesma regra dos mapas de banda, um andar acima — o autor escreve
+ * aqui. É a mesma regra dos mapas de banda, um andar acima, o autor escreve
  * `quadratic`, nunca uma expressão, e o desenho não pode afirmar nada que o
  * schema não tenha declarado.
  */

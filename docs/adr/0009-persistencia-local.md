@@ -18,17 +18,17 @@ versão reseta e avisa, nunca quebra a tela.
 
 ## Opções consideradas
 
-### A — localStorage (adotada)
+### A, localStorage (adotada)
 Zero backend, zero auth, zero custo por leitor, funciona offline.
 **Contras:** progresso preso a um navegador; some ao limpar dados; o autor da trilha não
 vê o avanço do aluno.
 
-### B — Supabase com Auth
+### B, Supabase com Auth
 Progresso persistente e histórico de erros visível para quem acompanha.
 **Descartada por ora:** exige backend e derruba o export estático, além de introduzir
 custo por usuário no cenário publicado.
 
-### C — Integrar a um app de acompanhamento existente
+### C, Integrar a um app de acompanhamento existente
 **Descartada:** acopla dois projetos com ciclos de vida diferentes.
 
 ## Análise de trade-off
@@ -48,16 +48,16 @@ grande, caso o cenário mude.
 ## Itens de ação
 
 1. [x] `src/lib/progress.ts` com zod e versão
-2. [x] Exportador de sessão em markdown — `src/lib/session-export.ts`, painel em `/gaps`
+2. [x] Exportador de sessão em markdown, `src/lib/session-export.ts`, painel em `/gaps`
 
 ## Nota de implementação
 
 O export atravessa a fronteira do app, então o princípio 3 precisou atravessar com ele.
-Ele carrega o estado do aluno — tentativas, o que saiu limpo, quais armadilhas dispararam
-e a pergunta que cada uma já fez na tela — e nunca uma entrada de `escalation` que o aluno
+Ele carrega o estado do aluno, tentativas, o que saiu limpo, quais armadilhas dispararam
+e a pergunta que cada uma já fez na tela, e nunca uma entrada de `escalation` que o aluno
 não alcançou nem o texto de uma alternativa correta. `scripts/test-export.ts` checa as duas
 ausências, porque um vazamento ali não quebraria tela nenhuma: entregaria em silêncio a
 resposta que o motor inteiro existe para reter.
 
 O markdown também pede, em voz ativa, que o modelo do outro lado corrija sem entregar o
-valor — inclusive se o aluno pedir.
+valor, inclusive se o aluno pedir.

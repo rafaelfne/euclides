@@ -11,7 +11,7 @@ import { Panel, PanelBody, PanelHeader, PanelMeta, PanelTitle } from './ui/panel
 import { TrapNote } from './TrapNote'
 
 /**
- * The distractor mechanic. Feedback never contains the answer — it contains
+ * The distractor mechanic. Feedback never contains the answer, it contains
  * the TASK that produces the answer, taken from the misconception the wrong
  * choice named. That mapping is enforced by the schema, so a lazy distractor
  * cannot exist.
@@ -37,7 +37,7 @@ export function ChoiceExercise({
     // A alternativa escolhida não é guardada, e não precisa ser: ela é DERIVÁVEL
     // do que o progresso já sabe. Resolvido devolve a correta; não resolvido
     // devolve a alternativa da última armadilha ativada. Sem isto o exercício
-    // voltava com o contador de tentativas e sem a explicação — o aluno perdia
+    // voltava com o contador de tentativas e sem a explicação, o aluno perdia
     // o melhor conteúdo do ciclo exatamente ao voltar para revisar. ADR-0019.
     if (st.solved) {
       const i = shown.findIndex((c) => c.correct)
@@ -143,12 +143,12 @@ export function ChoiceExercise({
             <div className="border-l-2 border-contract pl-4 text-[13.5px] leading-relaxed text-fg-2">
               {attempts === 1
                 ? 'Resolvido na primeira tentativa, sem ativar nenhuma ideia errada. Isto conta para o critério de domínio.'
-                : `Resolvido em ${attempts} tentativas. Chegar lá não é o mesmo que dominar — este exercício volta na revisita.`}
+                : `Resolvido em ${attempts} tentativas. Chegar lá não é o mesmo que dominar, este exercício volta na revisita.`}
             </div>
 
             {/*
               O acerto não ensinava nada: o aluno saía sem saber por que as
-              outras falham, e é ali que as distratoras deste app rendem — cada
+              outras falham, e é ali que as distratoras deste app rendem, cada
               uma nomeia uma armadilha real. Revelado só depois de resolver, o
               princípio 3 continua de pé.
             */}

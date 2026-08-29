@@ -16,6 +16,7 @@ import { OVERLOADED_TERMS, PLANNED, APP } from '../content/glossary'
 import { vagueAbstractions, allowedVagueUses } from '../content/vocabulary'
 import { referenceGenerators } from './reference'
 import { bfsOrder, dfsOrder, vertices } from './traversal'
+import { untranslated } from './transliterate'
 
 export const CHECKS = [
   ['registro', 'registro: existe unidade registrada em src/content/index.ts'],
@@ -40,6 +41,7 @@ export const CHECKS = [
   ['convenção', 'convenção: todo pseudocódigo respeita a folha de notação'],
   ['referência', 'referência: todo traço é gerado por implementação que roda'],
   ['formato', 'formato: toda coluna editável de traço declara como se escreve a resposta'],
+  ['tradução', 'tradução: o pseudocódigo ou atravessa inteiro para TypeScript, ou é declarado prosa'],
   ['glossário', 'glossário: ids únicos, introdução declarada dos dois lados'],
   ['sobrecarga', 'sobrecarga: todo termo sobrecarregado declara seus falsos amigos'],
 ] as const
@@ -59,7 +61,7 @@ export function checkAll(units: Unit[], terms: GlossaryTerm[]): Failure[] {
 
   // --- registro -------------------------------------------------------------
   if (!units.length) {
-    fail('registro', 'nenhuma unidade registrada — o gate não tem o que ler')
+    fail('registro', 'nenhuma unidade registrada, o gate não tem o que ler')
   }
 
   /*
@@ -68,7 +70,7 @@ export function checkAll(units: Unit[], terms: GlossaryTerm[]): Failure[] {
     As checagens seguintes leem campo direto, sem guarda, porque o schema já
     garantiu que ele existe. Uma unidade que NÃO passa aqui é retirada do resto
     da rodada: sem isso, um campo obrigatório recém-declarado derrubava o
-    validador com TypeError em vez de reprovar com o nome do campo — e um gate
+    validador com TypeError em vez de reprovar com o nome do campo, e um gate
     que quebra não é um gate. Aconteceu duas vezes; ADR-0019.
   */
   let schemaBroke = false
@@ -77,11 +79,11 @@ export function checkAll(units: Unit[], terms: GlossaryTerm[]): Failure[] {
     if (parsed.success) continue
     schemaBroke = true
     for (const issue of parsed.error.issues) {
-      fail('schema', `${u.id}: ${issue.path.join('.')} — ${issue.message}`)
+      fail('schema', `${u.id}: ${issue.path.join('.')}, ${issue.message}`)
     }
   }
   // Sem isto, um campo obrigatório recém-declarado produzia 100 violações de
-  // glossário que não existem — as outras checagens leem o dado supondo o
+  // glossário que não existem, as outras checagens leem o dado supondo o
   // schema, e o relatório delas com o schema quebrado é ruído que esconde a
   // causa. Conserte o schema, rode de novo, veja o resto.
   if (schemaBroke) {
@@ -141,7 +143,7 @@ export function checkAll(units: Unit[], terms: GlossaryTerm[]): Failure[] {
   for (const u of units) {
     for (const m of u.misconceptions) {
       if (!m.socraticQuestion.trim().endsWith('?')) {
-        fail('socrática', `${m.id}: não termina em "?" — é explicação, não pergunta`)
+        fail('socrática', `${m.id}: não termina em "?", é explicação, não pergunta`)
       }
     }
   }
@@ -233,7 +235,7 @@ export function checkAll(units: Unit[], terms: GlossaryTerm[]): Failure[] {
       if (f.kind === 'tree') {
         const sets = f.sequences.map((seq) => [...seq.keys].sort((a, b) => a - b).join(','))
         if (new Set(sets).size !== 1) {
-          fail('figura', `${c.id}: as duas sequências não têm as mesmas chaves — a figura mostraria o efeito das chaves, não o da ordem`)
+          fail('figura', `${c.id}: as duas sequências não têm as mesmas chaves, a figura mostraria o efeito das chaves, não o da ordem`)
         }
         for (const seq of f.sequences) {
           if (new Set(seq.keys).size !== seq.keys.length) {
@@ -287,7 +289,7 @@ export function checkAll(units: Unit[], terms: GlossaryTerm[]): Failure[] {
       `síntese` limita a frase de abertura: acima do teto ela vira mais um
       parágrafo, e o ciclo já tem parágrafos.
 
-      `instância` é a regra que ataca 44 dos 62 ciclos com um movimento só —
+      `instância` é a regra que ataca 44 dos 62 ciclos com um movimento só, 
       nenhum ciclo publica sem um número real nos dois primeiros parágrafos.
       Categoria sem caso é economia de tempo para quem já tem referente, e
       palavra sem referente para quem não tem. Ver ADR-0019.
@@ -303,6 +305,28 @@ export function checkAll(units: Unit[], terms: GlossaryTerm[]): Failure[] {
       const opening = c.body.slice(0, 2).join(' ')
       if (!/\d/.test(opening)) {
         fail('instância', `${c.id}: nenhum número real nos dois primeiros parágrafos`)
+      }
+    }
+
+    /*
+      A versão em TypeScript é DERIVADA do pseudocódigo, nunca escrita ao lado
+      dele: duas fontes divergem na primeira correção, e o pseudocódigo deixaria
+      de ser canônico, que é o princípio 1.
+
+      Esta checagem não reprova o resíduo: ela EXIGE que o resíduo seja
+      declarado. Um bloco com passo em prosa ("mover o que restou de E para o
+      fim de S") não é traduzível sem inventar código, e a tela não oferece a
+      alternância nele. O que a checagem impede é o resíduo silencioso, o bloco
+      que quase traduz e entrega algo que parece TypeScript e não é.
+    */
+    for (const c of u.cycles) {
+      if (!c.pseudocode) continue
+      const left = untranslated(c.pseudocode)
+      if (left.length && !c.pseudocodeIsProse) {
+        fail('tradução', `${c.id}: sobra em português (${left.join(', ')}) e o ciclo não declara pseudocodeIsProse`)
+      }
+      if (!left.length && c.pseudocodeIsProse) {
+        fail('tradução', `${c.id}: declara pseudocodeIsProse e atravessa inteiro, remova a declaração`)
       }
     }
 
@@ -387,15 +411,15 @@ export function checkAll(units: Unit[], terms: GlossaryTerm[]): Failure[] {
     }
   }
     // A prosa do ciclo aceita `**assim**` e mais nada. Fora dela, asterisco é
-  // literal — e um asterisco solto na tela já apareceu como `**não cresce**`.
+  // literal, e um asterisco solto na tela já apareceu como `**não cresce**`.
   const cycleBodies = new Set(units.flatMap((u) => u.cycles.flatMap((c) => c.body)))
-  for (const [, path, text] of authored) {
+  for (const [path, text] of authored) {
     const marks = (text.match(/\*\*/g) ?? []).length
     if (marks === 0) continue
     if (!cycleBodies.has(text)) {
       fail('ênfase', `${path}: usa ** fora da prosa do ciclo, onde ele não é interpretado`)
     } else if (marks % 2 !== 0) {
-      fail('ênfase', `${path}: tem ${marks} marcas de ênfase — uma delas não fecha`)
+      fail('ênfase', `${path}: tem ${marks} marcas de ênfase, uma delas não fecha`)
     }
   }
 
@@ -409,7 +433,7 @@ export function checkAll(units: Unit[], terms: GlossaryTerm[]): Failure[] {
   const forbidden: Array<[RegExp, string]> = [
     [/[^<>!=]==[^=]/, 'use `=` para comparação, não `==`'],
     [/(^|[^a-zA-Z])%($|[^a-zA-Z])/, 'use `mod`, não `%`'],
-    [/\breturn\b/, 'use `retorne` — pseudocódigo é pt-BR'],
+    [/\breturn\b/, 'use `retorne`, pseudocódigo é pt-BR'],
     [/\b(for|while|if)\b/, 'use `para cada` / `enquanto` / `se`'],
     [/\b(null|nil|None)\b/, 'use `NULO`'],
     [/[{};]\s*$/m, 'blocos por indentação, sem delimitadores'],
@@ -442,7 +466,7 @@ export function checkAll(units: Unit[], terms: GlossaryTerm[]): Failure[] {
       }
 
       // ADR-0013: coluna dada não precisa de formato; coluna que o aluno
-      // preenche, sim — e o formato não pode ser um valor que o gabarito emite,
+      // preenche, sim, e o formato não pode ser um valor que o gabarito emite,
       // senão o placeholder entrega um passo da resposta.
       const emitted = new Set(steps.flatMap((step) => Object.values(step)))
       for (const col of ex.columns) {
@@ -452,7 +476,7 @@ export function checkAll(units: Unit[], terms: GlossaryTerm[]): Failure[] {
           continue
         }
         if (emitted.has(col.placeholder)) {
-          fail('formato', `${ex.id}: o placeholder de "${col.key}" é "${col.placeholder}", que o gabarito emite — declare o formato, não o valor`)
+          fail('formato', `${ex.id}: o placeholder de "${col.key}" é "${col.placeholder}", que o gabarito emite, declare o formato, não o valor`)
         }
       }
       for (const step of Object.keys(ex.misconceptionByStep)) {
@@ -483,7 +507,7 @@ export function checkAll(units: Unit[], terms: GlossaryTerm[]): Failure[] {
     if (t.introducedIn === PLANNED) {
       if (!t.plannedIn) fail('glossário', `${t.id}: é "${PLANNED}" e não diz onde pretende nascer`)
       if (t.plannedIn && allCycleIds.has(t.plannedIn)) {
-        fail('glossário', `${t.id}: o ciclo "${t.plannedIn}" já existe — troque "${PLANNED}" por introducedIn real`)
+        fail('glossário', `${t.id}: o ciclo "${t.plannedIn}" já existe, troque "${PLANNED}" por introducedIn real`)
       }
       if (introducedBy.has(t.id)) {
         fail('glossário', `${t.id}: é "${PLANNED}" mas o ciclo ${introducedBy.get(t.id)} já o introduz`)

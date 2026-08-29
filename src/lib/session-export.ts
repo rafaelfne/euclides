@@ -6,7 +6,7 @@ import type { Progress, Unit } from '@/content/schema'
  * What it carries is the student's state, never the content's answers: how
  * many attempts, what was solved and how cleanly, which traps fired, and the
  * question each trap already asked on screen. It never carries an `escalation`
- * entry the student has not earned, and never a correct choice — principle 3
+ * entry the student has not earned, and never a correct choice, principle 3
  * does not stop applying because the text left the app. `scripts/test-export.ts`
  * checks both.
  */
@@ -17,7 +17,7 @@ export interface GapLine {
   attempts: number
   solved: boolean
   solvedClean: boolean
-  /** Plain-language verdict. Never a percentage — principle 7. */
+  /** Plain-language verdict. Never a percentage, principle 7. */
   verdict: string
   misconceptions: Array<{ id: string; label: string; socraticQuestion: string; reviewCycle: string }>
   freeText?: string
@@ -35,7 +35,7 @@ const DAY_MS = 86_400_000
 function verdictFor(attempts: number, solved: boolean, solvedClean: boolean): string {
   if (!solved) return `aberto depois de ${attempts} ${attempts === 1 ? 'tentativa' : 'tentativas'}`
   if (solvedClean) return 'resolvido na primeira tentativa, sem ativar armadilha'
-  return `resolvido em ${attempts} tentativas — chegar lá não é o mesmo que dominar`
+  return `resolvido em ${attempts} tentativas, chegar lá não é o mesmo que dominar`
 }
 
 export function collectGaps(units: Unit[], progress: Progress, now: number): UnitGaps[] {
@@ -96,12 +96,12 @@ export function buildSessionExport(units: Unit[], progress: Progress, now: numbe
   ]
 
   if (!gaps.length) {
-    md.push('Nenhuma lacuna registrada neste navegador — ou nenhum exercício foi tentado ainda.', '')
+    md.push('Nenhuma lacuna registrada neste navegador, ou nenhum exercício foi tentado ainda.', '')
     return md.join('\n')
   }
 
   for (const { unit, lines, masteryBlockers, dueForReview } of gaps) {
-    md.push(`## Unidade ${unit.number} — ${unit.title}`, '')
+    md.push(`## Unidade ${unit.number}, ${unit.title}`, '')
     md.push(`**Critério de domínio.** ${unit.mastery.statement}`, '')
 
     if (masteryBlockers.length) {
@@ -120,7 +120,7 @@ export function buildSessionExport(units: Unit[], progress: Progress, now: numbe
       if (line.misconceptions.length) {
         md.push('Armadilhas que eu ativei:', '')
         for (const m of line.misconceptions) {
-          md.push(`- **${m.label}** — a pergunta que o app me fez foi: “${m.socraticQuestion}”`)
+          md.push(`- **${m.label}**, a pergunta que o app me fez foi: “${m.socraticQuestion}”`)
           md.push(`  (o ciclo de revisão é ${m.reviewCycle})`)
         }
         md.push('')

@@ -40,7 +40,7 @@ export const linearUnit: Unit = {
     ],
     answers: 'Perguntas por posição.',
     cannotAnswer: [
-      'Em que posição está um valor — só varrendo',
+      'Em que posição está um valor, só varrendo',
       'Se um valor existe, melhor que percorrendo tudo',
       'Qual é o menor ou o maior valor',
       'Quais valores estão numa faixa',
@@ -94,7 +94,7 @@ export const linearUnit: Unit = {
           assumptions: ['a religação em si é O(1); o custo é chegar até o nó anterior'],
           measuredIn: 'n = elementos guardados' },
         remover: { bound: 'O(n)', regime: 'worst', amortized: false,
-          assumptions: ['com o nó anterior já em mãos, a remoção é O(1) — e é isso que a frase costuma omitir'],
+          assumptions: ['com o nó anterior já em mãos, a remoção é O(1), e é isso que a frase costuma omitir'],
           measuredIn: 'n = elementos guardados' },
         tamanho: { bound: 'O(1)', regime: 'worst', amortized: false,
           assumptions: ['o contador é mantido a cada operação'],
@@ -105,7 +105,7 @@ export const linearUnit: Unit = {
         measuredIn: 'nós alocados' },
       wrongWhen: [
         { scenario: 'O acesso é por índice, ou a coleção é percorrida inteira com frequência',
-          useInstead: 'array dinâmico — cada salto de ponteiro é um acesso a endereço qualquer' },
+          useInstead: 'array dinâmico, cada salto de ponteiro é um acesso a endereço qualquer' },
         { scenario: 'A coleção é pequena e cabe inteira num punhado de linhas de cache',
           useInstead: 'array dinâmico, onde o percurso não sai do bloco' },
       ],
@@ -122,7 +122,7 @@ export const linearUnit: Unit = {
       oneLine: "A lista responde \"o que está na posição 3\", nunca \"onde está o valor 3\".",
       body: [
         'Uma lista é uma sequência de elementos em posições, e as 4 operações são todas sobre posição: obter, inserir, remover, tamanho.',
-        'A lista do que ela não promete é curta e cara: onde está um valor, se um valor existe, qual é o menor, quais estão numa faixa. Nada disso sai das quatro operações sem percorrer tudo. Guarde essa ausência — a unidade seguinte existe para prometer a primeira delas.',
+        'A lista do que ela não promete é curta e cara: onde está um valor, se um valor existe, qual é o menor, quais estão numa faixa. Nada disso sai das quatro operações sem percorrer tudo. Guarde essa ausência, a unidade seguinte existe para prometer a primeira delas.',
       ],
       workedExample: {
         problem: "Numa lista de 1000 nomes, obter a posição 500 é 1 operação. Descobrir em que posição está \"Ana\" são até 1000 comparações.",
@@ -134,13 +134,13 @@ export const linearUnit: Unit = {
       introducesTerms: ['stack'],
       oneLine: "Numa pilha só a última ponta é acessível, e as duas operações custam 1.",
       body: [
-        'Uma pilha é a lista com uma restrição: só a última ponta é acessível. Empilhar põe no fim, desempilhar tira do fim, e as 2 custam 1 operação — obter por posição não existe.',
-        'A restrição não é uma perda — é o que torna as duas operações constantes em qualquer implementação, e é o que permite a quem lê o código saber, sem verificar, que ninguém vai varrer a coleção.',
-        'Ela é o contrato que a execução de todo programa usa: a call stack empilha um quadro por chamada aberta, e é por isso que uma recursão profunda demais estoura — a pilha tem fundo.',
+        'Uma pilha é a lista com uma restrição: só a última ponta é acessível. Empilhar põe no fim, desempilhar tira do fim, e as 2 custam 1 operação, obter por posição não existe.',
+        'A restrição não é uma perda, é o que torna as duas operações constantes em qualquer implementação, e é o que permite a quem lê o código saber, sem verificar, que ninguém vai varrer a coleção.',
+        'Ela é o contrato que a execução de todo programa usa: a call stack empilha um quadro por chamada aberta, e é por isso que uma recursão profunda demais estoura, a pilha tem fundo.',
       ],
       workedExample: {
         problem: "Empilhe 3 quadros de chamada e desempilhe: sai o terceiro, o segundo, o primeiro. Uma recursão de 100 mil níveis empilha 100 mil quadros e estoura.",
-        whatToNotice: "Nenhuma das operações percorreu nada. É a restrição que garante isso — com acesso ao meio, não haveria como prometer custo 1.",
+        whatToNotice: "Nenhuma das operações percorreu nada. É a restrição que garante isso, com acesso ao meio, não haveria como prometer custo 1.",
       },
       exerciseId: 'linear.e1' },
 
@@ -162,9 +162,9 @@ export const linearUnit: Unit = {
       introducesTerms: ['dynamic-array', 'capacity'],
       oneLine: "Tirar o primeiro de 5 elementos obriga 4 escritas; tirar o último, nenhuma.",
       body: [
-        'A primeira implementação guarda tudo num bloco contíguo. O endereço de uma posição sai de uma conta, e é por isso que obter é constante — nada é percorrido.',
+        'A primeira implementação guarda tudo num bloco contíguo. O endereço de uma posição sai de uma conta, e é por isso que obter é constante, nada é percorrido.',
         'O preço aparece quando o meio muda. Para tirar o elemento da posição p, todos os que estavam à direita precisam andar uma casa, uma escrita por elemento. A chamada é uma; as escritas são n − p − 1.',
-        'O bloco também tem duas grandezas que não são a mesma: quantas posições foram alocadas, e quantas têm valor. A segunda cresce de um em um; a primeira dá saltos, dobrando quando enche — e é por isso que inserir no fim é barato quase sempre, e caro de vez em quando.',
+        'O bloco também tem duas grandezas que não são a mesma: quantas posições foram alocadas, e quantas têm valor. A segunda cresce de um em um; a primeira dá saltos, dobrando quando enche, e é por isso que inserir no fim é barato quase sempre, e caro de vez em quando.',
       ],
       pseudocode: `função remover(A, p)
     para cada j de p até n − 2 faça
@@ -177,7 +177,7 @@ export const linearUnit: Unit = {
         removeAt: 0,
         caption:
           'A chamada é uma; as escritas são quatro. E a última posição continua guardando 50 ' +
-          'depois da última escrita: o bloco não encolheu, só o tamanho lógico mudou — que é a ' +
+          'depois da última escrita: o bloco não encolheu, só o tamanho lógico mudou, que é a ' +
           'diferença entre capacidade e tamanho.',
       },
       workedExample: {
@@ -191,7 +191,7 @@ export const linearUnit: Unit = {
       oneLine: "Religar dois ponteiros custa 1; chegar até o nó certo pode custar 500.",
       body: [
         'A segunda implementação abre mão do bloco: cada elemento mora num nó que aponta para o próximo. Nada precisa andar uma casa, porque nada é vizinho de nada por endereço.',
-        'Isso troca um custo por outro. Religar dois ponteiros é constante, mas chegar até o nó certo é percorrer. "Remoção é O(1) numa lista ligada" é verdade **depois** que alguém pagou para achar o nó — e a operação que se pede na prática é "remova o valor X", que inclui a busca.',
+        'Isso troca um custo por outro. Religar dois ponteiros é constante, mas chegar até o nó certo é percorrer. "Remoção é O(1) numa lista ligada" é verdade **depois** que alguém pagou para achar o nó, e a operação que se pede na prática é "remova o valor X", que inclui a busca.',
         'A operação que a lista ligada realmente perde é obter por posição. Não há conta que dê o endereço da posição 500: só existe seguir quinhentos ponteiros.',
       ],
       workedExample: {
@@ -204,12 +204,12 @@ export const linearUnit: Unit = {
       introducesTerms: ['cache-locality'],
       oneLine: "Ler um endereço traz os vizinhos junto, e a tabela de custos não conta isso.",
       body: [
-        'Pela tabela, a lista ligada ganha em inserção e a escolha parece decidida. Na prática, somar 1 milhão de inteiros num bloco contíguo costuma terminar em uma fração do tempo de percorrer os mesmos 1 milhão em nós ligados — e o motivo não aparece em notação O.',
+        'Pela tabela, a lista ligada ganha em inserção e a escolha parece decidida. Na prática, somar 1 milhão de inteiros num bloco contíguo costuma terminar em uma fração do tempo de percorrer os mesmos 1 milhão em nós ligados, e o motivo não aparece em notação O.',
         'Ler um endereço traz os vizinhos junto. Percorrer um bloco contíguo aproveita isso a cada passo; percorrer uma lista ligada salta para endereços quaisquer, e cada salto pode não aproveitar nada.',
-        'Isso não invalida a tabela — declara uma hipótese que ela tinha e não escreveu: que todo acesso custa o mesmo. É o melhor exemplo da trilha inteira de por que uma afirmação de custo carrega hipóteses, e é a unidade 2 aparecendo aqui com consequência concreta.',
+        'Isso não invalida a tabela, declara uma hipótese que ela tinha e não escreveu: que todo acesso custa o mesmo. É o melhor exemplo da trilha inteira de por que uma afirmação de custo carrega hipóteses, e é a unidade 2 aparecendo aqui com consequência concreta.',
       ],
       workedExample: {
-        problem: "Somar 1 milhão de inteiros num bloco contíguo e na mesma quantidade de nós ligados dá a mesma conta O(n) — e o bloco costuma terminar em uma fração do tempo do outro.",
+        problem: "Somar 1 milhão de inteiros num bloco contíguo e na mesma quantidade de nós ligados dá a mesma conta O(n), e o bloco costuma terminar em uma fração do tempo do outro.",
         whatToNotice: "A diferença não está na notação, está na hipótese que ela não escreveu: que todo acesso custa o mesmo.",
       },
       exerciseId: 'linear.e5' },
@@ -224,7 +224,7 @@ export const linearUnit: Unit = {
       ],
       workedExample: {
         problem: "Um cadastro com 50 mil e-mails, e a pergunta \"esse e-mail já existe?\". Com lista, são até 50 mil comparações por cadastro novo.",
-        whatToNotice: "Nenhuma das 4 operações da lista responde isso. O custo alto não é o defeito — o defeito é o contrato não prometer a pergunta.",
+        whatToNotice: "Nenhuma das 4 operações da lista responde isso. O custo alto não é o defeito, o defeito é o contrato não prometer a pergunta.",
       },
       exerciseId: 'linear.e6' },
   ],

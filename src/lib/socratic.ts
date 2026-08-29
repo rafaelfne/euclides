@@ -3,7 +3,7 @@ import type { Misconception } from '../content/schema'
 /**
  * The deterministic socratic engine.
  *
- * Socratic correction is not runtime intelligence — it is authoring-time
+ * Socratic correction is not runtime intelligence, it is authoring-time
  * anticipation. This module never reveals a correct value. It reveals WHERE
  * the reasoning broke, then which field, then the question that attacks the
  * root. Three rungs, and the last one still withholds the answer.
@@ -17,7 +17,7 @@ export type TraceStep = Record<string, string>
 export interface Divergence {
   /** 1-based index of the first step that differs. null when the trace is right. */
   firstDivergentStep: number | null
-  /** Field that differs at that step — released only on the second attempt. */
+  /** Field that differs at that step, released only on the second attempt. */
   divergentField: string | null
 }
 
@@ -52,7 +52,7 @@ const asNumber = (v: string | undefined): number | null => {
  *
  * Número é comparado por VALOR, não por tipografia: `0,75` e `0,750` são a
  * mesma resposta, e quem escreve a primeira entendeu α tão bem quanto quem
- * escreve a segunda. Reprovar por casa decimal é o motor errando, não o aluno —
+ * escreve a segunda. Reprovar por casa decimal é o motor errando, não o aluno, 
  * e o custo desse erro é alto, porque a devolutiva do terceiro degrau manda o
  * aluno voltar amanhã sem que exista nada para ele reconsiderar. ADR-0013.
  */
@@ -76,9 +76,9 @@ export interface Feedback {
 /**
  * Builds the feedback for one attempt. `attempt` is 1-based.
  *
- * Rung 1 — where it broke, and what is still correct.
- * Rung 2 — which field, or that the trace stopped short.
- * Rung 3 — the misconception's question, escalating one entry per attempt.
+ * Rung 1, where it broke, and what is still correct.
+ * Rung 2, which field, or that the trace stopped short.
+ * Rung 3, the misconception's question, escalating one entry per attempt.
  *
  * There is no rung 4. A student who exhausts the escalation is told to stop
  * and come back, which is a better outcome than an answer.

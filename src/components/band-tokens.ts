@@ -1,7 +1,7 @@
 import type { Cycle } from '@/content/schema'
 
 /**
- * A apresentação de cada banda, exaustiva por tipo — deriva 4 do CLAUDE.md.
+ * A apresentação de cada banda, exaustiva por tipo, deriva 4 do CLAUDE.md.
  * Uma banda nova não compila até ser nomeada aqui, e o rótulo é conteúdo em
  * pt-BR enquanto o valor do enum continua sendo código.
  */

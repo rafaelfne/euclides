@@ -9,7 +9,7 @@
 | [0005](0005-terminologia-canonica.md) | A forma canônica é a que o aluno encontra no mundo | Terminologia que não transfere sabota o objetivo |
 | [0006](0006-validador-como-gate.md) | Validador é gate de build, sem nível de aviso | As regras foram quebradas quatro vezes por quem as escreveu |
 | [0007](0007-fronteira-de-idioma.md) | Fronteira de idioma entre código e conteúdo | Enum em inglês vazou para a tela do aluno |
-| [0008](0008-css-puro.md) | ~~CSS puro com custom properties~~ — substituído pelo 0015 | Os tokens são o design system; página pública paga por kB |
+| [0008](0008-css-puro.md) | ~~CSS puro com custom properties~~, substituído pelo 0015 | Os tokens são o design system; página pública paga por kB |
 | [0009](0009-persistencia-local.md) | Progresso em localStorage | Backend derrubaria o export estático |
 | [0010](0010-fluxo-hibrido-de-autoria.md) | Design fora do repo, autoria dentro | O gargalo é conteúdo, e as duas fases têm naturezas diferentes |
 | [0011](0011-fronteira-do-gate.md) | O que é gate, o que é relatório, e por quê | Os documentos ficaram fora do gate e derivaram antes do conteúdo |
@@ -20,6 +20,7 @@
 | [0016](0016-rampa-de-entrada.md) | A rampa é mecanizada onde dá, declarada onde não dá | Dava para acertar 54 de 54 exercícios pelo formato, sem ler nada |
 | [0017](0017-figura-e-dado.md) | A figura é dado declarado; o SVG é o renderizador | Um caminho SVG afirma coisas que nenhuma checagem confere |
 | [0018](0018-fronteira-do-tom.md) | Acolhimento é dado derivado, ou não entra | Amaciar a frase dissolve o princípio 7; derivar o fato, não |
+| [0019](0019-rampa-medida.md) | Instância antes de abstração, e movimento que é argumento | Categoria sem caso é palavra sem referente; 44 de 62 ciclos não tinham número |
 
 ## Como escrever o próximo
 

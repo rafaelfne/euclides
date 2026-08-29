@@ -1,7 +1,7 @@
-# Spec — Unidade 6: Grafos
+# Spec, Unidade 6: Grafos
 
-**Status:** spec — não implementada
-**Kind:** `structure`. Encaixa na espinha sem conflito — é a unidade mais parecida com hash
+**Status:** spec, não implementada
+**Kind:** `structure`. Encaixa na espinha sem conflito, é a unidade mais parecida com hash
 em forma, e a mais distante em conteúdo.
 
 ## Problema motivador
@@ -11,14 +11,14 @@ Uma tela de permissões: um usuário pertence a times, times herdam de times, e 
 e o time de suporte relata que, para alguns usuários, a tela trava.
 
 O que o aluno já tem: sabe percorrer uma lista e uma árvore. O que ele não tem: a árvore
-não tem ciclo, e a hierarquia de times tem — alguém pôs o time A dentro do B e o B dentro
+não tem ciclo, e a hierarquia de times tem, alguém pôs o time A dentro do B e o B dentro
 do A. O percurso que funciona em árvore não termina aqui.
 
 A pergunta que abre a unidade: **o que muda quando o caminho pode voltar?**
 
 ## Contrato
 
-`Grafo` — vértices e as ligações entre eles.
+`Grafo`, vértices e as ligações entre eles.
 
 | operação | garantia |
 |---|---|
@@ -29,31 +29,31 @@ A pergunta que abre a unidade: **o que muda quando o caminho pode voltar?**
 
 **Responde:** perguntas sobre vizinhança direta.
 
-**Não responde** — a resposta do último ciclo: se existe caminho entre dois vértices; qual
+**Não responde**, a resposta do último ciclo: se existe caminho entre dois vértices; qual
 o caminho mais curto; se há ciclo; quais vértices são alcançáveis. **Nada disso é operação
-do contrato** — tudo é algoritmo escrito sobre ele, e essa distinção é o conteúdo mais
+do contrato**, tudo é algoritmo escrito sobre ele, e essa distinção é o conteúdo mais
 importante da unidade.
 
 **Decisão de forma que isso força:** os percursos (busca em largura, busca em profundidade)
 não são operações do TAD. Onde eles moram na espinha? Na banda `cost`, como consequência?
-Numa terceira implementação? **A DEFINIR** — e é o item que mais provavelmente revela um
+Numa terceira implementação? **A DEFINIR**, e é o item que mais provavelmente revela um
 limite do ADR-0003, porque grafo é a primeira unidade em que o valor não está nas
 implementações do contrato, e sim nos algoritmos escritos sobre ele.
 
 ## Implementações comparadas
 
-**Lista de adjacência** — cada vértice guarda a lista dos seus vizinhos.
+**Lista de adjacência**, cada vértice guarda a lista dos seus vizinhos.
 Invariante: `v` aparece em `adj[u]` se e somente se existe aresta de u para v.
 Custo: espaço O(V+E); `vizinhos(v)` O(grau de v); `existeAresta` O(grau de u).
 Errada quando: o grafo é denso e a pergunta dominante é `existeAresta`. Use matriz.
 Âncora: é como toda biblioteca de grafo representa por padrão, e o motivo é que grafo real
-é esparso — um usuário pertence a cinco times, não a todos.
+é esparso, um usuário pertence a cinco times, não a todos.
 
-**Matriz de adjacência** — uma tabela V×V de sim/não.
+**Matriz de adjacência**, uma tabela V×V de sim/não.
 Invariante: `M[u][v]` é verdadeiro se e somente se existe aresta de u para v.
 Custo: espaço O(V²) **independente do número de arestas**; `existeAresta` O(1);
 `vizinhos(v)` O(V), mesmo que v tenha um vizinho só.
-Errada quando: o grafo é esparso — dez mil vértices e vinte mil arestas gastam cem milhões
+Errada quando: o grafo é esparso, dez mil vértices e vinte mil arestas gastam cem milhões
 de células para guardar vinte mil fatos.
 Âncora: é a representação natural quando o grafo é pequeno e fixo, e a que aparece em
 matriz de distâncias.
@@ -75,22 +75,22 @@ o exercício de escolha.
 | c6 | ? | Largura e profundidade respondem perguntas diferentes | busca em profundidade |
 | c7 | custo | Quando o grafo é a escolha errada | *(a definir)* |
 
-**c5 e c6 sem banda definida** — é a pergunta lá em cima. Eles são o coração da unidade e
+**c5 e c6 sem banda definida**, é a pergunta lá em cima. Eles são o coração da unidade e
 não são implementações do contrato.
 
 ## Armadilhas conhecidas
 
-- `percurso-sem-visitados` — a que o problema motivador ativa: laço infinito no ciclo
-- `bfs-e-dfs-equivalentes` — supor que a ordem do percurso não muda a resposta
-- `caminho-mais-curto-com-peso` — usar busca em largura em grafo com peso e chamar de mais curto
-- `matriz-para-esparso` — a que o custo de espaço denuncia
-- `arvore-e-grafo` — supor que o que vale em árvore vale aqui (é a ponte com a unidade 5)
+- `percurso-sem-visitados`, a que o problema motivador ativa: laço infinito no ciclo
+- `bfs-e-dfs-equivalentes`, supor que a ordem do percurso não muda a resposta
+- `caminho-mais-curto-com-peso`, usar busca em largura em grafo com peso e chamar de mais curto
+- `matriz-para-esparso`, a que o custo de espaço denuncia
+- `arvore-e-grafo`, supor que o que vale em árvore vale aqui (é a ponte com a unidade 5)
 
 `percurso-sem-visitados` é a mais valiosa e a mais barata de exercitar: é um exercício de
 traço em que o aluno preenche a fila e o conjunto de visitados passo a passo, e o traço
 **não termina** se ele esquecer o conjunto. O erro aparece na própria tabela.
 
-**A DEFINIR** — sua leitura.
+**A DEFINIR**, sua leitura.
 
 ## Critério de domínio (proposta)
 
@@ -107,5 +107,5 @@ em largura responde que a busca em profundidade não responde.
 3. **Um exercício de traço de busca em largura precisa de gerador novo** em
    `src/lib/reference/`, com id prefixado `graphs.`. O formato da célula "conjunto de
    visitados" precisa de `placeholder` e provavelmente de entrada em `traceConventions`
-   (ADR-0013) — conjunto não tem ordem, e comparar por igualdade de string reprovaria quem
+   (ADR-0013), conjunto não tem ordem, e comparar por igualdade de string reprovaria quem
    escreveu na ordem diferente. `sameCell` não cobre esse caso hoje.

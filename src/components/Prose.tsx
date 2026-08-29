@@ -5,7 +5,7 @@ import { findMarks } from '@/lib/glossary-link'
 /**
  * A única marcação permitida na prosa autorada: `**assim**` vira ênfase.
  *
- * Ela existe porque a ênfase faz trabalho real em algumas frases — "o custo
+ * Ela existe porque a ênfase faz trabalho real em algumas frases, "o custo
  * por nível **não cresce**" perde a força sem ela. E existe declarada porque
  * antes disso os asteriscos apareciam literais na tela: a prosa era renderizada
  * como texto puro, e ninguém tinha declarado que não era markdown.
@@ -38,7 +38,7 @@ function Linked({ text, terms }: { text: string; terms: string[] }): ReactNode {
       <Link
         key={`t${i}`}
         href={`/glossary#${m.term.id}`}
-        title={`${m.term.definition} — ${m.term.isNot[0] ?? ''}`}
+        title={`${m.term.definition}, ${m.term.isNot[0] ?? ''}`}
         className="text-fg-2 underline decoration-contract-rule decoration-dotted underline-offset-[3px] hover:text-contract"
       >
         {text.slice(m.start, m.end)}

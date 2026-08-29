@@ -4,7 +4,7 @@ import type { TraceStep } from '../socratic'
  * Reference implementation. It exists to GENERATE the correct trace.
  *
  * A árvore de T(n) = 2·T(n/2) + n, com n = 8. O ciclo afirmava que "resolver
- * essa relação dá n log n" e nunca mostrava como — que é o reconhecimento de
+ * essa relação dá n log n" e nunca mostrava como, que é o reconhecimento de
  * padrão que o próprio ciclo condena dois parágrafos depois.
  *
  * As duas colunas que carregam a derivação inteira são o custo por nível, que

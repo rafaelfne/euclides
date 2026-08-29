@@ -10,7 +10,7 @@ import { cn } from '@/lib/utils'
 import { CycleFigure } from './CycleFigure'
 import { Prose } from './Prose'
 import { findMarks } from '@/lib/glossary-link'
-import { Pseudocode } from './Pseudocode'
+import { CodeBlock } from './CodeBlock'
 import { ChoiceExercise } from './ChoiceExercise'
 import { TraceExercise } from './TraceExercise'
 import { BugExercise } from './BugExercise'
@@ -22,7 +22,7 @@ import { BAND_LABEL, BAND_TONE, LAYER_LABEL, TONE_TEXT } from './band-tokens'
 /**
  * The cycle is the unit of navigation, not the page: prose, worked example and
  * exercise live in one scroll. Splitting the exercise onto its own screen is an
- * invitation to skip it — and the exercise is the product.
+ * invitation to skip it, and the exercise is the product.
  */
 export function CycleScreen({ unit, cycle, exercise }: { unit: Unit; cycle: Cycle; exercise: Exercise }) {
   const index = unit.cycles.findIndex((c) => c.id === cycle.id)
@@ -33,7 +33,7 @@ export function CycleScreen({ unit, cycle, exercise }: { unit: Unit; cycle: Cycl
     .filter((t): t is NonNullable<typeof t> => Boolean(t))
   const tone = BAND_TONE[cycle.band]
 
-  // Os termos que ESTE ciclo estreia, mais o vocabulário do app — que não
+  // Os termos que ESTE ciclo estreia, mais o vocabulário do app, que não
   // estreia em ciclo nenhum e é o que falta para quem chega sem referente.
   //
   // A ligação é uma por ciclo, não uma por parágrafo: o mesmo termo sublinhado
@@ -88,7 +88,7 @@ export function CycleScreen({ unit, cycle, exercise }: { unit: Unit; cycle: Cycl
 
         {cycle.pseudocode && (
           <div className="mt-6 max-w-[820px]">
-            <Pseudocode source={cycle.pseudocode} />
+            <CodeBlock source={cycle.pseudocode} />
           </div>
         )}
 
@@ -113,7 +113,7 @@ export function CycleScreen({ unit, cycle, exercise }: { unit: Unit; cycle: Cycl
         {/*
           A sequência existia só no array. Sem isto a tela do ciclo terminava
           no botão de verificar e o aluno voltava ao mapa para achar o próximo
-          à mão — e o mapa está ordenado por banda, não por leitura.
+          à mão, e o mapa está ordenado por banda, não por leitura.
         */}
         <nav className="mt-12 flex max-w-[860px] justify-between gap-5 border-t border-rule-soft pt-4">
           {prev ? (

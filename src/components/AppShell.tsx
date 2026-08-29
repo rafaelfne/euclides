@@ -4,7 +4,7 @@ import { MobileBar } from './MobileBar'
 
 /**
  * Rail e abas ficam parados; a rolagem pertence ao conteúdo. Cada tela decide
- * quantas regiões de rolagem tem — a do ciclo tem duas, porque a barra lateral
+ * quantas regiões de rolagem tem, a do ciclo tem duas, porque a barra lateral
  * de símbolos precisa acompanhar a prosa em vez de sair da tela com ela.
  */
 export function AppShell({ unitId, tabs, children }: { unitId?: string; tabs?: ReactNode; children: ReactNode }) {

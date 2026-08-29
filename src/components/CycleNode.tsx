@@ -6,7 +6,7 @@ import { BAND_TONE, type BandTone } from './band-tokens'
 
 /**
  * Shape carries the taxonomic band, fill carries progress. Two channels, so a
- * glance answers both "what kind of thing is this" and "where am I" — which a
+ * glance answers both "what kind of thing is this" and "where am I", which a
  * numbered list in a column answers for neither.
  *
  * A forma codifica a POSIÇÃO na espinha, não o substantivo: a banda de abertura

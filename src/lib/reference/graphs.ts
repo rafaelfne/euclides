@@ -5,7 +5,7 @@ import type { TraceStep } from '../socratic'
  *
  * O grafo tem um ciclo de propósito: A → B → C → A. Um percurso sem o conjunto
  * de visitados não termina, e o traço é o lugar onde o aluno descobre isso
- * escrevendo a fila com a própria mão — sem executar nada, que é o ponto.
+ * escrevendo a fila com a própria mão, sem executar nada, que é o ponto.
  */
 
 const ADJACENCY: Record<string, string[]> = {

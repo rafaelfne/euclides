@@ -1,7 +1,7 @@
 import { AppShell } from '@/components/AppShell'
 import { HowItWorks } from '@/components/HowItWorks'
 
-export const metadata = { title: 'Como funciona — Euclides' }
+export const metadata = { title: 'Como funciona, Euclides' }
 
 export default function Page() {
   return (

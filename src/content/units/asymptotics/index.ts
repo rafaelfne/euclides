@@ -16,11 +16,11 @@ export const asymptoticsUnit: Unit = {
   motivatingProblem:
     'Uma consulta que respondia em 40 ms com dez mil registros passou a responder em 4 s com ' +
     'um milhão. Ninguém mudou o código. A pergunta na retrospectiva é "por que ninguém viu ' +
-    'isso vindo?" — e a resposta incômoda é que o custo estava escrito no código o tempo todo, ' +
+    'isso vindo?", e a resposta incômoda é que o custo estava escrito no código o tempo todo, ' +
     'numa forma que ninguém leu. O que uma afirmação de custo precisa declarar para ser lida?',
 
   symbols: [
-    { symbol: 'n', means: 'o tamanho da entrada — e a afirmação precisa dizer o que ele conta' },
+    { symbol: 'n', means: 'o tamanho da entrada, e a afirmação precisa dizer o que ele conta' },
     { symbol: 'T(n)', means: 'o custo do procedimento para uma entrada desse tamanho' },
     { symbol: 'O(...)', means: 'um limite superior de crescimento, ignorando constantes' },
     { symbol: 'log n', means: 'quantas vezes dá para dividir n ao meio até chegar a um' },
@@ -36,7 +36,7 @@ export const asymptoticsUnit: Unit = {
       { id: 'regime', name: 'regime', guarantee: 'pior caso, caso médio ou melhor caso' },
       { id: 'amortized', name: 'amortização', guarantee: 'se o custo é por operação, ou espalhado ao longo de uma sequência' },
       { id: 'assumptions', name: 'hipóteses', guarantee: 'o que precisa ser verdade para o limite valer' },
-      { id: 'measured-in', name: 'unidade de medida', guarantee: 'o que n conta — e o que ele deliberadamente ignora' },
+      { id: 'measured-in', name: 'unidade de medida', guarantee: 'o que n conta, e o que ele deliberadamente ignora' },
     ],
     whenOmitted: [
       { partId: 'regime', reads: 'hash é O(1)' },
@@ -63,7 +63,7 @@ export const asymptoticsUnit: Unit = {
       everydayAnchor:
         'É o que você faz de cabeça ao ler dois laços aninhados numa revisão e concluir que ' +
         'aquilo não sobrevive a dez mil linhas.',
-      invariant: 'A soma só vale se toda operação somada custar o mesmo — e dizer isso é declarar uma hipótese.',
+      invariant: 'A soma só vale se toda operação somada custar o mesmo, e dizer isso é declarar uma hipótese.',
     },
     {
       id: 'recurrence',
@@ -75,7 +75,7 @@ export const asymptoticsUnit: Unit = {
         { scenario: 'O procedimento é um laço simples, sem chamada a si mesmo',
           useInstead: 'contagem de operações, que responde em uma linha' },
         { scenario: 'As partes não têm tamanho previsível, como no quicksort com pivô ruim',
-          useInstead: 'escrever duas relações — a do melhor e a do pior caso — e declarar as duas' },
+          useInstead: 'escrever duas relações, a do melhor e a do pior caso, e declarar as duas' },
       ],
       everydayAnchor:
         'É o raciocínio por trás de "dividir ao meio dá log n", que todo mundo repete numa ' +
@@ -91,13 +91,13 @@ export const asymptoticsUnit: Unit = {
       wrongWhen: [
         { scenario: 'A pergunta é sobre uma operação isolada, e não sobre uma sequência',
           useInstead: 'contagem de operações, declarando o pior caso daquela operação' },
-        { scenario: 'Não existe operação que redistribua custo — nada dobra, nada reconstrói',
+        { scenario: 'Não existe operação que redistribua custo, nada dobra, nada reconstrói',
           useInstead: 'contagem de operações; amortizado aqui não afirma nada além do que ela já disse' },
       ],
       everydayAnchor:
         'É o argumento que sustenta "inserir no fim de uma lista dinâmica é barato" mesmo ' +
         'sabendo que uma inserção em cada tantas copia o array inteiro.',
-      invariant: 'A conta é sobre uma sequência fixa de operações, não sobre entradas sorteadas — e é isso que separa amortizado de caso médio.',
+      invariant: 'A conta é sobre uma sequência fixa de operações, não sobre entradas sorteadas, e é isso que separa amortizado de caso médio.',
     },
   ],
 
@@ -108,7 +108,7 @@ export const asymptoticsUnit: Unit = {
       body: [
         '"Hash é O(1)." A frase não é falsa. Ela está incompleta em quatro lugares, e cada omissão produz uma frase que soa igualmente precisa.',
         'Uma afirmação de custo verificável carrega cinco partes: o limite, o regime, se ele é amortizado, sob quais hipóteses vale, e o que n conta. Este ciclo apresenta as cinco; os próximos atacam uma de cada vez, e cada um deles começa pela frase que a omissão produz.',
-        'Não é formalidade. O schema deste projeto exige as cinco partes em toda afirmação de custo que aparece na trilha — você vai encontrá-las preenchidas em todas as outras unidades. Aqui você aprende a produzi-las.',
+        'Não é formalidade. O schema deste projeto exige as cinco partes em toda afirmação de custo que aparece na trilha, você vai encontrá-las preenchidas em todas as outras unidades. Aqui você aprende a produzi-las.',
       ],
       workedExample: {
         problem: "\"Buscar é O(1)\" contra \"buscar é O(1) amortizado no caso médio, supondo hash uniforme, com n contando pares na tabela\". A segunda tem 5 partes; a primeira tem 1.",
@@ -122,7 +122,7 @@ export const asymptoticsUnit: Unit = {
       body: [
         'A notação descreve como o custo cresce, não quanto ele é. Ela descarta constantes de propósito: 1000·n e n são a mesma coisa para ela, porque a constante depende da máquina e o crescimento não.',
         'A consequência: para n pequeno, a comparação assintótica não decide nada. Mil vezes n é maior que n ao quadrado até n chegar a mil. Se as suas coleções têm duzentos elementos, a afirmação que ganha na notação é a que perde na máquina.',
-        'É por isso que "é O(n), então é a escolha certa" não é um argumento — e é a primeira vez nesta trilha em que a resposta correta é "depende, e o eixo é este".',
+        'É por isso que "é O(n), então é a escolha certa" não é um argumento, e é a primeira vez nesta trilha em que a resposta correta é "depende, e o eixo é este".',
       ],
       figure: {
         kind: 'growth',
@@ -149,7 +149,7 @@ export const asymptoticsUnit: Unit = {
       oneLine: "A conta soma elementos e costuma ignorar o tamanho de cada elemento.",
       body: [
         'Toda afirmação de custo conta alguma coisa e ignora outra, e quase nunca diz qual é qual. "Procurar numa lista de 1000 é O(n)" conta os 1000 elementos e ignora o tamanho de cada um.',
-        'Isso é aceitável quando comparar dois elementos custa o mesmo sempre — inteiros, por exemplo. Deixa de ser quando os elementos são URLs de tamanhos diferentes: a operação que a conta chamou de unitária passa a depender de uma segunda grandeza que a afirmação não menciona.',
+        'Isso é aceitável quando comparar dois elementos custa o mesmo sempre, inteiros, por exemplo. Deixa de ser quando os elementos são URLs de tamanhos diferentes: a operação que a conta chamou de unitária passa a depender de uma segunda grandeza que a afirmação não menciona.',
         'A pergunta que resolve: uma operação que a sua conta somou como uma só realmente custa o mesmo em todas as entradas?',
       ],
       workedExample: {
@@ -164,7 +164,7 @@ export const asymptoticsUnit: Unit = {
       body: [
         'Contar rodadas funciona enquanto o procedimento não chama a si mesmo. Quando ele chama, o número de níveis depende da entrada, e não há o que somar diretamente.',
         'A saída é escrever o custo em função do custo do subproblema: dividir ao meio e chamar duas vezes, gastando tempo linear para juntar, é T(n) = 2·T(n/2) + n. Resolver essa relação dá n log n.',
-        'A parte que some com mais frequência é o caso base. Sem T(1), a relação não descreve nenhum procedimento que pare — ela é uma definição circular, e devolver "n log n" a partir dela é reconhecer um padrão, não derivar um custo.',
+        'A parte que some com mais frequência é o caso base. Sem T(1), a relação não descreve nenhum procedimento que pare, ela é uma definição circular, e devolver "n log n" a partir dela é reconhecer um padrão, não derivar um custo.',
         'Escrever a relação é o que este ciclo cobra. Resolvê-la é o próximo, e ele é onde o n log n deixa de ser afirmação e passa a ser conta.',
       ],
       pseudocode: `função custo(n)
@@ -184,7 +184,7 @@ export const asymptoticsUnit: Unit = {
       body: [
         'Escrever a relação é metade do trabalho. A outra metade é resolvê-la, e "resolver essa relação dá n log n" dito sem derivação é exatamente o reconhecimento de padrão que o ciclo anterior condena. Para n = 8, os níveis são 3, e cada um custa 8.',
         'A derivação cabe num desenho. Cada nível da árvore tem duas grandezas: quantas chamadas existem ali e de que tamanho é cada uma. O custo do nível é o produto das duas, e é isso que a coluna do meio do exercício pede.',
-        'Duas coisas aparecem quando a tabela fica pronta, e nenhuma das duas é óbvia antes. A primeira: o custo por nível **não cresce** — as chamadas dobram e o tamanho cai pela metade, e o produto fica igual. A segunda: o número de níveis não é n, é quantas vezes dá para dividir n ao meio até chegar ao caso base, que é log n.',
+        'Duas coisas aparecem quando a tabela fica pronta, e nenhuma das duas é óbvia antes. A primeira: o custo por nível **não cresce**, as chamadas dobram e o tamanho cai pela metade, e o produto fica igual. A segunda: o número de níveis não é n, é quantas vezes dá para dividir n ao meio até chegar ao caso base, que é log n.',
         'O total é o custo de um nível vezes o número de níveis. É daí que n log n sai, e não de reconhecer a forma da relação.',
       ],
       pseudocode: `função custo(n)
@@ -202,13 +202,13 @@ export const asymptoticsUnit: Unit = {
       introducesTerms: [],
       oneLine: "O pior caso do quicksort ingênuo é a entrada já ordenada, que é a mais comum.",
       body: [
-        'Pior caso, caso médio e melhor caso qualificam o **custo**, não a frequência da entrada. Dizer que algo é O(n²) no pior caso não afirma que esse caso é improvável — ele pode ser 100% das suas entradas.',
-        'O exemplo que desfaz a confusão de uma vez: o pior caso do quicksort com pivô no primeiro elemento é a entrada já ordenada — a mais comum que existe num sistema real. O pior caso ali não é raro; é o caso normal.',
+        'Pior caso, caso médio e melhor caso qualificam o **custo**, não a frequência da entrada. Dizer que algo é O(n²) no pior caso não afirma que esse caso é improvável, ele pode ser 100% das suas entradas.',
+        'O exemplo que desfaz a confusão de uma vez: o pior caso do quicksort com pivô no primeiro elemento é a entrada já ordenada, a mais comum que existe num sistema real. O pior caso ali não é raro; é o caso normal.',
         'E quando a entrada vem de fora, a distinção deixa de ser acadêmica: quem escolhe as chaves pode escolhê-las para ativar o pior caso de propósito. É a mesma família de problema que a unidade de tabelas hash chama de hash flooding.',
       ],
       workedExample: {
         problem: "Quicksort com pivô no primeiro elemento, sobre [1, 2, 3, 4, 5]: as partições ficam de tamanho 0 e 4, depois 0 e 3, e assim por diante. São 4 níveis em vez de 3, e o custo vai a n².",
-        whatToNotice: "Nada nessa entrada é estranho — ela é o que sai de qualquer consulta ordenada. \"Pior caso\" qualificou o custo e não disse nada sobre a frequência.",
+        whatToNotice: "Nada nessa entrada é estranho, ela é o que sai de qualquer consulta ordenada. \"Pior caso\" qualificou o custo e não disse nada sobre a frequência.",
       },
       exerciseId: 'asymptotics.e4' },
 
@@ -222,7 +222,7 @@ export const asymptoticsUnit: Unit = {
       ],
       workedExample: {
         problem: 'Some o custo de oito inserções seguidas num array que começa com capacidade 1 e dobra quando enche.',
-        whatToNotice: 'As caras acontecem nas inserções 1, 2, 3, 5 e 9 — posições que dá para apontar antes de rodar. Nenhum sorteio decidiu isso, e é o que separa amortizado de caso médio.',
+        whatToNotice: 'As caras acontecem nas inserções 1, 2, 3, 5 e 9, posições que dá para apontar antes de rodar. Nenhum sorteio decidiu isso, e é o que separa amortizado de caso médio.',
       },
       exerciseId: 'asymptotics.e5' },
 
@@ -233,11 +233,11 @@ export const asymptoticsUnit: Unit = {
         'As 3 técnicas não competem: elas respondem partes diferentes, e a forma do código diz qual usar.',
         'Laço simples, sem chamada a si mesmo e sem nada que redistribua custo: contagem de operações responde limite, regime, hipóteses e unidade de medida, e responde em uma linha.',
         'Chamada a si mesmo: recorrência. Alguma operação que dobra, reconstrói ou reorganiza: agregação, e é a única das três que produz a parte da amortização diretamente.',
-        'Usar recorrência num laço simples não está errado — está caro, e é sinal de que a forma do código não foi lida antes da conta começar.',
+        'Usar recorrência num laço simples não está errado, está caro, e é sinal de que a forma do código não foi lida antes da conta começar.',
       ],
       workedExample: {
         problem: 'Olhe três procedimentos sem contar nada: um laço sobre a coleção, um que chama a si mesmo em metades, e um append num array dinâmico.',
-        whatToNotice: 'A forma decide a técnica antes de qualquer conta começar. Escolher errado aqui não dá resultado errado — dá o resultado certo por um caminho caro.',
+        whatToNotice: 'A forma decide a técnica antes de qualquer conta começar. Escolher errado aqui não dá resultado errado, dá o resultado certo por um caminho caro.',
       },
       exerciseId: 'asymptotics.e6' },
   ],

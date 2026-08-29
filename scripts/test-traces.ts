@@ -4,7 +4,7 @@
  *
  * A checagem `referência` garante que o gerador roda e que as colunas existem.
  * O que ela não sabe é se o passo apontado em `misconceptionByStep` é o passo
- * interessante — e um traço cujo passo marcado é trivial passa no gate sendo
+ * interessante, e um traço cujo passo marcado é trivial passa no gate sendo
  * conteúdo morto.
  */
 import { countEvenTrace } from '../src/lib/reference/tracing'
@@ -19,7 +19,7 @@ import { findDivergence, buildFeedback } from '../src/lib/socratic'
 
 let failures = 0
 const check = (name: string, ok: boolean, detail = '') => {
-  console.log(`  ${ok ? 'ok   ' : 'FALHA'} ${name}${detail && !ok ? ` — ${detail}` : ''}`)
+  console.log(`  ${ok ? 'ok   ' : 'FALHA'} ${name}${detail && !ok ? `, ${detail}` : ''}`)
   if (!ok) failures++
 }
 
@@ -37,13 +37,13 @@ check('nenhum passo marcado é o primeiro',
   traceExercises.filter(({ exercise }) => Object.keys(exercise.misconceptionByStep).includes('1')).map((t) => t.exercise.id).join(','))
 
 const t1 = countEvenTrace()
-check('tracing: o laço faz 4 rodadas para 7 elementos — o passo não é um',
+check('tracing: o laço faz 4 rodadas para 7 elementos, o passo não é um',
   t1.length === 4, `${t1.length} rodadas`)
 check('tracing: o passo marcado é onde i pula de 2 para 4',
   t1[1]!.read === '3' && t1[1]!.next === '4', `${t1[1]!.read}/${t1[1]!.next}`)
 
 const t0 = recursionTreeTrace()
-check('asymptotics: a árvore de n = 8 tem 4 níveis — log n + 1, não n',
+check('asymptotics: a árvore de n = 8 tem 4 níveis, log n + 1, não n',
   t0.length === 4, `${t0.length} níveis`)
 check('asymptotics: o custo por nível não cresce',
   new Set(t0.map((s) => s.levelCost)).size === 1, t0.map((s) => s.levelCost).join(','))
@@ -65,7 +65,7 @@ check('trees: a primeira inserção faz zero comparações e é raiz',
   t3[0]!.comparisons === '0' && t3[0]!.parent === 'raiz')
 
 const t4 = bfsTrace()
-check('graphs: a busca em largura termina — o ciclo A→B→C→A não a prende',
+check('graphs: a busca em largura termina, o ciclo A→B→C→A não a prende',
   t4.length === 5, `${t4.length} retiradas`)
 check('graphs: o passo marcado é onde C acha A já visitado e nada entra',
   t4[3]!.key.endsWith('C') && t4[3]!.added === 'nenhum', `${t4[3]!.key} / ${t4[3]!.added}`)
@@ -90,7 +90,7 @@ for (const { unit, exercise } of traceExercises) {
 /*
   A figura e o gabarito derivam do mesmo fato e são escritos em lugares
   diferentes. Nada impede o autor de declarar um bloco na figura e outro no
-  gerador — e aí o desenho ensina uma coisa e o exercício cobra outra, sem que
+  gerador, e aí o desenho ensina uma coisa e o exercício cobra outra, sem que
   checagem nenhuma perceba. Ver ADR-0017.
 */
 for (const u of units) {

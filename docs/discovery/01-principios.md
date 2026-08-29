@@ -15,7 +15,7 @@ Conceitos em pseudocódigo, diagramas e invariantes. A implementação é exerc�
 conteúdo.
 
 **O que custa:** o exercício de implementação obriga a escolher uma linguagem. Resolvido
-declarando a fronteira — o exercício canônico é em pseudocódigo, e a implementação é
+declarando a fronteira, o exercício canônico é em pseudocódigo, e a implementação é
 opcional para o critério de domínio.
 
 **Mecanizado, de lado:** o validador não sabe se um conceito ficou preso a uma linguagem,
@@ -35,8 +35,8 @@ Aponte onde o raciocínio quebrou e faça a pergunta que leva à correção.
 
 **Mecanizado, parcialmente:** o validador exige que toda pergunta socrática termine em
 `?`, que todo distractor nomeie uma armadilha, e que a `escalation` tenha no máximo três
-entradas — sem teto, a ajuda cresce até virar resposta. O que nenhum validador pega é uma
-devolutiva que *explica* em vez de perguntar — isso é trabalho de auditoria.
+entradas, sem teto, a ajuda cresce até virar resposta. O que nenhum validador pega é uma
+devolutiva que *explica* em vez de perguntar, isso é trabalho de auditoria.
 
 ## 4. Complexidade sempre
 
@@ -52,7 +52,7 @@ Primeiro o problema que a estrutura resolve, depois a estrutura.
 
 **Mecanizado, parcialmente:** o validador exige que a primeira banda de toda unidade seja
 o contrato, e que exista `motivatingProblem`. Se cada *ciclo* abre pelo problema é
-julgamento — está no `/audit-unit`.
+julgamento, está no `/audit-unit`.
 
 ## 6. Ancorar no cotidiano
 
@@ -65,7 +65,7 @@ o bastante é auditoria.
 
 Se uma resposta está superficial, diga. Elogio vago atrapalha o objetivo.
 
-**Não mecanizável, e o mais fácil de perder.** Vale para o app — o painel de lacunas em
-`/gaps` diz "resolvido em quatro tentativas — chegar lá não é o mesmo que dominar" em vez
+**Não mecanizável, e o mais fácil de perder.** Vale para o app, o painel de lacunas em
+`/gaps` diz "resolvido em quatro tentativas, chegar lá não é o mesmo que dominar" em vez
 de mostrar um percentual, e `scripts/test-export.ts` reprova se algum número percentual
-aparecer no export — e vale para quem escreve o conteúdo.
+aparecer no export, e vale para quem escreve o conteúdo.

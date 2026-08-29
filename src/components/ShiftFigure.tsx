@@ -9,7 +9,7 @@ import { Stepper } from './Stepper'
  * dos dois foi digitado.
  *
  * A última linha é o ponto da unidade e o motivo de a figura existir: o valor
- * do fim continua lá, duplicado. Remover não encolhe o bloco — encolhe o
+ * do fim continua lá, duplicado. Remover não encolhe o bloco, encolhe o
  * tamanho lógico, e são duas grandezas diferentes.
  */
 const CELL = 58

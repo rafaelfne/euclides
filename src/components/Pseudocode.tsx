@@ -3,7 +3,7 @@ import { tokenize, TOKEN_COLORS, TOKEN_WEIGHT } from '@/lib/pseudocode'
 /**
  * Renders pseudocode with semantic colouring.
  *
- * The `convention` tokens — ←, =, mod, |…| — carry a native `title`, so the
+ * The `convention` tokens, ←, =, mod, |…|, carry a native `title`, so the
  * declared meaning is one hover away from the notation itself. That is the
  * whole reason this component exists instead of a generic highlighter: the
  * conventions panel in the rail and the symbol in the code are the same fact,

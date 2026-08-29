@@ -9,7 +9,7 @@ export const sortingUnit: Unit = {
   learningObjective:
     'Dizer o que uma chamada de ordenação promete e o que ela cala, prever o pior caso do ' +
     'algoritmo por trás dela, e decidir entre ordenar uma vez ou varrer sempre a partir da ' +
-    'carga de trabalho — sem executar.',
+    'carga de trabalho, sem executar.',
   prerequisites: [
     'Notação O, com regime e hipóteses declarados',
     'Array como bloco contíguo, e o custo de deslocar elementos',
@@ -18,7 +18,7 @@ export const sortingUnit: Unit = {
   motivatingProblem:
     'Uma lista de pedidos ordenada por data e depois reordenada por cliente. Os pedidos de um ' +
     'mesmo cliente saíram fora da ordem de data, e ninguém pediu isso. A ordenação por cliente ' +
-    'devolveu a coleção em ordem correta de cliente — ela fez o que prometeu. ' +
+    'devolveu a coleção em ordem correta de cliente, ela fez o que prometeu. ' +
     'O que exatamente ela prometeu, e o que ela nunca prometeu?',
 
   symbols: [
@@ -43,7 +43,7 @@ export const sortingUnit: Unit = {
       'Em que ordem ficam os elementos que o comparador considera iguais',
       'Quanta memória além da entrada o algoritmo usou',
       'Se ele aproveitou a ordem que a entrada já trazia',
-      'Quanto custou — o contrato promete o resultado, nunca o preço',
+      'Quanto custou, o contrato promete o resultado, nunca o preço',
     ],
   },
 
@@ -91,7 +91,7 @@ export const sortingUnit: Unit = {
           useInstead: 'insertion sort, sem recursão e sem cópia' },
       ],
       everydayAnchor:
-        'É a metade do `sort` que o Python e o Java usam para objetos — e é por isso que esses ' +
+        'É a metade do `sort` que o Python e o Java usam para objetos, e é por isso que esses ' +
         'dois são estáveis, enquanto o `sort` de tipos primitivos ao lado deles não é.',
       invariant:
         'A sequência de saída está ordenada, e todo elemento que ainda não saiu é maior ou ' +
@@ -111,7 +111,7 @@ export const sortingUnit: Unit = {
         assumptions: ['nada é alocado, mas cada chamada aberta ocupa um quadro de pilha'],
         measuredIn: 'espaço além da entrada, contando a pilha de chamadas' },
       wrongWhen: [
-        { scenario: 'O pior caso é inaceitável — uma requisição que não pode passar de um limite de tempo',
+        { scenario: 'O pior caso é inaceitável, uma requisição que não pode passar de um limite de tempo',
           useInstead: 'merge sort, cujo n log n vale para toda entrada' },
         { scenario: 'As chaves são escolhidas por um adversário que conhece a regra do pivô',
           useInstead: 'pivô sorteado por execução, pela mesma razão que uma tabela hash usa semente aleatória' },
@@ -120,7 +120,7 @@ export const sortingUnit: Unit = {
       ],
       everydayAnchor:
         'É o `sort` de tipos primitivos de quase toda biblioteca, e o motivo de algumas ' +
-        'nomearem a função `unstable_sort` — o nome está avisando qual ausência você aceitou.',
+        'nomearem a função `unstable_sort`, o nome está avisando qual ausência você aceitou.',
       invariant: 'Depois de particionar, o pivô está na posição final dele, e tudo à esquerda é menor.',
     },
   ],
@@ -130,7 +130,7 @@ export const sortingUnit: Unit = {
       introducesTerms: ['sorting', 'permutation'],
       oneLine: "Ordenar devolve os mesmos elementos em ordem, e não promete mais nada.",
       body: [
-        'Ordenar devolve os mesmos elementos, em ordem. Entram 3, saem 3: nenhum elemento entra, nenhum sai, nenhum vira outro — e nenhum vem antes de um menor.',
+        'Ordenar devolve os mesmos elementos, em ordem. Entram 3, saem 3: nenhum elemento entra, nenhum sai, nenhum vira outro, e nenhum vem antes de um menor.',
         'O que interessa aqui é a lista do que essa promessa NÃO cobre. Ela não diz o que aconteceu com os elementos que o comparador considera iguais. Não diz quanta memória foi usada. Não diz se a ordem que a entrada já trazia foi aproveitada. Guarde essa lista: cada item dela é uma garantia que alguns algoritmos oferecem e outros não, e escolher entre eles é escolher qual dessas você precisa.',
       ],
       workedExample: {
@@ -145,11 +145,11 @@ export const sortingUnit: Unit = {
       body: [
         'Volte aos pedidos ordenados por data e depois por cliente. A segunda ordenação comparou clientes; para 2 pedidos do mesmo cliente, ela disse "empate". E o que um algoritmo faz com um empate não está no contrato.',
         'Um algoritmo estável resolve o empate mantendo a ordem em que os elementos chegaram. Um instável resolve como for conveniente para ele. As duas saídas estão ordenadas por cliente; só uma preserva o trabalho da ordenação anterior.',
-        'O comparador também tem uma obrigação, e ela é fácil de quebrar sem perceber: se ele diz que x vem antes de y e que y vem antes de z, ele precisa dizer que x vem antes de z. Um comparador que se contradiz não produz uma ordem errada — produz uma saída que não é ordem nenhuma.',
+        'O comparador também tem uma obrigação, e ela é fácil de quebrar sem perceber: se ele diz que x vem antes de y e que y vem antes de z, ele precisa dizer que x vem antes de z. Um comparador que se contradiz não produz uma ordem errada, produz uma saída que não é ordem nenhuma.',
       ],
       workedExample: {
         problem: 'Duas ordenações de [(3,Ana), (1,Bia), (3,Caio)] por número, uma estável e uma não.',
-        whatToNotice: 'As duas devolvem 1, 3, 3. Só olhando os nomes dá para saber qual foi qual — e é por isso que este defeito passa em teste que compara só as chaves.',
+        whatToNotice: 'As duas devolvem 1, 3, 3. Só olhando os nomes dá para saber qual foi qual, e é por isso que este defeito passa em teste que compara só as chaves.',
       },
       exerciseId: 'sorting.e1' },
 
@@ -172,7 +172,7 @@ export const sortingUnit: Unit = {
       invariant: 'Ao começar a rodada de i, as posições 0 até i − 1 já estão ordenadas entre si.',
       workedExample: {
         problem: 'Ordene [1, 2, 4, 3, 5] com insertion sort e conte os deslocamentos.',
-        whatToNotice: 'Um único deslocamento, numa coleção de cinco. O laço interno quase não roda porque a parte à esquerda já estava pronta — e nenhuma linha do código detectou isso.',
+        whatToNotice: 'Um único deslocamento, numa coleção de cinco. O laço interno quase não roda porque a parte à esquerda já estava pronta, e nenhuma linha do código detectou isso.',
       },
       exerciseId: 'sorting.e2' },
 
@@ -181,7 +181,7 @@ export const sortingUnit: Unit = {
       oneLine: "São log n níveis custando n cada, e isso vale para toda entrada.",
       body: [
         'A segunda forma parte de uma observação: intercalar 2 sequências já ordenadas é barato. Basta olhar o primeiro de cada uma e tomar o menor, até esgotar as duas.',
-        'Se intercalar é barato, ordenar vira dividir ao meio até sobrar um elemento — que já está ordenado sozinho — e intercalar de volta. São log n níveis, cada um custando n. O limite é O(n log n), e ele vale para toda entrada, não para a média delas.',
+        'Se intercalar é barato, ordenar vira dividir ao meio até sobrar um elemento, que já está ordenado sozinho, e intercalar de volta. São log n níveis, cada um custando n. O limite é O(n log n), e ele vale para toda entrada, não para a média delas.',
         'A linha que decide o empate na intercalação é a linha que decide a estabilidade da coleção inteira. Tomar o da esquerda quando os dois primeiros comparam como iguais preserva a ordem de chegada; tomar o da direita a inverte. É uma comparação, e as duas custam o mesmo.',
       ],
       pseudocode: `função intercalar(E, D)
@@ -193,10 +193,11 @@ export const sortingUnit: Unit = {
             mover primeiro(D) para o fim de S
     mover o que restou de E e depois de D para o fim de S
     retorne S`,
+      pseudocodeIsProse: true,
       invariant: 'S está ordenada, e todo elemento que ainda está em E ou em D é maior ou igual ao último de S.',
       workedExample: {
         problem: 'Intercale [2, 5] com [5, 7] duas vezes: uma tomando o da esquerda no empate, outra o da direita.',
-        whatToNotice: 'As duas saídas são 2, 5, 5, 7 — idênticas se você olhar só as chaves. É por isso que um teste que compara chaves não pega a perda de estabilidade.',
+        whatToNotice: 'As duas saídas são 2, 5, 5, 7, idênticas se você olhar só as chaves. É por isso que um teste que compara chaves não pega a perda de estabilidade.',
       },
       exerciseId: 'sorting.e3' },
 
@@ -205,8 +206,8 @@ export const sortingUnit: Unit = {
       oneLine: "Pivô no meio dá log n rodadas; pivô no extremo dá n.",
       body: [
         'A terceira forma não divide ao meio: divide em torno de 1 elemento escolhido. Depois de separar o que é menor do que é maior, o pivô está na posição final dele, e as 2 partes podem ser resolvidas do mesmo jeito.',
-        'Quando o pivô cai perto do meio, as partes têm metade do tamanho e o total é O(n log n). Quando ele cai no extremo, uma parte fica vazia e a outra fica com todo o resto — são n rodadas em vez de log n, e o total é O(n²).',
-        'A escolha do pivô é livre, e é ela que decide qual dos dois cenários acontece. Escolher sempre o primeiro elemento transforma uma coleção que já chega ordenada — a mais comum de todas — no pior caso.',
+        'Quando o pivô cai perto do meio, as partes têm metade do tamanho e o total é O(n log n). Quando ele cai no extremo, uma parte fica vazia e a outra fica com todo o resto, são n rodadas em vez de log n, e o total é O(n²).',
+        'A escolha do pivô é livre, e é ela que decide qual dos dois cenários acontece. Escolher sempre o primeiro elemento transforma uma coleção que já chega ordenada, a mais comum de todas, no pior caso.',
       ],
       workedExample: {
         problem: 'Ordene [1, 2, 3, 4, 5] com quicksort tomando o primeiro elemento como pivô.',
@@ -219,7 +220,7 @@ export const sortingUnit: Unit = {
       oneLine: "In-place não é espaço constante: no pior caso são n chamadas abertas.",
       body: [
         'Ordenar in-place é rearranjar o próprio array em vez de montar outro. Merge sort não faz isso: a intercalação escreve numa sequência à parte, e ordenar 1 milhão de elementos aloca outro 1 milhão.',
-        'Quicksort faz — e é aqui que a palavra engana. Ele não aloca coleção nenhuma, mas cada chamada aberta ocupa um quadro na pilha. No pior caso são n chamadas abertas ao mesmo tempo, e isso é espaço que cresce com a entrada, ainda que nenhum array tenha sido alocado.',
+        'Quicksort faz, e é aqui que a palavra engana. Ele não aloca coleção nenhuma, mas cada chamada aberta ocupa um quadro na pilha. No pior caso são n chamadas abertas ao mesmo tempo, e isso é espaço que cresce com a entrada, ainda que nenhum array tenha sido alocado.',
         'In-place e espaço constante são coisas diferentes, e a segunda é a que importa quando a memória é o limite.',
       ],
       workedExample: {
@@ -252,7 +253,7 @@ export const sortingUnit: Unit = {
       ],
       workedExample: {
         problem: "Um endpoint que devolve o pedido mais recente entre 50 mil, chamado a cada requisição. Ordenando: cerca de 780 mil comparações por chamada. Varrendo: 49.999.",
-        whatToNotice: "A saída é idêntica nos dois. Nada no código está errado — o que está errado é a operação escolhida para a pergunta feita.",
+        whatToNotice: "A saída é idêntica nos dois. Nada no código está errado, o que está errado é a operação escolhida para a pergunta feita.",
       },
       exerciseId: 'sorting.e7' },
 
@@ -262,7 +263,7 @@ export const sortingUnit: Unit = {
       body: [
         'A ordenação padrão de várias linguagens não é nenhum dos 3: é a composição deliberada de 2 deles. Ela procura na entrada os trechos que já vêm ordenados, completa com insertion sort os menores que 32, e intercala os trechos.',
         'Cada peça está lá por uma ausência da outra. A intercalação dá o pior caso garantido e a estabilidade; o insertion sort aproveita a ordem que a entrada já traz, que a intercalação sozinha ignoraria.',
-        'É a resposta prática à pergunta do ciclo anterior: quando nenhuma escolha isolada serve, a saída costuma ser compor duas — e é o mesmo movimento que uma LRU cache faz com tabela hash e lista ligada.',
+        'É a resposta prática à pergunta do ciclo anterior: quando nenhuma escolha isolada serve, a saída costuma ser compor duas, e é o mesmo movimento que uma LRU cache faz com tabela hash e lista ligada.',
       ],
       workedExample: {
         problem: "Sobre uma coleção de 10 mil quase ordenada, a biblioteca acha os trechos já em ordem, completa os menores que 32 com insertion sort, e intercala. O resultado fica perto de O(n).",

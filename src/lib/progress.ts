@@ -3,7 +3,7 @@
 import { progress as progressSchema, type Progress } from '@/content/schema'
 
 /**
- * localStorage, versioned and validated on read. No backend, no auth — which
+ * localStorage, versioned and validated on read. No backend, no auth, which
  * is what keeps the marginal cost per reader at zero and lets this be public.
  *
  * A schema mismatch never breaks the screen: it resets and says so.

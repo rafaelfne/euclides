@@ -8,14 +8,14 @@ export const tracingUnit: Unit = {
   title: 'Lógica e teste de mesa',
   learningObjective:
     'Dizer o que um trecho de código faz, quantas vezes o laço dele roda e o que ele devolve ' +
-    'nas entradas de fronteira — sem executar, e sabendo dizer de onde cada afirmação veio.',
+    'nas entradas de fronteira, sem executar, e sabendo dizer de onde cada afirmação veio.',
   prerequisites: [
     'Ler uma atribuição, uma condição e um laço em qualquer linguagem',
     'Saber o que é um índice e o que é o tamanho de uma coleção',
   ],
   motivatingProblem:
     'Um pull request de trinta linhas, gerado por IA, que passa nos testes existentes. A ' +
-    'pergunta do revisor não é "compila?" — é "o que isto faz quando a lista tem um elemento ' +
+    'pergunta do revisor não é "compila?", é "o que isto faz quando a lista tem um elemento ' +
     'só, e o que faz quando ela está vazia?". Rodar responde a primeira pergunta e não ' +
     'responde a segunda: em revisão não há execução. Como se sabe o que um laço faz sem rodá-lo?',
 
@@ -75,13 +75,13 @@ export const tracingUnit: Unit = {
       produces: ['variables', 'guard', 'output'],
       wrongWhen: [
         { scenario: 'Você ainda não consegue enunciar a propriedade',
-          useInstead: 'simulação passo a passo — a invariante quase sempre aparece da tabela' },
+          useInstead: 'simulação passo a passo, a invariante quase sempre aparece da tabela' },
         { scenario: 'A pergunta é "qual o valor na rodada 4", e não "o que vale sempre"',
           useInstead: 'simulação passo a passo' },
       ],
       everydayAnchor:
         'É o que um comentário como "aqui a parte à esquerda de i já está ordenada" está ' +
-        'tentando dizer — e é por isso que esse comentário, quando está certo, vale mais que ' +
+        'tentando dizer, e é por isso que esse comentário, quando está certo, vale mais que ' +
         'o laço inteiro.',
       invariant: 'A propriedade tem de valer na entrada do laço, com zero rodadas executadas.',
     },
@@ -93,7 +93,7 @@ export const tracingUnit: Unit = {
       oneLine: "Entender um código é saber dizer o valor de cada nome a cada rodada.",
       body: [
         '"Eu li e entendi" não é uma afirmação verificável. Ela vira uma quando carrega 4 coisas: quais nomes guardam o estado, o valor de cada um a cada rodada, a condição que decide se há próxima rodada, e o que a função devolve.',
-        'Cada uma dessas quatro partes, quando falta, produz uma frase que soa certa. Sem a condição, sai "o laço roda n vezes". Sem o estado por rodada, sai "no fim, total é a soma de tudo" — uma afirmação sobre o fim, derivada de nada. Guarde essas frases: elas são as armadilhas desta unidade, e você vai reencontrá-las nas outras sete.',
+        'Cada uma dessas quatro partes, quando falta, produz uma frase que soa certa. Sem a condição, sai "o laço roda n vezes". Sem o estado por rodada, sai "no fim, total é a soma de tudo", uma afirmação sobre o fim, derivada de nada. Guarde essas frases: elas são as armadilhas desta unidade, e você vai reencontrá-las nas outras sete.',
       ],
       workedExample: {
         problem: "Some as posições pares de [4, 7, 3]: o resultado é 7, e as quatro partes do critério são \"total e i guardam o estado\", \"total vale 0, depois 4, depois 7\", \"para quando i chega a 3\" e \"devolve 7\".",
@@ -105,7 +105,7 @@ export const tracingUnit: Unit = {
       introducesTerms: ['guard', 'iteration'],
       oneLine: "Um laço para por causa da condição, não por causa do tamanho da coleção.",
       body: [
-        'Um laço sobre 10 elementos não roda necessariamente 10 vezes. Um laço testa uma condição, executa um corpo, e testa de novo. Que isso acabe percorrendo a coleção é consequência de como o corpo mexe no índice — não é a definição.',
+        'Um laço sobre 10 elementos não roda necessariamente 10 vezes. Um laço testa uma condição, executa um corpo, e testa de novo. Que isso acabe percorrendo a coleção é consequência de como o corpo mexe no índice, não é a definição.',
         'A diferença importa no momento em que o corpo mexe em outra coisa além do índice. Se ele remove um elemento da própria coleção, os dois lados da condição mudam na mesma rodada: o índice sobe e o tamanho desce. O percurso deixa de ser o que a leitura ingênua supõe, e nada no código avisa.',
       ],
       workedExample: {
@@ -119,7 +119,7 @@ export const tracingUnit: Unit = {
       oneLine: "Escreva uma coluna por nome que muda e uma linha por rodada.",
       body: [
         'A primeira técnica é escrever a tabela: 1 coluna por nome que muda, 1 linha por rodada. A regra é uma só, e ela é o que separa a tabela de um chute: cada linha é derivada da anterior.',
-        'A parte difícil não é a conta, é decidir quais colunas existem. Um nome que muda dentro do laço e não está na tabela é um valor que você vai adivinhar quando precisar dele — e o traço inteiro passa a depender desse chute.',
+        'A parte difícil não é a conta, é decidir quais colunas existem. Um nome que muda dentro do laço e não está na tabela é um valor que você vai adivinhar quando precisar dele, e o traço inteiro passa a depender desse chute.',
       ],
       pseudocode: `função contar_pares(A)
     total ← 0
@@ -141,7 +141,7 @@ export const tracingUnit: Unit = {
       oneLine: "A invariante é a frase que já é verdade antes da primeira rodada.",
       body: [
         'A tabela responde sobre uma entrada. A invariante responde sobre todas: é uma propriedade que vale antes de cada rodada e continua valendo depois dela.',
-        'O teste que separa uma invariante de uma conclusão é este: ela precisa valer **antes da primeira rodada**, com o laço ainda sem ter feito nada. "No fim, total é a soma de tudo" não passa nesse teste — é a conclusão. "Ao começar a rodada de i, total é a soma das posições 0 até i − 1" passa, e é dela que a conclusão sai.',
+        'O teste que separa uma invariante de uma conclusão é este: ela precisa valer **antes da primeira rodada**, com o laço ainda sem ter feito nada. "No fim, total é a soma de tudo" não passa nesse teste, é a conclusão. "Ao começar a rodada de i, total é a soma das posições 0 até i − 1" passa, e é dela que a conclusão sai.',
         'Ela também não dispensa a tabela. Quando você não consegue enunciar a propriedade, simule três rodadas: ela quase sempre está escrita ali, esperando ser lida.',
       ],
       workedExample: {
@@ -169,7 +169,7 @@ export const tracingUnit: Unit = {
       oneLine: "Quantas rodadas acontecem depende da condição e do passo, nunca só do tamanho.",
       body: [
         'Volte ao critério do primeiro ciclo. A parte que falta com mais frequência é a condição que governa, e a frase que ela produz quando falta é a mais comum de todas: "o laço roda n vezes". Sobre 7 elementos, andando de 2 em 2, ele roda 4.',
-        'Quantas rodadas acontecem é decidido por duas coisas juntas — a condição de parada e o passo com que o índice anda. O tamanho da coleção aparece numa das duas, e sozinho não responde nada.',
+        'Quantas rodadas acontecem é decidido por duas coisas juntas, a condição de parada e o passo com que o índice anda. O tamanho da coleção aparece numa das duas, e sozinho não responde nada.',
         'Este é o ciclo que a unidade inteira prepara, e é o que transfere: na unidade de análise de custo, contar rodadas é contar custo, e contar errado aqui é errar lá com convicção.',
       ],
       workedExample: {
@@ -183,7 +183,7 @@ export const tracingUnit: Unit = {
       oneLine: "Se o primeiro lado de um \"e\" é falso, o segundo não chega a ser avaliado.",
       body: [
         'Numa condição composta, o segundo lado nem sempre é avaliado. Se o primeiro lado de um "e" já é falso, o resultado está decidido, e a linguagem não avalia o resto. Numa coleção de 0 elementos, é essa regra que separa um código que roda de um que quebra.',
-        'Isso deixa de ser detalhe no momento em que avaliar o segundo lado quebraria — um acesso fora da coleção, uma divisão por zero, uma chamada em algo ausente. A ordem dos dois lados deixa de ser estilo e passa a ser a diferença entre funcionar e falhar.',
+        'Isso deixa de ser detalhe no momento em que avaliar o segundo lado quebraria, um acesso fora da coleção, uma divisão por zero, uma chamada em algo ausente. A ordem dos dois lados deixa de ser estilo e passa a ser a diferença entre funcionar e falhar.',
         'É a última família de leitura desta unidade, e a mais silenciosa: ela produz código que roda por anos e falha na primeira entrada vazia.',
       ],
       workedExample: {
@@ -201,7 +201,7 @@ export const tracingUnit: Unit = {
     statement:
       'O aluno domina esta unidade quando, diante de um laço de até vinte linhas que nunca ' +
       'viu, consegue sem executar: nomear as variáveis que carregam o estado, dizer quantas ' +
-      'rodadas acontecem a partir da condição e do passo — não do tamanho da coleção —, ' +
+      'rodadas acontecem a partir da condição e do passo, não do tamanho da coleção, ' +
       'produzir o traço das três primeiras rodadas, e dizer o que a função devolve para a ' +
       'coleção vazia.',
     requiresClean: ['tracing.e2', 'tracing.e5'],

@@ -10,7 +10,7 @@ export const graphsMisconceptions: Misconception[] = [
     reviewCycle: 'graphs.c4' },
 
   { id: 'graphs.bfs-e-dfs-equivalentes', label: 'Supor que a ordem do percurso não muda a resposta',
-    socraticQuestion: 'Num grafo em que A leva a B e a D, e B leva a C, qual dos dois percursos visita D antes de C — e qual dos dois responde "qual o caminho com menos arestas até E"?',
+    socraticQuestion: 'Num grafo em que A leva a B e a D, e B leva a C, qual dos dois percursos visita D antes de C, e qual dos dois responde "qual o caminho com menos arestas até E"?',
     escalation: [
       'Um deles esgota um ramo inteiro antes de voltar; o outro avança por camadas. Só um garante que, ao chegar num vértice, chegou pelo caminho mais curto em arestas. Qual?',
     ],
@@ -53,7 +53,7 @@ export const graphsExercises: Exercise[] = [
       { correct: true, text: 'Quais vértices estão ligados diretamente a este',
         why: 'Vizinhança direta é a única pergunta do contrato. Caminho e alcance são algoritmos escritos sobre ele.' },
       { correct: false, text: 'Se existe algum caminho entre dois vértices', misconceptionId: 'graphs.alcance-e-operacao' },
-      { correct: false, text: 'Quantos caminhos distintos ligam dois vértices — num grafo há sempre um só, como na árvore', misconceptionId: 'graphs.arvore-e-grafo' },
+      { correct: false, text: 'Quantos caminhos distintos ligam dois vértices, num grafo há sempre um só, como na árvore', misconceptionId: 'graphs.arvore-e-grafo' },
     ],
   },
   {
@@ -109,7 +109,7 @@ export const graphsExercises: Exercise[] = [
       { key: 'visited', label: 'visitados', placeholder: 'V W X Y' },
     ],
     conventions: [
-      { notation: 'B D', rule: 'um conjunto ou uma fila', why: 'Os vértices separados por espaço. Na fila, na ordem em que saem; em visitados, em ordem alfabética — conjunto não tem ordem própria, e a alfabética é a convenção para poder comparar.' },
+      { notation: 'B D', rule: 'um conjunto ou uma fila', why: 'Os vértices separados por espaço. Na fila, na ordem em que saem; em visitados, em ordem alfabética, conjunto não tem ordem própria, e a alfabética é a convenção para poder comparar.' },
       { notation: 'nenhum', rule: 'nenhum vizinho novo entrou', why: 'O vértice tinha vizinhos, e todos já estavam visitados. Não é o mesmo que não ter vizinho.' },
       { notation: 'vazia', rule: 'a fila esvaziou', why: 'É o que encerra o percurso. Se ela nunca esvazia no seu traço, essa é a resposta do exercício.' },
     ],
@@ -160,7 +160,7 @@ export const graphsExercises: Exercise[] = [
       { key: 'visited', label: 'visitados', placeholder: 'V W X Y' },
     ],
     conventions: [
-      { notation: 'B D', rule: 'uma pilha ou um conjunto', why: 'Na pilha, da base para o topo — o último escrito é o próximo a sair. Em visitados, em ordem alfabética, porque conjunto não tem ordem própria.' },
+      { notation: 'B D', rule: 'uma pilha ou um conjunto', why: 'Na pilha, da base para o topo, o último escrito é o próximo a sair. Em visitados, em ordem alfabética, porque conjunto não tem ordem própria.' },
       { notation: 'nenhum', rule: 'nenhum vizinho novo entrou', why: 'O vértice tinha vizinhos, e todos já estavam visitados. Não é o mesmo que não ter vizinho.' },
       { notation: 'vazia', rule: 'a pilha esvaziou', why: 'É o que encerra o percurso, igual à fila. O critério de parada não mudou.' },
     ],
@@ -184,7 +184,7 @@ export const graphsExercises: Exercise[] = [
     faultyLines: [7],
     consequences: [
       { correct: true, text: 'Os vizinhos entram na fila sem consultar o conjunto',
-        why: 'Num grafo com ciclo a fila nunca esvazia. O conjunto devolvido está certo — o laço é que não termina para devolvê-lo.' },
+        why: 'Num grafo com ciclo a fila nunca esvazia. O conjunto devolvido está certo, o laço é que não termina para devolvê-lo.' },
       { correct: false, text: 'Nada de grave: marcar na retirada em vez de na entrada só faz alguns vértices serem visitados duas vezes', misconceptionId: 'graphs.percurso-sem-visitados' },
       { correct: false, text: 'O defeito é usar fila em vez de pilha: com pilha o ciclo seria detectado ao voltar', misconceptionId: 'graphs.bfs-e-dfs-equivalentes' },
     ],

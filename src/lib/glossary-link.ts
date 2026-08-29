@@ -9,7 +9,7 @@ import type { GlossaryTerm } from '@/content/schema'
  *
  * Só a primeira ocorrência vira link, e só os termos que ESTE ciclo estreia
  * mais o vocabulário do app. Ligar toda ocorrência de todo termo transformaria
- * a prosa num campo minado de azul — a ligação existe para a estreia, que é o
+ * a prosa num campo minado de azul, a ligação existe para a estreia, que é o
  * único momento em que o aluno não tem referente.
  */
 export interface Mark { start: number; end: number; term: GlossaryTerm }

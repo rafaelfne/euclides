@@ -86,14 +86,55 @@ export function TraceExercise({ unit, exercise }: { unit: Unit; exercise: TraceE
               <div key={c.rule} className="contents">
                 <span className="whitespace-nowrap font-mono text-[11.5px] text-contract">{c.notation}</span>
                 <span className="text-[12px] text-fg-3">
-                  <span className="text-fg-2">{c.rule}</span> — {c.why}
+                  <span className="text-fg-2">{c.rule}</span>, {c.why}
                 </span>
               </div>
             ))}
           </div>
         </details>
 
-        <div className="relative overflow-x-auto border border-rule">
+        {/*
+          Abaixo de lg, a tabela vira um cartão por rodada.
+
+          A rolagem lateral obrigatória era o pior lugar para ela existir: o
+          traço é o exercício em que o aluno compara a linha de cima com a de
+          baixo, e comparar exige as duas na tela. Um cartão por rodada troca
+          rolagem horizontal por vertical, que é a que o dedo já faz.
+        */}
+        <div className="flex flex-col gap-2.5 lg:hidden">
+          {rows.map((r, i) => {
+            const isDivergent = checked && divergence.firstDivergentStep === i + 1
+            return (
+              <div
+                key={i}
+                className={cn(
+                  'border border-rule bg-panel-head',
+                  isDivergent && 'border-implementation bg-implementation-bg',
+                )}
+              >
+                <div className="flex items-baseline gap-3 border-b border-rule px-3 py-1.5">
+                  <span className="lbl">rodada {r['step']}</span>
+                  <span className="font-mono text-[12.5px] text-fg-2">{r['key']}</span>
+                </div>
+                <div className="flex flex-col gap-2 px-3 py-2.5">
+                  {editable.map((c) => (
+                    <label key={c.key} className="flex flex-col gap-1">
+                      <span className="lbl">{c.label}</span>
+                      <Input
+                        value={r[c.key] ?? ''}
+                        onChange={(e) => set(i, c.key, e.target.value)}
+                        placeholder={c.placeholder ?? ''}
+                        aria-label={`${c.label}, passo ${i + 1}`}
+                      />
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )
+          })}
+        </div>
+
+        <div className="relative hidden overflow-x-auto border border-rule lg:block">
           <table className="w-full min-w-[720px] border-collapse [&_td:first-child]:w-16 [&_th:first-child]:w-16">
             <thead>
               <tr>
@@ -235,8 +276,8 @@ export function TraceExercise({ unit, exercise }: { unit: Unit; exercise: TraceE
 
         <div className="flex flex-wrap items-center gap-3.5">
           <Button onClick={check}>Verificar</Button>
-          <span className="lbl xl:hidden">a tabela rola para o lado →</span>
-          <span className="text-[12px] italic text-fg-4">errar não bloqueia — mas marca o ciclo</span>
+          <span className="lbl hidden lg:inline xl:hidden">a tabela rola para o lado →</span>
+          <span className="text-[12px] italic text-fg-4">errar não bloqueia, mas marca o ciclo</span>
         </div>
       </PanelBody>
     </Panel>

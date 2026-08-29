@@ -9,7 +9,7 @@
 O ADR-0016 fechou com um item que deliberadamente não virou checagem:
 
 > **A observar:** a severidade do tom. O princípio 7 é inegociável e não é o mesmo que
-> ausência de acolhimento — "é normal errar aqui" é informação verdadeira, não afago. A
+> ausência de acolhimento, "é normal errar aqui" é informação verdadeira, não afago. A
 > fronteira entre os dois é julgamento, e é do Rafael.
 
 A leitura de aluno tinha dito que o app é severo. A objeção é real e a resposta óbvia é a
@@ -37,7 +37,7 @@ O teste é mecânico e responde sozinho:
 A primeira nota derivada é `TrapNote`, e o que ela faz não é consolar: ela informa que
 **esta armadilha estava escrita no catálogo antes de o aluno chegar**. O erro deixa de ser
 falha pessoal e vira terreno mapeado, sem que nenhuma frase precise dizer isso. O link para
-o caderno de armadilhas fecha o movimento — o aluno vai ver a armadilha com nome, ao lado
+o caderno de armadilhas fecha o movimento, o aluno vai ver a armadilha com nome, ao lado
 das outras cinco.
 
 A segunda é o contador de ajuda restante. A tela do traço já mostrava `degrau N de 3`; a de
@@ -47,24 +47,24 @@ anunciado em vez de abandono.
 
 ## Opções consideradas
 
-### A — Amaciar as frases severas
+### A, Amaciar as frases severas
 "Chegar lá não é o mesmo que dominar" viraria "bom trabalho, e vale revisitar".
 **Descartada.** É exatamente o elogio vago que o princípio 7 nomeia. A frase severa está
 dizendo uma coisa verdadeira e útil: resolver na quarta tentativa não é o mesmo estado
 cognitivo que resolver na primeira, e o critério de domínio já trata os dois de forma
 diferente. Suavizar a frase faria a tela mentir sobre o que o app faz.
 
-### B — Um campo `encouragement` no conteúdo
+### B, Um campo `encouragement` no conteúdo
 Deixar o autor escrever a nota de acolhimento por unidade.
 **Descartada,** e por dois motivos. É a deriva 3 do `CLAUDE.md` num lugar novo: prosa vaga
 onde cabia dado. E o autor escreveria "é normal errar aqui" sem que ninguém saiba se é.
 
-### C — Acolhimento derivado
+### C, Acolhimento derivado
 Adotada.
 
-### D — Nada, e manter o registro aberto
+### D, Nada, e manter o registro aberto
 **Descartada.** O item estava aberto desde o ADR-0016 sem critério, e um item sem critério
-não fecha nunca — é a mesma razão pela qual o ADR-0006 recusou o nível de aviso.
+não fecha nunca, é a mesma razão pela qual o ADR-0006 recusou o nível de aviso.
 
 ## Análise de trade-off
 
@@ -79,7 +79,7 @@ vago em metade das telas sem que nenhuma checagem perceba.
 
 **O que esta decisão deliberadamente NÃO faz:** não há checagem nova. A regra é de autoria,
 não de gate, porque uma checagem que tentasse separar "frase derivada" de "frase autorada"
-precisaria de julgamento — e é por essa porta que o nível de aviso volta. Fica no
+precisaria de julgamento, e é por essa porta que o nível de aviso volta. Fica no
 `/audit-unit`, como a rampa textual do ADR-0016 e a terminologia em prosa do ADR-0011.
 
 ## Consequências
@@ -89,7 +89,7 @@ precisaria de julgamento — e é por essa porta que o nível de aviso volta. Fi
 - **Fica mais difícil:** acolher onde não há dado. Se um lugar precisa de acolhimento e
   nada foi medido ali, a resposta é medir, não escrever.
 - **Fica exposto:** o catálogo de armadilhas agora é citado ao aluno pelo tamanho. Isso
-  torna mais visível a dívida que já estava registrada — **as armadilhas são candidatas de
+  torna mais visível a dívida que já estava registrada, **as armadilhas são candidatas de
   campo, não observação deste aluno.** Uma nota que diz "uma das 6 desta unidade" é
   verdadeira sobre o catálogo e só vale pedagogicamente se o catálogo valer.
 - **A observar:** se a nota derivada virar ruído. Ela aparece em toda devolutiva com
@@ -100,5 +100,5 @@ precisaria de julgamento — e é por essa porta que o nível de aviso volta. Fi
 1. [x] `TrapNote`, derivado de `unit.misconceptions`, com link para o caderno
 2. [x] Contador de ajuda restante na tela de escolha, no vocabulário do conteúdo (tarefa),
    não no do motor (degrau)
-3. [ ] Rever o catálogo de armadilhas contra o aluno real — a dívida que esta decisão
+3. [ ] Rever o catálogo de armadilhas contra o aluno real, a dívida que esta decisão
    torna mais visível, e a única que não dá para delegar

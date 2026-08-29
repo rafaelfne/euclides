@@ -7,14 +7,14 @@
 export const conventions = [
   { notation: 'x ← v', rule: 'atribuição', why: 'Símbolo distinto de igualdade. Em pseudocódigo, `=` é sempre comparação.' },
   { notation: 'a = b', rule: 'comparação', why: 'Igualdade matemática. Nunca `==`, que é sintaxe de linguagem.' },
-  { notation: 'A[0]', rule: 'primeiro elemento', why: 'Base 0. Livros clássicos usam base 1 e todo código que você escreve usa base 0 — por isso está declarado.' },
+  { notation: 'A[0]', rule: 'primeiro elemento', why: 'Base 0. Livros clássicos usam base 1 e todo código que você escreve usa base 0, por isso está declarado.' },
   { notation: 'a mod m', rule: 'resto', why: '`%` é operador de linguagem; `mod` é a operação matemática.' },
-  { notation: '|A|', rule: 'tamanho', why: 'Vale para coleção e para chave — e é o que torna visível o custo de hashear uma chave longa.' },
+  { notation: '|A|', rule: 'tamanho', why: 'Vale para coleção e para chave, e é o que torna visível o custo de hashear uma chave longa.' },
   { notation: 'NULO', rule: 'ausência de valor', why: 'Maiúscula para não confundir com uma variável.' },
 ]
 
 /**
- * Como se preenche um traço — o que vale para QUALQUER traço da trilha.
+ * Como se preenche um traço, o que vale para QUALQUER traço da trilha.
  *
  * A notação de cada coluna é do exercício, não daqui: a primeira versão desta
  * lista descrevia bucket, rehash e carga, e apareceu inteira dentro de um

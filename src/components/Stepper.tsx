@@ -9,8 +9,8 @@ import { cn } from '@/lib/utils'
  * Três regras do ADR-0019, e as três estão aqui e não em cada figura:
  *
  * 1. Uma passada e para. Não há laço, e não há como pedir um.
- * 2. Nunca começa sozinho. A figura abre no último passo — inteira, legível,
- *    igual à versão estática que existia antes — e voltar ao passo 1 é uma
+ * 2. Nunca começa sozinho. A figura abre no último passo, inteira, legível,
+ *    igual à versão estática que existia antes, e voltar ao passo 1 é uma
  *    escolha do aluno. Autoplay rouba a leitura de quem já entendeu.
  * 3. Quem pediu menos movimento recebe os mesmos passos, sem interpolação.
  *    A informação é a mesma; o que sai é a animação entre um passo e o

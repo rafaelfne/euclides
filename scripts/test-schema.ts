@@ -1,5 +1,5 @@
 /**
- * As checagens da espinha de método, exercitadas pelo lado negativo — ADR-0012.
+ * As checagens da espinha de método, exercitadas pelo lado negativo, ADR-0012.
  *
  * Quando este arquivo nasceu, a fixture era a única unidade de método que
  * existia e o teste provava que a espinha era exprimível. Isso agora é provado
@@ -18,7 +18,7 @@ import { allTerms } from '../src/content/glossary'
 
 let failures = 0
 const check = (name: string, ok: boolean, detail = '') => {
-  console.log(`  ${ok ? 'ok   ' : 'FALHA'} ${name}${detail && !ok ? ` — ${detail}` : ''}`)
+  console.log(`  ${ok ? 'ok   ' : 'FALHA'} ${name}${detail && !ok ? `, ${detail}` : ''}`)
   if (!ok) failures++
 }
 
@@ -26,7 +26,7 @@ const fixture: Unit = {
   kind: 'method',
   id: 'fixture',
   number: 99,
-  title: 'Fixture — unidade de método',
+  title: 'Fixture, unidade de método',
   learningObjective: 'Existir para provar que a espinha de método passa no gate.',
   prerequisites: ['Nenhum: esta unidade não é conteúdo'],
   motivatingProblem:

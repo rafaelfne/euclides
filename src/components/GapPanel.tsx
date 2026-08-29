@@ -37,7 +37,7 @@ export function GapPanel({ units }: { units: Unit[] }) {
         <Button onClick={copy}>Copiar sessão</Button>
         <span className="text-[12.5px] italic text-fg-4">
           {copied
-            ? 'copiado — cole no seu projeto do Claude'
+            ? 'copiado, cole no seu projeto do Claude'
             : 'markdown com suas lacunas, sem nenhuma resposta dentro'}
         </span>
       </div>
@@ -45,7 +45,7 @@ export function GapPanel({ units }: { units: Unit[] }) {
       {!gaps.length && (
         <p className="max-w-[640px] text-[14.5px] leading-relaxed text-fg-2">
           Nenhuma lacuna registrada neste navegador. Ou nada foi tentado ainda, ou tudo saiu na
-          primeira tentativa — e só a segunda hipótese conta.
+          primeira tentativa, e só a segunda hipótese conta.
         </p>
       )}
 
@@ -99,7 +99,7 @@ function UnitGapBlock({ gaps }: { gaps: UnitGaps }) {
             </div>
             {line.misconceptions.map((m) => (
               <div key={m.id} className="mt-1.5 text-[13px] leading-relaxed text-fg-3">
-                <span className="font-semibold text-fg-2">{m.label}</span> — “{m.socraticQuestion}”{' '}
+                <span className="font-semibold text-fg-2">{m.label}</span>, “{m.socraticQuestion}”{' '}
                 <Link href={`/units/${unit.id}/cycles/${m.reviewCycle}`} className="text-contract">
                   rever {m.reviewCycle.split('.')[1]}
                 </Link>

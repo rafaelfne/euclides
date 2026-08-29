@@ -5,14 +5,14 @@ export const synthesisMisconceptions: Misconception[] = [
     socraticQuestion: 'Você disse "isso é um cache, então tabela hash". Quais operações o enunciado pede, e com que frequência cada uma?',
     escalation: [
       'Escreva as operações numa coluna e a frequência relativa na outra. Alguma delas o contrato que você escolheu não responde?',
-      'Se a lista tem uma operação que ele não responde, a resposta não é trocar de estrutura — é somar uma segunda. Qual?',
+      'Se a lista tem uma operação que ele não responde, a resposta não é trocar de estrutura, é somar uma segunda. Qual?',
     ],
     reviewCycle: 'synthesis.c0' },
 
   { id: 'synthesis.custo-sem-alternativa', label: 'Justificar com o custo de uma estrutura só',
     socraticQuestion: 'Você afirmou O(1) para a operação dominante. Qual é o custo da mesma operação na segunda candidata, e com que regime?',
     escalation: [
-      'Sem o outro lado não há comparação, e sem comparação não há escolha — há preferência. Escreva as duas afirmações com regime e hipóteses e coloque uma ao lado da outra.',
+      'Sem o outro lado não há comparação, e sem comparação não há escolha, há preferência. Escreva as duas afirmações com regime e hipóteses e coloque uma ao lado da outra.',
     ],
     reviewCycle: 'synthesis.c1' },
 
@@ -33,7 +33,7 @@ export const synthesisMisconceptions: Misconception[] = [
   { id: 'synthesis.escolha-sem-validade', label: 'Não dizer sob qual condição a escolha deixa de valer',
     socraticQuestion: 'A sua escolha está justificada para a carga de hoje. O que teria de mudar na carga para a outra candidata passar a ganhar?',
     escalation: [
-      'Uma escolha sem essa condição não é revisável: ninguém sabe quando ela expirou. Escreva o número — a frequência, o tamanho, o regime — a partir do qual ela vira errada.',
+      'Uma escolha sem essa condição não é revisável: ninguém sabe quando ela expirou. Escreva o número, a frequência, o tamanho, o regime, a partir do qual ela vira errada.',
     ],
     reviewCycle: 'synthesis.c4' },
 
@@ -53,7 +53,7 @@ export const synthesisExercises: Exercise[] = [
       { correct: true, text: 'Listar as operações do enunciado com a frequência de cada uma',
         why: '"Existe" é por requisição e "as vinte mais antigas" é por minuto: a diferença entre as duas é de ordens de grandeza, e é ela que pesa.' },
       { correct: false, text: 'Reconhecer que é um cache de sessão e usar tabela hash, que é a estrutura para isso', misconceptionId: 'synthesis.escolha-por-reconhecimento' },
-      { correct: false, text: 'Escolher pela operação que parece mais custosa — expirar as vinte mais antigas — e otimizar para ela', misconceptionId: 'synthesis.dominante-por-intuicao' },
+      { correct: false, text: 'Escolher pela operação que parece mais custosa, expirar as vinte mais antigas, e otimizar para ela', misconceptionId: 'synthesis.dominante-por-intuicao' },
     ],
   },
   {
@@ -71,7 +71,7 @@ export const synthesisExercises: Exercise[] = [
     prompt: 'A operação dominante é obter por chave, e a tabela hash ganha com folga. O enunciado menciona, numa frase, um relatório mensal "por ordem de criação". O que fazer com essa frase?',
     choices: [
       { correct: true, text: 'Registrá-la como a ausência que se está aceitando',
-        why: 'O Map não promete ordem. Escrever isso não muda a escolha — faz dela decisão em vez de descuido.' },
+        why: 'O Map não promete ordem. Escrever isso não muda a escolha, faz dela decisão em vez de descuido.' },
       { correct: false, text: 'Ignorá-la: uma vez por mês não pesa contra milhões de consultas por dia', misconceptionId: 'synthesis.ausencia-ignorada' },
       { correct: false, text: 'Trocar para árvore balanceada, já que ela responde as duas', misconceptionId: 'synthesis.escolha-por-reconhecimento' },
     ],

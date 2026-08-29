@@ -10,8 +10,8 @@
 
 ## Contexto
 
-O padrão do ecossistema Next.js é Tailwind. A direção visual do Euclides — a edição de
-Oliver Byrne dos *Elementos*, 1847 — é um sistema pequeno e fixo: cinco cores com função
+O padrão do ecossistema Next.js é Tailwind. A direção visual do Euclides, a edição de
+Oliver Byrne dos *Elementos*, 1847, é um sistema pequeno e fixo: cinco cores com função
 semântica, três famílias tipográficas, uma escala.
 
 ## Decisão
@@ -22,15 +22,15 @@ CSS puro com custom properties em `app/globals.css`, mais estilos inline nos com
 
 | Opção | Prós | Contras |
 |---|---|---|
-| **A — CSS puro com tokens** (adotada) | Os tokens *são* o design system; bundle mínimo; zero configuração | Sem as garantias de consistência que utilitários dão em time grande |
-| B — Tailwind | Convenção do ecossistema, produtividade em UI densa | Configuração e peso para um sistema de cinco cores; classes utilitárias servem mal um design tipográfico |
-| C — CSS Modules | Escopo por componente | Cerimônia sem ganho nesta escala |
+| **A, CSS puro com tokens** (adotada) | Os tokens *são* o design system; bundle mínimo; zero configuração | Sem as garantias de consistência que utilitários dão em time grande |
+| B, Tailwind | Convenção do ecossistema, produtividade em UI densa | Configuração e peso para um sistema de cinco cores; classes utilitárias servem mal um design tipográfico |
+| C, CSS Modules | Escopo por componente | Cerimônia sem ganho nesta escala |
 
 ## Análise de trade-off
 
 O argumento a favor de Tailwind é força em time grande com muitos contribuidores. Este
 repositório tem um. O argumento contra é que numa página pública estática cada kB conta, e
-o design é tipográfico — o tipo de coisa que utilitário serve mal.
+o design é tipográfico, o tipo de coisa que utilitário serve mal.
 
 Decisão reversível a custo baixo enquanto o número de telas for pequeno. Se o app crescer
 para dezenas de telas com vários autores, reavaliar.
@@ -45,5 +45,5 @@ para dezenas de telas com vários autores, reavaliar.
 ## Itens de ação
 
 1. [x] Tokens em `:root`
-2. [~] Reavaliar se passar de ~15 telas ou ganhar um segundo autor — revisitado antes
+2. [~] Reavaliar se passar de ~15 telas ou ganhar um segundo autor, revisitado antes
    disso, por mudança de direção visual; ver ADR-0015

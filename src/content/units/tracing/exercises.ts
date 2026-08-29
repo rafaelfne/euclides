@@ -40,7 +40,7 @@ export const tracingMisconceptions: Misconception[] = [
   { id: 'tracing.curto-circuito', label: 'Supor que os dois lados de uma condição composta são avaliados',
     socraticQuestion: 'Numa condição "x e y", com x falso, o que precisa acontecer com y para a condição ser falsa?',
     escalation: [
-      'Se o resultado já está decidido por x, avaliar y muda alguma coisa? E se avaliar y quebrar — índice fora da coleção, por exemplo — isso acontece?',
+      'Se o resultado já está decidido por x, avaliar y muda alguma coisa? E se avaliar y quebrar, índice fora da coleção, por exemplo, isso acontece?',
     ],
     reviewCycle: 'tracing.c6' },
 
@@ -59,7 +59,7 @@ export const tracingExercises: Exercise[] = [
     choices: [
       { correct: true, text: 'As variáveis, o estado por rodada, a condição e a saída',
         why: 'São quatro partes, e cada uma que falta produz uma frase que soa certa.' },
-      { correct: false, text: 'O valor devolvido para uma entrada de exemplo — é isso que "o que ele faz" significa', misconceptionId: 'tracing.estado-nao-observado' },
+      { correct: false, text: 'O valor devolvido para uma entrada de exemplo, é isso que "o que ele faz" significa', misconceptionId: 'tracing.estado-nao-observado' },
       { correct: false, text: 'O número de rodadas, que é o tamanho da coleção', misconceptionId: 'tracing.laco-roda-n-vezes' },
     ],
   },
@@ -107,7 +107,7 @@ export const tracingExercises: Exercise[] = [
     prompt: 'Um laço soma os elementos de uma coleção. Qual propriedade sustenta o raciocínio sobre ele, sem precisar simular rodada por rodada?',
     choices: [
       { correct: true, text: 'Ao começar a rodada de i, a soma já cobre as posições 0 até i − 1',
-        why: 'Isso vale antes da primeira rodada, com soma zero e nenhuma posição visitada — e é o que separa uma invariante de uma conclusão.' },
+        why: 'Isso vale antes da primeira rodada, com soma zero e nenhuma posição visitada, e é o que separa uma invariante de uma conclusão.' },
       { correct: false, text: 'Ao terminar o laço, a soma acumulada é a soma de todos os elementos', misconceptionId: 'tracing.invariante-so-no-fim' },
       { correct: false, text: 'A soma acumulada cresce a cada rodada, o que garante que ela chega ao total', misconceptionId: 'tracing.invariante-so-no-fim' },
     ],

@@ -9,7 +9,7 @@ import { z } from 'zod'
  */
 
 // ---------------------------------------------------------------------------
-// Cost — never a bare string.
+// Cost, never a bare string.
 // ---------------------------------------------------------------------------
 
 export const complexity = z.enum([
@@ -27,7 +27,7 @@ export const costClaim = z.object({
   amortized: z.boolean(),
   /** Empty is allowed but must be a deliberate choice, not an oversight. */
   assumptions: z.array(z.string().min(1)),
-  /** What n counts — the guard against the "cost of hashing the key" blind spot. */
+  /** What n counts, the guard against the "cost of hashing the key" blind spot. */
   measuredIn: z.string().min(1),
 })
 
@@ -42,7 +42,7 @@ export const glossaryTerm = z.object({
   /** Variants the student will meet elsewhere and must recognise. */
   alsoKnownAs: z.array(z.string()),
   definition: z.string().min(1),
-  /** Explicit negative space — what stops one word meaning four things. */
+  /** Explicit negative space, what stops one word meaning four things. */
   isNot: z.array(z.string().min(1)).min(1),
   /** Same word, unrelated meaning, another context. `heap` needs one. */
   falseFriends: z.array(z.object({
@@ -64,10 +64,10 @@ export const abstractDataType = z.object({
   operations: z.array(z.object({
     name: z.string().min(1),
     signature: z.string().min(1),
-    /** Semantic guarantee only — never a complexity. */
+    /** Semantic guarantee only, never a complexity. */
     guarantee: z.string().min(1),
   })).min(1),
-  /** Plain language, no invented nouns — the field where "presença" died. */
+  /** Plain language, no invented nouns, the field where "presença" died. */
   answers: z.string().min(1),
   cannotAnswer: z.array(z.string().min(1)).min(1),
 })
@@ -77,7 +77,7 @@ export const implementation = z.object({
   name: z.string().min(1),
   implementsAdt: z.string().min(1),
   summary: z.string().min(1),
-  /** Keys must match the ADT's operation names — checked at build. */
+  /** Keys must match the ADT's operation names, checked at build. */
   cost: z.record(z.string(), costClaim),
   space: costClaim,
   /** Principle 4: the scenario where this choice is wrong. Required, non-empty. */
@@ -91,7 +91,7 @@ export const implementation = z.object({
 })
 
 // ---------------------------------------------------------------------------
-// Figures — declared, never free-form.
+// Figures, declared, never free-form.
 // ---------------------------------------------------------------------------
 
 /**
@@ -99,7 +99,7 @@ export const implementation = z.object({
  *
  * A curva não vem como caminho SVG nem como função: vem como uma forma nomeada
  * e um fator, e o renderizador tem o mapa exaustivo. É a mesma disciplina do
- * `CostClaim` — o que o autor não pode escrever importa tanto quanto o que
+ * `CostClaim`, o que o autor não pode escrever importa tanto quanto o que
  * pode. Uma figura arbitrária seria a primeira coisa da trilha a afirmar algo
  * que nenhuma checagem consegue conferir. Ver ADR-0017.
  */
@@ -109,7 +109,7 @@ export const figure = z.discriminatedUnion('kind', [
   z.object({
     kind: z.literal('growth'),
     caption: z.string().min(1),
-    /** O que o eixo horizontal conta — a mesma disciplina de `measuredIn`. */
+    /** O que o eixo horizontal conta, a mesma disciplina de `measuredIn`. */
     xLabel: z.string().min(1),
     xMax: z.number().int().positive(),
     curves: z.array(z.object({
@@ -145,7 +145,7 @@ export const figure = z.discriminatedUnion('kind', [
    * diferentes.
    *
    * O conteúdo declara as sequências; o renderizador constrói e mede. Que os
-   * dois conjuntos sejam iguais é checado no build — comparar árvores de chaves
+   * dois conjuntos sejam iguais é checado no build, comparar árvores de chaves
    * diferentes não mostra o efeito da ordem, mostra o efeito das chaves, e a
    * figura estaria atribuindo a causa errada.
    */
@@ -161,7 +161,7 @@ export const figure = z.discriminatedUnion('kind', [
   /**
    * A tabela com chaining: m buckets, e as chaves caindo por h(k) mod m.
    *
-   * A distribuição é derivada — o conteúdo declara m e as chaves. A figura
+   * A distribuição é derivada, o conteúdo declara m e as chaves. A figura
    * existe para a colisão, então a checagem exige que haja pelo menos uma:
    * um desenho em que nenhuma chave colide ilustra o caso que a unidade diz
    * ser impossível evitar.
@@ -180,7 +180,7 @@ export const figure = z.discriminatedUnion('kind', [
    *
    * As duas ordens e a posição de cada vértice são derivadas das arestas; o
    * conteúdo declara só o grafo e a origem. A checagem exige que as duas ordens
-   * sejam diferentes — uma figura em que largura e profundidade coincidem
+   * sejam diferentes, uma figura em que largura e profundidade coincidem
    * ilustra o contrário do que o ciclo afirma.
    */
   z.object({
@@ -192,7 +192,7 @@ export const figure = z.discriminatedUnion('kind', [
 ])
 
 // ---------------------------------------------------------------------------
-// Cycles — the unit of study, and of cognitive load.
+// Cycles, the unit of study, and of cognitive load.
 // ---------------------------------------------------------------------------
 
 export const MAX_ONE_LINE_WORDS = 20
@@ -201,7 +201,7 @@ export const MAX_NEW_TERMS_PER_CYCLE = 4
 /**
  * The two spines. A unit about a structure promises operations; a unit about a
  * method promises a judgment. Both go from what is promised, through the
- * competing ways of delivering it, to where the choice is wrong — which is why
+ * competing ways of delivering it, to where the choice is wrong, which is why
  * one `Cycle` serves both. See ADR-0012.
  */
 export const BANDS_BY_KIND = {
@@ -227,12 +227,18 @@ export const cycle = z.object({
    * A afirmação do ciclo em uma frase, sem jargão, com verbo concreto.
    *
    * Ela existe para quem ainda não tem referente para o vocabulário do app, e
-   * o teto de palavras é a checagem `síntese` — acima disso ela vira mais um
+   * o teto de palavras é a checagem `síntese`, acima disso ela vira mais um
    * parágrafo, e o ciclo já tem parágrafos. Ver ADR-0019.
    */
   oneLine: z.string().min(1),
   body: z.array(z.string().min(1)).min(1),
   pseudocode: z.string().optional(),
+  /**
+   * Declara que este bloco tem passo escrito em prosa e por isso NÃO tem
+   * versão em TypeScript derivável. A checagem `tradução` confere os dois
+   * sentidos: declarar sem precisar também reprova.
+   */
+  pseudocodeIsProse: z.boolean().optional(),
   invariant: z.string().optional(),
   figure: figure.optional(),
   /** Obrigatório desde o ADR-0019: não há ciclo que vá do aforismo ao exercício. */
@@ -240,7 +246,7 @@ export const cycle = z.object({
     problem: z.string().min(1),
     whatToNotice: z.string().min(1),
   }),
-  /** Every cycle ends in an exercise. Not optional — principle 2. */
+  /** Every cycle ends in an exercise. Not optional, principle 2. */
   exerciseId: z.string().min(1),
 })
 
@@ -251,7 +257,7 @@ export const cycle = z.object({
 export const misconception = z.object({
   id: z.string().min(1),
   label: z.string().min(1),
-  /** Must end in "?" — checked at build. It is a question, not an explanation. */
+  /** Must end in "?", checked at build. It is a question, not an explanation. */
   socraticQuestion: z.string().min(1),
   escalation: z.array(z.string().min(1)).min(1).max(3),
   reviewCycle: z.string().min(1),
@@ -261,7 +267,7 @@ export const misconception = z.object({
  * A wrong choice without a named misconception is a lazy distractor.
  *
  * `why` existe porque a justificativa morava dentro do texto da alternativa
- * correta, depois de um travessão — e isso a tornava a mais longa em 93% dos
+ * correta, depois de um travessão, e isso a tornava a mais longa em 93% dos
  * exercícios. O aluno acertava pelo comprimento sem ler o conteúdo, o que zera
  * o sinal do painel de lacunas. A justificativa é revelada DEPOIS de resolver;
  * a distratora não precisa da sua, porque a armadilha que ela nomeia já diz o
@@ -280,7 +286,7 @@ export const traceExercise = z.object({
   invariant: z.string().min(1),
   /**
    * `placeholder` declara o FORMATO da célula, nunca o valor. Sem ele o aluno
-   * adivinha a notação do gabarito e diverge por tipografia — que foi como o
+   * adivinha a notação do gabarito e diverge por tipografia, que foi como o
    * primeiro traço desta trilha reprovou quem tinha entendido a matéria.
    * Obrigatório em toda coluna editável; checado no build.
    */
@@ -337,7 +343,7 @@ export const exercise = z.discriminatedUnion('kind', [
  * `m`, `n`, `T`, `h` e `α` aparecem no pseudocódigo, na invariante e no traço
  * sem que nada na tela diga o que são. Para quem está reconstruindo base, cada
  * letra não explicada é uma variável a mais para segurar na memória enquanto
- * tenta seguir o raciocínio — e o raciocínio é o que a trilha quer treinar.
+ * tenta seguir o raciocínio, e o raciocínio é o que a trilha quer treinar.
  */
 export const notationSymbol = z.object({
   symbol: z.string().min(1),
@@ -353,14 +359,14 @@ export const notationSymbol = z.object({
  * What a unit about a method promises: not operations you may call, but the
  * canonical form of a judgment the student must be able to produce.
  *
- * `whenOmitted` is to a criterion what `cannotAnswer` is to a contract — the
+ * `whenOmitted` is to a criterion what `cannotAnswer` is to a contract, the
  * negative space. It is also the generator of the unit's misconceptions:
  * dropping `regime` from a cost claim is literally "hash é O(1)".
  */
 export const judgmentCriterion = z.object({
   id: z.string().min(1),
   name: z.string().min(1),
-  /** The canonical form, in plain language. No cost — a criterion has none. */
+  /** The canonical form, in plain language. No cost, a criterion has none. */
   produces: z.string().min(1),
   parts: z.array(z.object({
     id: z.string().min(1),
@@ -370,7 +376,7 @@ export const judgmentCriterion = z.object({
   })).min(2),
   whenOmitted: z.array(z.object({
     partId: z.string().min(1),
-    /** How the judgment reads without it — the sentence that sounds right. */
+    /** How the judgment reads without it, the sentence that sounds right. */
     reads: z.string().min(1),
   })).min(1),
 })
@@ -381,7 +387,7 @@ export const technique = z.object({
   name: z.string().min(1),
   derivesCriterion: z.string().min(1),
   summary: z.string().min(1),
-  /** Criterion part ids this technique actually produces — checked at build. */
+  /** Criterion part ids this technique actually produces, checked at build. */
   produces: z.array(z.string().min(1)).min(1),
   /** Principle 4, in the only form it takes here: when this derivation is wrong. */
   wrongWhen: z.array(z.object({
@@ -393,7 +399,7 @@ export const technique = z.object({
 })
 
 // ---------------------------------------------------------------------------
-// Unit — one shape per spine, discriminated. No optional field decides which.
+// Unit, one shape per spine, discriminated. No optional field decides which.
 // ---------------------------------------------------------------------------
 
 const unitCore = {
@@ -433,7 +439,7 @@ export const methodUnit = z.object({
 export const unit = z.discriminatedUnion('kind', [structureUnit, methodUnit])
 
 // ---------------------------------------------------------------------------
-// Progress — localStorage, versioned, validated on read.
+// Progress, localStorage, versioned, validated on read.
 // ---------------------------------------------------------------------------
 
 export const progress = z.object({
@@ -443,7 +449,7 @@ export const progress = z.object({
       attempts: z.number().int().nonnegative(),
       solved: z.boolean(),
       solvedClean: z.boolean(),
-      /** The student's gap map — what the export-to-Claude button emits. */
+      /** The student's gap map, what the export-to-Claude button emits. */
       misconceptionsTriggered: z.array(z.string()),
       freeText: z.string().optional(),
       lastVisited: z.string(),

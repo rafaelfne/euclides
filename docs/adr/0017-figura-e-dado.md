@@ -10,7 +10,7 @@ A leitura de aluno apontou que o app não tem nenhum recurso visual, e listou ci
 em que uma imagem faz o trabalho de três parágrafos. O primeiro deles é literalmente o
 exercício de `asymptotics.c1`: as curvas de 1000·n e n² se cruzando.
 
-A saída é inline SVG — não há outra num export estático sem dependência. A pergunta que
+A saída é inline SVG, não há outra num export estático sem dependência. A pergunta que
 este ADR responde é outra: **quem escreve o SVG?**
 
 ## Decisão
@@ -35,7 +35,7 @@ ou uma cor.
 
 ## Opções consideradas
 
-### A — SVG autorado no conteúdo
+### A, SVG autorado no conteúdo
 Um campo `svg: string` no ciclo, ou um arquivo importado.
 **Descartada**, por três razões que valem mais que a liberdade que ela dá.
 
@@ -50,22 +50,22 @@ coisa, incluindo uma curva que não é a função que o rótulo diz que é.
 
 **Cor autorada não sobrevive a redesenho.** O ADR-0015 trocou a paleta inteira. Um SVG no
 conteúdo teria hex dentro, e a troca teria deixado seis figuras com a paleta antiga sem que
-nada avisasse — que é exatamente a deriva 4 do `CLAUDE.md` numa camada nova. O renderizador
+nada avisasse, que é exatamente a deriva 4 do `CLAUDE.md` numa camada nova. O renderizador
 usa as variáveis de tema, então a figura acompanha.
 
-### B — Biblioteca de gráficos
+### B, Biblioteca de gráficos
 **Descartada.** Peso para um caso, e o ADR-0015 acabou de aceitar peso uma vez; aceitar de
 novo sem necessidade é como o argumento de kB morre. Duas polilinhas não justificam uma
 dependência.
 
-### C — Figura como dado declarado
+### C, Figura como dado declarado
 Adotada.
 
 ## Análise de trade-off
 
 O custo é real e vale ser dito sem enfeite: **cada tipo de figura novo é código novo.** As
-outras quatro visualizações que a leitura pediu — colisão e chaining, o deslocamento no
-array, a árvore degenerando, largura contra profundidade — não cabem em `growth`. Cada uma
+outras quatro visualizações que a leitura pediu, colisão e chaining, o deslocamento no
+array, a árvore degenerando, largura contra profundidade, não cabem em `growth`. Cada uma
 precisa do seu `kind`, do seu renderizador e da sua checagem.
 
 Isso é mais trabalho do que desenhar cada uma em SVG à mão. A troca é: desenhar é mais
@@ -79,7 +79,7 @@ autorada que ninguém confere.
 como dar: **a figura e o gabarito derivam do mesmo fato, e agora um confere o outro.**
 
 O bloco e a posição removida são declarados no ciclo; os estados são derivados com a mesma
-regra do gerador de `linear.e3`. `scripts/test-traces.ts` afirma que as duas contas batem —
+regra do gerador de `linear.e3`. `scripts/test-traces.ts` afirma que as duas contas batem, 
 mesmo número de escritas, mesmo bloco no fim. Um SVG desenhado à mão poderia mostrar três
 escritas ao lado de um exercício que cobra quatro, e nada perceberia.
 
@@ -89,11 +89,11 @@ sobre ela não discordar do exercício ao lado dela.
 ## Consequências
 
 - **Fica mais fácil:** trocar a paleta, corrigir um fator, confiar que o desenho concorda
-  com o rótulo — e, com `shift`, que ele concorda com o gabarito do exercício.
+  com o rótulo, e, com `shift`, que ele concorda com o gabarito do exercício.
 - **Fica mais difícil:** a próxima figura, se ela não couber num `kind` existente.
 - **A observar, e o limiar chegou:** eu tinha escrito que se três `kind` nascessem sem
-  nenhum ser reaproveitado, a abstração não teria pago. **Três nasceram — `growth`, `shift`,
-  `tree` — e nenhum foi reaproveitado.**
+  nenhum ser reaproveitado, a abstração não teria pago. **Três nasceram, `growth`, `shift`,
+  `tree`, e nenhum foi reaproveitado.**
 
   Reabro a opção A e a descarto de novo, agora com evidência em vez de argumento. Dois dos
   três `kind` conferem contra o gerador de referência do exercício do próprio ciclo:
@@ -116,7 +116,7 @@ sobre ela não discordar do exercício ao lado dela.
 O quinto `kind`, `traversal`, foi o teste do critério corrigido. Quando ele entrou na fila,
 o registro dizia que era o que provavelmente não amarraria em nada: `graphs.e4` gerava a
 ordem em largura, e a ordem em profundidade não existia como referência. Escrever um gerador
-só para servir a figura teria produzido exatamente o que o critério condena — um desenho
+só para servir a figura teria produzido exatamente o que o critério condena, um desenho
 conferido contra código que ninguém mais usa.
 
 A saída não foi relaxar a regra, foi escrever o exercício que faltava. `graphs.e8` cobra o
@@ -124,8 +124,8 @@ traço em profundidade sobre o mesmo grafo de `graphs.e4`, e a única diferença
 pseudocódigos é a ponta de onde se retira. O gerador nasceu como gabarito, e a figura passou
 a ter dois traços para conferir em vez de nenhum.
 
-Isso mudou o conteúdo, não só a figura: `graphs.c5` empacotava três afirmações — a troca de
-estrutura, a garantia de menos arestas, e a ressalva do peso — e virou dois ciclos, um para
+Isso mudou o conteúdo, não só a figura: `graphs.c5` empacotava três afirmações, a troca de
+estrutura, a garantia de menos arestas, e a ressalva do peso, e virou dois ciclos, um para
 a troca e outro para o que ela garante e o que não garante. A pergunta "esta figura consegue
 ser conferida?" achou um ciclo sobrecarregado que nenhuma checagem tinha achado.
 

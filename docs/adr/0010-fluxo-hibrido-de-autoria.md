@@ -27,17 +27,17 @@ Se o spec não existe, o comando para. Nenhum agente inventa escopo de unidade.
 
 ## Opções consideradas
 
-### A — Claude Code faz o ciclo inteiro no repositório
+### A, Claude Code faz o ciclo inteiro no repositório
 Um `/new-unit <tema>` conduziria do problema motivador aos exercícios validados.
 **Descartada:** mais autônomo e mais sujeito a deriva. As quatro violações observadas
-durante o desenho aconteceram em cima de regras já escritas — autonomia maior amplifica
+durante o desenho aconteceram em cima de regras já escritas, autonomia maior amplifica
 isso, não corrige.
 
-### B — Design e autoria ambos fora do repositório
+### B, Design e autoria ambos fora do repositório
 **Descartada:** amarra a produção a sessões longas de conversa e desperdiça o validador,
 que é um excelente guia de autoria quando roda a cada edição.
 
-### C — Híbrido (adotada)
+### C, Híbrido (adotada)
 O spec é o contrato entre as duas fases, e é revisável antes de virar conteúdo.
 
 ## Consequências

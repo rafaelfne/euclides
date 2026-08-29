@@ -12,7 +12,7 @@ import { Panel, PanelBody, PanelHeader, PanelMeta, PanelTitle } from './ui/panel
  * `kind: 'bug'` era roteado para o componente de escolha, então `code` e
  * `faultyLines` eram dados obrigatórios que nenhuma tela lia: o enunciado dizia
  * "marque a linha defeituosa" e não havia código nem linha para marcar. O
- * validador não pega isso — ele checa o dado, não a renderização.
+ * validador não pega isso, ele checa o dado, não a renderização.
  *
  * São dois estágios, porque é o que os enunciados já prometiam: marcar a linha
  * certa pela razão errada não conta. As consequências só aparecem depois que a
@@ -73,7 +73,7 @@ export function BugExercise({ unit, exercise }: { unit: Unit; exercise: BugHuntE
           <div className="text-[12px] italic text-fg-4">
             {picked === null && `Clique na linha que você acha defeituosa. A linguagem é ${exercise.language}.`}
             {picked !== null && !found && 'Essa linha faz o que ela promete. Releia o que cada linha garante, e procure a que garante algo diferente do que o comentário ou o nome dela promete.'}
-            {found && 'Linha certa. Agora a consequência — e marcar a linha certa pela razão errada não conta.'}
+            {found && 'Linha certa. Agora a consequência, e marcar a linha certa pela razão errada não conta.'}
           </div>
         </PanelBody>
       </Panel>

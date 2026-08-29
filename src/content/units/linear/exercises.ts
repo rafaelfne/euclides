@@ -19,14 +19,14 @@ export const linearMisconceptions: Misconception[] = [
   { id: 'linear.pilha-e-fila-invertidas', label: 'Supor que fila é a pilha lida ao contrário',
     socraticQuestion: 'Empilhe A, B, C e desempilhe tudo; depois enfileire A, B, C e desenfileire tudo. Escreva as duas saídas. Uma é o inverso da outra?',
     escalation: [
-      'Uma saída é C B A e a outra é A B C — inverter uma dá a outra, para esta entrada. Agora intercale as operações: empilhe A, empilhe B, tire um, empilhe C, tire tudo. Faça o mesmo com a fila e compare de novo.',
+      'Uma saída é C B A e a outra é A B C, inverter uma dá a outra, para esta entrada. Agora intercale as operações: empilhe A, empilhe B, tire um, empilhe C, tire tudo. Faça o mesmo com a fila e compare de novo.',
     ],
     reviewCycle: 'linear.c1' },
 
   { id: 'linear.ponteiro-em-maos', label: 'Remover de lista ligada declarado O(1) sem dizer o que já se tem',
     socraticQuestion: 'Para desligar um nó de uma lista ligada é preciso ter o nó anterior. Quanto custa chegar até ele partindo da cabeça?',
     escalation: [
-      'A remoção em si é constante. Somando o que foi pago para achar o nó, qual é o custo da operação que alguém pediu — "remova este valor"?',
+      'A remoção em si é constante. Somando o que foi pago para achar o nó, qual é o custo da operação que alguém pediu, "remova este valor"?',
     ],
     reviewCycle: 'linear.c4' },
 
@@ -62,7 +62,7 @@ export const linearExercises: Exercise[] = [
     choices: [
       { correct: true, text: 'Pilha: B, C, A. Fila: A, B, C. Uma não é o inverso da outra',
         why: 'A intercalação das operações separa as duas' },
-      { correct: false, text: 'Pilha: C, B, A. Fila: A, B, C — uma é sempre o inverso da outra', misconceptionId: 'linear.pilha-e-fila-invertidas' },
+      { correct: false, text: 'Pilha: C, B, A. Fila: A, B, C, uma é sempre o inverso da outra', misconceptionId: 'linear.pilha-e-fila-invertidas' },
       { correct: false, text: 'As duas devolvem A, B, C: a ordem de saída depende da ordem de entrada, não da estrutura', misconceptionId: 'linear.pilha-e-fila-invertidas' },
     ],
   },
@@ -107,7 +107,7 @@ export const linearExercises: Exercise[] = [
     choices: [
       { correct: true, text: 'Com o nó em mãos, constante; por valor, O(n)',
         why: '"Remoção é O(1)" é verdade depois que alguém pagou para achar o nó, e é esse custo que a frase omite.' },
-      { correct: false, text: 'Constante nos dois casos — é a vantagem da lista ligada sobre o array', misconceptionId: 'linear.ponteiro-em-maos' },
+      { correct: false, text: 'Constante nos dois casos, é a vantagem da lista ligada sobre o array', misconceptionId: 'linear.ponteiro-em-maos' },
       { correct: false, text: 'O(n) nos dois casos, porque a lista ligada não tem acesso por índice', misconceptionId: 'linear.indice-em-lista-ligada' },
     ],
   },

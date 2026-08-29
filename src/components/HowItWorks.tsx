@@ -34,13 +34,13 @@ export function HowItWorks() {
         </h1>
         <p className="m-0 text-[15px] leading-relaxed text-fg-2">
           Esta trilha existe para uma coisa só: conseguir olhar um trecho de código que você não
-          escreveu — de um colega ou de uma IA — e dizer o que ele custa, sem rodar. Não é
+          escreveu, de um colega ou de uma IA, e dizer o que ele custa, sem rodar. Não é
           preparação para entrevista e não é revisão de faculdade.
         </p>
         <p className="m-0 text-[15px] leading-relaxed text-fg-2">
           O jeito de estudar aqui é diferente do de assistir a um curso, e vale saber disso antes
           de começar: em cada ciclo você lê dois ou três parágrafos e depois <strong className="font-semibold text-fg">escreve</strong>{' '}
-          alguma coisa — uma tabela de execução, uma escolha justificada, a linha do defeito. É
+          alguma coisa, uma tabela de execução, uma escolha justificada, a linha do defeito. É
           isso que o app mede. Ler sem escrever não avança nada.
         </p>
       </div>
@@ -85,7 +85,7 @@ export function HowItWorks() {
           <p className="m-0">
             <strong className="font-semibold text-fg">Errar é o método, não o acidente.</strong>{' '}
             As {traps.length} armadilhas do catálogo foram escritas antes de você chegar. Quando
-            você ativa uma, o app não dá a resposta — ele dá a tarefa que produz a resposta, no
+            você ativa uma, o app não dá a resposta, ele dá a tarefa que produz a resposta, no
             máximo três vezes, e depois manda parar.
           </p>
           <p className="m-0">

@@ -9,7 +9,7 @@ export const hashUnit: Unit = {
   learningObjective:
     'Prever quando uma tabela hash degrada, justificar a escolha dela contra alternativas ' +
     'para um caso concreto, e identificar em código gerado por IA as suposições implícitas ' +
-    'que a fazem quebrar — tudo sem executar.',
+    'que a fazem quebrar, tudo sem executar.',
   prerequisites: [
     'Notação O, e a distinção entre caso médio, pior caso e custo amortizado',
     'Array como bloco contíguo com acesso O(1) por índice',
@@ -19,7 +19,7 @@ export const hashUnit: Unit = {
     'Dez milhões de e-mails cadastrados. A cada signup é preciso responder “esse e-mail já ' +
     'existe?” em tempo que não cresça com o cadastro. Array não ordenado responde em O(n); ' +
     'array ordenado responde em O(log n) mas insere em O(n). Nenhum dá O(1). ' +
-    'Por que não dá — e o que teria que ser verdade para dar?',
+    'Por que não dá, e o que teria que ser verdade para dar?',
 
   symbols: [
     { symbol: 'T', means: 'a tabela inteira' },
@@ -97,7 +97,7 @@ export const hashUnit: Unit = {
           assumptions: ['hashing uniforme', 'load factor abaixo de 0,7'],
           measuredIn: 'n = pares armazenados' },
         contém: { bound: 'O(1)', regime: 'average', amortized: false,
-          assumptions: ['load factor abaixo de 0,7 — acima disso o clustering domina'],
+          assumptions: ['load factor abaixo de 0,7, acima disso o clustering domina'],
           measuredIn: 'n = pares armazenados' },
         obter: { bound: 'O(1)', regime: 'average', amortized: false,
           assumptions: ['load factor abaixo de 0,7'],
@@ -109,13 +109,13 @@ export const hashUnit: Unit = {
       space: { bound: 'O(m)', regime: 'worst', amortized: false,
         assumptions: [], measuredIn: 'm = número de posições' },
       wrongWhen: [
-        { scenario: 'O load factor passa de 0,7 — a busca sem sucesso quadruplica entre 0,8 e 0,9',
+        { scenario: 'O load factor passa de 0,7, a busca sem sucesso quadruplica entre 0,8 e 0,9',
           useInstead: 'chaining, que mal se mexe no mesmo intervalo' },
         { scenario: 'Remoções são frequentes e os tombstones se acumulam',
           useInstead: 'chaining' },
       ],
       everydayAnchor:
-        'É a escolha das tabelas hash de linguagens que priorizam localidade de cache — ' +
+        'É a escolha das tabelas hash de linguagens que priorizam localidade de cache, ' +
         'e o motivo de elas redimensionarem muito antes de encher.',
       invariant:
         'Todo par ocupa a primeira posição livre a partir de h(k) mod m, seguindo a ordem de sondagem.',
@@ -127,12 +127,12 @@ export const hashUnit: Unit = {
       introducesTerms: ['adt', 'map'],
       oneLine: "O Map associa chave a valor e não promete ordem nenhuma.",
       body: [
-        'Antes de qualquer estrutura, o contrato. Um Map associa chave a valor e oferece 4 operações — e é tudo o que ele oferece.',
+        'Antes de qualquer estrutura, o contrato. Um Map associa chave a valor e oferece 4 operações, e é tudo o que ele oferece.',
         'O que interessa aqui não é a lista de operações; é a lista do que o contrato NÃO cobre. Ordem não está lá. Nem mínimo, nem faixa, nem “os vinte primeiros”. Guarde essa ausência: no último ciclo ela volta como a resposta inteira.',
       ],
       workedExample: {
         problem: "Guarde 3 pares em um Map: \"b\"→1, \"a\"→2, \"c\"→3. Peça o valor de \"a\": 1 operação. Peça \"a menor chave\": nenhuma das 4 operações responde.",
-        whatToNotice: "A ausência de ordem não é limitação de implementação, é o contrato. Guarde essa lista — ela é a resposta do último ciclo.",
+        whatToNotice: "A ausência de ordem não é limitação de implementação, é o contrato. Guarde essa lista, ela é a resposta do último ciclo.",
       },
       exerciseId: 'hash.e0' },
 
@@ -140,12 +140,12 @@ export const hashUnit: Unit = {
       introducesTerms: ['hash', 'hash-function'],
       oneLine: "Se a chave virar um índice, o acesso vira 1 operação.",
       body: [
-        'Acesso em O(1) só existe por índice. Se a chave virasse um índice, o problema estaria resolvido — e toda tabela hash é exatamente essa aposta.',
+        'Acesso em O(1) só existe por índice. Se a chave virasse um índice, o problema estaria resolvido, e toda tabela hash é exatamente essa aposta.',
       ],
       pseudocode: 'índice ← h(chave) mod m',
       workedExample: {
         problem: 'Com m = 8 e h(k) = k, calcule o endereço de 3, 11, 19 e 27.',
-        whatToNotice: 'Os quatro caem no mesmo endereço. Isso não é azar — é o que acontece quando o domínio é maior que o contradomínio.',
+        whatToNotice: 'Os quatro caem no mesmo endereço. Isso não é azar, é o que acontece quando o domínio é maior que o contradomínio.',
       },
       exerciseId: 'hash.e1a' },
 
@@ -153,7 +153,7 @@ export const hashUnit: Unit = {
       introducesTerms: ['collision', 'pigeonhole'],
       oneLine: "Com 4 buckets e 5 chaves, duas colidem. Não há h que evite isso.",
       body: [
-        'Quantas strings existem? Quantos buckets você tem? Com 1000 buckets e 1001 chaves distintas, pelo menos 2 caem no mesmo lugar — e isso vale para qualquer h que se escreva.',
+        'Quantas strings existem? Quantos buckets você tem? Com 1000 buckets e 1001 chaves distintas, pelo menos 2 caem no mesmo lugar, e isso vale para qualquer h que se escreva.',
         'Isso muda o problema: não se trata de evitar colisão, e sim de decidir o que fazer quando ela ocorre.',
       ],
       workedExample: {
@@ -166,8 +166,8 @@ export const hashUnit: Unit = {
       introducesTerms: ['bucket', 'chaining', 'position-invariant'],
       oneLine: "Todo par no bucket i satisfaz h(k) mod m = i, e é isso que o rehash quebra.",
       body: [
-        'Cada bucket guarda a lista dos pares que colidiram ali. A busca calcula o endereço 1 vez e depois compara chaves dentro do bucket — 3 chaves no bucket são 3 comparações.',
-        'A propriedade que sustenta tudo o que vem depois é discreta: todo par armazenado no bucket i satisfaz h(k) mod m = i. Guarde essa frase — ela é o motivo de o rehash precisar reinserir em vez de copiar.',
+        'Cada bucket guarda a lista dos pares que colidiram ali. A busca calcula o endereço 1 vez e depois compara chaves dentro do bucket, 3 chaves no bucket são 3 comparações.',
+        'A propriedade que sustenta tudo o que vem depois é discreta: todo par armazenado no bucket i satisfaz h(k) mod m = i. Guarde essa frase, ela é o motivo de o rehash precisar reinserir em vez de copiar.',
       ],
       pseudocode: `função buscar(T, chave)
     i ← h(chave) mod T.m
@@ -180,7 +180,7 @@ export const hashUnit: Unit = {
         m: 4,
         keys: [3, 7, 11],
         searchFor: 11,
-        caption: 'Três chaves, um endereço só: 3, 7 e 11 deixam resto 3 na divisão por 4, e por isso ocupam o mesmo bucket. Nada aí está errado — o endereço leva ao bucket em uma operação, e é dentro dele que a busca compara chave por chave. Repare que os outros três buckets estão vazios: a colisão não é a tabela cheia, é a função levando chaves diferentes ao mesmo lugar.',
+        caption: 'Três chaves, um endereço só: 3, 7 e 11 deixam resto 3 na divisão por 4, e por isso ocupam o mesmo bucket. Nada aí está errado, o endereço leva ao bucket em uma operação, e é dentro dele que a busca compara chave por chave. Repare que os outros três buckets estão vazios: a colisão não é a tabela cheia, é a função levando chaves diferentes ao mesmo lugar.',
       },
       workedExample: {
         problem: 'Busca por 11 com m = 4 e o bucket 3 contendo [3, 7, 11].',
@@ -193,10 +193,10 @@ export const hashUnit: Unit = {
       oneLine: "Com m = 1000 e n = 750, α é 0,75 e centenas de buckets ainda estão vazios.",
       body: [
         'O load factor é a razão α = n/m entre pares armazenados e posições disponíveis. Com chaining ele pode passar de 1 sem que nada quebre.',
-        'Ele não mede quanto da memória está ocupada. Numa tabela com m = 1000 e n = 750, estime quantos buckets estão vazios antes de calcular — e depois calcule.',
+        'Ele não mede quanto da memória está ocupada. Numa tabela com m = 1000 e n = 750, estime quantos buckets estão vazios antes de calcular, e depois calcule.',
       ],
       workedExample: {
-        problem: "m = 1000, n = 750, α = 0,75. Com espalhamento uniforme, cerca de 472 buckets ficam vazios — quase metade da tabela.",
+        problem: "m = 1000, n = 750, α = 0,75. Com espalhamento uniforme, cerca de 472 buckets ficam vazios, quase metade da tabela.",
         whatToNotice: "α = 0,75 sugere \"três quartos cheia\" e a tabela está com metade das posições sem nada. α mede pares por posição, não ocupação.",
       },
       exerciseId: 'hash.e2a' },
@@ -221,7 +221,7 @@ export const hashUnit: Unit = {
       invariant: 'Após qualquer redimensionamento, toda chave inserida continua encontrável.',
       workedExample: {
         problem: 'Com m = 4 e LIMITE = 0,75, insira 3, 7, 11 e depois 4.',
-        whatToNotice: 'O rehash separa o 7 de 3 e 11, mas mantém 3 e 11 juntos — ambos permanecem congruentes módulo 8. Redistribuir não é eliminar colisão.',
+        whatToNotice: 'O rehash separa o 7 de 3 e 11, mas mantém 3 e 11 juntos, ambos permanecem congruentes módulo 8. Redistribuir não é eliminar colisão.',
       },
       exerciseId: 'hash.e1' },
 
@@ -229,7 +229,7 @@ export const hashUnit: Unit = {
       introducesTerms: ['worst-case', 'average-case'],
       oneLine: "A frase \"hash é O(1)\" omite 4 coisas, e cada omissão muda o que ela afirma.",
       body: [
-        'A frase “hash é O(1)” omite quatro coisas: o regime, a hipótese de hashing uniforme, a amortização vinda do rehash, e o que n mede — porque ela ignora o custo de hashear a própria chave.',
+        'A frase “hash é O(1)” omite quatro coisas: o regime, a hipótese de hashing uniforme, a amortização vinda do rehash, e o que n mede, porque ela ignora o custo de hashear a própria chave.',
         'Neste ciclo cada um dos quatro é nomeado, e você reescreve a afirmação de forma que ela sobreviva a uma code review.',
       ],
       workedExample: {
@@ -247,7 +247,7 @@ export const hashUnit: Unit = {
       ],
       workedExample: {
         problem: 'Com m = 8, insira 8, 16 e 24 por linear probing e depois esvazie a posição 1.',
-        whatToNotice: 'As três chaves colidem no mesmo endereço e ocupam posições vizinhas. Esvaziar uma do meio não apaga a chave que veio depois — apaga o caminho até ela.',
+        whatToNotice: 'As três chaves colidem no mesmo endereço e ocupam posições vizinhas. Esvaziar uma do meio não apaga a chave que veio depois, apaga o caminho até ela.',
       },
       exerciseId: 'hash.e7' },
 
@@ -255,11 +255,11 @@ export const hashUnit: Unit = {
       introducesTerms: ['hash-flooding'],
       oneLine: "A tabela hash falha exatamente onde o Map não prometeu nada.",
       body: [
-        'Volte às 4 operações do primeiro ciclo. Tudo que elas não prometem é exatamente onde esta estrutura falha — e a lista de ausências que você guardou lá é a resposta inteira deste ciclo.',
+        'Volte às 4 operações do primeiro ciclo. Tudo que elas não prometem é exatamente onde esta estrutura falha, e a lista de ausências que você guardou lá é a resposta inteira deste ciclo.',
       ],
       workedExample: {
         problem: "Peça \"os 20 usuários mais recentes\" a um Map com 50 mil pares: a única saída é percorrer os 50 mil e ordenar.",
-        whatToNotice: "A estrutura não está lenta — ela está respondendo uma pergunta que o contrato dela nunca prometeu. Compare com a lista de ausências do ciclo 0.",
+        whatToNotice: "A estrutura não está lenta, ela está respondendo uma pergunta que o contrato dela nunca prometeu. Compare com a lista de ausências do ciclo 0.",
       },
       exerciseId: 'hash.e5' },
   ],

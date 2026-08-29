@@ -4,7 +4,7 @@ import { Stepper } from './Stepper'
 
 /**
  * O mesmo grafo, dois percursos, e a posição dos vértices vinda das camadas da
- * busca em largura — por isso o painel da esquerda cresce em colunas e o da
+ * busca em largura, por isso o painel da esquerda cresce em colunas e o da
  * direita desce por um ramo. Nada aqui é coordenada autorada. Ver ADR-0017.
  */
 const COL = 92
@@ -131,7 +131,7 @@ export function TraversalFigure({ figure }: { figure: Extract<Figure, { kind: 't
       <Stepper
         count={bfsOrder(figure.edges, figure.origin).length}
         labelFor={(k) =>
-          `${k + 1}º visitado — largura ${bfsOrder(figure.edges, figure.origin)[k]}, profundidade ${dfsOrder(figure.edges, figure.origin)[k]}`
+          `${k + 1}º visitado, largura ${bfsOrder(figure.edges, figure.origin)[k]}, profundidade ${dfsOrder(figure.edges, figure.origin)[k]}`
         }
       >
         {(upTo) => (
@@ -139,7 +139,7 @@ export function TraversalFigure({ figure }: { figure: Extract<Figure, { kind: 't
             <Panel
               figure={figure}
               title="Em largura"
-              frontier="fila — sai o primeiro"
+              frontier="fila, sai o primeiro"
               order={bfsOrder(figure.edges, figure.origin)}
               upTo={upTo}
               accent="var(--contract)"
@@ -147,7 +147,7 @@ export function TraversalFigure({ figure }: { figure: Extract<Figure, { kind: 't
             <Panel
               figure={figure}
               title="Em profundidade"
-              frontier="pilha — sai o último"
+              frontier="pilha, sai o último"
               order={dfsOrder(figure.edges, figure.origin)}
               upTo={upTo}
               accent="var(--cost)"
