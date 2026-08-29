@@ -199,7 +199,7 @@ export const asymptoticsUnit: Unit = {
       exerciseId: 'asymptotics.e7' },
 
     { id: 'asymptotics.c5', title: 'Regime: o pior caso não é o caso raro', layer: 'essential', band: 'failure',
-      introducesTerms: [],
+      introducesTerms: ['worst-case', 'average-case'],
       oneLine: "O pior caso do quicksort ingênuo é a entrada já ordenada, que é a mais comum.",
       body: [
         'Pior caso, caso médio e melhor caso qualificam o **custo**, não a frequência da entrada. Dizer que algo é O(n²) no pior caso não afirma que esse caso é improvável, ele pode ser 100% das suas entradas.',
@@ -213,7 +213,7 @@ export const asymptoticsUnit: Unit = {
       exerciseId: 'asymptotics.e4' },
 
     { id: 'asymptotics.c6', title: 'Amortizado não é caso médio', layer: 'essential', band: 'technique', elaborates: 'aggregate-amortized',
-      introducesTerms: ['amortized-analysis'],
+      introducesTerms: ['amortized-analysis', 'amortized'],
       oneLine: "Mil inserções custam O(n) no total, e isso não é o mesmo que caso médio.",
       body: [
         'Um array dinâmico dobra de capacidade quando enche. A inserção que dobra copia tudo e custa O(n); as outras custam O(1). Somando mil inserções, o total é O(n), e por inserção dá constante.',

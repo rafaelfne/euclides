@@ -2,13 +2,19 @@ import Link from 'next/link'
 import { units } from '@/content'
 import { AppShell } from '@/components/AppShell'
 import { Badge } from '@/components/ui/badge'
+import { Mark } from '@/components/Mark'
+import { ResumeCard } from '@/components/ResumeCard'
+import { unitMinutes, humanMinutes } from '@/lib/duration'
 
 export default function Home() {
   return (
     <AppShell>
       <div className="flex flex-grow flex-col gap-7 overflow-y-auto px-4 py-8 sm:px-7">
         <div className="flex max-w-[720px] flex-col gap-3">
-          <h1 className="m-0 text-[34px] font-semibold leading-tight">Euclides</h1>
+          <div className="flex items-center gap-4">
+            <Mark size={64} className="shrink-0 text-contract" />
+            <h1 className="m-0 text-[34px] font-semibold leading-tight">Euclides</h1>
+          </div>
           <p className="m-0 text-[15px] leading-relaxed text-fg-2">
             Fundamentos para julgar código sem executá-lo. Nos <em>Elementos</em>, nada é assumido
             que não esteja declarado, aqui também não: toda complexidade vem com regime e
@@ -26,6 +32,8 @@ export default function Home() {
           </span>
           <span className="ml-auto font-mono text-[12px] text-contract">→</span>
         </Link>
+
+        <ResumeCard />
 
         <div className="flex flex-col gap-2">
           <span className="lbl">Primeiro módulo</span>
@@ -48,7 +56,7 @@ export default function Home() {
                       {u.kind === 'structure' ? 'estrutura' : 'método'}
                     </Badge>
                     <Badge>{u.cycles.length} ciclos</Badge>
-                    <Badge>{u.exercises.length} exercícios</Badge>
+                    <Badge>{humanMinutes(unitMinutes(u))}</Badge>
                   </div>
                 </Link>
               </li>

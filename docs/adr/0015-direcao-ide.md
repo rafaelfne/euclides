@@ -86,6 +86,26 @@ sempre foi a essencial: cor com função declarada, forma codificando posição 
 nada na tela que não esteja declarado em algum lugar. A parte que se perde é a superfície, 
 papel, serifa de display, a citação de 1847.
 
+## A marca, e o retrato descartado
+
+A primeira tentativa foi um retrato de Euclides de perfil, em traço tracejado, na gramática
+do desenho de linha contínua. Ela chegou a funcionar como desenho e foi **descartada**: um
+rosto identifica uma pessoa, e o que este projeto usa do nome não é a biografia, é o método.
+
+A marca é a **Proposição I.1** dos *Elementos*, a primeira construção do Livro I. Dois
+círculos de mesmo raio, cada um centrado na circunferência do outro, e o triângulo
+equilátero que cai da interseção.
+
+O que ela afirma está na diferença entre os dois traços, e não é decoração:
+
+- **os círculos são tracejados**, porque são a construção, o andaime que ninguém guarda no
+  fim, e é exatamente o que esta trilha obriga o aluno a deixar visível em vez de apagar;
+- **o triângulo é cheio**, porque é o que ficou provado.
+
+A geometria é derivada de `R` e do vão entre centros; a ponta do triângulo sai de Pitágoras.
+Mexer no raio move a figura inteira sozinha, e é a regra do ADR-0017 aplicada à marca:
+nenhuma coordenada é digitada.
+
 ## Consequências
 
 - **Fica mais fácil:** telas densas, tabela de traço legível, e navegação entre unidades sem

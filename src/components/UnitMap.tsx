@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import { BANDS_BY_KIND, type Cycle, type Unit } from '@/content/schema'
 import { cycleStatus, read, PROGRESS_EVENT, type CycleStatus } from '@/lib/progress'
 import { cn } from '@/lib/utils'
+import { humanMinutes, unitMinutes } from '@/lib/duration'
 import { CycleNode } from './CycleNode'
 import { Badge } from './ui/badge'
 import { Panel, PanelBody, PanelHeader, PanelMeta, PanelTitle } from './ui/panel'
@@ -102,7 +103,11 @@ export function UnitMap({ unit }: { unit: Unit }) {
       <p className="max-w-[720px] text-[14.5px] leading-relaxed text-fg-2">{unit.motivatingProblem}</p>
 
       <div className="flex flex-col gap-2">
-        <span className="lbl">Por onde começar</span>
+        <div className="flex items-baseline gap-3">
+          <span className="lbl">Por onde começar</span>
+          {/* A estimativa é derivada do que a unidade tem; ver src/lib/duration.ts. */}
+          <span className="font-mono text-[12px] text-fg-4">{humanMinutes(unitMinutes(unit))}</span>
+        </div>
         <ol className="m-0 flex list-none flex-wrap gap-1.5 p-0">
           {unit.cycles.map((c, i) => {
             const st = statuses[c.id] ?? 'pending'

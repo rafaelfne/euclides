@@ -202,7 +202,7 @@ export const hashUnit: Unit = {
       exerciseId: 'hash.e2a' },
 
     { id: 'hash.c5', title: 'Rehash e o custo amortizado', layer: 'essential', band: 'implementation', elaborates: 'chaining',
-      introducesTerms: ['rehash', 'amortized'],
+      introducesTerms: ['rehash'],
       oneLine: "A tabela dobra e reinsere tudo; copiar quebraria a invariante de posição.",
       body: [
         'Quando α passa do limite, a tabela dobra e reinsere. Reinsere, não copia: com m indo de 4 para 8, a chave 11 sai do bucket 3 e vai para o 3 de novo, mas a chave 4 sai do 0 e vai para o 4.',
@@ -226,7 +226,7 @@ export const hashUnit: Unit = {
       exerciseId: 'hash.e1' },
 
     { id: 'hash.c6', title: 'O custo, com todos os qualificadores', layer: 'essential', band: 'cost',
-      introducesTerms: ['worst-case', 'average-case'],
+      introducesTerms: [],
       oneLine: "A frase \"hash é O(1)\" omite 4 coisas, e cada omissão muda o que ela afirma.",
       body: [
         'A frase “hash é O(1)” omite quatro coisas: o regime, a hipótese de hashing uniforme, a amortização vinda do rehash, e o que n mede, porque ela ignora o custo de hashear a própria chave.',

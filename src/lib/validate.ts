@@ -13,7 +13,7 @@ import {
   type Unit, type Choice, type GlossaryTerm,
 } from '../content/schema'
 import { OVERLOADED_TERMS, PLANNED, APP } from '../content/glossary'
-import { vagueAbstractions, allowedVagueUses } from '../content/vocabulary'
+import { vagueAbstractions, allowedVagueUses, forwardCitations } from '../content/vocabulary'
 import { referenceGenerators } from './reference'
 import { bfsOrder, dfsOrder, vertices } from './traversal'
 import { untranslated } from './transliterate'
@@ -44,6 +44,7 @@ export const CHECKS = [
   ['tradução', 'tradução: o pseudocódigo ou atravessa inteiro para TypeScript, ou é declarado prosa'],
   ['glossário', 'glossário: ids únicos, introdução declarada dos dois lados'],
   ['sobrecarga', 'sobrecarga: todo termo sobrecarregado declara seus falsos amigos'],
+  ['estreia', 'estreia: nenhum termo aparece na prosa antes do ciclo que o estreia'],
 ] as const
 
 /** Colunas que o exercício já entrega preenchidas; ver `GIVEN` em TraceExercise. */
@@ -535,6 +536,51 @@ export function checkAll(units: Unit[], terms: GlossaryTerm[]): Failure[] {
     if (!term.falseFriends.length) fail('sobrecarga', `${id}: sobrecarregado e sem falsos amigos declarados`)
   }
 
+  /*
+    --- estreia -------------------------------------------------------------
+
+    Nasceu de uma deriva real: `pior caso`, `caso médio` e `amortizado` eram
+    vocabulário de trabalho da unidade 02 e declaravam nascer na unidade 04,
+    duas unidades depois de o aluno já estar usando os três. A checagem
+    `glossário` não pegava, porque ela confere se os dois lados concordam sobre
+    ONDE o termo nasce, e não se ele foi usado antes disso.
+
+    Citar para a frente continua permitido, e é deliberado na trilha: citar é o
+    oposto de assumir. Mas a citação fica declarada em `forwardCitations`, com
+    razão, do mesmo jeito que uma abstração vaga.
+  */
+  const readingOrder = new Map<string, number>()
+  units.flatMap((u) => u.cycles).forEach((c, i) => readingOrder.set(c.id, i))
+
+  const licensed = new Set(forwardCitations.map((f) => `${f.cycle}|${f.term}`))
+  const used = new Set<string>()
+
+  for (const t of terms) {
+    const born = readingOrder.get(t.introducedIn)
+    if (born === undefined) continue
+    const re = new RegExp(`(?<![\\p{L}])${escapeRegExp(t.canonical)}(?![\\p{L}])`, 'iu')
+    for (const u of units) {
+      for (const c of u.cycles) {
+        const at = readingOrder.get(c.id)!
+        if (at >= born) continue
+        if (!re.test(`${c.oneLine} ${c.body.join(' ')}`)) continue
+        const key = `${c.id}|${t.id}`
+        used.add(key)
+        if (!licensed.has(key)) {
+          fail('estreia', `${c.id} usa "${t.canonical}", que estreia depois em ${t.introducedIn}, e a citação não está declarada`)
+        }
+      }
+    }
+  }
+
+  // Licença órfã é licença que ninguém confere. Some com ela.
+  for (const f of forwardCitations) {
+    if (!used.has(`${f.cycle}|${f.term}`)) {
+      fail('estreia', `citação declarada em ${f.cycle} para "${f.term}" não acontece mais, remova a licença`)
+    }
+  }
 
   return failures
 }
+
+const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')

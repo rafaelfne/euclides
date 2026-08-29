@@ -62,6 +62,12 @@ traduz por dicionário declarado em `src/lib/transliterate.ts`; quando o bloco t
 prosa ele devolve `null`, o ciclo declara `pseudocodeIsProse`, e a alternância não aparece.
 Meia tradução entrega algo que parece TypeScript e não é.
 
+**Termo usado antes de estrear é deriva, e citar para a frente é declarado.** A checagem
+`estreia` reprova um termo que aparece na prosa antes do ciclo que o introduz. Ela nasceu de
+`pior caso`, `caso médio` e `amortizado`, que a unidade 02 usava como vocabulário de
+trabalho e diziam nascer na unidade 04. Citar para a frente continua permitido e é
+deliberado na trilha, mas fica registrado em `forwardCitations`, com razão.
+
 **Acolhimento é afirmação verificável, ou não entra.** O princípio 7 proíbe elogio vago, não
 proíbe informação verdadeira sobre dificuldade. A diferença é mecânica: "muita gente erra
 aqui" o app não sabe; "uma das 6 armadilhas desta unidade" o catálogo prova. Não existe
@@ -130,6 +136,9 @@ src/content/vocabulary.ts    abstrações vagas e as licenças de citação
 src/content/conventions.ts   a folha de notação do pseudocódigo
 src/components/ui/            primitivos shadcn, código do projeto, não da dependência
 src/components/band-tokens.ts a paleta e o rótulo de cada banda, exaustivos por tipo
+src/components/Mark.tsx      a marca: a Proposição I.1, com a geometria derivada
+src/components/TermCard.tsx  o card de desambiguação de um termo
+src/lib/duration.ts          a estimativa de tempo, derivada do que a unidade tem
 src/content/units/<id>/index.ts      unidade, ciclos, ADT, implementações
 src/content/units/<id>/exercises.ts  exercícios e catálogo de armadilhas
 src/lib/socratic.ts          divergência de traço e os três degraus

@@ -80,3 +80,60 @@ export function cycleStatus(
   const days = (Date.now() - new Date(st.lastVisited).getTime()) / 86_400_000
   return days >= revisitDays ? 'review' : 'clean'
 }
+
+
+export interface Resume {
+  unitId: string
+  cycleId: string
+  cycleTitle: string
+  unitTitle: string
+  /** Dias desde a última visita, arredondado para baixo. */
+  daysAgo: number
+}
+
+/**
+ * Onde o aluno parou.
+ *
+ * `lastVisited` era gravado desde o scaffold e nenhuma tela lia. É a mesma
+ * fresta que escondeu `code` e `faultyLines` por muito tempo: dado obrigatório
+ * que o validador confere e que nenhuma tela consome. Ver ADR-0016.
+ *
+ * O ciclo devolvido é o do exercício mais recente que ainda NÃO saiu limpo, e
+ * na falta dele o próximo ciclo não tentado. Retomar num ciclo já dominado
+ * seria mandar o aluno reler o que ele acertou de primeira.
+ */
+export function resumePoint(
+  units: Array<{ id: string; title: string; cycles: Array<{ id: string; title: string; exerciseId: string }> }>,
+): Resume | null {
+  const p = read()
+  let best: (Resume & { at: number }) | null = null
+
+  for (const u of units) {
+    for (const c of u.cycles) {
+      const st = p.units[u.id]?.exercises[c.exerciseId]
+      if (!st || st.solvedClean) continue
+      const at = new Date(st.lastVisited).getTime()
+      if (best && at <= best.at) continue
+      best = {
+        at,
+        unitId: u.id,
+        cycleId: c.id,
+        cycleTitle: c.title,
+        unitTitle: u.title,
+        daysAgo: Math.floor((Date.now() - at) / 86_400_000),
+      }
+    }
+  }
+
+  if (best) { const { at: _at, ...rest } = best; return rest }
+
+  // Tudo o que foi tentado saiu limpo: o ponto de retomada é o primeiro ciclo
+  // que ainda não foi tentado.
+  for (const u of units) {
+    for (const c of u.cycles) {
+      if (p.units[u.id]?.exercises[c.exerciseId]) continue
+      return { unitId: u.id, cycleId: c.id, cycleTitle: c.title, unitTitle: u.title, daysAgo: 0 }
+    }
+  }
+  return null
+}

@@ -89,7 +89,7 @@ export const tracingUnit: Unit = {
 
   cycles: [
     { id: 'tracing.c0', title: 'O que é saber o que um código faz', layer: 'essential', band: 'criterion',
-      introducesTerms: ['execution-trace', 'state'],
+      introducesTerms: ['execution-trace', 'state', 'iteration'],
       oneLine: "Entender um código é saber dizer o valor de cada nome a cada rodada.",
       body: [
         '"Eu li e entendi" não é uma afirmação verificável. Ela vira uma quando carrega 4 coisas: quais nomes guardam o estado, o valor de cada um a cada rodada, a condição que decide se há próxima rodada, e o que a função devolve.',
@@ -102,7 +102,7 @@ export const tracingUnit: Unit = {
       exerciseId: 'tracing.e0' },
 
     { id: 'tracing.c1', title: 'A condição que decide se há próxima rodada', layer: 'essential', band: 'criterion',
-      introducesTerms: ['guard', 'iteration'],
+      introducesTerms: ['guard'],
       oneLine: "Um laço para por causa da condição, não por causa do tamanho da coleção.",
       body: [
         'Um laço sobre 10 elementos não roda necessariamente 10 vezes. Um laço testa uma condição, executa um corpo, e testa de novo. Que isso acabe percorrendo a coleção é consequência de como o corpo mexe no índice, não é a definição.',

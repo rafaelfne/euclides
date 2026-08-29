@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
-import Link from 'next/link'
 import { findMarks } from '@/lib/glossary-link'
+import { TermCard } from './TermCard'
 
 /**
  * A única marcação permitida na prosa autorada: `**assim**` vira ênfase.
@@ -13,9 +13,9 @@ import { findMarks } from '@/lib/glossary-link'
  * A checagem `ênfase` reprova asterisco desemparelhado. Nenhuma outra marcação
  * é interpretada, de propósito: conteúdo com sintaxe é conteúdo com pegadinha.
  *
- * `terms` liga a estreia de um termo ao glossário. A ligação é achada por
- * varredura sobre a prosa, nunca escrita pelo autor: um marcador na string
- * chegaria ao aluno na primeira tela que esquecesse de removê-lo.
+ * `terms` liga a estreia de um termo ao card de desambiguação. A ligação é
+ * achada por varredura sobre a prosa, nunca escrita pelo autor: um marcador na
+ * string chegaria ao aluno na primeira tela que esquecesse de removê-lo.
  */
 export function Prose({ children, terms = [] }: { children: string; terms?: string[] }): ReactNode {
   const parts = children.split(/\*\*(.+?)\*\*/g)
@@ -35,14 +35,13 @@ function Linked({ text, terms }: { text: string; terms: string[] }): ReactNode {
   marks.forEach((m, i) => {
     if (m.start > at) out.push(text.slice(at, m.start))
     out.push(
-      <Link
+      <TermCard
         key={`t${i}`}
-        href={`/glossary#${m.term.id}`}
-        title={`${m.term.definition}, ${m.term.isNot[0] ?? ''}`}
-        className="text-fg-2 underline decoration-contract-rule decoration-dotted underline-offset-[3px] hover:text-contract"
+        term={m.term}
+        className="cursor-help text-fg-2 underline decoration-contract-rule decoration-dotted underline-offset-[3px] hover:text-contract"
       >
         {text.slice(m.start, m.end)}
-      </Link>,
+      </TermCard>,
     )
     at = m.end
   })

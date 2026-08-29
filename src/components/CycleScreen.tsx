@@ -7,8 +7,10 @@ import type { Cycle, Exercise, Unit } from '@/content/schema'
 import { allTerms } from '@/content/glossary'
 import { conventions } from '@/content/conventions'
 import { cn } from '@/lib/utils'
+import { cycleMinutes, humanMinutes } from '@/lib/duration'
 import { CycleFigure } from './CycleFigure'
 import { Prose } from './Prose'
+import { TermCard } from './TermCard'
 import { findMarks } from '@/lib/glossary-link'
 import { CodeBlock } from './CodeBlock'
 import { ChoiceExercise } from './ChoiceExercise'
@@ -52,6 +54,7 @@ export function CycleScreen({ unit, cycle, exercise }: { unit: Unit; cycle: Cycl
         <div className="mb-2.5 flex items-center gap-2">
           <span className={cn('lbl', TONE_TEXT[tone])}>{BAND_LABEL[cycle.band]}</span>
           {LAYER_LABEL[cycle.layer] && <span className="lbl text-cost">· {LAYER_LABEL[cycle.layer]}</span>}
+          <span className="lbl ml-auto">{humanMinutes(cycleMinutes(unit, cycle.id))}</span>
         </div>
 
         <h1 className="m-0 mb-4 max-w-[820px] text-[30px] font-semibold leading-tight text-fg">{cycle.title}</h1>
@@ -59,7 +62,9 @@ export function CycleScreen({ unit, cycle, exercise }: { unit: Unit; cycle: Cycl
         {terms.length > 0 && (
           <div className="mb-5 flex flex-wrap items-center gap-1.5">
             {terms.map((t) => (
-              <Badge key={t.id} tone="neutral" title={t.definition}>{t.canonical}</Badge>
+              <TermCard key={t.id} term={t}>
+                <Badge tone="neutral" className="cursor-help">{t.canonical}</Badge>
+              </TermCard>
             ))}
             <span className="text-[11.5px] italic text-fg-4">termos novos deste ciclo</span>
           </div>
