@@ -3,6 +3,8 @@ import { units } from '@/content'
 import { cn } from '@/lib/utils'
 import { UnitStateDot } from './UnitStateDot'
 import { BandBadge } from './BandBadge'
+import { Logo } from './Logo'
+import { ProfileAvatar } from './ProfileAvatar'
 
 /**
  * A trilha inteira sempre visível. O ADR-0014 resolveu a ordem dentro de uma
@@ -11,9 +13,12 @@ import { BandBadge } from './BandBadge'
 export function Rail({ unitId }: { unitId?: string }) {
   return (
     <nav className="hidden h-screen w-[212px] shrink-0 flex-col overflow-y-auto border-r border-rule-soft bg-rail lg:flex">
-      <Link href="/" className="shrink-0 border-b border-rule-soft px-4 py-3.5 text-[17px] font-semibold text-fg hover:text-fg">
-        Euclides
-      </Link>
+      <div className="flex shrink-0 items-center justify-between gap-2 border-b border-rule-soft px-4 py-2.5">
+        <Link href="/" title="Euclides" aria-label="Euclides" className="m-tap flex shrink-0 items-center">
+          <Logo size={56} />
+        </Link>
+        <ProfileAvatar />
+      </div>
 
       <div className="flex flex-col gap-px py-3">
         <span className="lbl px-4 pb-2">Trilha</span>
@@ -47,7 +52,6 @@ export function Rail({ unitId }: { unitId?: string }) {
         <Link href="/glossary" className="lbl m-tap px-4 py-2.5 hover:bg-panel-head hover:text-fg-2">Glossário</Link>
         <Link href="/revisitas" className="lbl m-tap px-4 py-2.5 hover:bg-panel-head hover:text-fg-2">Revisitas</Link>
         <Link href="/gaps" className="lbl m-tap px-4 py-2.5 hover:bg-panel-head hover:text-fg-2">Lacunas</Link>
-        <Link href="/perfil" className="lbl m-tap px-4 py-2.5 hover:bg-panel-head hover:text-fg-2">Perfil</Link>
       </div>
     </nav>
   )
