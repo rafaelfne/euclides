@@ -99,4 +99,4 @@ vai calibrar a sondagem. Um campo que só descreve a pessoa não entra.
 4. [x] `/perfil` com modo, idioma, as oito unidades e as três ações
 5. [x] Nome no export de lacunas apenas quando pedido, caixa desmarcada por padrão
 6. [x] `scripts/test-profile.ts` cobrindo migração, ida e volta, e recusa de arquivo estranho
-7. [ ] `placement` só é escrito na Fase 2; hoje o campo existe e ninguém preenche
+7. [x] `placement` escrito pela sondagem; ver ADR-0022

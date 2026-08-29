@@ -48,4 +48,4 @@ Ninguém diz "balde" numa code review. Esse é o teste.
 
 1. [x] Glossário com `isNot` obrigatório
 2. [x] Checagem de vocabulário no validador
-3. [ ] Cards de desambiguação inline (hoje são `title`, não popover)
+3. [x] Cards de desambiguação inline: `TermCard`, com definição, `isNot` e falsos amigos
