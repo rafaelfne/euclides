@@ -2,6 +2,8 @@
 
 import { useState } from 'react'
 import type { BugHuntExercise, Unit } from '@/content/schema'
+import { tokenizeJavaScript } from '@/lib/javascript'
+import { TOKEN_COLORS, TOKEN_WEIGHT } from '@/lib/pseudocode'
 import { cn } from '@/lib/utils'
 import { ChoiceExercise } from './ChoiceExercise'
 import { Panel, PanelBody, PanelHeader, PanelMeta, PanelTitle } from './ui/panel'
@@ -22,6 +24,10 @@ import { Panel, PanelBody, PanelHeader, PanelMeta, PanelTitle } from './ui/panel
  * medianiz de `+` e o cabeçalho de pull request. O formato faz parte do treino:
  * é nele que o aluno vai encontrar código de outra pessoa no trabalho, e julgar
  * um diff é diferente de julgar um arquivo. ADR-0026.
+ *
+ * O realce é o mesmo do pseudocódigo, e isso é o argumento: `===` e `<=` saem no
+ * azul da folha de notação, com o significado no hover, porque metade das
+ * armadilhas do catálogo mora exatamente ali. ADR-0028.
  */
 export function BugExercise({ unit, exercise }: { unit: Unit; exercise: BugHuntExercise }) {
   const [picked, setPicked] = useState<number | null>(null)
@@ -88,7 +94,20 @@ export function BugExercise({ unit, exercise }: { unit: Unit; exercise: BugHuntE
                         <td className="w-10 select-none border-r border-rule px-2.5 py-0.5 text-right align-top text-fg-5">
                           {n}
                         </td>
-                        <td className="w-full whitespace-pre px-3 py-0.5 text-fg-2">{line || ' '}</td>
+                        <td className="w-full whitespace-pre px-3 py-0.5">
+                          {line
+                            ? tokenizeJavaScript(line).map((t, k) => (
+                                <span
+                                  key={k}
+                                  className={t.kind === 'convention' ? 'tok-convention' : undefined}
+                                  style={{ color: TOKEN_COLORS[t.kind], fontWeight: TOKEN_WEIGHT[t.kind] }}
+                                  title={t.declares}
+                                >
+                                  {t.text}
+                                </span>
+                              ))
+                            : ' '}
+                        </td>
                       </tr>
                     )
                   })}

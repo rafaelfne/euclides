@@ -29,6 +29,7 @@
 | [0025](0025-diagramas.md) | Oito diagramas, e o orçamento que o React Flow estourou | O ciclo chamado "desenhada" não tinha desenho; 78 KB uma vez, e só para grafo |
 | [0026](0026-camada-instrumento.md) | A camada instrumento, e o formato como parte do treino | Julgar um diff é diferente de julgar um arquivo; atalho tem de ter botão |
 | [0027](0027-modo-e-chamado.md) | O modo que eu tinha descartado, e o chamado que fecha | Esconder só é perda quando quem esconde não é o leitor |
+| [0028](0028-realce-semantico-real.md) | O realce do JavaScript é a folha de notação atravessada | A linguagem que o aluno vai revisar não pode ser a apagada |
 
 ## Como escrever o próximo
 
