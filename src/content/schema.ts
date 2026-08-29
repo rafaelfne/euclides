@@ -231,6 +231,28 @@ export const figure = z.discriminatedUnion('kind', [
   }),
 
   /**
+   * Insertion sort sobre DUAS entradas com os mesmos elementos.
+   *
+   * A afirmação de `sorting.c2` não é sobre o algoritmo, é sobre a entrada: o
+   * mesmo código custa O(n) numa coleção quase ordenada e O(n²) numa invertida,
+   * e nenhuma linha dele detecta a diferença. Por isso são duas colunas e um
+   * contador de deslocamentos, e não uma animação de ordenação.
+   *
+   * A checagem `figura` exige que as duas entradas tenham os mesmos elementos,
+   * pela mesma razão da figura de árvore: entradas diferentes mostrariam o
+   * efeito dos dados, não o da ordem. E exige que os deslocamentos difiram, ou
+   * as duas colunas contariam a mesma história.
+   */
+  z.object({
+    kind: z.literal('insertion'),
+    caption: z.string().min(1),
+    inputs: z.array(z.object({
+      label: z.string().min(1),
+      values: z.array(z.number()).min(4),
+    })).length(2),
+  }),
+
+  /**
    * Estabilidade: os mesmos elementos, dois algoritmos, um empate.
    *
    * `items` declara valor e etiqueta de chegada. A comparação é pelo valor, e o

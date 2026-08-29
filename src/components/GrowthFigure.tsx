@@ -1,3 +1,6 @@
+'use client'
+
+import { useState } from 'react'
 import type { CurveShape, Figure } from '@/content/schema'
 
 /**
@@ -7,6 +10,13 @@ import type { CurveShape, Figure } from '@/content/schema'
  * aqui. É a mesma regra dos mapas de banda, um andar acima, o autor escreve
  * `quadratic`, nunca uma expressão, e o desenho não pode afirmar nada que o
  * schema não tenha declarado.
+ *
+ * O controle de n é do leitor, e não uma animação: a afirmação de
+ * `asymptotics.c1` é "depende de n", e a única forma de ler isso é variando n e
+ * vendo a comparação inverter. Os valores saem das mesmas funções que desenham
+ * as curvas, então a leitura ao lado do controle não tem como discordar do
+ * gráfico. O controle é uma faixa nativa, então funciona pelo teclado, e não é
+ * animação: nada se move sozinho. ADR-0019.
  */
 const EVAL: Record<CurveShape, (n: number) => number> = {
   constant: () => 1,
@@ -30,6 +40,13 @@ export function GrowthFigure({ figure }: { figure: Extract<Figure, { kind: 'grow
   const py = (y: number) => H - PAD.bottom - (y / yMax) * (H - PAD.top - PAD.bottom)
 
   const samples = Array.from({ length: 81 }, (_, i) => (i / 80) * figure.xMax)
+
+  const [probe, setProbe] = useState(figure.highlight ? Math.round(figure.highlight.to) : Math.round(figure.xMax / 2))
+  const lidos = figure.curves.map((c) => ({ label: c.label, value: at(c, probe) }))
+  const barato = lidos.reduce((min, x) => (x.value < min.value ? x : min), lidos[0]!)
+  const caro = lidos.reduce((max, x) => (x.value > max.value ? x : max), lidos[0]!)
+  const razao = barato.value > 0 ? caro.value / barato.value : 0
+  const fmt = (v: number) => (v >= 1000 ? Math.round(v).toLocaleString('pt-BR') : String(Math.round(v)))
 
   // O cruzamento é achado por varredura, não digitado: se o autor mudar o
   // fator, a marca anda junto.
@@ -95,6 +112,35 @@ export function GrowthFigure({ figure }: { figure: Extract<Figure, { kind: 'grow
             </g>
           ))}
 
+          <line
+            x1={px(probe)}
+            y1={PAD.top}
+            x2={px(probe)}
+            y2={H - PAD.bottom}
+            stroke="var(--fg-3)"
+            strokeWidth="1.25"
+          />
+          <text
+            x={px(probe)}
+            y={H - PAD.bottom + 13}
+            textAnchor="middle"
+            fill="var(--fg-2)"
+            fontSize="10.5"
+            fontFamily="var(--mono)"
+          >
+            n = {probe}
+          </text>
+
+          {figure.curves.map((c, i) => (
+            <circle
+              key={`p${c.label}`}
+              cx={px(probe)}
+              cy={py(Math.min(at(c, probe), yMax))}
+              r="3.5"
+              fill={STROKE[i % STROKE.length]}
+            />
+          ))}
+
           {figure.curves.map((c, i) => (
             <g key={c.label}>
               <polyline
@@ -116,6 +162,35 @@ export function GrowthFigure({ figure }: { figure: Extract<Figure, { kind: 'grow
           ))}
         </svg>
       </div>
+      <div className="flex flex-col gap-2 border-t border-rule px-3.5 py-2.5">
+        <label className="flex items-center gap-3">
+          <span className="lbl shrink-0">n</span>
+          <input
+            type="range"
+            min={1}
+            max={figure.xMax}
+            value={probe}
+            onChange={(e) => setProbe(Number(e.target.value))}
+            className="min-w-0 flex-1 accent-[var(--contract)]"
+            aria-label={`${figure.xLabel}, entre 1 e ${figure.xMax}`}
+          />
+          <span className="w-16 shrink-0 text-right font-mono text-[12px] text-fg-2">{probe}</span>
+        </label>
+        <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1 font-mono text-[11.5px]">
+          {lidos.map((l, i) => (
+            <span key={l.label} style={{ color: STROKE[i % STROKE.length] }}>
+              {l.label} = {fmt(l.value)}
+            </span>
+          ))}
+          {razao > 1 && (
+            <span className="text-fg-3">
+              {barato.label} custa {razao >= 10 ? Math.round(razao) : razao.toFixed(1)}× menos aqui
+            </span>
+          )}
+          {razao === 1 && <span className="text-fg-3">empatam aqui</span>}
+        </div>
+      </div>
+
       <figcaption className="border-t border-rule px-3.5 py-2.5 text-[12.5px] leading-relaxed text-fg-3">
         {figure.caption}
       </figcaption>

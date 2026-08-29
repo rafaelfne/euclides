@@ -17,6 +17,7 @@ import { vagueAbstractions, allowedVagueUses, forwardCitations } from '../conten
 import { referenceGenerators } from './reference'
 import { bfsOrder, dfsOrder, vertices, bfsRounds, reachesCycle } from './traversal'
 import { build, heightOf, inorder, rebalanceOnce } from './bst'
+import { insertionRounds, totalShifts } from './insertion'
 import { untranslated } from './transliterate'
 import { TOKENIZERS } from './highlight'
 import { probes } from '../content/placement'
@@ -252,6 +253,17 @@ export function checkAll(units: Unit[], terms: GlossaryTerm[]): Failure[] {
           }
         }
       }
+      if (f.kind === 'insertion') {
+        const conjuntos = f.inputs.map((x) => [...x.values].sort((a, b) => a - b).join(','))
+        if (new Set(conjuntos).size !== 1) {
+          fail('figura', `${c.id}: as duas entradas não têm os mesmos elementos, a figura mostraria o efeito dos dados, não o da ordem`)
+        }
+        const custos = f.inputs.map((x) => totalShifts(insertionRounds(x.values)))
+        if (new Set(custos).size === 1) {
+          fail('figura', `${c.id}: as duas entradas custam ${custos[0]} deslocamentos, e a figura existe para mostrar que a entrada muda o custo`)
+        }
+      }
+
       if (f.kind === 'visited') {
         if (!vertices(f.edges).includes(f.origin)) {
           fail('figura', `${c.id}: a origem "${f.origin}" não é vértice do grafo declarado`)

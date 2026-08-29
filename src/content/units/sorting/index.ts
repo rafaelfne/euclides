@@ -184,6 +184,18 @@ export const sortingUnit: Unit = {
         problem: 'Ordene [1, 2, 4, 3, 5] com insertion sort e conte os deslocamentos.',
         whatToNotice: 'Um único deslocamento, numa coleção de cinco. O laço interno quase não roda porque a parte à esquerda já estava pronta, e nenhuma linha do código detectou isso.',
       },
+      figure: {
+        kind: 'insertion',
+        inputs: [
+          { values: [1, 2, 4, 3, 5, 6], label: 'Quase ordenada: só o 3 está fora do lugar, e é o único que faz o laço interno rodar.' },
+          { values: [6, 5, 4, 3, 2, 1], label: 'Invertida: todo elemento novo é menor que todos os que já estão à esquerda, então o laço interno atravessa a parte pronta inteira.' },
+        ],
+        caption:
+          'Os mesmos seis números dos dois lados, e o mesmo código. O que muda é a ordem em ' +
+          'que eles chegam, e o contador de deslocamentos no canto é onde a diferença aparece: ' +
+          'o azul é a parte já ordenada, e à esquerda ela quase nunca precisa se abrir. Repare ' +
+          'que nenhuma linha do pseudocódigo pergunta se a entrada já está quase ordenada.',
+      },
       exerciseId: 'sorting.e2' },
 
     { id: 'sorting.c3', title: 'Merge sort e a intercalação', layer: 'essential', band: 'implementation', elaborates: 'merge-sort',

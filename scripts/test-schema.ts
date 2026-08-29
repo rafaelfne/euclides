@@ -313,6 +313,31 @@ check('figura de visitados sem rodadas para a busca marcada terminar reprova',
   checkAll([...units.filter((u) => u.id !== comVisitados.id), rodadasDeMenos], allTerms)
     .some((f) => f.check === 'figura' && f.detail.includes('não bastam')))
 
+const comInsercao = units.find((u) => u.cycles.some((c) => c.figure?.kind === 'insertion'))!
+const cicloInsercao = comInsercao.cycles.find((c) => c.figure?.kind === 'insertion')!
+const entradasDaFigura = (cicloInsercao.figure as Extract<NonNullable<typeof cicloInsercao.figure>, { kind: 'insertion' }>).inputs
+
+const elementosDiferentes = trocaCiclo(comInsercao, cicloInsercao.id, {
+  figure: {
+    ...cicloInsercao.figure,
+    inputs: [entradasDaFigura[0]!, { ...entradasDaFigura[1]!, values: [9, 8, 7, 6, 5, 4] }],
+  },
+})
+check('figura de insertion com elementos diferentes nas duas entradas reprova',
+  checkAll([...units.filter((u) => u.id !== comInsercao.id), elementosDiferentes], allTerms).some((f) => f.check === 'figura'))
+
+const mesmoCusto = trocaCiclo(comInsercao, cicloInsercao.id, {
+  figure: {
+    ...cicloInsercao.figure,
+    inputs: [
+      { ...entradasDaFigura[0]!, values: [1, 2, 3, 4, 5, 6] },
+      { ...entradasDaFigura[1]!, values: [1, 2, 3, 4, 5, 6] },
+    ],
+  },
+})
+check('figura de insertion com as duas entradas custando igual reprova',
+  checkAll([...units.filter((u) => u.id !== comInsercao.id), mesmoCusto], allTerms).some((f) => f.check === 'figura'))
+
 check('a lista de checagens é a mesma para os dois kinds', CHECKS.length > 0)
 
 console.log(failures ? `\n  ${failures} falha(s)\n` : '\n  todas as checagens passaram\n')

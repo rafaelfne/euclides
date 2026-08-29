@@ -7,6 +7,8 @@
  * que a devolutiva chega nele sem entregar o valor.
  */
 import { mergeStepTrace } from '../src/lib/reference/sorting'
+import { insertionRounds, totalShifts } from '../src/lib/insertion'
+import { units } from '../src/content/index'
 import { findDivergence, buildFeedback } from '../src/lib/socratic'
 import { sortingUnit } from '../src/content/units/sorting'
 
@@ -56,4 +58,47 @@ check('o gerador não emite caractere que o aluno não digita numa coluna editá
   trace.map((s) => s.side).join(','))
 
 console.log(failures ? `\n  ${failures} falha(s)\n` : '\n  todas as checagens passaram\n')
+
+
+/*
+  A figura de `sorting.c2` afirma adaptatividade: o MESMO código custa O(n)
+  numa entrada quase ordenada e O(n²) numa invertida. Sem as duas contas
+  divergindo, as duas colunas contam a mesma história com rótulos diferentes.
+*/
+console.log('\n  insertion sort, e o custo que depende da entrada\n')
+
+check('ordena', insertionRounds([3, 1, 2]).at(-1)!.values.join(' ') === '1 2 3')
+check('já ordenada não desloca nada', totalShifts(insertionRounds([1, 2, 3, 4])) === 0)
+check('invertida desloca n(n-1)/2', totalShifts(insertionRounds([4, 3, 2, 1])) === 6)
+check('uma rodada por elemento, menos o primeiro', insertionRounds([4, 3, 2, 1]).length === 3)
+
+/*
+  Onde o valor encaixou é gravado por POSIÇÃO. Com valores repetidos, procurar
+  a caixa pelo valor acende a primeira igual, que não é a que se moveu.
+*/
+{
+  const rodadas = insertionRounds([2, 1, 2])
+  const ultima = rodadas.at(-1)!
+  check('com valores repetidos, a posição do encaixe é a real',
+    ultima.values[ultima.placedAt] === ultima.taken && ultima.placedAt === 2,
+    `encaixou em ${ultima.placedAt}`)
+}
+
+for (const c of units.flatMap((u) => u.cycles)) {
+  if (c.figure?.kind !== 'insertion') continue
+  const f = c.figure
+  const conjuntos = f.inputs.map((x) => [...x.values].sort((a, b) => a - b).join(','))
+  check(`${c.id}: as duas entradas têm os mesmos elementos`, new Set(conjuntos).size === 1)
+
+  const custos = f.inputs.map((x) => totalShifts(insertionRounds(x.values)))
+  check(`${c.id}: as duas entradas custam diferente`, new Set(custos).size === 2, custos.join(' e '))
+  check(`${c.id}: as duas terminam ordenadas`,
+    f.inputs.every((x) => {
+      const fim = insertionRounds(x.values).at(-1)!.values
+      return fim.join(',') === [...x.values].sort((a, b) => a - b).join(',')
+    }))
+}
+
+console.log(failures ? `\n  ${failures} falha(s)\n` : '\n  todas passaram\n')
+
 process.exit(failures ? 1 : 0)

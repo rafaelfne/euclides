@@ -10,6 +10,7 @@ import { TraversalFigure } from './TraversalFigure'
 import { VisitedFigure } from './VisitedFigure'
 import { DoublingFigure } from './DoublingFigure'
 import { StabilityFigure } from './StabilityFigure'
+import { InsertionFigure } from './InsertionFigure'
 import { RecursionFigure } from './RecursionFigure'
 
 /**
@@ -29,5 +30,6 @@ export function CycleFigure({ figure, autoPlay = false }: { figure: Figure; auto
     case 'recursion': return <RecursionFigure figure={figure} autoPlay={autoPlay} />
     case 'growth-doubling': return <DoublingFigure figure={figure} autoPlay={autoPlay} />
     case 'stability': return <StabilityFigure figure={figure} />
+    case 'insertion': return <InsertionFigure figure={figure} autoPlay={autoPlay} />
   }
 }

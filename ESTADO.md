@@ -18,7 +18,7 @@ o dev antes e avise antes de parar.
 
 ## O que existe
 
-8 unidades, 62 ciclos, 62 exercícios, 52 armadilhas, 100 termos no glossário, 10 figuras.
+8 unidades, 62 ciclos, 62 exercícios, 52 armadilhas, 100 termos no glossário, 11 figuras.
 Todo ciclo tem frase de abertura, número concreto na abertura e exemplo trabalhado.
 
 Rotas: `/`, `/como-funciona`, `/sondagem`, `/perfil`, `/revisitas`, `/traps`, `/glossary`,
@@ -66,9 +66,10 @@ respondido e em qual tentativa, exportável — e a oferta segue de pé.
 
 **Três checagens que fecham pontos cegos conhecidos.** Meia hora ao todo, cada uma impede um
 erro silencioso: `lineByColumn` conferido contra o número de linhas do pseudocódigo, porque
-**Três figuras da lista original.** A cadeia da tabela hash animada, insertion sort em
-`sorting.c2` e o controle deslizante de n em `asymptotics.c1`. A rotação em `trees.c3` e o
-conjunto de visitados em `graphs.c4` já entraram.
+**As cinco figuras da lista original entraram**, e uma delas já existia: a cadeia da tabela
+hash sempre foi animada chave a chave. As outras quatro são `rotation` em `trees.c3`,
+`visited` em `graphs.c4`, `insertion` em `sorting.c2`, e o controle de n no gráfico de
+crescimento de `asymptotics.c1`.
 
 **Reofertar a sondagem** quando o progresso mudar muito depois dela. Hoje `placement` é
 escrito uma vez e nunca revisto (ADR-0022).
