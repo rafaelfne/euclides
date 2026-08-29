@@ -72,21 +72,21 @@ const domina = (ids: string[]) => build(Object.fromEntries(ids.map((id) => {
   return [id, Object.fromEntries(u.mastery.requiresClean.map((e) => [e, cell({})]))]
 })))
 
-check('sem nada é code reading', level(units, build({}), NOW).band.id === 'code-reading')
-check('unidade 01 dominada é dry run', level(units, domina(['tracing']), NOW).band.id === 'dry-run')
-check('01 e 02 é complexity analysis', level(units, domina(['tracing', 'asymptotics']), NOW).band.id === 'complexity-analysis')
+check('sem nada é code reader', level(units, build({}), NOW).band.id === 'code-reader')
+check('unidade 01 dominada é code tracer', level(units, domina(['tracing']), NOW).band.id === 'code-tracer')
+check('01 e 02 é complexity analyst', level(units, domina(['tracing', 'asymptotics']), NOW).band.id === 'complexity-analyst')
 
-// Quatro unidades sem hash e sem ordenação não é code review: a faixa nomeia uma
+// Quatro unidades sem hash e sem ordenação não é code reviewer: a faixa nomeia uma
 // capacidade, e essas duas são o que ela afirma.
-check('quatro unidades sem hash e sem ordenação não é code review',
-  level(units, domina(['tracing', 'asymptotics', 'linear', 'trees']), NOW).band.id === 'complexity-analysis')
+check('quatro unidades sem hash e sem ordenação não é code reviewer',
+  level(units, domina(['tracing', 'asymptotics', 'linear', 'trees']), NOW).band.id === 'complexity-analyst')
 
-check('quatro incluindo hash e ordenação é code review',
-  level(units, domina(['tracing', 'asymptotics', 'hash', 'sorting']), NOW).band.id === 'code-review')
+check('quatro incluindo hash e ordenação é code reviewer',
+  level(units, domina(['tracing', 'asymptotics', 'hash', 'sorting']), NOW).band.id === 'code-reviewer')
 
 const todas = level(units, domina(units.map((u) => u.id)), NOW)
-check('as oito dominadas ainda não é design review, falta consolidar a síntese',
-  todas.band.id === 'code-review' && todas.next?.band.id === 'design-review')
+check('as oito dominadas ainda não é design reviewer, falta consolidar a síntese',
+  todas.band.id === 'code-reviewer' && todas.next?.band.id === 'design-reviewer')
 check('o que falta é nomeado', Boolean(todas.next?.missing.length))
 
 check('a faixa alcançada sempre traz a regra', BANDS.every((b) => b.rule.length > 0))

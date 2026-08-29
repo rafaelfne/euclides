@@ -61,19 +61,20 @@ export function unitState(unit: Unit, p: Progress, now: number): UnitState {
 // ---------------------------------------------------------------------------
 
 /**
- * A faixa é nomeada pela ATIVIDADE que a pessoa já consegue fazer.
+ * A faixa nomeia QUEM a pessoa já consegue ser, em inglês.
  *
- * "nível 3" não diz nada e convida a subir por subir. Substantivo de cargo
- * também não resolvia: "traçador" e "árbitro" nomeiam um trabalho que ninguém
- * tem, e eram tradução de agente em inglês, não palavra que alguém use.
+ * "nível 3" não diz nada e convida a subir por subir. A escada anterior era em
+ * português e dois dos cinco nomes não existiam: "traçador" em pt-BR é um
+ * instrumento de marcação e "árbitro" é de esporte. Em inglês o mesmo formato
+ * custa menos, porque `-er` e `-ist` são produtivos: "code tracer" se lê sem
+ * esforço mesmo não sendo cargo de ninguém, e "traçador" não se lê.
  *
- * As cinco são atividades que um desenvolvedor faz e nomeia em inglês, e o
- * glossário arbitra isso do mesmo jeito que arbitra `bucket` e `open
- * addressing`. Ver ADR-0007 para o que a fronteira de idioma governa e o que
- * ela não governa.
+ * O inglês aqui segue a regra do glossário e não a exceção dela, a mesma que
+ * põe `bucket` e `open addressing` na tela: a forma canônica é a que o aluno
+ * encontra no mundo. O ADR-0007 governa prosa autorada, não termo canônico.
  *
- * "big-O" foi descartado: o glossário já registra `big O` como apelido de
- * `notação O`, e uma palavra pertence a uma coisa só. ADR-0029.
+ * "big-O analyst" foi descartado: o glossário já registra `big O` como apelido
+ * de `notação O`, e uma palavra pertence a uma coisa só. ADR-0029.
  *
  * A regra de cada faixa aparece ao lado do nome, sempre, para que ninguém
  * precise adivinhar o que falta.
@@ -90,26 +91,26 @@ const dominated = (s: UnitState) => s === 'dominada' || s === 'consolidada'
 
 export const BANDS: Band[] = [
   {
-    id: 'code-reading',
-    name: 'code reading',
+    id: 'code-reader',
+    name: 'code reader',
     rule: 'ainda nenhuma unidade dominada',
     missing: () => [],
   },
   {
-    id: 'dry-run',
-    name: 'dry run',
+    id: 'code-tracer',
+    name: 'code tracer',
     rule: 'unidade 01 dominada',
     missing: (state) => (dominated(state('tracing')) ? [] : ['tracing']),
   },
   {
-    id: 'complexity-analysis',
-    name: 'complexity analysis',
+    id: 'complexity-analyst',
+    name: 'complexity analyst',
     rule: 'unidades 01 e 02 dominadas',
     missing: (state) => ['tracing', 'asymptotics'].filter((id) => !dominated(state(id))),
   },
   {
-    id: 'code-review',
-    name: 'code review',
+    id: 'code-reviewer',
+    name: 'code reviewer',
     rule: 'metade das unidades dominadas, incluindo tabelas hash e ordenação',
     missing: (state, units) => {
       const obrigatorias = ['hash', 'sorting'].filter((id) => !dominated(state(id)))
@@ -122,8 +123,8 @@ export const BANDS: Band[] = [
     },
   },
   {
-    id: 'design-review',
-    name: 'design review',
+    id: 'design-reviewer',
+    name: 'design reviewer',
     rule: 'as oito unidades dominadas, com a síntese consolidada',
     missing: (state, units) => {
       const faltam = units.filter((u) => !dominated(state(u.id))).map((u) => u.id)
