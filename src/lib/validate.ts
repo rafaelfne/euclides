@@ -28,6 +28,7 @@ export const CHECKS = [
   ['domínio', 'domínio: o critério de domínio referencia exercícios que existem'],
   ['revisão', 'revisão: toda misconception aponta um ciclo de revisão que existe'],
   ['espinha', 'espinha: todo ciclo declara sua banda e a unidade abre pelo contrato'],
+  ['exemplo', 'exemplo: toda implementação ou técnica estreia com exemplo trabalhado'],
   ['custo', 'custo: toda implementação declara custo de toda operação do contrato'],
   ['cobertura', 'cobertura: toda parte do critério é produzida por alguma técnica'],
   ['vocabulário', 'vocabulário: nenhuma abstração vaga não registrada'],
@@ -187,6 +188,18 @@ export function checkAll(units: Unit[], terms: GlossaryTerm[]): Failure[] {
     }
     if (u.cycles[0]!.band !== openingBand) {
       fail('espinha', `${u.id}: o primeiro ciclo é "${u.cycles[0]!.band}", deveria ser "${openingBand}"`)
+    }
+
+    // O ciclo em que uma implementação ou técnica APARECE pela primeira vez é
+    // onde o exemplo trabalhado rende: depois dele o aluno já tem referente, e
+    // antes dele a definição é taxonomia sem chão. Ver ADR-0016.
+    const debuted = new Set<string>()
+    for (const c of u.cycles) {
+      if (!c.elaborates || debuted.has(c.elaborates)) continue
+      debuted.add(c.elaborates)
+      if (!c.workedExample) {
+        fail('exemplo', `${c.id}: estreia "${c.elaborates}" e não traz exemplo trabalhado`)
+      }
     }
   }
 

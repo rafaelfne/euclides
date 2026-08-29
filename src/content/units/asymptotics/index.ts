@@ -142,6 +142,10 @@ export const asymptoticsUnit: Unit = {
         retorne c
     retorne 2 × custo(n / 2) + n`,
       invariant: 'Toda relação de recorrência tem um caso base, e ele é o único ponto em que a recursão para.',
+      workedExample: {
+        problem: 'Escreva a relação de uma busca binária: ela olha o meio e chama a si mesma numa das metades.',
+        whatToNotice: 'Dá T(n) = T(n/2) + c, com um único T(n/2) e não dois. O que separa esta relação da do merge sort é o número de chamadas por nível, e é ele que decide log n contra n log n.',
+      },
       exerciseId: 'asymptotics.e3' },
 
     { id: 'asymptotics.c4', title: 'A árvore de recursão, desenhada', layer: 'essential', band: 'technique', elaborates: 'recurrence',
@@ -179,6 +183,10 @@ export const asymptoticsUnit: Unit = {
         'Isso é amortização, e ela não é caso médio. Caso médio fala de uma distribuição de entradas possíveis, e responde "se eu sortear uma entrada, quanto custa". Amortização fala de uma sequência fixa e conhecida de operações, sem sorteio nenhum: as inserções caras acontecem em posições que dá para apontar no dedo.',
         'Os dois qualificadores são independentes e podem aparecer juntos. "O(1) amortizado no caso médio" afirma duas coisas diferentes, e a unidade de tabelas hash usa exatamente essa frase.',
       ],
+      workedExample: {
+        problem: 'Some o custo de oito inserções seguidas num array que começa com capacidade 1 e dobra quando enche.',
+        whatToNotice: 'As caras acontecem nas inserções 1, 2, 3, 5 e 9 — posições que dá para apontar antes de rodar. Nenhum sorteio decidiu isso, e é o que separa amortizado de caso médio.',
+      },
       exerciseId: 'asymptotics.e5' },
 
     { id: 'asymptotics.c7', title: 'Escolher a técnica pela forma do código', layer: 'essential', band: 'technique', elaborates: 'operation-counting',
@@ -189,6 +197,10 @@ export const asymptoticsUnit: Unit = {
         'Chamada a si mesmo: recorrência. Alguma operação que dobra, reconstrói ou reorganiza: agregação, e é a única das três que produz a parte da amortização diretamente.',
         'Usar recorrência num laço simples não está errado — está caro, e é sinal de que a forma do código não foi lida antes da conta começar.',
       ],
+      workedExample: {
+        problem: 'Olhe três procedimentos sem contar nada: um laço sobre a coleção, um que chama a si mesmo em metades, e um append num array dinâmico.',
+        whatToNotice: 'A forma decide a técnica antes de qualquer conta começar. Escolher errado aqui não dá resultado errado — dá o resultado certo por um caminho caro.',
+      },
       exerciseId: 'asymptotics.e6' },
   ],
 

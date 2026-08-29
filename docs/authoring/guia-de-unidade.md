@@ -28,7 +28,9 @@ Sequência:
    (`whenOmitted`). Nos dois casos a lista de ausências é a resposta do último ciclo — e,
    na unidade de método, ela também é o catálogo de armadilhas.
 2. **As implementações concorrentes, ou as técnicas.** No mínimo duas — o schema exige,
-   não é recomendação. O trade-off vive na diferença entre elas; uma implementação sozinha não
+   não é recomendação. E o ciclo em que cada uma **estreia** carrega um `workedExample`:
+   depois dele o aluno tem referente, antes dele a definição é taxonomia sem chão. A
+   checagem `exemplo` cobra, e o ADR-0016 diz por quê. O trade-off vive na diferença entre elas; uma implementação sozinha não
    ensina escolha, e o `useInstead` de todo `wrongWhen` apontaria para fora da unidade,
    onde o aluno não pode conferir nada.
 3. **O catálogo de armadilhas.** O que um dev de dois anos erra aqui. Cada uma ganha

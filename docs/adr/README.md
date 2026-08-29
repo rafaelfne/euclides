@@ -17,6 +17,7 @@
 | [0013](0013-notacao-declarada.md) | Nada que o aluno precise reproduzir fica sem declaração | O traço reprovava por casa decimal e mandava o aluno voltar amanhã |
 | [0014](0014-mapa-e-trilha.md) | O mapa mostra a taxonomia; a trilha mostra a ordem | O mapa levava ao rehash antes da carga, e o ciclo não tinha saída |
 | [0015](0015-direcao-ide.md) | Direção de IDE, com Tailwind e shadcn/ui | Decisão de produto: o app deve parecer ferramenta, não material didático |
+| [0016](0016-rampa-de-entrada.md) | A rampa é mecanizada onde dá, declarada onde não dá | Dava para acertar 54 de 54 exercícios pelo formato, sem ler nada |
 
 ## Como escrever o próximo
 

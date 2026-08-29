@@ -163,6 +163,10 @@ export const sortingUnit: Unit = {
             j ← j − 1
         A[j + 1] ← x`,
       invariant: 'Ao começar a rodada de i, as posições 0 até i − 1 já estão ordenadas entre si.',
+      workedExample: {
+        problem: 'Ordene [1, 2, 4, 3, 5] com insertion sort e conte os deslocamentos.',
+        whatToNotice: 'Um único deslocamento, numa coleção de cinco. O laço interno quase não roda porque a parte à esquerda já estava pronta — e nenhuma linha do código detectou isso.',
+      },
       exerciseId: 'sorting.e2' },
 
     { id: 'sorting.c3', title: 'Merge sort e a intercalação', layer: 'essential', band: 'implementation', elaborates: 'merge-sort',
@@ -182,6 +186,10 @@ export const sortingUnit: Unit = {
     mover o que restou de E e depois de D para o fim de S
     retorne S`,
       invariant: 'S está ordenada, e todo elemento que ainda está em E ou em D é maior ou igual ao último de S.',
+      workedExample: {
+        problem: 'Intercale [2, 5] com [5, 7] duas vezes: uma tomando o da esquerda no empate, outra o da direita.',
+        whatToNotice: 'As duas saídas são 2, 5, 5, 7 — idênticas se você olhar só as chaves. É por isso que um teste que compara chaves não pega a perda de estabilidade.',
+      },
       exerciseId: 'sorting.e3' },
 
     { id: 'sorting.c4', title: 'Quicksort, o pivô e o pior caso', layer: 'essential', band: 'implementation', elaborates: 'quicksort',

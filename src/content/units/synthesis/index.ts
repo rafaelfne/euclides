@@ -120,6 +120,10 @@ export const synthesisUnit: Unit = {
         'Uma LRU cache é o exemplo canônico e junta duas unidades desta trilha: a tabela hash leva da chave ao nó em tempo constante, e a lista ligada mantém a ordem de uso, movendo um nó para a frente sem varrer nada. Cada uma responde a pergunta que a outra não responde, e as duas apontam para os mesmos dados.',
         'O preço da composição é a manutenção: toda inserção e toda remoção precisam acontecer nas duas, e um esquecimento aí produz duas fontes de verdade que discordam. É um custo real, e ele entra na justificativa.',
       ],
+      workedExample: {
+        problem: 'Corte os contratos para um cache que precisa de contém em O(1) e do item usado há mais tempo em O(1).',
+        whatToNotice: 'Nada sobrevive ao corte, e a conclusão não é relaxar o requisito. É que a resposta são duas estruturas apontando para os mesmos dados.',
+      },
       exerciseId: 'synthesis.e3' },
 
     { id: 'synthesis.c4', title: 'A condição que faz a escolha expirar', layer: 'essential', band: 'technique', elaborates: 'load-profile',
@@ -129,6 +133,10 @@ export const synthesisUnit: Unit = {
         'Sem ela, uma escolha correta hoje vira uma decisão que ninguém sabe quando revisar. Com ela, a revisão tem gatilho: "vale enquanto a coleção couber em algumas centenas e a consulta for por igualdade — acima disso, ou se aparecer consulta por faixa, a escolha muda".',
         'Escrever o número é o que separa a condição de uma intenção. "Revisar quando ficar lento" não é gatilho, porque ninguém mede o mesmo "lento" duas vezes.',
       ],
+      workedExample: {
+        problem: 'Escreva a condição de expiração de uma escolha por varredura linear, com o número dentro.',
+        whatToNotice: '"Revisar quando ficar lento" não é gatilho, porque ninguém mede o mesmo lento duas vezes. "Acima de mil itens, ou se aparecer consulta por faixa" é.',
+      },
       exerciseId: 'synthesis.e4' },
 
     { id: 'synthesis.c5', title: 'Julgar a escolha de outra pessoa', layer: 'essential', band: 'failure',

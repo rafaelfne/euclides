@@ -168,6 +168,10 @@ export const linearUnit: Unit = {
         'Isso troca um custo por outro. Religar dois ponteiros é constante, mas chegar até o nó certo é percorrer. "Remoção é O(1) numa lista ligada" é verdade **depois** que alguém pagou para achar o nó — e a operação que se pede na prática é "remova o valor X", que inclui a busca.',
         'A operação que a lista ligada realmente perde é obter por posição. Não há conta que dê o endereço da posição 500: só existe seguir quinhentos ponteiros.',
       ],
+      workedExample: {
+        problem: 'Remova o valor X de uma lista ligada de mil nós, e depois remova o nó que você já tem em mãos.',
+        whatToNotice: 'A segunda operação é a mesma religação de ponteiros da primeira. Toda a diferença de custo está no que aconteceu antes dela.',
+      },
       exerciseId: 'linear.e4' },
 
     { id: 'linear.c5', title: 'A tabela de custos não conta tudo', layer: 'essential', band: 'cost',

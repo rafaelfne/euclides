@@ -123,6 +123,10 @@ export const tracingUnit: Unit = {
         i ← i + 2
     retorne total`,
       invariant: 'Ao começar cada rodada, total conta os elementos pares entre as posições já visitadas.',
+      workedExample: {
+        problem: 'Trace contar_pares sobre [4, 7, 3] com o passo i ← i + 1 em vez de i ← i + 2.',
+        whatToNotice: 'São três rodadas em vez de duas, e o total muda. A tabela não ficou errada por conta errada: ficou diferente porque uma linha do código é outra.',
+      },
       exerciseId: 'tracing.e2' },
 
     { id: 'tracing.c3', title: 'A propriedade que sobrevive a cada rodada', layer: 'essential', band: 'technique', elaborates: 'invariant-reasoning',
@@ -132,6 +136,10 @@ export const tracingUnit: Unit = {
         'O teste que separa uma invariante de uma conclusão é este: ela precisa valer **antes da primeira rodada**, com o laço ainda sem ter feito nada. "No fim, total é a soma de tudo" não passa nesse teste — é a conclusão. "Ao começar a rodada de i, total é a soma das posições 0 até i − 1" passa, e é dela que a conclusão sai.',
         'Ela também não dispensa a tabela. Quando você não consegue enunciar a propriedade, simule três rodadas: ela quase sempre está escrita ali, esperando ser lida.',
       ],
+      workedExample: {
+        problem: 'Enuncie a invariante de um laço que acha o maior elemento, e teste-a antes da primeira rodada.',
+        whatToNotice: 'Ela precisa valer com nenhuma posição visitada, e é aí que aparece de onde `maior` tem de ser inicializado. A invariante não descreve o laço: ela cobra a inicialização.',
+      },
       exerciseId: 'tracing.e3' },
 
     { id: 'tracing.c4', title: 'A fronteira, e a entrada que ninguém testou', layer: 'essential', band: 'failure',

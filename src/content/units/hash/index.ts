@@ -214,6 +214,10 @@ export const hashUnit: Unit = {
         'Outra implementação do mesmo contrato, com perfil oposto: sem ponteiros, melhor localidade de cache, e degradação muito mais abrupta.',
         'Entre α = 0,8 e α = 0,9 a busca sem sucesso vai de 12,5 para 48,1 sondagens medidas, enquanto o chaining sai de 1,40 para 1,45. E remover não pode esvaziar a posição: isso interrompe a cadeia de sondagem e some com o que veio depois.',
       ],
+      workedExample: {
+        problem: 'Com m = 8, insira 8, 16 e 24 por linear probing e depois esvazie a posição 1.',
+        whatToNotice: 'As três chaves colidem no mesmo endereço e ocupam posições vizinhas. Esvaziar uma do meio não apaga a chave que veio depois — apaga o caminho até ela.',
+      },
       exerciseId: 'hash.e7' },
 
     { id: 'hash.c8', title: 'Quando a tabela hash é a escolha errada', layer: 'essential', band: 'cost',

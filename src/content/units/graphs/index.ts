@@ -143,6 +143,10 @@ export const graphsUnit: Unit = {
         'Isso torna vizinhos barato — a lista já está pronta — e existeAresta proporcional ao grau do vértice, porque é preciso percorrer a lista procurando. Em grafo real o grau é pequeno, e essa varredura quase nunca importa.',
         'É a escolha padrão de toda biblioteca, e a razão está na forma dos grafos que aparecem: um usuário pertence a alguns times, uma página aponta para algumas páginas, uma cidade faz fronteira com algumas cidades.',
       ],
+      workedExample: {
+        problem: 'Pergunte existeAresta(u, v) para um vértice com três vizinhos e para um com trezentos.',
+        whatToNotice: 'A operação é a mesma e o custo não é. Um grafo real tem quase todos os vértices no primeiro caso, e é essa forma — não a operação — que justifica a escolha.',
+      },
       exerciseId: 'graphs.e2' },
 
     { id: 'graphs.c3', title: 'Matriz de adjacência e o custo do que não existe', layer: 'essential', band: 'implementation', elaborates: 'adjacency-matrix',
@@ -152,6 +156,10 @@ export const graphsUnit: Unit = {
         'O preço está no espaço, e ele não depende das arestas: dez mil vértices custam cem milhões de células, tenha o grafo vinte mil arestas ou cinquenta milhões. A matriz paga por toda ligação que poderia existir.',
         'E ela cobra de novo no percurso: listar os vizinhos de um vértice exige varrer a linha inteira, mesmo que ele tenha um vizinho só.',
       ],
+      workedExample: {
+        problem: 'Conte as células de uma matriz para dez mil vértices e as arestas de uma rede social com esse tamanho.',
+        whatToNotice: 'Cem milhões de células para guardar algumas centenas de milhares de fatos. O espaço não depende do que existe: depende do que poderia existir.',
+      },
       exerciseId: 'graphs.e3' },
 
     { id: 'graphs.c4', title: 'Percorrer sem voltar: o conjunto de visitados', layer: 'essential', band: 'cost',

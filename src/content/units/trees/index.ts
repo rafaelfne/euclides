@@ -183,6 +183,10 @@ export const treesUnit: Unit = {
         T.direita ← inserir(T.direita, chave)
     retorne T`,
       invariant: 'Para todo nó, toda chave da subárvore esquerda é menor que a dele, e toda da direita é maior.',
+      workedExample: {
+        problem: 'Busque a chave 40 na árvore que sai de inserir 50, 30, 70, 20 e 40.',
+        whatToNotice: 'São três comparações, e cada uma descartou metade do que restava. É a busca binária: o que muda é que a divisão está guardada em ponteiros, não recalculada.',
+      },
       exerciseId: 'trees.e1' },
 
     { id: 'trees.c2', title: 'Altura não é log n', layer: 'essential', band: 'implementation', elaborates: 'bst',
@@ -224,6 +228,10 @@ export const treesUnit: Unit = {
         'A B-tree resolve mudando o formato do nó: centenas de chaves e centenas de filhos por nó. A altura cai para três ou quatro, e a busca dentro do nó, que agora tem muitas chaves, acontece em memória e é barata.',
         'É o índice padrão de todo banco relacional, e explica por que um índice serve para igualdade, faixa e ordenação ao mesmo tempo — enquanto um índice hash, que a unidade anterior descreveu, serve só para a primeira.',
       ],
+      workedExample: {
+        problem: 'Compare a altura de uma árvore binária balanceada com um milhão de chaves e a de uma B-tree com 200 chaves por nó.',
+        whatToNotice: 'Vinte contra três. As duas são O(log n); o que muda é a base do logaritmo, e ela some na notação justamente porque a notação ignora constantes.',
+      },
       exerciseId: 'trees.e5' },
 
     { id: 'trees.c6', title: 'Quando a árvore é a escolha errada', layer: 'essential', band: 'cost',
