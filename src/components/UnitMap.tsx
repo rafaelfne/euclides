@@ -110,9 +110,11 @@ export function UnitMap({ unit }: { unit: Unit }) {
       <div className="flex flex-col gap-2">
         <div className="flex items-baseline gap-3">
           <span className="lbl">Por onde começar</span>
-          <UnitStateDot unit={unit} withLabel />
-          {/* A estimativa é derivada do que a unidade tem; ver src/lib/duration.ts. */}
-          <span className="font-mono text-[12px] text-fg-4">{humanMinutes(unitMinutes(unit))}</span>
+          <span className="ml-auto flex items-baseline gap-3">
+            <UnitStateDot unit={unit} withLabel />
+            {/* A estimativa é derivada do que a unidade tem; ver src/lib/duration.ts. */}
+            <span className="font-mono text-[12px] text-fg-4">{humanMinutes(unitMinutes(unit))}</span>
+          </span>
         </div>
         <ol className="m-0 flex list-none flex-wrap gap-1.5 p-0">
           {unit.cycles.map((c, i) => {

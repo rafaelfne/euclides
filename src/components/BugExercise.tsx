@@ -17,12 +17,18 @@ import { Panel, PanelBody, PanelHeader, PanelMeta, PanelTitle } from './ui/panel
  * São dois estágios, porque é o que os enunciados já prometiam: marcar a linha
  * certa pela razão errada não conta. As consequências só aparecem depois que a
  * linha está certa, e uma linha errada não diz qual é a certa.
+ *
+ * Com `addedLines` declarado, o bloco é renderizado como DIFF DE REVISÃO, com a
+ * medianiz de `+` e o cabeçalho de pull request. O formato faz parte do treino:
+ * é nele que o aluno vai encontrar código de outra pessoa no trabalho, e julgar
+ * um diff é diferente de julgar um arquivo. ADR-0026.
  */
 export function BugExercise({ unit, exercise }: { unit: Unit; exercise: BugHuntExercise }) {
   const [picked, setPicked] = useState<number | null>(null)
   const [tries, setTries] = useState(0)
 
   const lines = exercise.code.split('\n')
+  const isDiff = Boolean(exercise.addedLines?.length)
   const found = picked !== null && exercise.faultyLines.includes(picked)
 
   const pick = (n: number) => {
@@ -41,37 +47,60 @@ export function BugExercise({ unit, exercise }: { unit: Unit; exercise: BugHuntE
         <PanelBody className="flex flex-col gap-3.5">
           <p className="m-0 text-[14.5px] leading-relaxed text-fg">{exercise.prompt}</p>
 
-          <div className="overflow-x-auto border border-rule bg-[#101218]">
-            <table className="w-full border-collapse font-mono text-[12.5px]">
-              <tbody>
-                {lines.map((line, i) => {
-                  const n = i + 1
-                  const isPicked = picked === n
-                  const isFound = found && exercise.faultyLines.includes(n)
-                  return (
-                    <tr
-                      key={n}
-                      onClick={() => pick(n)}
-                      className={cn(
-                        'cursor-pointer',
-                        isFound && 'bg-implementation-bg',
-                        isPicked && !isFound && 'bg-panel-hover',
-                        !isPicked && !isFound && 'hover:bg-panel-head',
-                      )}
-                    >
-                      <td className="w-10 select-none border-r border-rule px-2.5 py-0.5 text-right align-top text-fg-5">
-                        {n}
-                      </td>
-                      <td className="w-full whitespace-pre px-3 py-0.5 text-fg-2">{line || ' '}</td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
+          <div className="border border-rule bg-[#101218]">
+            {isDiff && (
+              <div className="flex flex-wrap items-baseline gap-3 border-b border-rule bg-panel-head px-3 py-1.5">
+                <span className="lbl">Revisão de pull request</span>
+                <span className="font-mono text-[11.5px] text-contract">
+                  +{exercise.addedLines!.length}
+                </span>
+                <span className="font-mono text-[11.5px] text-fg-4">{exercise.language}</span>
+              </div>
+            )}
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse font-mono text-[12.5px]">
+                <tbody>
+                  {lines.map((line, i) => {
+                    const n = i + 1
+                    const isPicked = picked === n
+                    const isFound = found && exercise.faultyLines.includes(n)
+                    const added = exercise.addedLines?.includes(n) ?? false
+                    return (
+                      <tr
+                        key={n}
+                        onClick={() => pick(n)}
+                        tabIndex={0}
+                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(n) } }}
+                        aria-label={`linha ${n}${added ? ', acrescentada' : ''}`}
+                        className={cn(
+                          'cursor-pointer focus:outline focus:outline-1 focus:outline-contract',
+                          isFound && 'bg-implementation-bg',
+                          isPicked && !isFound && 'bg-panel-hover',
+                          !isPicked && !isFound && added && 'bg-contract-bg/40',
+                          !isPicked && !isFound && 'hover:bg-panel-head',
+                        )}
+                      >
+                        {isDiff && (
+                          <td className="w-6 select-none py-0.5 pl-2.5 align-top text-contract">
+                            {added ? '+' : ' '}
+                          </td>
+                        )}
+                        <td className="w-10 select-none border-r border-rule px-2.5 py-0.5 text-right align-top text-fg-5">
+                          {n}
+                        </td>
+                        <td className="w-full whitespace-pre px-3 py-0.5 text-fg-2">{line || ' '}</td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
           </div>
 
           <div className="text-[12px] italic text-fg-4">
-            {picked === null && `Clique na linha que você acha defeituosa. A linguagem é ${exercise.language}.`}
+            {picked === null && (isDiff
+              ? `Clique na linha que você recusaria nesta revisão. A linguagem é ${exercise.language}.`
+              : `Clique na linha que você acha defeituosa. A linguagem é ${exercise.language}.`)}
             {picked !== null && !found && 'Essa linha faz o que ela promete. Releia o que cada linha garante, e procure a que garante algo diferente do que o comentário ou o nome dela promete.'}
             {found && 'Linha certa. Agora a consequência, e marcar a linha certa pela razão errada não conta.'}
           </div>

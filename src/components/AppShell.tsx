@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { Rail } from './Rail'
+import { CommandPalette } from './CommandPalette'
 import { MobileBar } from './MobileBar'
 
 /**
@@ -16,6 +17,7 @@ export function AppShell({ unitId, tabs, children }: { unitId?: string; tabs?: R
         {tabs}
         <div className="flex min-h-0 flex-grow overflow-hidden">{children}</div>
       </main>
+      <CommandPalette />
     </div>
   )
 }

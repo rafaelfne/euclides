@@ -100,6 +100,8 @@ export const tracingExercises: Exercise[] = [
       { notation: '(linhas)', rule: 'quantas rodadas há', why: 'A tabela já tem uma linha por rodada. Se o número surpreender você, essa surpresa é o exercício.' },
     ],
     reference: 'tracing.count-even-trace',
+    // Qual linha do pseudocódigo escreve cada coluna. Ver `lineByColumn`.
+    lineByColumn: { read: 5, even: 5, total: 6, next: 7 },
     misconceptionByStep: { '2': 'tracing.laco-roda-n-vezes' },
   },
   {

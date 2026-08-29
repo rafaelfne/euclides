@@ -107,6 +107,8 @@ function maisAntigoPendente(pedidos) {
   return pendentes[0]
 }`,
     faultyLines: [4],
+    // O trecho inteiro é o que o PR acrescenta: é código gerado, chegando novo.
+    addedLines: [1, 2, 3, 4, 5, 6],
     consequences: [
       { correct: true, text: 'Ordena a coleção inteira para ler um elemento',
         why: 'A pergunta era o mínimo: uma varredura responde em n − 1 comparações, e a ordenação cobra n log n pela mesma resposta.' },

@@ -99,6 +99,26 @@ export function HowItWorks() {
 
       <ProfileForm />
 
+      <Panel className="max-w-[820px]">
+        <PanelHeader>
+          <PanelTitle>Atalhos, para quando o mouse virar o gargalo</PanelTitle>
+        </PanelHeader>
+        <PanelBody className="grid grid-cols-[auto_1fr] items-baseline gap-x-4 gap-y-1.5">
+          {[
+            ['⌘K', 'saltar para um ciclo, termo, armadilha ou tela'],
+            ['j / k', 'próximo ciclo, ciclo anterior'],
+            ['1 … 9', 'escolher a alternativa'],
+            ['Enter', 'verificar o traço'],
+            ['esc', 'fechar'],
+          ].map(([key, what]) => (
+            <div key={key} className="contents">
+              <span className="font-mono text-[12.5px] whitespace-nowrap text-contract">{key}</span>
+              <span className="text-[13px] text-fg-3">{what}</span>
+            </div>
+          ))}
+        </PanelBody>
+      </Panel>
+
       <div className="flex max-w-[820px] flex-col gap-2.5">
         <span className="lbl">Por onde começar</span>
         <Link

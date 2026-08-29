@@ -353,6 +353,14 @@ export const traceExercise = z.object({
   })).min(1),
   /** Name of the reference generator; resolved from the registry at runtime. */
   reference: z.string().min(1),
+  /**
+   * A linha do pseudocódigo que cada coluna observa.
+   *
+   * É o que transforma o traço rodando num painel de execução: a linha acende
+   * enquanto o valor daquela coluna é escrito. Opcional, porque nem todo traço
+   * tem pseudocódigo ao lado. ADR-0026.
+   */
+  lineByColumn: z.record(z.string(), z.number().int().positive()).optional(),
   misconceptionByStep: z.record(z.string(), z.string()),
 })
 
@@ -370,6 +378,14 @@ export const bugHuntExercise = z.object({
   code: z.string().min(1),
   language: z.string().min(1),
   faultyLines: z.array(z.number().int().positive()).min(1),
+  /**
+   * As linhas que o pull request ACRESCENTA.
+   *
+   * Quando declaradas, o exercício é renderizado como diff de revisão em vez de
+   * bloco de código: é o formato em que o aluno vai encontrar código de outra
+   * pessoa no trabalho, e o formato faz parte do treino. ADR-0026.
+   */
+  addedLines: z.array(z.number().int().positive()).optional(),
   /** Right line for the wrong reason is not a pass. */
   consequences: z.array(choice).min(2),
 })

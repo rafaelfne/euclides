@@ -9,6 +9,7 @@ import { conventions } from '@/content/conventions'
 import { cn } from '@/lib/utils'
 import { cycleMinutes, humanMinutes } from '@/lib/duration'
 import { CycleFigure } from './CycleFigure'
+import { CycleShortcuts } from './CycleShortcuts'
 import { Prose } from './Prose'
 import { TermCard } from './TermCard'
 import { findMarks } from '@/lib/glossary-link'
@@ -50,6 +51,7 @@ export function CycleScreen({ unit, cycle, exercise }: { unit: Unit; cycle: Cycl
 
   return (
     <>
+      <CycleShortcuts unit={unit} cycleId={cycle.id} />
       <div className="min-w-0 flex-grow overflow-y-auto px-4 py-6 pb-16 sm:px-7">
         <div className="mb-2.5 flex items-center gap-2">
           <span className={cn('lbl', TONE_TEXT[tone])}>{BAND_LABEL[cycle.band]}</span>

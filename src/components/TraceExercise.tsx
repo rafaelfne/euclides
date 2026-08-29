@@ -13,11 +13,13 @@ import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { Panel, PanelBody, PanelHeader, PanelMeta, PanelTitle } from './ui/panel'
 import { Stepper } from './Stepper'
+import { ExecutionPanel } from './ExecutionPanel'
 
 /** Columns the student fills in; `step` and `key` are given. */
 const GIVEN = new Set(['step', 'key'])
 
 export function TraceExercise({ unit, exercise }: { unit: Unit; exercise: TraceEx }) {
+  const cycle = unit.cycles.find((c) => c.exerciseId === exercise.id)?.pseudocode
   const reference = (referenceGenerators[exercise.reference] ?? (() => []))()
   const editable = exercise.columns.filter((c) => !GIVEN.has(c.key))
 
@@ -269,7 +271,16 @@ export function TraceExercise({ unit, exercise }: { unit: Unit; exercise: TraceE
           esgotada, o exercício acabou: aí a mesma animação deixa de ser cola e
           vira a explicação que o aluno veio buscar. ADR-0019.
         */}
-        {blanks === 0 && (solved || feedback?.exhausted) && reference.length > 0 && (
+        {blanks === 0 && (solved || feedback?.exhausted) && reference.length > 0 && exercise.lineByColumn && cycle && (
+          <ExecutionPanel
+            pseudocode={cycle}
+            reference={reference}
+            columns={exercise.columns}
+            lineByColumn={exercise.lineByColumn}
+          />
+        )}
+
+        {blanks === 0 && (solved || feedback?.exhausted) && reference.length > 0 && !exercise.lineByColumn && (
           <div className="border border-rule bg-panel-head">
             <div className="border-b border-rule px-3.5 py-2">
               <span className="lbl">O traço rodando</span>
@@ -304,7 +315,7 @@ export function TraceExercise({ unit, exercise }: { unit: Unit; exercise: TraceE
         )}
 
         <div className="flex flex-wrap items-center gap-3.5">
-          <Button onClick={check}>Verificar</Button>
+          <Button data-verify onClick={check}>Verificar</Button>
           <span className="lbl hidden min-[1100px]:inline min-[1400px]:hidden">a tabela rola para o lado →</span>
           <span className="text-[12px] italic text-fg-4">errar não bloqueia, mas marca o ciclo</span>
         </div>

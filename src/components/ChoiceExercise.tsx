@@ -98,6 +98,7 @@ export function ChoiceExercise({
             return (
               <button
                 key={i}
+                data-choice={i + 1}
                 onClick={() => onPick(i)}
                 className={cn(
                   'm-tap cursor-pointer border px-4 py-3 text-left text-[13.5px] leading-relaxed',
