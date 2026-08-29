@@ -163,7 +163,7 @@ export interface Resume {
  * Onde o aluno parou.
  *
  * `lastVisited` era gravado desde o scaffold e nenhuma tela lia. É a mesma
- * fresta que escondeu `code` e `faultyLines` por muito tempo: dado obrigatório
+ * ponto cego que escondeu `code` e `faultyLines` por muito tempo: dado obrigatório
  * que o validador confere e que nenhuma tela consome. Ver ADR-0016.
  *
  * O ciclo devolvido é o do exercício mais recente que ainda NÃO saiu limpo, e

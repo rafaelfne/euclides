@@ -68,7 +68,7 @@ escrever, encara trinta campos vazios e adivinha. Além disso, normalização am
 real, `3:[3,7,11]` e `3:[3,11]` não podem virar a mesma resposta.
 
 ### C, Pré-preencher a primeira linha do traço como exemplo resolvido
-**Descartada por ora.** Resolve o formato mostrando em vez de descrevendo, e é o andaime
+**Descartada por ora.** Resolve o formato mostrando em vez de descrevendo, e é o scaffold
 clássico. Mas entrega um passo do gabarito, e o princípio 3 não tem exceção escrita para
 "só o primeiro". Fica como pergunta para a revisão didática: o lugar do exemplo resolvido é o
 `workedExample`, não o exercício.

@@ -24,7 +24,7 @@ antes de corrigidos:
    nenhuma tela lia, desde o scaffold.
 
 O segundo é o mais instrutivo: o validador checa o dado, não a renderização, e é a segunda
-vez nesta linha do tempo que um defeito mora exatamente nessa fresta.
+vez nesta linha do tempo que um defeito mora exatamente nesse ponto cego.
 
 ## Decisão
 

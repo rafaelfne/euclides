@@ -9,7 +9,7 @@
  * O que a marca afirma está na diferença entre os dois traços, e ela não é
  * decorativa:
  *
- * - **os círculos são tracejados** porque são a construção, o andaime que
+ * - **os círculos são tracejados** porque são a construção, o scaffold que
  *   ninguém guarda no fim, e é exatamente o que esta trilha obriga o aluno a
  *   deixar visível em vez de apagar;
  * - **o triângulo é cheio** porque é o que ficou provado.

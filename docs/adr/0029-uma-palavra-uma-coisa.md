@@ -109,8 +109,9 @@ coincidência, proíbe **a coincidência não declarada**.
 - **Fica mais fácil:** ler o relatório do validador sem confundir checagem com unidade.
 - **Fica mais difícil:** inventar palavra. É o objetivo.
 - **Fica exposto:** o vocabulário dos ADRs continua fora do glossário. Espinha, deriva,
-  fresta, andaime e gate não estão registrados, e são metáfora de prosa, não termo de tela.
-  A linha que separa os dois é julgamento.
+  degrau, sonda e gate não estão registrados, e a linha que separa metáfora de prosa de
+  termo de tela é julgamento. Os cinco vieram do scaffold, e usar o vocabulário herdado é o
+  comportamento certo.
 - **A observar:** se um termo do app precisar mesmo colidir com um de computação. Aí a saída
   é `falseFriends`, e não renomear.
 
@@ -121,4 +122,7 @@ coincidência, proíbe **a coincidência não declarada**.
 3. [x] `app.trace` removido como duplicata; falso amigo migrado para `execution-trace`
 4. [x] Seis termos do produto registrados, com `isNot`
 5. [x] Checagem `ambiguidade`, nos dois eixos, com as duas injeções conferidas
-6. [ ] Decidir se o vocabulário de metáfora dos ADRs entra em algum lugar
+6. [x] Trocado o que era invenção minha e não vocabulário do projeto: `andaime` virou
+   scaffold, que é o termo consagrado e o que o projeto já usava em outro lugar;
+   `amarração` virou conferência; `fresta` virou ponto cego
+7. [ ] Decidir se o vocabulário herdado (espinha, deriva, degrau, sonda) entra no glossário

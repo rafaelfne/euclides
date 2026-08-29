@@ -34,7 +34,7 @@ durante o desenho aconteceram em cima de regras já escritas, autonomia maior am
 isso, não corrige.
 
 ### B, Design e autoria ambos fora do repositório
-**Descartada:** amarra a produção a sessões longas de conversa e desperdiça o validador,
+**Descartada:** prende a produção a sessões longas de conversa e desperdiça o validador,
 que é um excelente guia de autoria quando roda a cada edição.
 
 ### C, Híbrido (adotada)

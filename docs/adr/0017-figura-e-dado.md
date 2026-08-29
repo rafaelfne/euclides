@@ -98,7 +98,7 @@ sobre ela não discordar do exercício ao lado dela.
   Reabro a opção A e a descarto de novo, agora com evidência em vez de argumento. Dois dos
   três `kind` conferem contra o gerador de referência do exercício do próprio ciclo:
   `shift` bate o número de escritas e o bloco final com `linear.e3`, e `tree` bate a altura
-  com `trees.e1`. Essa amarração é o que impede a figura de ensinar uma coisa enquanto o
+  com `trees.e1`. Essa conferência é o que impede a figura de ensinar uma coisa enquanto o
   exercício ao lado cobra outra, e ela **só existe porque a figura é derivada**. Um SVG
   autorado não teria como ser conferido contra nada.
 
@@ -108,13 +108,13 @@ sobre ela não discordar do exercício ao lado dela.
   um estado que `hash.e1` de fato atinge, e a asserção reprova uma figura que mostre uma
   distribuição que a inserção nunca produz.
 
-  Se um `kind` nascer sem poder ser amarrado a nada, aí sim a opção A merece ser reaberta
+  Se um `kind` nascer sem poder ser conferido contra nada, aí sim a opção A merece ser reaberta
   para aquele caso.
 
-## O caso que quase não amarrou
+## O caso que quase não deu para conferir
 
 O quinto `kind`, `traversal`, foi o teste do critério corrigido. Quando ele entrou na fila,
-o registro dizia que era o que provavelmente não amarraria em nada: `graphs.e4` gerava a
+o registro dizia que era o que provavelmente não daria para conferir contra nada: `graphs.e4` gerava a
 ordem em largura, e a ordem em profundidade não existia como referência. Escrever um gerador
 só para servir a figura teria produzido exatamente o que o critério condena, um desenho
 conferido contra código que ninguém mais usa.
@@ -130,7 +130,7 @@ a troca e outro para o que ela garante e o que não garante. A pergunta "esta fi
 ser conferida?" achou um ciclo sobrecarregado que nenhuma checagem tinha achado.
 
 **É o argumento mais forte a favor da decisão até agora**, e ele não estava previsto: a
-exigência de amarração é um teste de coerência do conteúdo, não só do desenho.
+exigência de conferir é um teste de coerência do conteúdo, não só do desenho.
 
 ## Itens de ação
 

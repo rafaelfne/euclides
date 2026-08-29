@@ -98,7 +98,7 @@ equilátero que cai da interseção.
 
 O que ela afirma está na diferença entre os dois traços, e não é decoração:
 
-- **os círculos são tracejados**, porque são a construção, o andaime que ninguém guarda no
+- **os círculos são tracejados**, porque são a construção, o scaffold que ninguém guarda no
   fim, e é exatamente o que esta trilha obriga o aluno a deixar visível em vez de apagar;
 - **o triângulo é cheio**, porque é o que ficou provado.
 

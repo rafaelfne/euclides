@@ -76,7 +76,7 @@ para ser reconhecido na oitava vez. Em prosa livre, cada unidade fecharia difere
 ## Análise de trade-off
 
 O custo do modo é que toda peça nova de tela agora tem duas versões possíveis, e alguém tem
-de decidir qual. O custo do postmortem é autoria: oito, escritos à mão, e o `trapId` amarra
+de decidir qual. O custo do postmortem é autoria: oito, escritos à mão, e o `trapId` prende
 cada um ao catálogo.
 
 O risco do modo é a divergência: o iniciante ganha uma peça, o de revisão não recebe, e em
@@ -97,4 +97,4 @@ seis meses são duas telas diferentes. A defesa é a tabela acima ficar curta.
 2. [x] Exemplo trabalhado recolhido em revisão; `autoPlay` no `Stepper` só em iniciante
 3. [x] Frase de conforto derivada, nos 3 primeiros ciclos da unidade 01
 4. [x] `postmortem` no schema e a checagem `incidente`, conferindo os dois lados
-5. [x] Os 8 postmortems escritos, cada um amarrado a uma armadilha do catálogo
+5. [x] Os 8 postmortems escritos, cada um preso a uma armadilha do catálogo
