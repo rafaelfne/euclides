@@ -461,6 +461,8 @@ export const profile = z.object({
   reviewsCode: z.enum(['nunca', 'as-vezes', 'sempre']).optional(),
   mode: z.enum(['iniciante', 'revisao']),
   codeLanguage: z.enum(['pseudo', 'typescript']),
+  /** Desligado por padrão: quem não quiser um número não precisa ver nenhum. */
+  showJudgmentIndex: z.boolean().optional(),
 })
 
 /** O resultado da sondagem. Recomenda, e não destrava nem bloqueia nada. */
@@ -491,6 +493,15 @@ export const progress = z.object({
        * válido.
        */
       savedRows: z.array(z.record(z.string(), z.string())).optional(),
+      /**
+       * As voltas depois do intervalo, e como cada uma saiu.
+       *
+       * O modelo não conseguia expressar "acertou de novo, limpo, depois de ter
+       * errado": `solvedClean` congela na primeira visita e nunca mais volta a
+       * ser verdadeiro. Sem isto não há revisita honrada, não há armadilha
+       * desarmada e não há fila de repetição espaçada. ADR-0023.
+       */
+      revisits: z.array(z.object({ at: z.string(), clean: z.boolean() })).optional(),
       lastVisited: z.string(),
     })),
   })),

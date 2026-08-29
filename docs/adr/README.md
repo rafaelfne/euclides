@@ -24,6 +24,7 @@
 | [0020](0020-branco-nao-e-hipotese.md) | Branco não é hipótese, e a tela reidrata o traço inteiro | Verificar com branco não conta tentativa, e isso vazava o diagnóstico de graça |
 | [0021](0021-perfil-local.md) | Perfil local, e o que a ausência de conta obriga | Sem servidor, exportar e apagar deixam de ser cortesia e viram obrigação |
 | [0022](0022-nivelamento.md) | Nivelamento que recomenda, e estado que não sobe pelo relógio | Nota vira a coisa perseguida; consolidada exige voltar, não esperar |
+| [0023](0023-contadores-honestos.md) | Três contadores, e o teste que todo número novo tem de passar | Número sem a regra que o move é pontuação disfarçada |
 
 ## Como escrever o próximo
 

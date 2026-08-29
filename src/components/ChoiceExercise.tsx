@@ -67,6 +67,7 @@ export function ChoiceExercise({
     recordAttempt(unit.id, exerciseId, {
       solved: c.correct,
       misconception: c.correct ? undefined : c.misconceptionId,
+      revisitAfterDays: unit.mastery.revisitIntervalDays,
     })
   }
 

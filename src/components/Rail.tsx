@@ -33,8 +33,8 @@ export function Rail({ unitId }: { unitId?: string }) {
               <span className={cn('font-mono text-[12px]', active ? 'text-contract' : 'text-fg-5')}>
                 {String(u.number).padStart(2, '0')}
               </span>
-              <span className="leading-snug">{u.title}</span>
-              <span className="ml-auto shrink-0"><UnitStateDot unit={u} /></span>
+              <span className="min-w-0 leading-snug">{u.title}</span>
+              <span className="ml-auto shrink-0 pt-1"><UnitStateDot unit={u} /></span>
             </Link>
           )
         })}

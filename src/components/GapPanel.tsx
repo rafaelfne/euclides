@@ -6,6 +6,7 @@ import type { Progress, Unit } from '@/content/schema'
 import { read } from '@/lib/progress'
 import { buildSessionExport, collectGaps, type UnitGaps } from '@/lib/session-export'
 import { Button } from './ui/button'
+import { CountersRow } from './Counters'
 import { Panel, PanelBody, PanelHeader, PanelMeta, PanelTitle } from './ui/panel'
 
 export function GapPanel({ units }: { units: Unit[] }) {
@@ -36,6 +37,10 @@ export function GapPanel({ units }: { units: Unit[] }) {
 
   return (
     <>
+      <div className="mb-7 border-b border-rule pb-6">
+        <CountersRow showIndex={false} />
+      </div>
+
       <div className="mb-7 flex items-center gap-3.5">
         <Button onClick={copy}>Copiar sessão</Button>
         <span className="text-[12.5px] italic text-fg-4">

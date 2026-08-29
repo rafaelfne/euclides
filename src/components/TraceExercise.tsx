@@ -90,6 +90,7 @@ export function TraceExercise({ unit, exercise }: { unit: Unit; exercise: TraceE
         ? exercise.misconceptionByStep[String(d.firstDivergentStep)]
         : undefined,
       savedRows: saved(),
+      revisitAfterDays: unit.mastery.revisitIntervalDays,
     })
   }
 

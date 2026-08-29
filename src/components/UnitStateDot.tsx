@@ -33,11 +33,21 @@ export function useUnitState(unit: Unit): UnitState {
 
 export function UnitStateDot({ unit, withLabel = false }: { unit: Unit; withLabel?: boolean }) {
   const state = useUnitState(unit)
+  /*
+    O estado para quem não vê a cor vai no `aria-label`, e não num texto
+    escondido por CSS. A primeira versão usava `sr-only` e a classe não aplicou:
+    a regra inteira vazou para o rail e quebrou o layout. Rótulo acessível que
+    depende de uma classe é rótulo que some, ou pior, aparece.
+  */
   return (
-    <span className="inline-flex items-center gap-1.5" title={UNIT_STATE_RULE[state]}>
+    <span
+      role="img"
+      aria-label={`${UNIT_STATE_LABEL[state]}, ${UNIT_STATE_RULE[state]}`}
+      title={UNIT_STATE_RULE[state]}
+      className="inline-flex items-center gap-1.5 whitespace-nowrap"
+    >
       <span className={cn('h-1.5 w-1.5 shrink-0 rounded-full', TONE[state])} aria-hidden />
       {withLabel && <span className="lbl">{UNIT_STATE_LABEL[state]}</span>}
-      <span className="sr-only">{UNIT_STATE_LABEL[state]}, {UNIT_STATE_RULE[state]}</span>
     </span>
   )
 }

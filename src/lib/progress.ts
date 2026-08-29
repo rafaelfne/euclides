@@ -83,7 +83,13 @@ export type TraceRow = Record<string, string>
 
 export function recordAttempt(
   unitId: string, exerciseId: string,
-  patch: { solved: boolean; misconception?: string; savedRows?: TraceRow[] },
+  patch: {
+    solved: boolean
+    misconception?: string
+    savedRows?: TraceRow[]
+    /** Do critério da unidade. Sem ele não dá para saber se esta volta é revisita. */
+    revisitAfterDays?: number
+  },
 ): Progress {
   const p = read()
   const unit = p.units[unitId] ?? { exercises: {} }
@@ -94,6 +100,20 @@ export function recordAttempt(
   const triggered = patch.misconception && !prev.misconceptionsTriggered.includes(patch.misconception)
     ? [...prev.misconceptionsTriggered, patch.misconception]
     : prev.misconceptionsTriggered
+  /*
+    Uma volta só é revisita se o exercício JÁ estava resolvido e o intervalo já
+    tinha passado. Responder de novo no mesmo dia é insistência, e insistência
+    não honra nada. ADR-0023.
+  */
+  const daysSince = (Date.now() - new Date(prev.lastVisited).getTime()) / 86_400_000
+  const isRevisit = prev.solved
+    && patch.revisitAfterDays !== undefined
+    && daysSince >= patch.revisitAfterDays
+
+  const revisits = isRevisit
+    ? [...(prev.revisits ?? []), { at: new Date().toISOString(), clean: patch.solved && !patch.misconception }]
+    : prev.revisits
+
   unit.exercises[exerciseId] = {
     attempts: prev.attempts + 1,
     solved: prev.solved || patch.solved,
@@ -103,6 +123,7 @@ export function recordAttempt(
     misconceptionsTriggered: triggered,
     freeText: prev.freeText,
     savedRows: patch.savedRows ?? prev.savedRows,
+    revisits,
     lastVisited: new Date().toISOString(),
   }
   p.units[unitId] = unit

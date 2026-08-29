@@ -12,6 +12,7 @@ import { humanMinutes, unitMinutes } from '@/lib/duration'
 import { cn } from '@/lib/utils'
 import { Panel, PanelBody, PanelHeader, PanelTitle } from './ui/panel'
 import { BandBadge } from './BandBadge'
+import { CountersRow } from './Counters'
 import { UnitStateDot } from './UnitStateDot'
 
 /**
@@ -82,6 +83,11 @@ export function ProfileScreen() {
           lugar nenhum. O app funciona idêntico sem nome.
         </p>
       </div>
+
+      <Panel>
+        <PanelHeader><PanelTitle>O que o app mede</PanelTitle></PanelHeader>
+        <PanelBody><CountersRow /></PanelBody>
+      </Panel>
 
       <Panel>
         <PanelHeader><PanelTitle>Como você lê</PanelTitle></PanelHeader>

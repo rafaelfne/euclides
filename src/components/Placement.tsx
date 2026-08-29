@@ -45,6 +45,7 @@ export function Placement() {
     recordAttempt(unit.id, probe.exerciseId, {
       solved: c.correct,
       misconception: c.correct ? undefined : c.misconceptionId,
+      revisitAfterDays: unit.mastery.revisitIntervalDays,
     })
     setAnswers((prev) => ({
       ...prev,
