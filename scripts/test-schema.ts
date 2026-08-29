@@ -275,6 +275,44 @@ const chaveRepetida = trocaCiclo(comRotacao, cicloRotacao.id, {
 check('figura de rotação com chave repetida reprova',
   checkAll([...units.filter((u) => u.id !== comRotacao.id), chaveRepetida], allTerms).some((f) => f.check === 'figura'))
 
+const comVisitados = units.find((u) => u.cycles.some((c) => c.figure?.kind === 'visited'))!
+const cicloVisitados = comVisitados.cycles.find((c) => c.figure?.kind === 'visited')!
+
+const semCiclo = trocaCiclo(comVisitados, cicloVisitados.id, {
+  figure: {
+    ...cicloVisitados.figure,
+    edges: [{ from: 'A', to: 'B' }, { from: 'B', to: 'C' }],
+  },
+})
+check('figura de visitados sobre grafo sem ciclo reprova',
+  checkAll([...units.filter((u) => u.id !== comVisitados.id), semCiclo], allTerms).some((f) => f.check === 'figura'))
+
+const origemForaDoGrafo = trocaCiclo(comVisitados, cicloVisitados.id, {
+  figure: { ...cicloVisitados.figure, origin: 'Z' },
+})
+check('figura de visitados com origem fora do grafo reprova',
+  checkAll([...units.filter((u) => u.id !== comVisitados.id), origemForaDoGrafo], allTerms).some((f) => f.check === 'figura'))
+
+/*
+  Cinco vértices em ciclo precisam de cinco rodadas para a busca marcada
+  esvaziar a fila. Declarar quatro deixa a coluna que deveria FECHAR aberta, e a
+  figura passa a mostrar duas colunas que não terminam — o oposto do que o ciclo
+  afirma, com o desenho parecendo certo.
+*/
+const rodadasDeMenos = trocaCiclo(comVisitados, cicloVisitados.id, {
+  figure: {
+    ...cicloVisitados.figure,
+    edges: [
+      { from: 'A', to: 'B' }, { from: 'B', to: 'C' }, { from: 'C', to: 'D' },
+      { from: 'D', to: 'E' }, { from: 'E', to: 'A' },
+    ],
+    rounds: 4,
+  },
+})
+check('figura de visitados sem rodadas para a busca marcada terminar reprova',
+  checkAll([...units.filter((u) => u.id !== comVisitados.id), rodadasDeMenos], allTerms)
+    .some((f) => f.check === 'figura' && f.detail.includes('não bastam')))
+
 check('a lista de checagens é a mesma para os dois kinds', CHECKS.length > 0)
 
 console.log(failures ? `\n  ${failures} falha(s)\n` : '\n  todas as checagens passaram\n')

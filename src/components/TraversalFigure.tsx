@@ -1,5 +1,6 @@
 import type { Figure } from '@/content/schema'
-import { adjacency, bfsOrder, dfsOrder, layers } from '@/lib/traversal'
+import { bfsOrder, dfsOrder } from '@/lib/traversal'
+import { edgePath, edgesOf, positions, type Dims } from '@/lib/graph-layout'
 import { Stepper } from './Stepper'
 
 /**
@@ -7,23 +8,8 @@ import { Stepper } from './Stepper'
  * busca em largura, por isso o painel da esquerda cresce em colunas e o da
  * direita desce por um ramo. Nada aqui é coordenada autorada. Ver ADR-0017.
  */
-const COL = 92
-const ROW = 62
-const R = 17
-const PAD = 30
-
-function positions(figure: Extract<Figure, { kind: 'traversal' }>) {
-  const byLayer = layers(figure.edges, figure.origin)
-  const tallest = Math.max(...byLayer.map((l) => l.length))
-  const at = new Map<string, { x: number; y: number }>()
-  byLayer.forEach((layer, depth) => {
-    layer.forEach((v, i) => {
-      const offset = (tallest - layer.length) / 2
-      at.set(v, { x: PAD + depth * COL, y: PAD + (i + offset) * ROW })
-    })
-  })
-  return { at, width: PAD * 2 + (byLayer.length - 1) * COL, height: PAD * 2 + (tallest - 1) * ROW }
-}
+const DIMS: Dims = { col: 92, row: 62, r: 17, pad: 30 }
+const R = DIMS.r
 
 function Panel({
   figure,
@@ -40,10 +26,9 @@ function Panel({
   upTo: number
   accent: string
 }) {
-  const { at, width, height } = positions(figure)
+  const { at, width, height } = positions(figure.edges, figure.origin, DIMS)
   const visited = order.slice(0, upTo + 1)
   const rank = new Map(visited.map((v, i) => [v, i + 1]))
-  const map = adjacency(figure.edges)
 
   return (
     <div className="min-w-0 flex-1">
@@ -53,27 +38,16 @@ function Panel({
       </div>
       <div className="overflow-x-auto px-3 py-2">
         <svg viewBox={`0 0 ${width} ${height}`} className="w-full min-w-[220px]" style={{ maxWidth: width * 1.4 }}>
-          {[...map.entries()].flatMap(([from, tos]) =>
-            tos.map((to) => {
-              const a = at.get(from)!
-              const b = at.get(to)!
-              const dx = b.x - a.x
-              const dy = b.y - a.y
-              const len = Math.hypot(dx, dy) || 1
-              return (
-                <line
-                  key={`${from}-${to}`}
-                  x1={a.x + (dx / len) * R}
-                  y1={a.y + (dy / len) * R}
-                  x2={b.x - (dx / len) * (R + 5)}
-                  y2={b.y - (dy / len) * (R + 5)}
-                  stroke="var(--rule)"
-                  strokeWidth="1.25"
-                  markerEnd="url(#aresta)"
-                />
-              )
-            }),
-          )}
+          {edgesOf(figure.edges).map(({ from, to }) => (
+            <path
+              key={`${from}-${to}`}
+              d={edgePath(at.get(from)!, at.get(to)!, DIMS)}
+              fill="none"
+              stroke="var(--rule)"
+              strokeWidth="1.25"
+              markerEnd="url(#aresta)"
+            />
+          ))}
 
           {[...at.entries()].map(([v, p]) => (
             <g key={v}>

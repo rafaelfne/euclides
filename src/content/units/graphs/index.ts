@@ -196,6 +196,18 @@ export const graphsUnit: Unit = {
         problem: "Com A→B, B→C e C→A, comece em A sem marcar visitados: a fila recebe B, depois C, depois A de novo, depois B de novo. Ela nunca esvazia.",
         whatToNotice: "São 3 vértices e o percurso não termina. O que falta não é uma condição de parada nova, é lembrar quem já foi visto.",
       },
+      figure: {
+        kind: 'visited',
+        edges: [{ from: 'A', to: 'B' }, { from: 'B', to: 'C' }, { from: 'C', to: 'A' }],
+        origin: 'A',
+        rounds: 6,
+        caption:
+          'O mesmo grafo de três vértices e a mesma busca dos dois lados; a única diferença ' +
+          'é a linha que confere se o vizinho já está em visitados. À direita a fila esvazia ' +
+          'em três rodadas. À esquerda ela nunca esvazia, e repare que o tamanho dela não ' +
+          'cresce: o percurso fica dando voltas no mesmo ciclo, que é o laço da tela de ' +
+          'permissões.',
+      },
       exerciseId: 'graphs.e4' },
 
     { id: 'graphs.c5', title: 'Uma linha trocada muda o percurso inteiro', layer: 'essential', band: 'cost',

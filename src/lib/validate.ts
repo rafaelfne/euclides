@@ -15,7 +15,7 @@ import {
 import { OVERLOADED_TERMS, PLANNED, APP } from '../content/glossary'
 import { vagueAbstractions, allowedVagueUses, forwardCitations } from '../content/vocabulary'
 import { referenceGenerators } from './reference'
-import { bfsOrder, dfsOrder, vertices } from './traversal'
+import { bfsOrder, dfsOrder, vertices, bfsRounds, reachesCycle } from './traversal'
 import { build, heightOf, inorder, rebalanceOnce } from './bst'
 import { untranslated } from './transliterate'
 import { TOKENIZERS } from './highlight'
@@ -252,6 +252,23 @@ export function checkAll(units: Unit[], terms: GlossaryTerm[]): Failure[] {
           }
         }
       }
+      if (f.kind === 'visited') {
+        if (!vertices(f.edges).includes(f.origin)) {
+          fail('figura', `${c.id}: a origem "${f.origin}" não é vértice do grafo declarado`)
+        } else if (!reachesCycle(f.edges, f.origin)) {
+          fail('figura', `${c.id}: nenhum ciclo é alcançável a partir de ${f.origin}, e sem ciclo a busca sem marcação também termina`)
+        } else {
+          const sem = bfsRounds(f.edges, f.origin, { marking: false, maxRounds: f.rounds })
+          const com = bfsRounds(f.edges, f.origin, { marking: true, maxRounds: f.rounds })
+          if (sem.drained) {
+            fail('figura', `${c.id}: a busca sem marcação esvazia a fila em ${sem.rounds.length} rodadas, e a figura afirma que ela não esvazia`)
+          }
+          if (!com.drained) {
+            fail('figura', `${c.id}: ${f.rounds} rodadas não bastam para a busca marcada terminar, e a coluna que deveria fechar fica aberta`)
+          }
+        }
+      }
+
       if (f.kind === 'rotation') {
         if (new Set(f.keys).size !== f.keys.length) {
           fail('figura', `${c.id}: a figura repete uma chave, e a árvore de busca não guarda duplicata`)

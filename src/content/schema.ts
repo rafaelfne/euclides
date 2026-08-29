@@ -251,6 +251,26 @@ export const figure = z.discriminatedUnion('kind', [
     edges: z.array(z.object({ from: z.string().min(1), to: z.string().min(1) })).min(3),
     origin: z.string().min(1),
   }),
+
+  /**
+   * A mesma busca em largura com e sem o conjunto de visitados.
+   *
+   * O conteúdo declara as arestas, a origem e quantas rodadas mostrar. Quem
+   * enche e quem esvazia a fila é derivado, e é por isso que a figura não pode
+   * discordar do pseudocódigo do ciclo: as duas rodam a mesma busca.
+   *
+   * A checagem `figura` exige ciclo alcançável a partir da origem. Sem ciclo, a
+   * busca sem marcação também termina, e a figura ilustraria o oposto do que o
+   * ciclo afirma.
+   */
+  z.object({
+    kind: z.literal('visited'),
+    caption: z.string().min(1),
+    edges: z.array(z.object({ from: z.string().min(1), to: z.string().min(1) })).min(2),
+    origin: z.string().min(1),
+    /** Até onde acompanhar a fila que não esvazia. */
+    rounds: z.number().int().min(4),
+  }),
 ])
 
 // ---------------------------------------------------------------------------

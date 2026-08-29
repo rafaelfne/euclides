@@ -7,6 +7,7 @@ import { TreeFigure } from './TreeFigure'
 import { RotationFigure } from './RotationFigure'
 import { BucketsFigure } from './BucketsFigure'
 import { TraversalFigure } from './TraversalFigure'
+import { VisitedFigure } from './VisitedFigure'
 import { DoublingFigure } from './DoublingFigure'
 import { StabilityFigure } from './StabilityFigure'
 import dynamic from 'next/dynamic'
@@ -34,6 +35,7 @@ export function CycleFigure({ figure, autoPlay = false }: { figure: Figure; auto
     case 'rotation': return <RotationFigure figure={figure} />
     case 'buckets': return <BucketsFigure figure={figure} autoPlay={autoPlay} />
     case 'traversal': return <TraversalFigure figure={figure} autoPlay={autoPlay} />
+    case 'visited': return <VisitedFigure figure={figure} autoPlay={autoPlay} />
     case 'recursion': return <RecursionFigure figure={figure} autoPlay={autoPlay} />
     case 'growth-doubling': return <DoublingFigure figure={figure} autoPlay={autoPlay} />
     case 'stability': return <StabilityFigure figure={figure} />

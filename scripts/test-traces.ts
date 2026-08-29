@@ -13,7 +13,8 @@ import { removeFirstTrace } from '../src/lib/reference/linear'
 import { bstInsertTrace } from '../src/lib/reference/trees'
 import { bfsTrace, dfsTrace } from '../src/lib/reference/graphs'
 import { chainingInsertTrace } from '../src/lib/reference/hash-table'
-import { bfsOrder, dfsOrder } from '../src/lib/traversal'
+import { bfsOrder, dfsOrder, bfsRounds, reachesCycle } from '../src/lib/traversal'
+import { edgePath, positions, type Dims } from '../src/lib/graph-layout'
 import { units } from '../src/content/index'
 import { findDivergence, findFirstBlank, buildFeedback } from '../src/lib/socratic'
 
@@ -172,6 +173,52 @@ for (const u of units) {
       dfsOrder(figure.edges, figure.origin).join(' ') === popped(dfsTrace()),
       `figura ${dfsOrder(figure.edges, figure.origin).join(' ')}, gabarito ${popped(dfsTrace())}`)
   }
+}
+
+/*
+  A figura de `graphs.c4` afirma que a fila NÃO esvazia sem marcar visitados, e
+  que esvazia marcando. As duas metades saem da mesma função, com uma opção de
+  diferença, e é isso que o teste confere: se as duas dessem o mesmo resultado,
+  a figura estaria mostrando duas colunas idênticas com rótulos diferentes.
+*/
+for (const u of units) {
+  for (const c of u.cycles) {
+    if (c.figure?.kind !== 'visited') continue
+    const f = c.figure
+    check(`${c.id}: há ciclo alcançável da origem`, reachesCycle(f.edges, f.origin))
+
+    const sem = bfsRounds(f.edges, f.origin, { marking: false, maxRounds: f.rounds })
+    const com = bfsRounds(f.edges, f.origin, { marking: true, maxRounds: f.rounds })
+    check(`${c.id}: sem marcar, a fila não esvazia em ${f.rounds} rodadas`, !sem.drained)
+    check(`${c.id}: marcando, a fila esvazia`, com.drained)
+    check(`${c.id}: marcando, cada vértice sai da fila uma vez só`,
+      new Set(com.rounds.map((r) => r.dequeued)).size === com.rounds.length)
+    check(`${c.id}: sem marcar, algum vértice sai mais de uma vez`,
+      new Set(sem.rounds.map((r) => r.dequeued)).size < sem.rounds.length)
+    check(`${c.id}: a ordem marcada é a mesma de bfsOrder`,
+      com.rounds.map((r) => r.dequeued).join(' ') === bfsOrder(f.edges, f.origin).join(' '))
+  }
+}
+
+/*
+  A aresta de volta sai do desenho por baixo, e não por dentro do vértice do
+  meio.
+
+  Em linha reta, uma aresta que anda para trás passa exatamente sobre os
+  vértices entre as duas pontas, e o grafo com ciclo fica com o mesmo desenho de
+  um sem ciclo. A figura não mente sobre o dado; ela esconde o dado, que dá no
+  mesmo para quem lê.
+*/
+{
+  const dims: Dims = { col: 90, row: 60, r: 17, pad: 28 }
+  const comVolta = [{ from: 'A', to: 'B' }, { from: 'B', to: 'C' }, { from: 'C', to: 'A' }]
+  const semVolta = [{ from: 'A', to: 'B' }, { from: 'B', to: 'C' }]
+
+  const at = positions(comVolta, 'A', dims).at
+  check('aresta de volta vira curva', edgePath(at.get('C')!, at.get('A')!, dims).includes('Q'))
+  check('aresta para a frente continua reta', edgePath(at.get('A')!, at.get('B')!, dims).includes('L'))
+  check('o desenho cresce para caber a curva',
+    positions(comVolta, 'A', dims).height > positions(semVolta, 'A', dims).height)
 }
 
 /*

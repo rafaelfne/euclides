@@ -63,3 +63,76 @@ export function layers(edges: Edge[], origin: string): string[][] {
   for (const [v, d] of depth) { (out[d] ??= []).push(v) }
   return out
 }
+
+// ---------------------------------------------------------------------------
+// A fila rodada a rodada, com e sem o conjunto de visitados
+// ---------------------------------------------------------------------------
+
+export interface Round {
+  /** O vértice retirado no começo desta rodada. */
+  dequeued: string
+  /** A fila depois de enfileirar os vizinhos do retirado. */
+  queue: string[]
+}
+
+/**
+ * As rodadas da busca em largura, com a marcação ligada ou desligada.
+ *
+ * É a mesma busca de `bfsOrder`, exposta rodada a rodada em vez de só na ordem
+ * final, porque a afirmação de `graphs.c4` é sobre a FILA e não sobre a ordem:
+ * sem marcar visitados ela nunca esvazia, e isso só se vê acompanhando o
+ * tamanho dela.
+ *
+ * `maxRounds` existe porque a versão sem marcação não termina. `drained` diz se
+ * a fila esvaziou sozinha ou se o corte é que parou o laço, e é essa diferença
+ * que a figura mostra.
+ */
+export function bfsRounds(
+  edges: Edge[],
+  origin: string,
+  { marking, maxRounds }: { marking: boolean; maxRounds: number },
+): { rounds: Round[]; drained: boolean } {
+  const map = adjacency(edges)
+  const queue = [origin]
+  const seen = new Set([origin])
+  const rounds: Round[] = []
+
+  while (queue.length && rounds.length < maxRounds) {
+    const current = queue.shift()!
+    for (const v of map.get(current) ?? []) {
+      if (marking) {
+        if (seen.has(v)) continue
+        seen.add(v)
+      }
+      queue.push(v)
+    }
+    rounds.push({ dequeued: current, queue: [...queue] })
+  }
+
+  return { rounds, drained: queue.length === 0 }
+}
+
+/**
+ * Existe ciclo alcançável a partir da origem.
+ *
+ * Sem ciclo, a busca sem marcação também termina, e a figura de `graphs.c4`
+ * estaria ilustrando o oposto do que o ciclo afirma. A checagem `figura` usa
+ * isto para reprovar um grafo dessa forma.
+ */
+export function reachesCycle(edges: Edge[], origin: string): boolean {
+  const map = adjacency(edges)
+  const open = new Set<string>()
+  const done = new Set<string>()
+
+  const visit = (v: string): boolean => {
+    if (open.has(v)) return true
+    if (done.has(v)) return false
+    open.add(v)
+    for (const w of map.get(v) ?? []) if (visit(w)) return true
+    open.delete(v)
+    done.add(v)
+    return false
+  }
+
+  return visit(origin)
+}
