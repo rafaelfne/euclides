@@ -86,6 +86,9 @@ quem está aprendendo, e essa é a forma que eles vão continuar tendo.
 
 1. [x] `src/lib/javascript.ts`, com `convention` nos operadores que a folha declara
 2. [x] `BugExercise` renderizando com a paleta do pseudocódigo e o hover do significado
-3. [x] `scripts/test-javascript.ts`: integridade linha a linha nos oito exercícios, e os
-   operadores compostos que não podem ser fatiados
-4. [ ] Checagem que reprove exercício de defeito numa linguagem sem tokenizador
+3. [x] `CodeBlock` na alternância para TypeScript, pelo mesmo realce: sem a cor, a
+   alternância mostra a tradução e esconde justamente a coisa que ela traduz
+4. [x] `scripts/test-javascript.ts`: integridade linha a linha nos oito exercícios E no
+   pseudocódigo transliterado dos 62 ciclos, mais os operadores compostos que não podem ser
+   fatiados
+5. [ ] Checagem que reprove exercício de defeito numa linguagem sem tokenizador

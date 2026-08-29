@@ -1,4 +1,5 @@
 import { units } from '../src/content/index'
+import { toTypeScript } from '../src/lib/transliterate'
 import { tokenizeJavaScript } from '../src/lib/javascript'
 
 let failures = 0
@@ -62,6 +63,21 @@ for (const u of units) {
     for (const [i, line] of ex.code.split('\n').entries()) {
       const back = tokenizeJavaScript(line).map((t) => t.text).join('')
       check(`${ex.id} linha ${i + 1}: o realce devolve a linha intacta`, back === line, back)
+    }
+  }
+}
+
+/*
+  A alternância para TypeScript passa pelo mesmo realce, e o mesmo risco vale
+  lá: um pseudocódigo transliterado que perde caractere no realce entrega ao
+  aluno um código que não é o que a tradução produziu.
+*/
+for (const u of units) {
+  for (const c of u.cycles) {
+    if (!c.pseudocode || c.pseudocodeIsProse) continue
+    for (const [i, line] of toTypeScript(c.pseudocode).split('\n').entries()) {
+      const back = tokenizeJavaScript(line).map((t) => t.text).join('')
+      check(`${c.id} transliterado, linha ${i + 1}: o realce devolve intacto`, back === line, back)
     }
   }
 }

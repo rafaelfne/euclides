@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import { toTypeScriptOrNull } from '@/lib/transliterate'
+import { tokenizeJavaScript } from '@/lib/javascript'
+import { TOKEN_COLORS, TOKEN_WEIGHT } from '@/lib/pseudocode'
 import { readProfile, saveProfile, PROGRESS_EVENT } from '@/lib/progress'
 import { cn } from '@/lib/utils'
 import { Pseudocode } from './Pseudocode'
@@ -63,8 +65,25 @@ export function CodeBlock({ source }: { source: string }) {
       )}
 
       {lang === 'typescript' && typescript !== null ? (
+        /*
+          O mesmo realce dos exercícios de caça ao defeito, e pela mesma razão:
+          `←` do pseudocódigo virou `=`, e `=` virou `===`. Sem a cor, a
+          alternância mostra a tradução e esconde justamente a coisa que ela
+          traduz. ADR-0028.
+        */
         <pre className="pseudocode">
-          <code className="block px-4 py-3 text-fg-2">{typescript}</code>
+          <code className="block px-4 py-3">
+            {tokenizeJavaScript(typescript).map((t, i) => (
+              <span
+                key={i}
+                className={t.kind === 'convention' ? 'tok-convention' : undefined}
+                style={{ color: TOKEN_COLORS[t.kind], fontWeight: TOKEN_WEIGHT[t.kind] }}
+                title={t.declares}
+              >
+                {t.text}
+              </span>
+            ))}
+          </code>
         </pre>
       ) : (
         <Pseudocode source={source} />
