@@ -139,8 +139,20 @@ tem de continuar lá: se um dia a faixa aparecer sozinha em algum canto, virou X
 - **Fica mais fácil:** entrar no lugar certo, e saber onde se está sem número nenhum.
 - **Fica mais difícil:** adicionar estado agregado. Todo agregado novo tem de passar no teste
   do princípio 2 antes de existir.
-- **Fica exposto:** `placement` é escrito uma vez e nunca revisto. Alguém que estude seis
-  meses continua com a recomendação do primeiro dia guardada.
+- **Estava exposto, e fechou em 29/08/2026:** `placement` era escrito uma vez e nunca
+  revisto, e quem estudasse seis meses seguia com a recomendação do primeiro dia guardada.
+  Agora `stalePlacement` a declara vencida por duas condições, as duas derivadas do
+  progresso: a unidade recomendada já está dominada, ou há duas unidades dominadas além das
+  que ela deu por vencidas. **Nenhuma delas é data.** Uma sondagem de duzentos dias atrás,
+  de quem não estudou nada desde então, continua valendo — reofertar por calendário mediria
+  dias abertos, que é o que o princípio 2 proíbe, e há asserção em `scripts/test-level.ts`
+  exatamente para isso.
+
+  A reoferta mora **só no `/perfil`**, e não volta para a home. O convite da home some
+  depois de respondido porque repetir oferta é cobrança, e uma tarja reaparecendo na porta
+  seria a mesma cobrança com outro motivo. O perfil é a tela em que a pessoa foi olhar para
+  si. O custo é que quem nunca abre o perfil nunca vê a reoferta, e é aceito: o texto dela é
+  uma afirmação verificável sobre dado que o app já tem (ADR-0018), não um lembrete.
 - **A observar:** se alguém faz a sondagem. Ela é oferecida na home e no fim do
   `/como-funciona`, e o convite some depois de respondida, porque repetir oferta é cobrança.
 
@@ -152,4 +164,4 @@ tem de continuar lá: se um dia a faixa aparecer sozinha em algum canto, virou X
 4. [x] `level` com as cinco faixas, sempre com a regra e o que falta
 5. [x] Estado no rail, na home, no mapa e no perfil; faixa no rail e no perfil
 6. [x] `scripts/test-level.ts`, com a asserção do princípio 2 em primeiro lugar
-7. [ ] Reofertar a sondagem quando o progresso mudar muito depois dela
+7. [x] Reofertar a sondagem quando o progresso mudar muito depois dela

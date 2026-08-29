@@ -55,7 +55,7 @@ Isso tem duas consequências que ninguém consegue ver de dentro do app. Uma arm
 ninguém comete ocupa um exercício sem medir nada. E um erro que alguém comete e não está no
 catálogo não é registrado em lugar nenhum: o painel de lacunas não mostra, e o app não sabe.
 
-Está aberto no ADR-0018 (a fronteira do tom) e no ADR-0019 (a rampa medida). Nenhuma das 29
+Está aberto no ADR-0018 (a fronteira do tom) e no ADR-0019 (a rampa medida). Nenhuma das 31
 checagens alcança isso: elas conferem que a armadilha está bem escrita e é exercitada, não
 que alguém a comete.
 
@@ -64,18 +64,24 @@ respondido e em qual tentativa, exportável — e a oferta segue de pé.
 
 ### Trabalho que eu faria a seguir
 
-**Três checagens que fecham pontos cegos conhecidos.** Meia hora ao todo, cada uma impede um
-erro silencioso: `lineByColumn` conferido contra o número de linhas do pseudocódigo, porque
-**As cinco figuras da lista original entraram**, e uma delas já existia: a cadeia da tabela
-hash sempre foi animada chave a chave. As outras quatro são `rotation` em `trees.c3`,
-`visited` em `graphs.c4`, `insertion` em `sorting.c2`, e o controle de n no gráfico de
-crescimento de `asymptotics.c1`.
+**Traduzir cada ciclo em linguagem cotidiana** é o que sobrou da rampa do ADR-0016, e é o
+único item de trabalho meu ainda aberto. É julgamento pedagógico e não entra por checagem.
 
-**Reofertar a sondagem** quando o progresso mudar muito depois dela. Hoje `placement` é
-escrito uma vez e nunca revisto (ADR-0022).
+### O que fechou em 29/08/2026
 
-**Traduzir cada ciclo em linguagem cotidiana**, que é o que sobrou da rampa do ADR-0016. É
-julgamento pedagógico e não entra por checagem.
+As três checagens de ponto cego: `acesa` confere `lineByColumn` contra o pseudocódigo do
+ciclo (ADR-0026), `realce` confere a linguagem do exercício de defeito contra o registro de
+tokenizadores (ADR-0028), e podar `revisits` foi fechado por medição — são 31 anos de uso
+até 1 MB, e podar sem mentir exigiria migração de schema (ADR-0023).
+
+As cinco figuras da lista, e uma delas já existia: a cadeia da tabela hash sempre foi
+animada chave a chave. As outras quatro são `rotation` em `trees.c3`, `visited` em
+`graphs.c4`, `insertion` em `sorting.c2`, e o controle de n no gráfico de crescimento de
+`asymptotics.c1`.
+
+A reoferta da sondagem, que vence por progresso e nunca por data, e mora só no `/perfil`
+(ADR-0022). E a regra de cada faixa passou a dizer capacidade, com o checklist em campo
+próprio.
 
 ### Itens que dependem de uso, não de código
 

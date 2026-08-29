@@ -13,6 +13,7 @@ import { cn } from '@/lib/utils'
 import { Panel, PanelBody, PanelHeader, PanelTitle } from './ui/panel'
 import { BandBadge } from './BandBadge'
 import { CountersRow } from './Counters'
+import { PlacementRevisit } from './PlacementRevisit'
 import { SealRow } from './MasterySeal'
 import { RevisitQueue } from './RevisitQueue'
 import { UnitStateDot } from './UnitStateDot'
@@ -85,6 +86,8 @@ export function ProfileScreen() {
           lugar nenhum. O app funciona idêntico sem nome.
         </p>
       </div>
+
+      <PlacementRevisit />
 
       <Panel>
         <PanelHeader><PanelTitle>Selos de domínio</PanelTitle></PanelHeader>

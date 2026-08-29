@@ -189,3 +189,50 @@ export function level(units: Unit[], p: Progress, now: number): Level {
     next: next ? { band: next, missing: next.missing(state, units) } : null,
   }
 }
+
+// ---------------------------------------------------------------------------
+// A sondagem envelhece
+// ---------------------------------------------------------------------------
+
+/**
+ * Quando a recomendação da sondagem deixou de descrever quem a respondeu.
+ *
+ * `placement` era escrito uma vez e nunca revisto, e o ADR-0022 registrava isso
+ * como ponto exposto: quem estudasse seis meses seguia com a recomendação do
+ * primeiro dia guardada.
+ *
+ * As duas condições são derivadas do progresso que já existe, e nenhuma delas é
+ * tempo de tela ou data. A sondagem não envelhece por calendário — ela envelhece
+ * quando o que ela afirmou deixou de ser verdade:
+ *
+ * 1. a unidade que ela recomendou já está dominada, então a recomendação foi
+ *    gasta e não recomenda mais nada;
+ * 2. há pelo menos duas unidades dominadas além das que ela deu por vencidas,
+ *    então ela mediu uma pessoa que não é mais a que está lendo.
+ */
+export interface StalePlacement {
+  /** A unidade que a sondagem recomendou como ponto de partida. */
+  suggested: string
+  /** A recomendação foi gasta: aquela unidade já está dominada. */
+  suggestedMastered: boolean
+  masteredNow: number
+  clearedThen: number
+}
+
+export function stalePlacement(units: Unit[], p: Progress, now: number): StalePlacement | null {
+  const placement = p.placement
+  if (!placement) return null
+
+  const mastered = units.filter((u) => dominated(unitState(u, p, now)))
+  const suggestedMastered = mastered.some((u) => u.id === placement.suggestedStart)
+  const clearedThen = placement.clearedUnits.length
+
+  if (!suggestedMastered && mastered.length < clearedThen + 2) return null
+
+  return {
+    suggested: placement.suggestedStart,
+    suggestedMastered,
+    masteredNow: mastered.length,
+    clearedThen,
+  }
+}
