@@ -68,6 +68,12 @@ Meia tradução entrega algo que parece TypeScript e não é.
 trabalho e diziam nascer na unidade 04. Citar para a frente continua permitido e é
 deliberado na trilha, mas fica registrado em `forwardCitations`, com razão.
 
+**Nenhum estado do aluno sobe por insistência, por tempo ou por leitura.** É o teste que
+toda mecânica nova tem de passar: ela ainda distingue quem acertou de primeira de quem
+acertou na quarta? `dominada` exige o critério na primeira tentativa, e `consolidada` exige
+voltar depois do intervalo, não esperar. Não há percentual de conclusão em tela nenhuma:
+percentual mede visita. ADR-0022.
+
 **Acolhimento é afirmação verificável, ou não entra.** O princípio 7 proíbe elogio vago, não
 proíbe informação verdadeira sobre dificuldade. A diferença é mecânica: "muita gente erra
 aqui" o app não sabe; "uma das 6 armadilhas desta unidade" o catálogo prova. Não existe
@@ -134,6 +140,8 @@ src/content/index.ts         o registro de unidades, é daqui que o validador l�
 src/content/glossary.ts      termos por unidade, allTerms, e OVERLOADED_TERMS
 src/content/vocabulary.ts    abstrações vagas e as licenças de citação
 src/content/conventions.ts   a folha de notação do pseudocódigo
+src/content/placement.ts     as seis sondas do nivelamento
+src/lib/level.ts             os quatro estados de unidade e as cinco faixas
 src/components/ui/            primitivos shadcn, código do projeto, não da dependência
 src/components/band-tokens.ts a paleta e o rótulo de cada banda, exaustivos por tipo
 src/components/Mark.tsx      a marca: a Proposição I.1, com a geometria derivada

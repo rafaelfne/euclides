@@ -17,6 +17,7 @@ import { vagueAbstractions, allowedVagueUses, forwardCitations } from '../conten
 import { referenceGenerators } from './reference'
 import { bfsOrder, dfsOrder, vertices } from './traversal'
 import { untranslated } from './transliterate'
+import { probes } from '../content/placement'
 
 export const CHECKS = [
   ['registro', 'registro: existe unidade registrada em src/content/index.ts'],
@@ -45,6 +46,7 @@ export const CHECKS = [
   ['glossário', 'glossário: ids únicos, introdução declarada dos dois lados'],
   ['sobrecarga', 'sobrecarga: todo termo sobrecarregado declara seus falsos amigos'],
   ['estreia', 'estreia: nenhum termo aparece na prosa antes do ciclo que o estreia'],
+  ['sondagem', 'sondagem: toda sonda aponta um exercício de escolha que existe na unidade dela'],
 ] as const
 
 /** Colunas que o exercício já entrega preenchidas; ver `GIVEN` em TraceExercise. */
@@ -578,6 +580,35 @@ export function checkAll(units: Unit[], terms: GlossaryTerm[]): Failure[] {
     if (!used.has(`${f.cycle}|${f.term}`)) {
       fail('estreia', `citação declarada em ${f.cycle} para "${f.term}" não acontece mais, remova a licença`)
     }
+  }
+
+  /*
+    --- sondagem ------------------------------------------------------------
+
+    A sondagem promete quatro minutos e reaproveita exercícios que já existem.
+    As duas coisas quebram em silêncio: um id renomeado deixa a sonda apontando
+    para o nada, e um exercício que vira `trace` estoura o tempo sem que nada
+    avise. Ver ADR-0022.
+  */
+  for (const probe of probes) {
+    const u = units.find((x) => x.id === probe.unitId)
+    if (!u) {
+      fail('sondagem', `${probe.unitId}: a sonda aponta uma unidade que não existe`)
+      continue
+    }
+    const ex = u.exercises.find((e) => e.id === probe.exerciseId)
+    if (!ex) {
+      fail('sondagem', `${probe.unitId}: a sonda aponta "${probe.exerciseId}", que não existe na unidade`)
+      continue
+    }
+    if (ex.kind !== 'choice') {
+      fail('sondagem', `${probe.exerciseId} é "${ex.kind}", e a sondagem só cabe em quatro minutos com escolha`)
+    }
+  }
+
+  const sondadas = new Set(probes.map((p) => p.unitId))
+  if (sondadas.size !== probes.length) {
+    fail('sondagem', 'duas sondas na mesma unidade: a sondagem é uma por unidade')
   }
 
   return failures

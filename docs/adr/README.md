@@ -23,6 +23,7 @@
 | [0019](0019-rampa-medida.md) | Instância antes de abstração, e movimento que é argumento | Categoria sem caso é palavra sem referente; 44 de 62 ciclos não tinham número |
 | [0020](0020-branco-nao-e-hipotese.md) | Branco não é hipótese, e a tela reidrata o traço inteiro | Verificar com branco não conta tentativa, e isso vazava o diagnóstico de graça |
 | [0021](0021-perfil-local.md) | Perfil local, e o que a ausência de conta obriga | Sem servidor, exportar e apagar deixam de ser cortesia e viram obrigação |
+| [0022](0022-nivelamento.md) | Nivelamento que recomenda, e estado que não sobe pelo relógio | Nota vira a coisa perseguida; consolidada exige voltar, não esperar |
 
 ## Como escrever o próximo
 

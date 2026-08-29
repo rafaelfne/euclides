@@ -1,6 +1,8 @@
 import Link from 'next/link'
 import { units } from '@/content'
 import { cn } from '@/lib/utils'
+import { UnitStateDot } from './UnitStateDot'
+import { BandBadge } from './BandBadge'
 
 /**
  * A trilha inteira sempre visível. O ADR-0014 resolveu a ordem dentro de uma
@@ -32,12 +34,14 @@ export function Rail({ unitId }: { unitId?: string }) {
                 {String(u.number).padStart(2, '0')}
               </span>
               <span className="leading-snug">{u.title}</span>
+              <span className="ml-auto shrink-0"><UnitStateDot unit={u} /></span>
             </Link>
           )
         })}
       </div>
 
       <div className="mt-auto flex flex-col border-t border-rule-soft pb-9">
+        <div className="px-4 py-2.5"><BandBadge compact /></div>
         <Link href="/como-funciona" className="lbl m-tap px-4 py-2.5 hover:bg-panel-head hover:text-fg-2">Como funciona</Link>
         <Link href="/traps" className="lbl m-tap px-4 py-2.5 hover:bg-panel-head hover:text-fg-2">Armadilhas</Link>
         <Link href="/glossary" className="lbl m-tap px-4 py-2.5 hover:bg-panel-head hover:text-fg-2">Glossário</Link>

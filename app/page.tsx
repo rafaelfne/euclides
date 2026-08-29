@@ -5,6 +5,8 @@ import { Badge } from '@/components/ui/badge'
 import { Mark } from '@/components/Mark'
 import { ResumeCard } from '@/components/ResumeCard'
 import { unitMinutes, humanMinutes } from '@/lib/duration'
+import { UnitStateDot } from '@/components/UnitStateDot'
+import { PlacementInvite } from '@/components/PlacementInvite'
 
 export default function Home() {
   return (
@@ -34,6 +36,7 @@ export default function Home() {
         </Link>
 
         <ResumeCard />
+        <PlacementInvite />
 
         <div className="flex flex-col gap-2">
           <span className="lbl">Primeiro módulo</span>
@@ -49,6 +52,7 @@ export default function Home() {
                       {String(u.number).padStart(2, '0')}
                     </span>
                     <span className="text-[17px] font-semibold">{u.title}</span>
+                    <span className="ml-auto"><UnitStateDot unit={u} withLabel /></span>
                   </div>
                   <span className="text-[12.5px] leading-snug text-fg-3">{u.learningObjective}</span>
                   <div className="mt-auto flex gap-1.5 pt-1.5">

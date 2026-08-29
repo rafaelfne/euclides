@@ -11,6 +11,8 @@ import {
 import { humanMinutes, unitMinutes } from '@/lib/duration'
 import { cn } from '@/lib/utils'
 import { Panel, PanelBody, PanelHeader, PanelTitle } from './ui/panel'
+import { BandBadge } from './BandBadge'
+import { UnitStateDot } from './UnitStateDot'
 
 /**
  * O perfil, e as três ações que o tornam honesto.
@@ -74,6 +76,7 @@ export function ProfileScreen() {
         <h1 className="m-0 text-[30px] font-semibold leading-tight">
           {profile?.name ? profile.name : 'Sem nome'}
         </h1>
+        <div className="mt-1"><BandBadge /></div>
         <p className="m-0 text-[13.5px] leading-relaxed text-fg-3">
           Tudo aqui fica neste navegador. Não há conta, não há servidor, e nada é enviado para
           lugar nenhum. O app funciona idêntico sem nome.
@@ -111,6 +114,7 @@ export function ProfileScreen() {
             >
               <span className="font-mono text-[12px] text-fg-5">{String(i + 1).padStart(2, '0')}</span>
               <span className="text-[14px] text-fg-2">{u.title}</span>
+              <UnitStateDot unit={units[i]!} withLabel />
               <span className="ml-auto font-mono text-[12px] text-fg-4">
                 {u.done} de {u.total} ciclos · {humanMinutes(unitMinutes(units[i]!))}
               </span>

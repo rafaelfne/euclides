@@ -109,7 +109,10 @@ export function HowItWorks() {
           <span className="text-[13px] leading-snug text-fg-3">{units[0]!.learningObjective}</span>
         </Link>
         <p className="m-0 text-[12.5px] text-fg-4">
-          As unidades têm ordem. Cada uma usa o vocabulário que a anterior estabeleceu.
+          As unidades têm ordem. Cada uma usa o vocabulário que a anterior estabeleceu.{' '}
+          <Link href="/sondagem" className="underline decoration-rule underline-offset-2 hover:text-fg-2">
+            Se você já programa há um tempo, seis perguntas dizem por onde começar.
+          </Link>
         </p>
       </div>
     </div>
