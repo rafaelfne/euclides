@@ -63,16 +63,31 @@ quarta continua em curso. É o teste do princípio 2 aplicado ao estado, e há u
 pelo relógio é exatamente a gamificação que o princípio 2 proíbe. O que consolida é ter
 voltado depois do intervalo e saído limpo de novo.
 
-### A faixa é nomeada por capacidade, e a regra anda junto
+### A faixa é nomeada pela atividade, e a regra anda junto
 
-Leitor → Traçador → Analista → Revisor → Árbitro. "Analista" diz o que a pessoa consegue
-fazer; "nível 3" não diz nada e convida a subir por subir.
+code reading → dry run → complexity analysis → code review → design review. "nível 3" não
+diz nada e convida a subir por subir.
+
+A primeira escada era Leitor → Traçador → Analista → Revisor → Árbitro, e foi trocada em
+29/08/2026. Três daqueles nomes existiam no mundo e dois não: "traçador" em pt-BR é um
+instrumento de marcação e "árbitro" é de esporte. Eram substantivo de agente em inglês
+traduzido, e o formato de cargo é o que forçava a invenção — não existe cargo para "executa
+código na mão". Nomear a atividade em vez da pessoa dispensa o cargo.
+
+Os cinco rótulos em inglês seguem a regra do glossário, não a exceção dela: a forma
+canônica é a que o aluno encontra no mundo, e é o mesmo motivo pelo qual `bucket` e `open
+addressing` aparecem em inglês na tela. O ADR-0007 governa prosa autorada, não termo
+canônico.
+
+"big-O" foi descartado para a terceira faixa. O glossário já registra `big O` como apelido
+de `notação O`, e uma palavra pertence a uma coisa só (ADR-0029). "complexity analysis"
+nomeia a atividade sem disputar a palavra da notação.
 
 A regra da faixa alcançada e o que falta para a próxima aparecem **sempre**, lado a lado.
 Nome sem regra é um número disfarçado: o aluno vê a palavra, não sabe o que fez para chegar
 nem o que falta para sair, e a única coisa que sobra é a sensação de posição.
 
-Revisor exige hash e ordenação nominalmente, e não quatro unidades quaisquer: a faixa afirma
+code review exige hash e ordenação nominalmente, e não quatro unidades quaisquer: a faixa afirma
 uma capacidade, e essas duas são o que ela afirma.
 
 ## Opções consideradas

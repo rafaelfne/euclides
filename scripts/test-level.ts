@@ -72,21 +72,21 @@ const domina = (ids: string[]) => build(Object.fromEntries(ids.map((id) => {
   return [id, Object.fromEntries(u.mastery.requiresClean.map((e) => [e, cell({})]))]
 })))
 
-check('sem nada é Leitor', level(units, build({}), NOW).band.id === 'leitor')
-check('unidade 01 dominada é Traçador', level(units, domina(['tracing']), NOW).band.id === 'tracador')
-check('01 e 02 é Analista', level(units, domina(['tracing', 'asymptotics']), NOW).band.id === 'analista')
+check('sem nada é code reading', level(units, build({}), NOW).band.id === 'code-reading')
+check('unidade 01 dominada é dry run', level(units, domina(['tracing']), NOW).band.id === 'dry-run')
+check('01 e 02 é complexity analysis', level(units, domina(['tracing', 'asymptotics']), NOW).band.id === 'complexity-analysis')
 
-// Quatro unidades sem hash e sem ordenação não é Revisor: a faixa nomeia uma
+// Quatro unidades sem hash e sem ordenação não é code review: a faixa nomeia uma
 // capacidade, e essas duas são o que ela afirma.
-check('quatro unidades sem hash e sem ordenação não é Revisor',
-  level(units, domina(['tracing', 'asymptotics', 'linear', 'trees']), NOW).band.id === 'analista')
+check('quatro unidades sem hash e sem ordenação não é code review',
+  level(units, domina(['tracing', 'asymptotics', 'linear', 'trees']), NOW).band.id === 'complexity-analysis')
 
-check('quatro incluindo hash e ordenação é Revisor',
-  level(units, domina(['tracing', 'asymptotics', 'hash', 'sorting']), NOW).band.id === 'revisor')
+check('quatro incluindo hash e ordenação é code review',
+  level(units, domina(['tracing', 'asymptotics', 'hash', 'sorting']), NOW).band.id === 'code-review')
 
 const todas = level(units, domina(units.map((u) => u.id)), NOW)
-check('as oito dominadas ainda não é Árbitro, falta consolidar a síntese',
-  todas.band.id === 'revisor' && todas.next?.band.id === 'arbitro')
+check('as oito dominadas ainda não é design review, falta consolidar a síntese',
+  todas.band.id === 'code-review' && todas.next?.band.id === 'design-review')
 check('o que falta é nomeado', Boolean(todas.next?.missing.length))
 
 check('a faixa alcançada sempre traz a regra', BANDS.every((b) => b.rule.length > 0))

@@ -698,8 +698,12 @@ export const appGlossary: GlossaryTerm[] = [
     falseFriends: [], introducedIn: APP },
 
   { id: 'app.rank', canonical: 'faixa', canonicalLanguage: 'pt', alsoKnownAs: [],
-    definition: 'O quanto você já consegue julgar, derivado das unidades dominadas: Leitor, Traçador, Analista, Revisor, Árbitro.',
-    isNot: ['não é nível, e não sobe por tempo de uso', 'não é a banda do ciclo, que é onde ele fica no mapa'],
+    definition: 'O quanto você já consegue julgar, derivado das unidades dominadas, e nomeado pela atividade que você já faz: code reading, dry run, complexity analysis, code review, design review.',
+    isNot: [
+      'não é nível, e não sobe por tempo de uso',
+      'não é a banda do ciclo, que é onde ele fica no mapa',
+      'a faixa "dry run" não é o traço de execução: uma é o que você já sabe fazer, o outro é a tabela que você escreve no exercício',
+    ],
     falseFriends: [], introducedIn: APP },
 
   { id: 'app.placement', canonical: 'sondagem', canonicalLanguage: 'pt', alsoKnownAs: ['nivelamento'],

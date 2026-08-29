@@ -61,11 +61,22 @@ export function unitState(unit: Unit, p: Progress, now: number): UnitState {
 // ---------------------------------------------------------------------------
 
 /**
- * A faixa é nomeada por CAPACIDADE, não por nível.
+ * A faixa é nomeada pela ATIVIDADE que a pessoa já consegue fazer.
  *
- * "Analista" diz o que a pessoa consegue fazer; "nível 3" não diz nada e
- * convida a subir por subir. A regra de cada faixa aparece ao lado do nome,
- * sempre, para que ninguém precise adivinhar o que falta.
+ * "nível 3" não diz nada e convida a subir por subir. Substantivo de cargo
+ * também não resolvia: "traçador" e "árbitro" nomeiam um trabalho que ninguém
+ * tem, e eram tradução de agente em inglês, não palavra que alguém use.
+ *
+ * As cinco são atividades que um desenvolvedor faz e nomeia em inglês, e o
+ * glossário arbitra isso do mesmo jeito que arbitra `bucket` e `open
+ * addressing`. Ver ADR-0007 para o que a fronteira de idioma governa e o que
+ * ela não governa.
+ *
+ * "big-O" foi descartado: o glossário já registra `big O` como apelido de
+ * `notação O`, e uma palavra pertence a uma coisa só. ADR-0029.
+ *
+ * A regra de cada faixa aparece ao lado do nome, sempre, para que ninguém
+ * precise adivinhar o que falta.
  */
 export interface Band {
   id: string
@@ -79,26 +90,26 @@ const dominated = (s: UnitState) => s === 'dominada' || s === 'consolidada'
 
 export const BANDS: Band[] = [
   {
-    id: 'leitor',
-    name: 'Leitor',
+    id: 'code-reading',
+    name: 'code reading',
     rule: 'ainda nenhuma unidade dominada',
     missing: () => [],
   },
   {
-    id: 'tracador',
-    name: 'Traçador',
+    id: 'dry-run',
+    name: 'dry run',
     rule: 'unidade 01 dominada',
     missing: (state) => (dominated(state('tracing')) ? [] : ['tracing']),
   },
   {
-    id: 'analista',
-    name: 'Analista',
+    id: 'complexity-analysis',
+    name: 'complexity analysis',
     rule: 'unidades 01 e 02 dominadas',
     missing: (state) => ['tracing', 'asymptotics'].filter((id) => !dominated(state(id))),
   },
   {
-    id: 'revisor',
-    name: 'Revisor',
+    id: 'code-review',
+    name: 'code review',
     rule: 'metade das unidades dominadas, incluindo tabelas hash e ordenação',
     missing: (state, units) => {
       const obrigatorias = ['hash', 'sorting'].filter((id) => !dominated(state(id)))
@@ -111,8 +122,8 @@ export const BANDS: Band[] = [
     },
   },
   {
-    id: 'arbitro',
-    name: 'Árbitro',
+    id: 'design-review',
+    name: 'design review',
     rule: 'as oito unidades dominadas, com a síntese consolidada',
     missing: (state, units) => {
       const faltam = units.filter((u) => !dominated(state(u.id))).map((u) => u.id)
