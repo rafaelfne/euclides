@@ -140,6 +140,11 @@ escrever conteúdo.
 
 ## Comandos
 
+As telas transversais existem porque o dado já estava indexado e faltava a
+vista: `/glossary` mostra os termos com `isNot` e falsos amigos, `/traps` é o
+caderno de armadilhas com as que o aluno já ativou, `/gaps` é o painel de
+lacunas. Nenhuma delas tem conteúdo próprio — todas leem `src/content`.
+
 ```
 npm run dev         desenvolvimento
 npm run validate    só o validador pedagógico

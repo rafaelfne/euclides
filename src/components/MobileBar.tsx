@@ -16,7 +16,10 @@ export function MobileBar({ unitId }: { unitId?: string }) {
           {String(unit.number).padStart(2, '0')} · {unit.title}
         </Link>
       )}
-      <Link href="/gaps" className="lbl ml-auto shrink-0">Lacunas</Link>
+      <div className="ml-auto flex shrink-0 gap-3">
+        <Link href="/traps" className="lbl">Armadilhas</Link>
+        <Link href="/gaps" className="lbl">Lacunas</Link>
+      </div>
     </div>
   )
 }
