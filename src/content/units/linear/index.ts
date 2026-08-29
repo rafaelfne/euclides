@@ -155,6 +155,15 @@ export const linearUnit: Unit = {
         A[j] ← A[j + 1]
     n ← n − 1`,
       invariant: 'Os n elementos ocupam as posições 0 a n − 1, sem buraco no meio.',
+      figure: {
+        kind: 'shift',
+        values: [10, 20, 30, 40, 50],
+        removeAt: 0,
+        caption:
+          'A chamada é uma; as escritas são quatro. E a última posição continua guardando 50 ' +
+          'depois da última escrita: o bloco não encolheu, só o tamanho lógico mudou — que é a ' +
+          'diferença entre capacidade e tamanho.',
+      },
       workedExample: {
         problem: 'Remover a posição 0 de um bloco com 10, 20, 30, 40, 50.',
         whatToNotice: 'A última posição continua guardando 50 depois da última escrita. Só o tamanho muda, e o bloco não encolhe.',

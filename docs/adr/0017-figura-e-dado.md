@@ -73,18 +73,34 @@ rápido uma vez, e declarar é o que impede a figura de mentir na décima. Num p
 nome é "nada é assumido que não esteja declarado", a figura não podia ser a única peça
 autorada que ninguém confere.
 
+## O que o segundo `kind` mostrou
+
+`shift` nasceu logo depois de `growth`, e trouxe uma propriedade que a opção A não teria
+como dar: **a figura e o gabarito derivam do mesmo fato, e agora um confere o outro.**
+
+O bloco e a posição removida são declarados no ciclo; os estados são derivados com a mesma
+regra do gerador de `linear.e3`. `scripts/test-traces.ts` afirma que as duas contas batem —
+mesmo número de escritas, mesmo bloco no fim. Um SVG desenhado à mão poderia mostrar três
+escritas ao lado de um exercício que cobra quatro, e nada perceberia.
+
+Isso é diferente do argumento original, que era sobre a figura não mentir sozinha. Este é
+sobre ela não discordar do exercício ao lado dela.
+
 ## Consequências
 
 - **Fica mais fácil:** trocar a paleta, corrigir um fator, confiar que o desenho concorda
-  com o rótulo.
-- **Fica mais difícil:** a próxima figura, se ela não for uma comparação de crescimento.
+  com o rótulo — e, com `shift`, que ele concorda com o gabarito do exercício.
+- **Fica mais difícil:** a próxima figura, se ela não couber num `kind` existente.
 - **A observar:** se três `kind` diferentes nascerem e nenhum for reaproveitado, a
   abstração não pagou e a opção A merece ser reaberta — com a ressalva de que aí é preciso
-  inventar como conferir o que o desenho afirma.
+  inventar como conferir o que o desenho afirma. Dois nasceram; nenhum reaproveitado ainda.
 
 ## Itens de ação
 
 1. [x] `figure` no schema, com `curveShape` como enum
 2. [x] `GrowthFigure` com `EVAL` exaustivo e cruzamento calculado
-3. [x] Checagem `figura`: curvas distintas, e faixa que cabe no eixo
-4. [ ] Decidir os `kind` das outras quatro visualizações — ou reabrir a opção A
+3. [x] Checagem `figura`, por kind: curvas distintas e faixa no eixo; posição removida que
+   de fato desloca
+4. [x] `shift`, com asserção de que a figura e o gerador de referência concordam
+5. [ ] Decidir os `kind` das três visualizações restantes — colisão e chaining, a árvore
+   degenerando, largura contra profundidade — ou reabrir a opção A

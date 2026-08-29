@@ -85,5 +85,32 @@ for (const { unit, exercise } of traceExercises) {
     `divergiu em ${d.firstDivergentStep}, esperado ${marked}`)
 }
 
+/*
+  A figura e o gabarito derivam do mesmo fato e são escritos em lugares
+  diferentes. Nada impede o autor de declarar um bloco na figura e outro no
+  gerador — e aí o desenho ensina uma coisa e o exercício cobra outra, sem que
+  checagem nenhuma perceba. Ver ADR-0017.
+*/
+for (const u of units) {
+  for (const c of u.cycles) {
+    if (c.figure?.kind !== 'shift') continue
+    const exercise = u.exercises.find((e) => e.id === c.exerciseId)
+    if (exercise?.kind !== 'trace') continue
+    const gen = { linear: removeFirstTrace }[u.id]
+    if (!gen) continue
+    const reference = gen()
+    const writes = c.figure.values.length - 1 - c.figure.removeAt
+    check(`${c.id}: a figura e o gabarito contam as mesmas escritas`,
+      reference.length === writes, `figura ${writes}, gabarito ${reference.length}`)
+    check(`${c.id}: a figura e o gabarito terminam com o mesmo bloco`,
+      reference[reference.length - 1]!.content === (() => {
+        const w = [...c.figure!.values]
+        for (let j = c.figure!.removeAt; j < w.length - 1; j++) w[j] = w[j + 1]!
+        return w.join(' ')
+      })(),
+      reference[reference.length - 1]!.content!)
+  }
+}
+
 console.log(failures ? `\n  ${failures} falha(s)\n` : '\n  todas as checagens passaram\n')
 process.exit(failures ? 1 : 0)

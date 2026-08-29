@@ -7,7 +7,7 @@ import type { Cycle, Exercise, Unit } from '@/content/schema'
 import { allTerms } from '@/content/glossary'
 import { conventions } from '@/content/conventions'
 import { cn } from '@/lib/utils'
-import { GrowthFigure } from './GrowthFigure'
+import { CycleFigure } from './CycleFigure'
 import { Prose } from './Prose'
 import { Pseudocode } from './Pseudocode'
 import { ChoiceExercise } from './ChoiceExercise'
@@ -59,7 +59,7 @@ export function CycleScreen({ unit, cycle, exercise }: { unit: Unit; cycle: Cycl
 
         {cycle.figure && (
           <div className="mt-6 max-w-[820px]">
-            <GrowthFigure figure={cycle.figure} />
+            <CycleFigure figure={cycle.figure} />
           </div>
         )}
 

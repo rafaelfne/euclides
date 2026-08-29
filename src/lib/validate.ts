@@ -196,19 +196,26 @@ export function checkAll(units: Unit[], terms: GlossaryTerm[]): Failure[] {
     for (const c of u.cycles) {
       const f = c.figure
       if (!f) continue
-      const labels = f.curves.map((x) => x.label)
-      if (new Set(labels).size !== labels.length) {
-        fail('figura', `${c.id}: duas curvas com o mesmo rótulo (${labels.join(', ')})`)
-      }
-      if (f.curves.length < 2) {
-        fail('figura', `${c.id}: uma curva sozinha não compara nada`)
-      }
-      if (f.highlight) {
-        if (f.highlight.from >= f.highlight.to) {
-          fail('figura', `${c.id}: a faixa destacada começa depois de terminar`)
+      if (f.kind === 'growth') {
+        const labels = f.curves.map((x) => x.label)
+        if (new Set(labels).size !== labels.length) {
+          fail('figura', `${c.id}: duas curvas com o mesmo rótulo (${labels.join(', ')})`)
         }
-        if (f.highlight.to > f.xMax) {
-          fail('figura', `${c.id}: a faixa destacada (até ${f.highlight.to}) sai do eixo (até ${f.xMax})`)
+        if (f.highlight) {
+          if (f.highlight.from >= f.highlight.to) {
+            fail('figura', `${c.id}: a faixa destacada começa depois de terminar`)
+          }
+          if (f.highlight.to > f.xMax) {
+            fail('figura', `${c.id}: a faixa destacada (até ${f.highlight.to}) sai do eixo (até ${f.xMax})`)
+          }
+        }
+      }
+      if (f.kind === 'shift') {
+        if (f.removeAt >= f.values.length) {
+          fail('figura', `${c.id}: remove a posição ${f.removeAt} de um bloco com ${f.values.length}`)
+        }
+        if (f.removeAt === f.values.length - 1) {
+          fail('figura', `${c.id}: remover a última posição não desloca nada, e a figura existe para mostrar o deslocamento`)
         }
       }
     }

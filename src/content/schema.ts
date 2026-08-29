@@ -124,6 +124,21 @@ export const figure = z.discriminatedUnion('kind', [
       label: z.string().min(1),
     }).optional(),
   }),
+
+  /**
+   * O deslocamento num bloco contíguo, uma linha por escrita.
+   *
+   * O conteúdo declara o bloco e a posição removida; o renderizador deriva os
+   * estados. É o mesmo que o gerador de referência de `linear.e3` faz, e é de
+   * propósito: `scripts/test-traces.ts` confere que os dois concordam, porque
+   * uma figura que discorda do gabarito ensina a coisa errada com convicção.
+   */
+  z.object({
+    kind: z.literal('shift'),
+    caption: z.string().min(1),
+    values: z.array(z.number()).min(3),
+    removeAt: z.number().int().nonnegative(),
+  }),
 ])
 
 // ---------------------------------------------------------------------------
