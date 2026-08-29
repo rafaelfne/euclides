@@ -88,10 +88,11 @@ precisaria de julgamento, e é por essa porta que o nível de aviso volta. Fica 
   pergunta vira "que dado o app tem que eu não estou mostrando?".
 - **Fica mais difícil:** acolher onde não há dado. Se um lugar precisa de acolhimento e
   nada foi medido ali, a resposta é medir, não escrever.
-- **Fica exposto:** o catálogo de armadilhas agora é citado ao aluno pelo tamanho. Isso
-  torna mais visível a dívida que já estava registrada, **as armadilhas são candidatas de
-  campo, não observação deste aluno.** Uma nota que diz "uma das 6 desta unidade" é
-  verdadeira sobre o catálogo e só vale pedagogicamente se o catálogo valer.
+- **Fica exposto:** o catálogo de armadilhas agora é citado ao aluno pelo tamanho, e isso
+  torna mais visível uma dívida que já estava registrada: **as 52 armadilhas foram escritas
+  a partir de erros que aparecem em livro e em fórum, e ninguém observou uma pessoa usando
+  este app e errando.** A nota "uma das 6 desta unidade" é verdadeira sobre o catálogo, e
+  ensina alguma coisa só se as 6 forem os erros que alguém comete de fato.
 - **A observar:** se a nota derivada virar ruído. Ela aparece em toda devolutiva com
   armadilha nomeada, e a repetição pode esvaziá-la.
 

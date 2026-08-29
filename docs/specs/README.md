@@ -59,13 +59,14 @@ introduzido depois dela é editorial.
 
 ## O aviso que continua valendo, agora sobre conteúdo implementado
 
-Os catálogos de armadilhas das oito unidades são **candidatos conhecidos da área, não
-observação de aluno**. O ADR-0002 diz que correção socrática é antecipação em tempo de
-autoria: ela vale pelo que alguém já viu um aluno errar.
+Os catálogos de armadilhas das oito unidades **foram escritos a partir de erros que aparecem
+em livro e em fórum, e ninguém observou uma pessoa usando este app e errando**. O ADR-0002
+diz que correção socrática é antecipação em tempo de autoria: ela vale pelo que alguém já viu
+outra pessoa errar.
 
 O gate não sabe a diferença. A checagem `órfã` confere que toda armadilha é exercitada por
-algum exercício; ela não confere que a armadilha é real. Uma armadilha plausível e nunca
-cometida passa em todas as dezoito checagens sendo conteúdo morto, e é o único modo de
+algum exercício; ela não confere que alguém comete a armadilha. Uma que ninguém comete passa
+em todas as checagens ocupando um exercício sem medir nada, e é o único modo de
 falha que este projeto foi construído inteiro para impedir.
 
 É a primeira coisa a revisar, unidade por unidade, e provavelmente a única que não pode ser

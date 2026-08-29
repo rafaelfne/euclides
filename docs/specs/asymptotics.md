@@ -102,8 +102,8 @@ exercitada pelo traço da árvore de recursão. Ela é a que o desenho deixa o a
 a própria mão, se o custo por nível crescesse, o total seria n², e a tabela mostra que não
 cresce antes de qualquer frase afirmar isso.
 
-O aviso do spec de `tracing` continua valendo: a lista é candidata conhecida da área, não
-observação de aluno.
+O aviso do spec de `tracing` continua valendo: a lista foi escrita a partir de erros que
+aparecem em livro e em fórum, e ninguém observou uma pessoa errando aqui.
 
 ## Critério de domínio
 
