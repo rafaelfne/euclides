@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 import { ChevronLeft, ChevronRight, Map } from 'lucide-react'
 import type { Cycle, Exercise, Unit } from '@/content/schema'
 import { allTerms } from '@/content/glossary'
@@ -9,8 +10,10 @@ import { cn } from '@/lib/utils'
 import { Pseudocode } from './Pseudocode'
 import { ChoiceExercise } from './ChoiceExercise'
 import { TraceExercise } from './TraceExercise'
+import { BugExercise } from './BugExercise'
 import { Badge } from './ui/badge'
 import { Panel, PanelBody, PanelHeader, PanelTitle } from './ui/panel'
+import { exerciseState } from '@/lib/progress'
 import { BAND_LABEL, BAND_TONE, LAYER_LABEL, TONE_TEXT } from './band-tokens'
 
 /**
@@ -29,7 +32,7 @@ export function CycleScreen({ unit, cycle, exercise }: { unit: Unit; cycle: Cycl
 
   return (
     <>
-      <div className="min-w-0 flex-grow overflow-y-auto px-7 py-6 pb-16">
+      <div className="min-w-0 flex-grow overflow-y-auto px-4 py-6 pb-16 sm:px-7">
         <div className="mb-2.5 flex items-center gap-2">
           <span className={cn('lbl', TONE_TEXT[tone])}>{BAND_LABEL[cycle.band]}</span>
           {LAYER_LABEL[cycle.layer] && <span className="lbl text-cost">· {LAYER_LABEL[cycle.layer]}</span>}
@@ -75,7 +78,7 @@ export function CycleScreen({ unit, cycle, exercise }: { unit: Unit; cycle: Cycl
             ? <TraceExercise unit={unit} exercise={exercise} />
             : exercise.kind === 'choice'
               ? <ChoiceExercise unit={unit} exerciseId={exercise.id} prompt={exercise.prompt} choices={exercise.choices} />
-              : <ChoiceExercise unit={unit} exerciseId={exercise.id} prompt={exercise.prompt} choices={exercise.consequences} />}
+              : <BugExercise unit={unit} exercise={exercise} />}
         </div>
 
         {/*
@@ -109,9 +112,71 @@ export function CycleScreen({ unit, cycle, exercise }: { unit: Unit; cycle: Cycl
             </Link>
           )}
         </nav>
+
+        <div className="mt-12 border-t border-rule-soft pt-6 xl:hidden">
+          <CycleAside unit={unit} cycle={cycle} exercise={exercise} />
+        </div>
       </div>
 
-      <aside className="w-[300px] shrink-0 overflow-y-auto border-l border-rule-soft bg-rail px-5 py-6">
+      <aside className="hidden w-[300px] shrink-0 overflow-y-auto border-l border-rule-soft bg-rail px-5 py-6 xl:block">
+        <CycleAside unit={unit} cycle={cycle} exercise={exercise} />
+      </aside>
+    </>
+  )
+}
+
+/**
+ * A matriz prometia destravar ao fim do exercício e nunca destravava: o painel
+ * era texto fixo. Ela é a recompensa declarada por não consultar a resposta
+ * durante a tentativa, e uma recompensa que não chega ensina outra coisa.
+ */
+function TradeOffMatrix({ unit, exerciseId }: { unit: Unit; exerciseId: string }) {
+  const [solved, setSolved] = useState(false)
+  useEffect(() => { setSolved(Boolean(exerciseState(unit.id, exerciseId)?.solved)) }, [unit.id, exerciseId])
+
+  if (!solved) {
+    return (
+      <div className="border border-dashed border-rule px-4 py-3.5 opacity-70">
+        <div className="lbl mb-1.5">Matriz de trade-off</div>
+        <div className="text-[11.5px] leading-snug text-fg-4">
+          Travada enquanto o exercício está aberto. Consultar a resposta durante a tentativa é o
+          hábito que esta trilha desfaz.
+        </div>
+      </div>
+    )
+  }
+
+  const rows = unit.kind === 'structure'
+    ? unit.implementations.map((i) => ({ id: i.id, name: i.name, wrongWhen: i.wrongWhen }))
+    : unit.techniques.map((t) => ({ id: t.id, name: t.name, wrongWhen: t.wrongWhen }))
+
+  return (
+    <div className="border border-rule bg-panel px-4 py-3.5">
+      <div className="lbl mb-2.5 text-implementation">Matriz de trade-off</div>
+      <div className="flex flex-col gap-3">
+        {rows.map((r) => (
+          <div key={r.id} className="flex flex-col gap-1">
+            <span className="text-[12px] font-semibold text-fg-2">{r.name}</span>
+            {r.wrongWhen.map((w) => (
+              <div key={w.scenario} className="text-[11.5px] leading-snug text-fg-4">
+                <span className="text-fg-3">{w.scenario}</span> → {w.useInstead}
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+/**
+ * Legenda e convenções. Em tela larga acompanham a prosa numa coluna própria;
+ * abaixo disso descem para o fim do conteúdo, porque escondê-las seria tirar
+ * justamente a peça que o ADR-0013 criou para ser consultada durante a leitura.
+ */
+function CycleAside({ unit, cycle, exercise }: { unit: Unit; cycle: Cycle; exercise: Exercise }) {
+  return (
+    <>
         {cycle.invariant && (
           <Panel className="mb-6 border-contract-rule bg-contract-bg">
             <PanelHeader className="border-contract-rule bg-transparent">
@@ -141,14 +206,7 @@ export function CycleScreen({ unit, cycle, exercise }: { unit: Unit; cycle: Cycl
           ))}
         </div>
 
-        <div className="border border-dashed border-rule px-4 py-3.5 opacity-70">
-          <div className="lbl mb-1.5">Matriz de trade-off</div>
-          <div className="text-[11.5px] leading-snug text-fg-4">
-            Travada enquanto o exercício está aberto. Consultar a resposta durante a tentativa é o
-            hábito que esta trilha desfaz.
-          </div>
-        </div>
-      </aside>
+        <TradeOffMatrix unit={unit} exerciseId={exercise.id} />
     </>
   )
 }

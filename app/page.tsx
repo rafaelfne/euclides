@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge'
 export default function Home() {
   return (
     <AppShell>
-      <div className="flex flex-grow flex-col gap-7 overflow-y-auto px-7 py-8">
+      <div className="flex flex-grow flex-col gap-7 overflow-y-auto px-4 py-8 sm:px-7">
         <div className="flex max-w-[720px] flex-col gap-3">
           <h1 className="m-0 text-[34px] font-semibold leading-tight">Euclides</h1>
           <p className="m-0 text-[15px] leading-relaxed text-fg-2">
@@ -18,7 +18,7 @@ export default function Home() {
 
         <div className="flex flex-col gap-2">
           <span className="lbl">Primeiro módulo</span>
-          <ul className="m-0 grid list-none grid-cols-2 gap-2 p-0">
+          <ul className="m-0 grid list-none grid-cols-1 gap-2 p-0 lg:grid-cols-2">
             {units.map((u) => (
               <li key={u.id}>
                 <Link

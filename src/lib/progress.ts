@@ -57,6 +57,11 @@ export function recordAttempt(
   return p
 }
 
+/** O estado de um exercício, para a tela reidratar em vez de zerar na recarga. */
+export function exerciseState(unitId: string, exerciseId: string): ExerciseState | undefined {
+  return read().units[unitId]?.exercises[exerciseId]
+}
+
 export type CycleStatus = 'pending' | 'attempted' | 'clean' | 'review'
 
 export function cycleStatus(

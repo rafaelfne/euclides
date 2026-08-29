@@ -1,9 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { Unit, Choice } from '@/content/schema'
 import { misconceptionById } from '@/content'
-import { recordAttempt } from '@/lib/progress'
+import { exerciseState, recordAttempt } from '@/lib/progress'
+import { seededShuffle } from '@/lib/shuffle'
 import { cn } from '@/lib/utils'
 import { Panel, PanelBody, PanelHeader, PanelMeta, PanelTitle } from './ui/panel'
 
@@ -16,10 +17,22 @@ import { Panel, PanelBody, PanelHeader, PanelMeta, PanelTitle } from './ui/panel
 export function ChoiceExercise({
   unit, exerciseId, prompt, choices,
 }: { unit: Unit; exerciseId: string; prompt: string; choices: Choice[] }) {
+  // A ordem é sorteada pelo id do exercício: estável entre recargas, e sem
+  // relação nenhuma com a ordem em que o autor escreveu.
+  const shown = seededShuffle(choices, exerciseId)
+
   const [picked, setPicked] = useState<number | null>(null)
   const [attempts, setAttempts] = useState(0)
 
-  const chosen = picked === null ? null : choices[picked]!
+  // Sem isto o exercício voltava para "sem tentativa" a cada recarga, embora o
+  // painel de lacunas já tivesse registrado o resultado. O progresso existia e
+  // a tela não o lia.
+  useEffect(() => {
+    const st = exerciseState(unit.id, exerciseId)
+    if (st) setAttempts(st.attempts)
+  }, [unit.id, exerciseId])
+
+  const chosen = picked === null ? null : shown[picked]!
   const misconception = chosen && !chosen.correct
     ? misconceptionById(unit, chosen.misconceptionId)
     : undefined
@@ -28,7 +41,7 @@ export function ChoiceExercise({
   const exhausted = misconception ? escalationIndex >= escalation.length : false
 
   const onPick = (i: number) => {
-    const c = choices[i]!
+    const c = shown[i]!
     setPicked(i)
     setAttempts((a) => a + 1)
     recordAttempt(unit.id, exerciseId, {
@@ -47,7 +60,7 @@ export function ChoiceExercise({
         <p className="m-0 text-[15px] leading-relaxed text-fg">{prompt}</p>
 
         <div className="flex flex-col gap-1.5">
-          {choices.map((c, i) => {
+          {shown.map((c, i) => {
             const isPicked = picked === i
             return (
               <button

@@ -33,7 +33,7 @@ export interface UnitGaps {
 const DAY_MS = 86_400_000
 
 function verdictFor(attempts: number, solved: boolean, solvedClean: boolean): string {
-  if (!solved) return `aberto depois de ${attempts} tentativa(s)`
+  if (!solved) return `aberto depois de ${attempts} ${attempts === 1 ? 'tentativa' : 'tentativas'}`
   if (solvedClean) return 'resolvido na primeira tentativa, sem ativar armadilha'
   return `resolvido em ${attempts} tentativas — chegar lá não é o mesmo que dominar`
 }

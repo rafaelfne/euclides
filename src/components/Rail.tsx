@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils'
  */
 export function Rail({ unitId }: { unitId?: string }) {
   return (
-    <nav className="flex h-screen w-[212px] shrink-0 flex-col overflow-y-auto border-r border-rule-soft bg-rail">
+    <nav className="hidden h-screen w-[212px] shrink-0 flex-col overflow-y-auto border-r border-rule-soft bg-rail lg:flex">
       <Link href="/" className="shrink-0 border-b border-rule-soft px-4 py-3.5 text-[17px] font-semibold text-fg hover:text-fg">
         Euclides
       </Link>

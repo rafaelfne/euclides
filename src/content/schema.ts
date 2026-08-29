@@ -345,5 +345,6 @@ export type Misconception = z.infer<typeof misconception>
 export type Choice = z.infer<typeof choice>
 export type Exercise = z.infer<typeof exercise>
 export type TraceExercise = z.infer<typeof traceExercise>
+export type BugHuntExercise = z.infer<typeof bugHuntExercise>
 export type Unit = z.infer<typeof unit>
 export type Progress = z.infer<typeof progress>

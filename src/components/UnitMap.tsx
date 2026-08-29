@@ -93,7 +93,7 @@ export function UnitMap({ unit }: { unit: Unit }) {
   const countLabel = (n: number) => `${n} ${n === 1 ? 'ciclo' : 'ciclos'}`
 
   return (
-    <div className="flex flex-grow flex-col gap-5 overflow-y-auto px-7 py-6">
+    <div className="flex flex-grow flex-col gap-5 overflow-y-auto px-4 py-6 sm:px-7">
       <p className="max-w-[720px] text-[14.5px] leading-relaxed text-fg-2">{unit.motivatingProblem}</p>
 
       <div className="flex flex-col gap-2">
@@ -127,13 +127,13 @@ export function UnitMap({ unit }: { unit: Unit }) {
       <div className="flex flex-col gap-2.5">
         <Panel>
           {bandHeader(openingBand, countLabel(inBand(openingBand).length))}
-          <PanelBody className="flex items-start gap-6">
+          <PanelBody className="flex flex-col items-start gap-4 lg:flex-row lg:gap-6">
             <div className="flex flex-grow flex-col gap-2.5">
               <div className="flex items-baseline gap-3">
                 <span className="text-[17px] font-semibold">{spine.openingTitle}</span>
                 <span className="text-[12px] italic text-fg-3">{spine.openingCaption}</span>
               </div>
-              <div className="grid grid-cols-2 gap-x-6 gap-y-1.5">
+              <div className="grid grid-cols-1 gap-x-6 gap-y-1.5 md:grid-cols-2">
                 {spine.promises.map((p) => (
                   <div key={p.key} className="flex items-baseline gap-2.5">
                     <span className="shrink-0 font-mono text-[11.5px] text-contract">{p.lead}</span>
@@ -154,9 +154,9 @@ export function UnitMap({ unit }: { unit: Unit }) {
             middleBand,
             `${spine.middle.length} ${unit.kind === 'structure' ? 'candidatas' : 'técnicas'} · ${countLabel(inBand(middleBand).length)}`,
           )}
-          <PanelBody className="grid grid-cols-2 gap-x-4 gap-y-4">
+          <PanelBody className="grid grid-cols-1 gap-x-4 gap-y-4 md:grid-cols-2">
             {spine.middle.map((m, i) => (
-              <div key={m.id} className={cn('flex flex-col gap-2', i % 2 === 1 && 'border-l border-rule-soft pl-4')}>
+              <div key={m.id} className={cn('flex flex-col gap-2', i % 2 === 1 && 'md:border-l md:border-rule-soft md:pl-4')}>
                 <span className="text-[15px] font-semibold">{m.name}</span>
                 <span className="min-h-[38px] text-[12.5px] leading-relaxed text-fg-2">{m.summary}</span>
                 {nodes(middleBand, m.id)}
@@ -167,7 +167,7 @@ export function UnitMap({ unit }: { unit: Unit }) {
 
         <Panel>
           {bandHeader(consequenceBand, countLabel(inBand(consequenceBand).length))}
-          <PanelBody className="flex items-center gap-6">
+          <PanelBody className="flex flex-col items-start gap-4 lg:flex-row lg:items-center lg:gap-6">
             <div className="flex flex-grow flex-col gap-1.5">
               <span className="text-[15px] font-semibold">{spine.consequenceTitle}</span>
               <span className="max-w-[560px] text-[12.5px] leading-relaxed text-fg-2">{spine.consequenceBody}</span>

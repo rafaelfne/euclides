@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { Rail } from './Rail'
+import { MobileBar } from './MobileBar'
 
 /**
  * Rail e abas ficam parados; a rolagem pertence ao conteúdo. Cada tela decide
@@ -11,6 +12,7 @@ export function AppShell({ unitId, tabs, children }: { unitId?: string; tabs?: R
     <div className="flex h-screen overflow-hidden">
       <Rail unitId={unitId} />
       <main className="flex min-w-0 flex-grow flex-col">
+        <MobileBar unitId={unitId} />
         {tabs}
         <div className="flex min-h-0 flex-grow overflow-hidden">{children}</div>
       </main>
