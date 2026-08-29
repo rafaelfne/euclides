@@ -31,7 +31,7 @@ export function BandBadge({ compact = false }: { compact?: boolean }) {
   if (compact) {
     return (
       <span className="lbl" title={lv.band.rule}>
-        faixa · {lv.band.name}
+        Faixa · {lv.band.name}
       </span>
     )
   }

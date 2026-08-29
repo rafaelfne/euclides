@@ -116,17 +116,20 @@
   }
 
   /*
-    Rótulo dentro de navegação sobe para 12px.
+    Rótulo dentro de navegação deixa de ser cromo e vira texto.
 
-    11px serve a um rótulo de seção, que é cromo ao lado do conteúdo que ele
-    nomeia. Não serve a um destino clicável: quem ainda não sabe o que está
+    11px em mono versal serve a um rótulo de seção, que nomeia o conteúdo ao
+    lado. Não serve a um destino clicável: quem ainda não sabe o que está
     procurando lê a navegação letra por letra, e é justamente esse leitor que a
-    trilha precisa manter. ADR-0020.
+    trilha precisa manter. Sans em caixa mista, sem tracking de versal e um
+    ponto maior. ADR-0020.
   */
   nav .lbl,
   header .lbl {
-    font-size: 12px;
-    letter-spacing: 0.12em;
+    font-family: var(--sans);
+    font-size: 13px;
+    letter-spacing: 0.01em;
+    text-transform: none;
   }
 
   /* Bloco de pseudocódigo com medianiz numerada, como um editor. */
