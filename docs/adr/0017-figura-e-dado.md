@@ -91,9 +91,20 @@ sobre ela não discordar do exercício ao lado dela.
 - **Fica mais fácil:** trocar a paleta, corrigir um fator, confiar que o desenho concorda
   com o rótulo — e, com `shift`, que ele concorda com o gabarito do exercício.
 - **Fica mais difícil:** a próxima figura, se ela não couber num `kind` existente.
-- **A observar:** se três `kind` diferentes nascerem e nenhum for reaproveitado, a
-  abstração não pagou e a opção A merece ser reaberta — com a ressalva de que aí é preciso
-  inventar como conferir o que o desenho afirma. Dois nasceram; nenhum reaproveitado ainda.
+- **A observar, e o limiar chegou:** eu tinha escrito que se três `kind` nascessem sem
+  nenhum ser reaproveitado, a abstração não teria pago. **Três nasceram — `growth`, `shift`,
+  `tree` — e nenhum foi reaproveitado.**
+
+  Reabro a opção A e a descarto de novo, agora com evidência em vez de argumento. Dois dos
+  três `kind` conferem contra o gerador de referência do exercício do próprio ciclo:
+  `shift` bate o número de escritas e o bloco final com `linear.e3`, e `tree` bate a altura
+  com `trees.e1`. Essa amarração é o que impede a figura de ensinar uma coisa enquanto o
+  exercício ao lado cobra outra, e ela **só existe porque a figura é derivada**. Um SVG
+  autorado não teria como ser conferido contra nada.
+
+  O critério estava errado, não a decisão: reaproveitamento nunca foi o benefício. O
+  benefício é a figura não poder discordar do gabarito. Se um quarto `kind` nascer sem
+  poder ser amarrado a nada, aí sim a opção A merece ser reaberta para aquele caso.
 
 ## Itens de ação
 
@@ -102,5 +113,6 @@ sobre ela não discordar do exercício ao lado dela.
 3. [x] Checagem `figura`, por kind: curvas distintas e faixa no eixo; posição removida que
    de fato desloca
 4. [x] `shift`, com asserção de que a figura e o gerador de referência concordam
-5. [ ] Decidir os `kind` das três visualizações restantes — colisão e chaining, a árvore
-   degenerando, largura contra profundidade — ou reabrir a opção A
+5. [x] `tree`, com a checagem de que as duas sequências comparam o mesmo conjunto de chaves
+6. [ ] Decidir os `kind` das duas restantes — colisão e chaining, largura contra
+   profundidade. A segunda é a que provavelmente não amarra em nada.

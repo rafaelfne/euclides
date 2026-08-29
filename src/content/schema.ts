@@ -139,6 +139,24 @@ export const figure = z.discriminatedUnion('kind', [
     values: z.array(z.number()).min(3),
     removeAt: z.number().int().nonnegative(),
   }),
+
+  /**
+   * Duas árvores de busca construídas com as MESMAS chaves em ordens de chegada
+   * diferentes.
+   *
+   * O conteúdo declara as sequências; o renderizador constrói e mede. Que os
+   * dois conjuntos sejam iguais é checado no build — comparar árvores de chaves
+   * diferentes não mostra o efeito da ordem, mostra o efeito das chaves, e a
+   * figura estaria atribuindo a causa errada.
+   */
+  z.object({
+    kind: z.literal('tree'),
+    caption: z.string().min(1),
+    sequences: z.array(z.object({
+      label: z.string().min(1),
+      keys: z.array(z.number()).min(3),
+    })).length(2),
+  }),
 ])
 
 // ---------------------------------------------------------------------------

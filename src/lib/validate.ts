@@ -210,6 +210,17 @@ export function checkAll(units: Unit[], terms: GlossaryTerm[]): Failure[] {
           }
         }
       }
+      if (f.kind === 'tree') {
+        const sets = f.sequences.map((seq) => [...seq.keys].sort((a, b) => a - b).join(','))
+        if (new Set(sets).size !== 1) {
+          fail('figura', `${c.id}: as duas sequências não têm as mesmas chaves — a figura mostraria o efeito das chaves, não o da ordem`)
+        }
+        for (const seq of f.sequences) {
+          if (new Set(seq.keys).size !== seq.keys.length) {
+            fail('figura', `${c.id}: a sequência "${seq.label}" repete uma chave, e a árvore de busca não guarda duplicata`)
+          }
+        }
+      }
       if (f.kind === 'shift') {
         if (f.removeAt >= f.values.length) {
           fail('figura', `${c.id}: remove a posição ${f.removeAt} de um bloco com ${f.values.length}`)

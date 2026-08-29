@@ -112,5 +112,31 @@ for (const u of units) {
   }
 }
 
+for (const u of units) {
+  for (const c of u.cycles) {
+    if (c.figure?.kind !== 'tree' || u.id !== 'trees') continue
+    const fromGenerator = bstInsertTrace()
+    const same = c.figure.sequences.find(
+      (seq) => seq.keys.join(',') === fromGenerator.map((s) => s.key).join(','),
+    )
+    check(`${c.id}: uma das sequências da figura é a do gerador de referência`, Boolean(same),
+      c.figure.sequences.map((s) => s.keys.join(' ')).join(' | '))
+    if (same) {
+      const height = (() => {
+        type N = { k: number; l: N | null; r: N | null }
+        let root: N | null = null
+        const ins = (n: N | null, k: number): N =>
+          !n ? { k, l: null, r: null } : (k < n.k ? (n.l = ins(n.l, k)) : (n.r = ins(n.r, k)), n)
+        for (const k of same.keys) root = ins(root, k)
+        const h = (n: N | null): number => (n ? 1 + Math.max(h(n.l), h(n.r)) : -1)
+        return h(root)
+      })()
+      check(`${c.id}: a altura da figura bate com a do gabarito`,
+        String(height) === fromGenerator[fromGenerator.length - 1]!.height,
+        `figura ${height}, gabarito ${fromGenerator[fromGenerator.length - 1]!.height}`)
+    }
+  }
+}
+
 console.log(failures ? `\n  ${failures} falha(s)\n` : '\n  todas as checagens passaram\n')
 process.exit(failures ? 1 : 0)

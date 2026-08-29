@@ -197,6 +197,21 @@ export const treesUnit: Unit = {
         'A entrada que produz isso é a coleção já ordenada — a mais comum que existe num sistema real, porque identificador cresce e exportador exporta em ordem. Aqui, como na unidade de análise de custo, o pior caso não é o caso raro.',
         'Vale separar duas palavras que costumam ser trocadas: altura é do nó mais alto até a folha mais distante, contada de baixo para cima; profundidade é da raiz até um nó, contada de cima para baixo. A árvore tem uma altura; cada nó tem a sua profundidade.',
       ],
+      figure: {
+        kind: 'tree',
+        sequences: [
+          { keys: [50, 30, 70, 20, 40, 35], label: 'Chegando fora de ordem: cada inserção escolhe um lado, e a altura fica perto de log n.' },
+          { keys: [20, 30, 35, 40, 50, 70], label: 'Chegando em ordem: toda chave é maior que a anterior, então toda inserção desce à direita.' },
+        ],
+        caption:
+          'As duas árvores guardam exatamente as mesmas seis chaves, e as duas satisfazem a ' +
+          'invariante de ordem. Só a ordem de chegada mudou. A da direita é a coleção já ' +
+          'ordenada — a entrada mais comum que existe num sistema real.',
+      },
+      workedExample: {
+        problem: 'Percorra as duas árvores em ordem simétrica e compare as duas saídas.',
+        whatToNotice: 'São idênticas. A invariante de ordem não diz nada sobre altura, e é por isso que a estrutura pode virar uma lista sem nunca ficar incorreta.',
+      },
       exerciseId: 'trees.e2' },
 
     { id: 'trees.c3', title: 'Balancear: a rotação', layer: 'essential', band: 'implementation', elaborates: 'avl',
