@@ -89,7 +89,19 @@ check('as oito dominadas ainda não é design reviewer, falta consolidar a sínt
   todas.band.id === 'code-reviewer' && todas.next?.band.id === 'design-reviewer')
 check('o que falta é nomeado', Boolean(todas.next?.missing.length))
 
+/*
+  A regra diz o que a pessoa CONSEGUE FAZER; `earnedBy` diz o que ela fez para
+  chegar. Quando as duas eram a mesma frase, a frase era o checklist e a
+  capacidade ficava só no nome — o número disfarçado que o ADR-0022 proíbe.
+*/
 check('a faixa alcançada sempre traz a regra', BANDS.every((b) => b.rule.length > 0))
+check('a faixa alcançada sempre traz o que exige', BANDS.every((b) => b.requires.length > 0))
+check('a regra não é o checklist repetido', BANDS.every((b) => b.rule !== b.requires))
+check('a regra fala de capacidade, e não de unidade completada',
+  BANDS.every((b) => !/unidade/i.test(b.rule)),
+  BANDS.filter((b) => /unidade/i.test(b.rule)).map((b) => b.id).join(', '))
+check('o que a faixa exige fala de unidade',
+  BANDS.slice(1).every((b) => /unidade/i.test(b.requires)))
 
 // --- sondagem --------------------------------------------------------------
 

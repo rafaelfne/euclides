@@ -90,6 +90,17 @@ A regra da faixa alcançada e o que falta para a próxima aparecem **sempre**, l
 Nome sem regra é um número disfarçado: o aluno vê a palavra, não sabe o que fez para chegar
 nem o que falta para sair, e a única coisa que sobra é a sensação de posição.
 
+**Corrigido em 29/08/2026: eram duas frases, e só uma estava escrita.** A `rule` dizia
+"metade das unidades dominadas, incluindo tabelas hash e ordenação" — um checklist de
+progresso, não uma capacidade. Este ADR afirmava que a faixa nomeia uma capacidade, e a
+capacidade estava só no nome, que é exatamente o número disfarçado que o parágrafo acima
+proíbe.
+
+Agora são dois campos. `rule` diz **o que a pessoa já consegue fazer**, e sai do
+`learningObjective` das unidades que a faixa exige; `requires` diz **o que a faixa exige**, e
+é o checklist de antes. `scripts/test-level.ts` confere que as duas existem, que não são a
+mesma frase, e que a primeira não fala de unidade completada.
+
 code reviewer exige hash e ordenação nominalmente, e não quatro unidades quaisquer: a faixa afirma
 uma capacidade, e essas duas são o que ela afirma.
 

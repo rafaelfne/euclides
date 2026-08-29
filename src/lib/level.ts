@@ -89,7 +89,21 @@ export type BandId =
 export interface Band {
   id: BandId
   name: string
+  /**
+   * O que a pessoa já consegue fazer, e não quais unidades ela completou.
+   *
+   * As duas coisas estavam na mesma frase, e a frase dizia só a segunda:
+   * "metade das unidades dominadas" é um checklist de progresso, e o ADR-0022
+   * afirmava que a faixa nomeia uma capacidade. O nome carregava a capacidade
+   * sozinho, que é o número disfarçado que este ADR existe para impedir.
+   *
+   * Cada regra sai do `learningObjective` das unidades que a faixa exige.
+   * `scripts/test-level.ts` confere que as cinco declaram as duas frases e que
+   * elas não são a mesma.
+   */
   rule: string
+  /** O que a faixa exige. É o checklist, e ele continua visível ao lado. */
+  requires: string
   /** Devolve as unidades que ainda faltam para alcançar esta faixa. */
   missing: (state: (unitId: string) => UnitState, units: Unit[]) => string[]
 }
@@ -100,25 +114,29 @@ export const BANDS: Band[] = [
   {
     id: 'code-reader',
     name: 'code reader',
-    rule: 'ainda nenhuma unidade dominada',
+    rule: 'nenhuma capacidade verificada ainda; a faixa só sobe com exercício resolvido na primeira tentativa',
+    requires: 'nada, é onde todo mundo começa',
     missing: () => [],
   },
   {
     id: 'code-tracer',
     name: 'code tracer',
-    rule: 'unidade 01 dominada',
+    rule: 'dizer o que um trecho de código faz, quantas vezes o laço dele roda e o que ele devolve nas entradas de fronteira, sem executar',
+    requires: 'a unidade 01 dominada',
     missing: (state) => (dominated(state('tracing')) ? [] : ['tracing']),
   },
   {
     id: 'complexity-analyst',
     name: 'complexity analyst',
-    rule: 'unidades 01 e 02 dominadas',
+    rule: 'escrever uma afirmação de custo com as partes que a tornam verificável, e construir a entrada em que cada parte omitida inverteria a conclusão',
+    requires: 'as unidades 01 e 02 dominadas',
     missing: (state) => ['tracing', 'asymptotics'].filter((id) => !dominated(state(id))),
   },
   {
     id: 'code-reviewer',
     name: 'code reviewer',
-    rule: 'metade das unidades dominadas, incluindo tabelas hash e ordenação',
+    rule: 'diante de uma estrutura em código que nunca viu, dizer qual implementação o custo observado denuncia e prever quando ela degrada',
+    requires: 'metade das unidades dominadas, incluindo tabelas hash e ordenação',
     missing: (state, units) => {
       const obrigatorias = ['hash', 'sorting'].filter((id) => !dominated(state(id)))
       const total = units.filter((u) => dominated(state(u.id))).length
@@ -132,7 +150,8 @@ export const BANDS: Band[] = [
   {
     id: 'design-reviewer',
     name: 'design reviewer',
-    rule: 'as oito unidades dominadas, com a síntese consolidada',
+    rule: 'diante de um requisito em português, sem estrutura sugerida, produzir a justificativa de escolha inteira e dizer em que cenário ela é a errada',
+    requires: 'as oito unidades dominadas, com a síntese consolidada',
     missing: (state, units) => {
       const faltam = units.filter((u) => !dominated(state(u.id))).map((u) => u.id)
       if (faltam.length) return faltam

@@ -35,7 +35,7 @@ export function BandBadge({ compact = false }: { compact?: boolean }) {
 
   const pill = (
     <span
-      title={lv.band.rule}
+      title={`${lv.band.rule}. Exige ${lv.band.requires}.`}
       className={cn(
         'inline-flex items-center rounded-full border px-2.5 py-0.5',
         'font-sans text-[12px] leading-normal font-medium whitespace-nowrap',
@@ -50,10 +50,11 @@ export function BandBadge({ compact = false }: { compact?: boolean }) {
 
   return (
     <div className="flex flex-col gap-1">
-      <div className="flex flex-wrap items-center gap-2.5">
+      <div className="flex flex-wrap items-baseline gap-2.5">
         {pill}
-        <span className="text-[12.5px] text-fg-4">{lv.band.rule}</span>
+        <span className="text-[12.5px] text-fg-2">{lv.band.rule}</span>
       </div>
+      <span className="text-[12.5px] text-fg-4">exige {lv.band.requires}</span>
       {lv.next && (
         <span className="text-[12.5px] text-fg-3">
           falta para {lv.next.band.name}: {missing!.join(', ')}
