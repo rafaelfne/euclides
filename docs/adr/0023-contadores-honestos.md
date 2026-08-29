@@ -78,8 +78,19 @@ desligado e a fórmula ao lado; se um dia o número aparecer sozinho em algum ca
 
 - **Fica mais fácil:** responder "onde eu estou" sem inventar métrica.
 - **Fica mais difícil:** acrescentar número. Todo agregado novo tem de passar no teste.
-- **Fica exposto:** `revisits` cresce sem limite. São poucos registros por exercício, mas
-  ninguém poda.
+- **Medido em 29/08/2026, e não se poda:** `revisits` cresce sem limite, e o limite não
+  chega. Cada entrada tem 46 bytes; 62 exercícios revisitados a cada 30 dias produzem 744
+  entradas por ano, 33 KB. São 31 anos para 1 MB e 153 para os 5 MB usuais do
+  `localStorage`.
+
+  Podar também não é barato, porque as quatro derivações que leem `revisits` contam
+  entradas: revisitas honradas e armadilhas desarmadas em `counters.ts`, o estado
+  `desarmada` do caderno e o degrau da fila em `traps.ts`. Cortar o array faz o contador de
+  revisitas honradas DESCER, que é a desonestidade que este ADR existe para impedir.
+  Podar sem mentir exigiria gravar o total ao lado do array, com migração de schema.
+
+  E o array não pode virar só um total: medir se 3, 10 e 30 dias são os intervalos certos
+  (ADR-0024) precisa dos carimbos de data, e nada mais os lê hoje.
 - **A observar:** se alguém liga o índice. Não há telemetria para saber, o que é consequência
   de não ter servidor.
 
@@ -90,4 +101,4 @@ desligado e a fórmula ao lado; se um dia o número aparecer sozinho em algum ca
 3. [x] `judgment` atrás de interruptor, desligado, com a fórmula visível
 4. [x] Contadores no `/perfil` e no topo de `/gaps`
 5. [x] `scripts/test-counters.ts`, com o teste do princípio 2 em primeiro lugar
-6. [ ] Podar `revisits` se ele crescer demais
+6. [x] Podar `revisits` se ele crescer demais — medido, ele não cresce demais
