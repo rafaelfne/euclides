@@ -16,6 +16,10 @@ considerado e por que perdeu.
 aterrissa aqui versionado; `/implement-unit` trabalha contra ele. `specs/README.md` tem o
 currículo do primeiro módulo e as decisões que travam a escrita.
 
+**`perguntas-de-onboarding.md`**, as ambiguidades e contradições que um agente encontrou na
+primeira leitura do repositório, com a evidência de cada uma. Não é uma das camadas acima; é
+um registro do que ainda não foi decidido.
+
 ## Ordem de leitura para quem chega
 
 1. `discovery/00-problema.md`, quem é o aluno e o que conta como sucesso
