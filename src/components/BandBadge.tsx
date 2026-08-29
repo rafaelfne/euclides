@@ -35,6 +35,7 @@ export function BandBadge({ compact = false }: { compact?: boolean }) {
 
   const pill = (
     <span
+      title={lv.band.rule}
       className={cn(
         'inline-flex items-center rounded-full border px-2.5 py-0.5',
         'font-sans text-[12px] leading-normal font-medium whitespace-nowrap',
@@ -45,22 +46,11 @@ export function BandBadge({ compact = false }: { compact?: boolean }) {
     </span>
   )
 
-  if (compact) {
-    return (
-      <span
-        className="inline-flex items-center gap-2"
-        title={`Faixa: ${lv.band.name}, ${lv.band.rule}`}
-      >
-        <span className="lbl">Faixa</span>
-        {pill}
-      </span>
-    )
-  }
+  if (compact) return pill
 
   return (
     <div className="flex flex-col gap-1">
       <div className="flex flex-wrap items-center gap-2.5">
-        <span className="lbl">Faixa</span>
         {pill}
         <span className="text-[12.5px] text-fg-4">{lv.band.rule}</span>
       </div>
