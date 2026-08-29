@@ -122,13 +122,14 @@ function Panel({
   )
 }
 
-export function TraversalFigure({ figure }: { figure: Extract<Figure, { kind: 'traversal' }> }) {
+export function TraversalFigure({ figure, autoPlay }: { figure: Extract<Figure, { kind: 'traversal' }>; autoPlay?: boolean }) {
   return (
     <figure className="m-0 border border-rule bg-panel">
       <div className="border-b border-rule bg-panel-head px-3.5 py-2">
         <span className="lbl">Percurso · origem {figure.origin}, o mesmo grafo nos dois</span>
       </div>
       <Stepper
+        autoPlay={autoPlay}
         count={bfsOrder(figure.edges, figure.origin).length}
         labelFor={(k) =>
           `${k + 1}º visitado, largura ${bfsOrder(figure.edges, figure.origin)[k]}, profundidade ${dfsOrder(figure.edges, figure.origin)[k]}`

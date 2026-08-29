@@ -20,10 +20,17 @@ export function Stepper({
   count,
   labelFor,
   children,
+  autoPlay = false,
 }: {
   count: number
   labelFor: (step: number) => string
   children: (step: number) => React.ReactNode
+  /**
+   * Roda uma passada ao montar. Ligado só no modo iniciante, e nunca no de
+   * revisão: quem já julgou aquele conteúdo não quer a animação entre a prosa e
+   * o exercício. Continua sendo uma passada e continua parando. ADR-0027.
+   */
+  autoPlay?: boolean
 }) {
   const [step, setStep] = useState(count - 1)
   const [playing, setPlaying] = useState(false)
@@ -31,7 +38,10 @@ export function Stepper({
 
   useEffect(() => {
     reduced.current = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  }, [])
+    // Quem pediu menos movimento não recebe a passada automática: ele recebe a
+    // figura inteira, que é onde o `count - 1` inicial já a deixa.
+    if (autoPlay && !reduced.current) { setStep(0); setPlaying(true) }
+  }, [autoPlay])
 
   useEffect(() => {
     if (!playing) return

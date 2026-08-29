@@ -291,6 +291,24 @@ export const cycle = z.object({
     problem: z.string().min(1),
     whatToNotice: z.string().min(1),
   }),
+  /**
+   * O postmortem do incidente que abriu a unidade.
+   *
+   * Só o ÚLTIMO ciclo de cada unidade tem, e a checagem `chamado` confere os
+   * dois lados: sem ele no último, e com ele em qualquer outro, reprova. Uma
+   * unidade que abre com um incidente e termina sem voltar a ele deixou o aluno
+   * com uma história pela metade. ADR-0027.
+   */
+  postmortem: z.object({
+    /** A retomada do incidente, em uma frase. */
+    incident: z.string().min(1),
+    /** Qual armadilha estava ali. Precisa existir no catálogo da unidade. */
+    trapId: z.string().min(1),
+    /** Qual afirmação de custo faltava. */
+    missingClaim: z.string().min(1),
+    /** O que teria pego isso na revisão. */
+    whatWouldCatch: z.string().min(1),
+  }).optional(),
   /** Every cycle ends in an exercise. Not optional, principle 2. */
   exerciseId: z.string().min(1),
 })

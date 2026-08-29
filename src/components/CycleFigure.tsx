@@ -25,15 +25,15 @@ const RecursionFigure = dynamic(
  * renderizador. É a mesma regra dos mapas de banda, o enum nunca chega à tela
  * sem alguém ter dito o que ele desenha.
  */
-export function CycleFigure({ figure }: { figure: Figure }) {
+export function CycleFigure({ figure, autoPlay = false }: { figure: Figure; autoPlay?: boolean }) {
   switch (figure.kind) {
     case 'growth': return <GrowthFigure figure={figure} />
-    case 'shift': return <ShiftFigure figure={figure} />
-    case 'tree': return <TreeFigure figure={figure} />
-    case 'buckets': return <BucketsFigure figure={figure} />
-    case 'traversal': return <TraversalFigure figure={figure} />
-    case 'recursion': return <RecursionFigure figure={figure} />
-    case 'growth-doubling': return <DoublingFigure figure={figure} />
+    case 'shift': return <ShiftFigure figure={figure} autoPlay={autoPlay} />
+    case 'tree': return <TreeFigure figure={figure} autoPlay={autoPlay} />
+    case 'buckets': return <BucketsFigure figure={figure} autoPlay={autoPlay} />
+    case 'traversal': return <TraversalFigure figure={figure} autoPlay={autoPlay} />
+    case 'recursion': return <RecursionFigure figure={figure} autoPlay={autoPlay} />
+    case 'growth-doubling': return <DoublingFigure figure={figure} autoPlay={autoPlay} />
     case 'stability': return <StabilityFigure figure={figure} />
   }
 }

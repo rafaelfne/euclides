@@ -251,6 +251,12 @@ export const asymptoticsUnit: Unit = {
         problem: 'Olhe três procedimentos sem contar nada: um laço sobre a coleção, um que chama a si mesmo em metades, e um append num array dinâmico.',
         whatToNotice: 'A forma decide a técnica antes de qualquer conta começar. Escolher errado aqui não dá resultado errado, dá o resultado certo por um caminho caro.',
       },
+      postmortem: {
+        incident: "Volte à consulta que foi de 40 ms com dez mil registros para 4 s com um milhão, sem ninguém mudar o código.",
+        trapId: "asymptotics.pior-caso-e-raro",
+        missingClaim: "o regime. A afirmação registrada era \"é rápido\", e o que valia era O(n²) no pior caso, com o pior caso sendo a entrada já ordenada.",
+        whatWouldCatch: "Exigir as cinco partes na descrição do PR. Sem regime declarado, a frase não sobrevive à revisão.",
+      },
       exerciseId: 'asymptotics.e6' },
   ],
 

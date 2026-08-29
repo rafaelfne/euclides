@@ -28,6 +28,7 @@
 | [0024](0024-bestiario-e-revisita.md) | O bestiário, o selo, e a fila que conta voltas em vez de dias | Ler a explicação não desarma; sequência de dias sobe por login |
 | [0025](0025-diagramas.md) | Oito diagramas, e o orçamento que o React Flow estourou | O ciclo chamado "desenhada" não tinha desenho; 78 KB uma vez, e só para grafo |
 | [0026](0026-camada-instrumento.md) | A camada instrumento, e o formato como parte do treino | Julgar um diff é diferente de julgar um arquivo; atalho tem de ter botão |
+| [0027](0027-modo-e-chamado.md) | O modo que eu tinha descartado, e o chamado que fecha | Esconder só é perda quando quem esconde não é o leitor |
 
 ## Como escrever o próximo
 

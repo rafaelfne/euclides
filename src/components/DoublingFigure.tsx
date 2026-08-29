@@ -34,7 +34,7 @@ function steps(figure: Extract<Figure, { kind: 'growth-doubling' }>): Step[] {
   return out
 }
 
-export function DoublingFigure({ figure }: { figure: Extract<Figure, { kind: 'growth-doubling' }> }) {
+export function DoublingFigure({ figure, autoPlay }: { figure: Extract<Figure, { kind: 'growth-doubling' }>; autoPlay?: boolean }) {
   const all = steps(figure)
   const maxCost = Math.max(...all.map((s) => s.cost))
   const bar = (W - PAD * 2) / all.length
@@ -48,6 +48,7 @@ export function DoublingFigure({ figure }: { figure: Extract<Figure, { kind: 'gr
       </div>
 
       <Stepper
+        autoPlay={autoPlay}
         count={all.length}
         labelFor={(k) => {
           const s = all[k]!

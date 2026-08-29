@@ -168,6 +168,12 @@ export const synthesisUnit: Unit = {
         problem: "Um trecho que ordena 50 mil registros para devolver o menor, a cada requisição: cerca de 780 mil comparações onde 49.999 bastavam. Todos os testes passam.",
         whatToNotice: "As 4 perguntas expõem isso e nenhuma delas olha para a saída. Comece por qual operação domina.",
       },
+      postmortem: {
+        incident: "Volte ao trecho que ordenava 50 mil registros para devolver o menor, a cada requisição, com todos os testes passando.",
+        trapId: "synthesis.dominante-por-intuicao",
+        missingClaim: "o custo das duas candidatas lado a lado. Varrer custa n − 1 comparações; ordenar custa n log n, e ninguém escreveu as duas.",
+        whatWouldCatch: "As quatro perguntas, e nenhuma delas olha para a saída. Comece por qual operação domina.",
+      },
       exerciseId: 'synthesis.e5' },
   ],
 

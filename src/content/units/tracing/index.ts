@@ -190,6 +190,12 @@ export const tracingUnit: Unit = {
         problem: "Com uma coleção de 0 elementos, `i < |A| e A[i] > 3` é seguro: o primeiro lado é falso e o segundo não roda. Invertendo para `A[i] > 3 e i < |A|`, a mesma coleção vazia falha na primeira leitura.",
         whatToNotice: "As duas condições são logicamente equivalentes e só uma delas roda. Repare que a versão quebrada passa em qualquer teste com pelo menos 1 elemento.",
       },
+      postmortem: {
+        incident: "Volte ao pull request de trinta linhas que passava nos testes. O laço tinha uma condição composta, e o segundo lado quebrava com a coleção vazia.",
+        trapId: "tracing.curto-circuito",
+        missingClaim: "nenhuma: a unidade 01 não afirma custo. O que faltava era a frase \"para a coleção vazia, esta função devolve X\", e ninguém a escreveu.",
+        whatWouldCatch: "O traço das três primeiras rodadas mais o caso de zero rodadas. Dois minutos de tabela, sem executar nada.",
+      },
       exerciseId: 'tracing.e6' },
   ],
 

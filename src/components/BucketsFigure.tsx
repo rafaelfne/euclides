@@ -12,7 +12,7 @@ const PAD_LEFT = 104
 const CELL = 78
 const NOTE = 190
 
-export function BucketsFigure({ figure }: { figure: Extract<Figure, { kind: 'buckets' }> }) {
+export function BucketsFigure({ figure, autoPlay }: { figure: Extract<Figure, { kind: 'buckets' }>; autoPlay?: boolean }) {
   const full = Array.from({ length: figure.m }, (_, i) => figure.keys.filter((k) => k % figure.m === i))
   const widest = Math.max(...full.map((b) => b.length))
   const w = PAD_LEFT + Math.max(1, widest) * CELL + NOTE
@@ -124,6 +124,7 @@ export function BucketsFigure({ figure }: { figure: Extract<Figure, { kind: 'buc
   return (
     <div className="border border-rule bg-panel">
       <Stepper
+        autoPlay={autoPlay}
         count={figure.keys.length}
         labelFor={(k) => `inserida a chave ${figure.keys[k]} → bucket ${figure.keys[k]! % figure.m}`}
       >

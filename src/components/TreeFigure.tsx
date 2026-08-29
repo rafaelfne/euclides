@@ -56,7 +56,7 @@ const COL = 42
 const LEVEL = 46
 const R = 15
 
-export function TreeFigure({ figure }: { figure: Extract<Figure, { kind: 'tree' }> }) {
+export function TreeFigure({ figure, autoPlay }: { figure: Extract<Figure, { kind: 'tree' }>; autoPlay?: boolean }) {
   const total = figure.sequences[0]!.keys.length
 
   const render = (upTo: number) => {
@@ -136,6 +136,7 @@ export function TreeFigure({ figure }: { figure: Extract<Figure, { kind: 'tree' 
   return (
     <div className="border border-rule bg-panel">
       <Stepper
+        autoPlay={autoPlay}
         count={total}
         labelFor={(k) =>
           figure.sequences.map((seq) => seq.keys[k]).join('  ·  ') + '  inseridas'

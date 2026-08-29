@@ -226,6 +226,12 @@ export const linearUnit: Unit = {
         problem: "Um cadastro com 50 mil e-mails, e a pergunta \"esse e-mail já existe?\". Com lista, são até 50 mil comparações por cadastro novo.",
         whatToNotice: "Nenhuma das 4 operações da lista responde isso. O custo alto não é o defeito, o defeito é o contrato não prometer a pergunta.",
       },
+      postmortem: {
+        incident: "Volte à fila de jobs em array, removendo sempre da posição 0, que travou com dez mil pendentes.",
+        trapId: "linear.insercao-no-comeco-e-barata",
+        missingClaim: "o custo de remover do começo num bloco contíguo: n − 1 escritas por remoção, e não uma.",
+        whatWouldCatch: "Perguntar qual ponta a carga usa antes de escolher a implementação. Fila tira do começo, e bloco contíguo cobra por isso.",
+      },
       exerciseId: 'linear.e6' },
   ],
 

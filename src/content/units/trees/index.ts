@@ -275,6 +275,12 @@ export const treesUnit: Unit = {
         problem: "Um cache de sessão por token, 100 mil entradas, e nenhuma consulta por faixa. A árvore cobra cerca de 17 comparações por acesso; a tabela hash cobra 1.",
         whatToNotice: "A ordem está sendo paga em toda operação e nenhuma consulta a usa. É a decisão do ciclo 0 lida ao contrário.",
       },
+      postmortem: {
+        incident: "Volte ao relatório de pedidos entre 1º e 15 de março, e ao índice que o plano de execução não usava.",
+        trapId: "trees.arvore-substitui-hash",
+        missingClaim: "qual consulta o índice responde. Um índice hash responde igualdade; faixa e ordem pedem árvore, e a diferença não aparece no nome da coluna.",
+        whatWouldCatch: "Listar as consultas antes de criar o índice. \"Entre duas datas, em ordem\" é faixa mais ordem, e isso escolhe a estrutura sozinho.",
+      },
       exerciseId: 'trees.e6' },
   ],
 

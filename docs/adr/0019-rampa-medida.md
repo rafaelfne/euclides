@@ -100,6 +100,9 @@ ainda não sabe o que procurar. Piso tipográfico da navegação em 12 px.
 falta é a instância antes dele, não outra voz.
 
 ### B, Alternador Iniciante / Revisão
+**REVERTIDA pelo ADR-0027.** O argumento abaixo tratava esconder como perda, e esconder só é
+perda quando quem esconde não é o leitor. Fica registrado como estava.
+
 Proposto pela leitura: modo iniciante mostraria a frase simples, o exemplo aberto e a
 animação já rodada.
 **Descartada, e vale dizer por quê.** Depois das decisões 1 a 4, as três coisas que esse

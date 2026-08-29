@@ -261,6 +261,12 @@ export const hashUnit: Unit = {
         problem: "Peça \"os 20 usuários mais recentes\" a um Map com 50 mil pares: a única saída é percorrer os 50 mil e ordenar.",
         whatToNotice: "A estrutura não está lenta, ela está respondendo uma pergunta que o contrato dela nunca prometeu. Compare com a lista de ausências do ciclo 0.",
       },
+      postmortem: {
+        incident: "Volte aos dez milhões de e-mails e à pergunta \"esse e-mail já existe?\" a cada signup.",
+        trapId: "hash.o1-sem-qualificar",
+        missingClaim: "os quatro qualificadores. \"O(1)\" sozinho não diz que é amortizado, nem que supõe hashing uniforme, nem que ignora o custo de hashear a chave.",
+        whatWouldCatch: "Perguntar quem escolhe as chaves. Vindo de fora, o caso médio deixa de descrever o que vai acontecer.",
+      },
       exerciseId: 'hash.e5' },
   ],
 

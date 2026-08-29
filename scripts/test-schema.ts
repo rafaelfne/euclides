@@ -111,6 +111,12 @@ const fixture: Unit = {
       oneLine: 'Cada uma das 4 omissões produz uma frase que soa certa.',
       body: ['Volte à lista de 4 omissões do primeiro ciclo: cada uma é uma afirmação que soa certa.'],
       workedExample: { problem: 'Fixture.', whatToNotice: 'Fixture.' },
+      postmortem: {
+        incident: 'Fixture.',
+        trapId: 'fixture.sem-qualificar',
+        missingClaim: 'Fixture.',
+        whatWouldCatch: 'Fixture.',
+      },
       exerciseId: 'fixture.e3' },
   ],
 

@@ -47,6 +47,7 @@ export const CHECKS = [
   ['sobrecarga', 'sobrecarga: todo termo sobrecarregado declara seus falsos amigos'],
   ['estreia', 'estreia: nenhum termo aparece na prosa antes do ciclo que o estreia'],
   ['sondagem', 'sondagem: toda sonda aponta um exercício de escolha que existe na unidade dela'],
+  ['chamado', 'chamado: toda unidade fecha, no último ciclo, o incidente que abriu'],
 ] as const
 
 /** Colunas que o exercício já entrega preenchidas; ver `GIVEN` em TraceExercise. */
@@ -617,6 +618,32 @@ export function checkAll(units: Unit[], terms: GlossaryTerm[]): Failure[] {
   for (const f of forwardCitations) {
     if (!used.has(`${f.cycle}|${f.term}`)) {
       fail('estreia', `citação declarada em ${f.cycle} para "${f.term}" não acontece mais, remova a licença`)
+    }
+  }
+
+  /*
+    --- chamado -------------------------------------------------------------
+
+    Toda unidade abre com um incidente concreto em `motivatingProblem`, e sem
+    isto ela terminava sem voltar a ele. Uma história pela metade é pior que
+    nenhuma: o aluno guarda a abertura e nunca recebe a resposta.
+
+    A checagem confere os dois lados. O postmortem no meio da unidade seria
+    fechar o chamado antes de ter as ferramentas para fechá-lo. ADR-0027.
+  */
+  for (const u of units) {
+    const last = u.cycles[u.cycles.length - 1]
+    for (const c of u.cycles) {
+      const isLast = c.id === last?.id
+      if (isLast && !c.postmortem) {
+        fail('chamado', `${u.id}: o último ciclo (${c.id}) não fecha o incidente da abertura`)
+      }
+      if (!isLast && c.postmortem) {
+        fail('chamado', `${c.id}: só o último ciclo da unidade fecha o chamado`)
+      }
+      if (c.postmortem && !u.misconceptions.some((m) => m.id === c.postmortem!.trapId)) {
+        fail('chamado', `${c.id}: o postmortem aponta "${c.postmortem.trapId}", que não está no catálogo da unidade`)
+      }
     }
   }
 

@@ -65,7 +65,7 @@ function CallNode({ data }: NodeProps<Node<CallData>>) {
 
 const nodeTypes = { call: CallNode }
 
-export function RecursionFigure({ figure }: { figure: Extract<Figure, { kind: 'recursion' }> }) {
+export function RecursionFigure({ figure, autoPlay }: { figure: Extract<Figure, { kind: 'recursion' }>; autoPlay?: boolean }) {
   const levels = useMemo(() => levelsOf(figure), [figure])
 
   const build = (upTo: number): { nodes: Node<CallData>[]; edges: Edge[] } => {
@@ -118,6 +118,7 @@ export function RecursionFigure({ figure }: { figure: Extract<Figure, { kind: 'r
       </div>
 
       <Stepper
+        autoPlay={autoPlay}
         count={total}
         labelFor={(k) => {
           const l = levels[k]!

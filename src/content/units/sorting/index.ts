@@ -279,6 +279,12 @@ export const sortingUnit: Unit = {
         problem: "Sobre uma coleção de 10 mil quase ordenada, a biblioteca acha os trechos já em ordem, completa os menores que 32 com insertion sort, e intercala. O resultado fica perto de O(n).",
         whatToNotice: "Nenhum dos dois algoritmos sozinho dá isso: a intercalação ignoraria a ordem existente, e o insertion sort não garantiria o pior caso.",
       },
+      postmortem: {
+        incident: "Volte aos pedidos ordenados por data e depois por cliente, que saíram fora da ordem de data sem ninguém pedir.",
+        trapId: "sorting.sort-e-estavel",
+        missingClaim: "a estabilidade. O contrato de ordenar não diz nada sobre o que acontece com os elementos que empatam, e a segunda ordenação empatava em cliente.",
+        whatWouldCatch: "Perguntar o que o algoritmo faz com um empate. Sem estabilidade declarada, ordenar duas vezes desfaz a primeira.",
+      },
       exerciseId: 'sorting.e8' },
   ],
 

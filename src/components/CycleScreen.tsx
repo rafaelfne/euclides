@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils'
 import { cycleMinutes, humanMinutes } from '@/lib/duration'
 import { CycleFigure } from './CycleFigure'
 import { CycleShortcuts } from './CycleShortcuts'
+import { ModeToggle, useMode } from './ModeToggle'
 import { Prose } from './Prose'
 import { TermCard } from './TermCard'
 import { findMarks } from '@/lib/glossary-link'
@@ -35,6 +36,14 @@ export function CycleScreen({ unit, cycle, exercise }: { unit: Unit; cycle: Cycl
     .map((id) => allTerms.find((t) => t.id === id))
     .filter((t): t is NonNullable<typeof t> => Boolean(t))
   const tone = BAND_TONE[cycle.band]
+  const mode = useMode()
+
+  /*
+    A frase de conforto aparece só nos três primeiros ciclos da unidade 01, e só
+    no modo iniciante. Ela é derivada, não autorada: o número de armadilhas vem
+    do catálogo, e é o ADR-0018 valendo — acolhimento é afirmação verificável.
+  */
+  const firstCycles = unit.number === 1 && unit.cycles.findIndex((c) => c.id === cycle.id) < 3
 
   // Os termos que ESTE ciclo estreia, mais o vocabulário do app, que não
   // estreia em ciclo nenhum e é o que falta para quem chega sem referente.
@@ -57,6 +66,7 @@ export function CycleScreen({ unit, cycle, exercise }: { unit: Unit; cycle: Cycl
           <span className={cn('lbl', TONE_TEXT[tone])}>{BAND_LABEL[cycle.band]}</span>
           {LAYER_LABEL[cycle.layer] && <span className="lbl text-cost">· {LAYER_LABEL[cycle.layer]}</span>}
           <span className="lbl ml-auto">{humanMinutes(cycleMinutes(unit, cycle.id))}</span>
+          <ModeToggle />
         </div>
 
         <h1 className="m-0 mb-4 max-w-[820px] text-[30px] font-semibold leading-tight text-fg">{cycle.title}</h1>
@@ -81,6 +91,14 @@ export function CycleScreen({ unit, cycle, exercise }: { unit: Unit; cycle: Cycl
           {cycle.oneLine}
         </p>
 
+        {mode === 'iniciante' && firstCycles && (
+          <p className="m-0 mb-5 max-w-[820px] text-[13px] leading-relaxed text-fg-4">
+            Errar aqui é o esperado: esta unidade tem {unit.misconceptions.length} armadilhas
+            catalogadas, escritas antes de você chegar. O app não dá a resposta, dá a tarefa
+            que produz a resposta.
+          </p>
+        )}
+
         <div className="flex max-w-[820px] flex-col gap-3.5">
           {cycle.body.map((p, i) => (
             <p key={i} className="m-0 text-[14.5px] leading-[1.75] text-fg-2"><Prose terms={termsPerParagraph[i]}>{p}</Prose></p>
@@ -89,7 +107,7 @@ export function CycleScreen({ unit, cycle, exercise }: { unit: Unit; cycle: Cycl
 
         {cycle.figure && (
           <div className="mt-6 max-w-[820px]">
-            <CycleFigure figure={cycle.figure} />
+            <CycleFigure figure={cycle.figure} autoPlay={mode === 'iniciante'} />
           </div>
         )}
 
@@ -99,15 +117,51 @@ export function CycleScreen({ unit, cycle, exercise }: { unit: Unit; cycle: Cycl
           </div>
         )}
 
-        <Panel className="mt-6 max-w-[820px] border-cost-rule bg-cost-bg">
-            <PanelHeader className="border-cost-rule bg-transparent">
-              <PanelTitle className="text-cost">Exemplo trabalhado</PanelTitle>
-            </PanelHeader>
-            <PanelBody className="flex flex-col gap-2">
-              <span className="text-[13.5px] text-fg-2">{cycle.workedExample.problem}</span>
-              <span className="text-[13.5px] italic text-fg-3">{cycle.workedExample.whatToNotice}</span>
-            </PanelBody>
-        </Panel>
+        {/*
+          Aberto no modo iniciante, recolhido no de revisão. Quem já julgou este
+          conteúdo não quer o exemplo entre a prosa e o exercício. ADR-0027.
+        */}
+        <details
+          open={mode === 'iniciante'}
+          className="mt-6 max-w-[820px] border border-cost-rule bg-cost-bg"
+        >
+          <summary className="lbl cursor-pointer px-3.5 py-2 text-cost">Exemplo trabalhado</summary>
+          <div className="flex flex-col gap-2 border-t border-cost-rule px-3.5 py-3">
+            <span className="text-[13.5px] text-fg-2">{cycle.workedExample.problem}</span>
+            <span className="text-[13.5px] italic text-fg-3">{cycle.workedExample.whatToNotice}</span>
+          </div>
+        </details>
+
+        {/*
+          O chamado fecha aqui, e só no último ciclo.
+          A unidade abriu com um incidente concreto e passou por sete ciclos de
+          técnica; sem voltar a ele, o aluno guarda a abertura e nunca recebe a
+          resposta. As quatro perguntas são as mesmas em todas as unidades, de
+          propósito: é o roteiro que ele deve levar embora. ADR-0027.
+        */}
+        {cycle.postmortem && (
+          <div className="mt-8 max-w-[860px] border border-cost-rule bg-cost-bg">
+            <div className="border-b border-cost-rule px-4 py-2">
+              <span className="lbl text-cost">Postmortem, o chamado que abriu a unidade</span>
+            </div>
+            <div className="flex flex-col gap-3.5 px-4 py-4">
+              <p className="m-0 text-[14.5px] leading-relaxed text-fg">{cycle.postmortem.incident}</p>
+
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-[auto_1fr] sm:gap-x-5 sm:gap-y-2.5">
+                <span className="lbl whitespace-nowrap">qual armadilha</span>
+                <span className="text-[13.5px] leading-relaxed text-fg-2">
+                  {unit.misconceptions.find((m) => m.id === cycle.postmortem!.trapId)?.label}
+                </span>
+
+                <span className="lbl whitespace-nowrap">qual afirmação faltava</span>
+                <span className="text-[13.5px] leading-relaxed text-fg-2">{cycle.postmortem.missingClaim}</span>
+
+                <span className="lbl whitespace-nowrap">o que teria pego</span>
+                <span className="text-[13.5px] leading-relaxed text-fg-2">{cycle.postmortem.whatWouldCatch}</span>
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="mt-8 max-w-[860px]">
           {exercise.kind === 'trace'

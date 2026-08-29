@@ -74,6 +74,12 @@ acertou na quarta? `dominada` exige o critério na primeira tentativa, e `consol
 voltar depois do intervalo, não esperar. Não há percentual de conclusão em tela nenhuma:
 percentual mede visita. ADR-0022.
 
+**Toda unidade fecha o chamado que abriu.** O último ciclo retoma o incidente do
+`motivatingProblem` num `postmortem` de quatro partes, iguais nas oito unidades: qual
+armadilha estava ali, qual afirmação de custo faltava, o que teria pego isso. A checagem
+`chamado` confere os dois lados, e fechar no meio da unidade seria fechar antes de o aluno
+ter as ferramentas. ADR-0027.
+
 **Acolhimento é afirmação verificável, ou não entra.** O princípio 7 proíbe elogio vago, não
 proíbe informação verdadeira sobre dificuldade. A diferença é mecânica: "muita gente erra
 aqui" o app não sabe; "uma das 6 armadilhas desta unidade" o catálogo prova. Não existe

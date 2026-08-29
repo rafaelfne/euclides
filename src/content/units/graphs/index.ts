@@ -261,6 +261,12 @@ export const graphsUnit: Unit = {
         problem: "Uma estrutura de pastas com 5 mil nós, onde cada pasta tem exatamente 1 pai. Modelada como grafo, todo percurso carrega um conjunto de visitados que nunca impede nada.",
         whatToNotice: "Você está pagando pela possibilidade de ciclo numa estrutura que não tem ciclo. A árvore da unidade anterior já prometia o caminho único.",
       },
+      postmortem: {
+        incident: "Volte à tela de permissões que nunca carregava, com times herdando de times.",
+        trapId: "graphs.percurso-sem-visitados",
+        missingClaim: "nenhuma de custo: o percurso não terminava. O que faltava era a frase \"este percurso termina para entrada com ciclo\", e ela era falsa.",
+        whatWouldCatch: "Perguntar se a estrutura admite ciclo. Admitindo, o conjunto de visitados deixa de ser detalhe e vira condição de parada.",
+      },
       exerciseId: 'graphs.e7' },
   ],
 

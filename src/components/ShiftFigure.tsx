@@ -16,7 +16,7 @@ const CELL = 58
 const ROW = 40
 const PAD_LEFT = 92
 
-export function ShiftFigure({ figure }: { figure: Extract<Figure, { kind: 'shift' }> }) {
+export function ShiftFigure({ figure, autoPlay }: { figure: Extract<Figure, { kind: 'shift' }>; autoPlay?: boolean }) {
   const n = figure.values.length
   const writes = n - 1 - figure.removeAt
 
@@ -41,6 +41,7 @@ export function ShiftFigure({ figure }: { figure: Extract<Figure, { kind: 'shift
         </span>
       </div>
       <Stepper
+        autoPlay={autoPlay}
         count={states.length}
         labelFor={(k) => (k === 0 ? 'antes de escrever' : `${k} de ${writes} escritas`)}
       >
