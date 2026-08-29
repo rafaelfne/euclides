@@ -12,7 +12,7 @@ import {
   unit as unitSchema, MAX_NEW_TERMS_PER_CYCLE, MAX_ONE_LINE_WORDS, BANDS_BY_KIND,
   type Unit, type Choice, type GlossaryTerm,
 } from '../content/schema'
-import { OVERLOADED_TERMS, PLANNED } from '../content/glossary'
+import { OVERLOADED_TERMS, PLANNED, APP } from '../content/glossary'
 import { vagueAbstractions, allowedVagueUses } from '../content/vocabulary'
 import { referenceGenerators } from './reference'
 import { bfsOrder, dfsOrder, vertices } from './traversal'
@@ -470,6 +470,15 @@ export function checkAll(units: Unit[], terms: GlossaryTerm[]): Failure[] {
   for (const t of terms) {
     if (seen.has(t.id)) fail('glossário', `id duplicado: ${t.id}`)
     seen.add(t.id)
+
+    if (t.introducedIn === APP) {
+      // Termo do produto, não da matéria: ele nasce na primeira tela, e nenhum
+      // ciclo pode reivindicá-lo em introducesTerms.
+      if (introducedBy.has(t.id)) {
+        fail('glossário', `${t.id}: é vocabulário do app e ${introducedBy.get(t.id)} o reivindica`)
+      }
+      continue
+    }
 
     if (t.introducedIn === PLANNED) {
       if (!t.plannedIn) fail('glossário', `${t.id}: é "${PLANNED}" e não diz onde pretende nascer`)

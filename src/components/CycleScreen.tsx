@@ -9,6 +9,7 @@ import { conventions } from '@/content/conventions'
 import { cn } from '@/lib/utils'
 import { CycleFigure } from './CycleFigure'
 import { Prose } from './Prose'
+import { findMarks } from '@/lib/glossary-link'
 import { Pseudocode } from './Pseudocode'
 import { ChoiceExercise } from './ChoiceExercise'
 import { TraceExercise } from './TraceExercise'
@@ -31,6 +32,19 @@ export function CycleScreen({ unit, cycle, exercise }: { unit: Unit; cycle: Cycl
     .map((id) => allTerms.find((t) => t.id === id))
     .filter((t): t is NonNullable<typeof t> => Boolean(t))
   const tone = BAND_TONE[cycle.band]
+
+  // Os termos que ESTE ciclo estreia, mais o vocabulário do app — que não
+  // estreia em ciclo nenhum e é o que falta para quem chega sem referente.
+  //
+  // A ligação é uma por ciclo, não uma por parágrafo: o mesmo termo sublinhado
+  // três vezes na mesma tela vira ruído, e a estreia acontece uma vez só.
+  const linkable = [...cycle.introducesTerms, ...allTerms.filter((t) => t.id.startsWith('app.')).map((t) => t.id)]
+  const remaining = new Set(linkable)
+  const termsPerParagraph = cycle.body.map((text) => {
+    const here = findMarks(text, [...remaining]).map((m) => m.term.id)
+    here.forEach((id) => remaining.delete(id))
+    return here
+  })
 
   return (
     <>
@@ -62,7 +76,7 @@ export function CycleScreen({ unit, cycle, exercise }: { unit: Unit; cycle: Cycl
 
         <div className="flex max-w-[820px] flex-col gap-3.5">
           {cycle.body.map((p, i) => (
-            <p key={i} className="m-0 text-[14.5px] leading-[1.75] text-fg-2"><Prose>{p}</Prose></p>
+            <p key={i} className="m-0 text-[14.5px] leading-[1.75] text-fg-2"><Prose terms={termsPerParagraph[i]}>{p}</Prose></p>
           ))}
         </div>
 

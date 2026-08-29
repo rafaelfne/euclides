@@ -648,6 +648,64 @@ export const plannedGlossary: GlossaryTerm[] = [
 export const PLANNED = 'planned'
 
 /**
+ * O vocabulário do próprio app.
+ *
+ * O glossário explicava os termos de computação e não explicava ciclo, banda,
+ * armadilha, lacuna nem revisita — as palavras com que o app fala do aluno
+ * para o aluno. Uma leitura de iniciante achou isso antes de mim: o produto
+ * apresenta o vocabulário da matéria e assume o próprio. ADR-0019.
+ *
+ * `introducedIn` é APP porque estes termos não nascem num ciclo: eles nascem
+ * na primeira tela. A checagem `glossário` trata esse valor à parte e exige
+ * que nenhum ciclo os reivindique.
+ */
+export const APP = 'app'
+
+export const appGlossary: GlossaryTerm[] = [
+  { id: 'app.cycle', canonical: 'ciclo', canonicalLanguage: 'pt', alsoKnownAs: ['aula', 'lição'],
+    definition: 'A menor unidade de estudo: uma frase de abertura, dois ou três parágrafos, um exemplo trabalhado e um exercício que fecha.',
+    isNot: ['não é um capítulo — um ciclo cabe em poucos minutos', 'não termina sem exercício'],
+    falseFriends: [{ context: 'grafos', meaning: 'na unidade de grafos, ciclo é um caminho que volta ao ponto de partida. Nada a ver com o ciclo de estudo.' }],
+    introducedIn: APP },
+
+  { id: 'app.band', canonical: 'banda', canonicalLanguage: 'pt', alsoKnownAs: ['faixa', 'trilho'],
+    definition: 'Onde o ciclo fica no mapa da unidade: contrato, implementação ou custo — critério, técnica ou falha, quando a unidade é sobre um método.',
+    isNot: ['não é dificuldade', 'não é ordem obrigatória de leitura'],
+    falseFriends: [], introducedIn: APP },
+
+  { id: 'app.criterion', canonical: 'critério de domínio', canonicalLanguage: 'pt', alsoKnownAs: ['critério'],
+    definition: 'A lista de exercícios que precisam sair na primeira tentativa para a unidade contar como dominada.',
+    isNot: ['não é nota', 'não é "fez todos os exercícios" — é "resolveu estes sem ativar armadilha"'],
+    falseFriends: [], introducedIn: APP },
+
+  { id: 'app.trap', canonical: 'armadilha', canonicalLanguage: 'pt', alsoKnownAs: ['misconception', 'ideia errada'],
+    definition: 'Um erro de raciocínio previsto, com nome, escrito no catálogo da unidade antes de você chegar. Toda alternativa incorreta aponta uma.',
+    isNot: ['não é um erro seu — é um erro que o material esperava', 'não é bug de código'],
+    falseFriends: [], introducedIn: APP },
+
+  { id: 'app.gap', canonical: 'lacuna', canonicalLanguage: 'pt', alsoKnownAs: ['gap'],
+    definition: 'Uma armadilha que você ativou e ainda não desativou resolvendo o exercício dela na primeira tentativa.',
+    isNot: ['não é o mesmo que errar uma vez', 'não é uma nota baixa — é um item para revisitar'],
+    falseFriends: [], introducedIn: APP },
+
+  { id: 'app.revisit', canonical: 'revisita', canonicalLanguage: 'pt', alsoKnownAs: ['revisão'],
+    definition: 'Voltar a um ciclo já resolvido depois de um intervalo, para ver se o raciocínio ficou ou se só a resposta ficou.',
+    isNot: ['não é refazer tudo', 'não é castigo por ter errado'],
+    falseFriends: [], introducedIn: APP },
+
+  { id: 'app.trace', canonical: 'traço de execução', canonicalLanguage: 'pt', alsoKnownAs: ['trace', 'tabela de execução'],
+    definition: 'A tabela em que você escreve, rodada por rodada, o valor de cada nome que muda. É o exercício central da primeira unidade.',
+    isNot: ['não é rodar o código', 'não é log'],
+    falseFriends: [{ context: 'observabilidade', meaning: 'em sistemas distribuídos, um trace é o registro do caminho de uma requisição entre serviços. Mesma palavra, outro objeto.' }],
+    introducedIn: APP },
+
+  { id: 'app.escalation', canonical: 'escalation', canonicalLanguage: 'en', alsoKnownAs: ['tarefas da armadilha'],
+    definition: 'As tarefas que a devolutiva entrega quando você erra — de uma a três, uma por tentativa. Esgotadas, o exercício encerra.',
+    isNot: ['não é a resposta em partes — nenhuma delas revela o valor certo', 'não é ilimitada'],
+    falseFriends: [], introducedIn: APP },
+]
+
+/**
  * Words a student meets meaning four different things. Registering one here
  * makes `falseFriends` mandatory for it — the rest of the glossary may leave
  * the field empty rather than invent an entry.
@@ -660,6 +718,7 @@ export const OVERLOADED_TERMS = [
 ]
 
 export const allTerms: GlossaryTerm[] = [
+  ...appGlossary,
   ...tracingGlossary, ...asymptoticsGlossary, ...linearGlossary, ...hashGlossary,
   ...treesGlossary, ...graphsGlossary, ...sortingGlossary, ...synthesisGlossary,
   ...plannedGlossary,

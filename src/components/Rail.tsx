@@ -37,10 +37,11 @@ export function Rail({ unitId }: { unitId?: string }) {
         })}
       </div>
 
-      <div className="mt-auto flex flex-col border-t border-rule-soft">
-        <Link href="/traps" className="lbl px-4 py-2.5 hover:bg-panel-head hover:text-fg-2">Armadilhas</Link>
-        <Link href="/glossary" className="lbl px-4 py-2.5 hover:bg-panel-head hover:text-fg-2">Glossário</Link>
-        <Link href="/gaps" className="lbl px-4 py-2.5 hover:bg-panel-head hover:text-fg-2">Lacunas</Link>
+      <div className="mt-auto flex flex-col border-t border-rule-soft pb-9">
+        <Link href="/como-funciona" className="lbl m-tap px-4 py-2.5 hover:bg-panel-head hover:text-fg-2">Como funciona</Link>
+        <Link href="/traps" className="lbl m-tap px-4 py-2.5 hover:bg-panel-head hover:text-fg-2">Armadilhas</Link>
+        <Link href="/glossary" className="lbl m-tap px-4 py-2.5 hover:bg-panel-head hover:text-fg-2">Glossário</Link>
+        <Link href="/gaps" className="lbl m-tap px-4 py-2.5 hover:bg-panel-head hover:text-fg-2">Lacunas</Link>
       </div>
     </nav>
   )

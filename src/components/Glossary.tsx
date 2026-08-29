@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
 import type { GlossaryTerm } from '@/content/schema'
-import { PLANNED } from '@/content/glossary'
+import { PLANNED, APP } from '@/content/glossary'
 import { units } from '@/content'
 import { cn } from '@/lib/utils'
 import { Badge } from './ui/badge'
@@ -39,13 +39,16 @@ export function Glossary({ terms }: { terms: GlossaryTerm[] }) {
   const groups = useMemo(() => {
     const by = new Map<string, GlossaryTerm[]>()
     for (const t of shown) {
-      const key = t.introducedIn === PLANNED ? PLANNED : (unitOf.get(t.introducedIn)?.id ?? 'outros')
+      const key = t.introducedIn === PLANNED || t.introducedIn === APP
+        ? t.introducedIn
+        : (unitOf.get(t.introducedIn)?.id ?? 'outros')
       by.set(key, [...(by.get(key) ?? []), t])
     }
     return by
   }, [shown, unitOf])
 
-  const ordered = [...units.map((u) => u.id), PLANNED, 'outros'].filter((k) => groups.has(k))
+  // O vocabulário do app abre a lista: é o que o aluno precisa para ler o resto.
+  const ordered = [APP, ...units.map((u) => u.id), PLANNED, 'outros'].filter((k) => groups.has(k))
 
   return (
     <div className="flex flex-col gap-3">
@@ -68,19 +71,25 @@ export function Glossary({ terms }: { terms: GlossaryTerm[] }) {
           <Panel key={key} className="max-w-[900px]">
             <PanelHeader>
               <PanelTitle className="text-fg-2">
-                {unit ? unit.title : key === PLANNED ? 'Termos de unidades futuras' : 'Outros'}
+                {unit
+                  ? unit.title
+                  : key === APP
+                    ? 'O vocabulário desta trilha'
+                    : key === PLANNED
+                      ? 'Termos de unidades futuras'
+                      : 'Outros'}
               </PanelTitle>
               {unit && <PanelMeta>Unidade {String(unit.number).padStart(2, '0')}</PanelMeta>}
             </PanelHeader>
             <PanelBody className="flex flex-col gap-4">
               {rows.map((t) => (
-                <div key={t.id} className="border-l-2 border-rule pl-4">
+                <div key={t.id} id={t.id} className="scroll-mt-6 border-l-2 border-rule pl-4">
                   <div className="flex flex-wrap items-baseline gap-2">
                     <span className="font-mono text-[13.5px] font-semibold text-contract">{t.canonical}</span>
                     {t.alsoKnownAs.length > 0 && (
                       <span className="text-[12px] text-fg-4">também: {t.alsoKnownAs.join(', ')}</span>
                     )}
-                    {t.introducedIn !== PLANNED && (
+                    {t.introducedIn !== PLANNED && t.introducedIn !== APP && (
                       <Link
                         href={`/units/${unitOf.get(t.introducedIn)?.id}/cycles/${t.introducedIn}`}
                         className="ml-auto font-mono text-[12px] text-fg-4 hover:text-contract"

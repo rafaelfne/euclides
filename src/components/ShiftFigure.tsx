@@ -1,4 +1,5 @@
 import type { Figure } from '@/content/schema'
+import { Stepper } from './Stepper'
 
 /**
  * O deslocamento num bloco contíguo, uma linha por escrita.
@@ -39,6 +40,11 @@ export function ShiftFigure({ figure }: { figure: Extract<Figure, { kind: 'shift
           {writes === 1 ? 'escrita' : 'escritas'}
         </span>
       </div>
+      <Stepper
+        count={states.length}
+        labelFor={(k) => (k === 0 ? 'antes de escrever' : `${k} de ${writes} escritas`)}
+      >
+        {(upTo) => (
       <div className="overflow-x-auto p-3">
         <svg viewBox={`0 0 ${width} ${height}`} className="w-full min-w-[520px]" role="img" aria-label={figure.caption}>
           {figure.values.map((_, i) => (
@@ -55,9 +61,9 @@ export function ShiftFigure({ figure }: { figure: Extract<Figure, { kind: 'shift
             </text>
           ))}
 
-          {states.map((state, r) => {
+          {states.slice(0, upTo + 1).map((state, r) => {
             const y = 26 + r * ROW
-            const last = r === states.length - 1
+            const last = r === upTo
             return (
               <g key={r}>
                 <text x={PAD_LEFT - 12} y={y + 21} textAnchor="end" fill="var(--fg-4)" fontSize="10.5" fontFamily="var(--mono)">
@@ -125,6 +131,8 @@ export function ShiftFigure({ figure }: { figure: Extract<Figure, { kind: 'shift
           </defs>
         </svg>
       </div>
+        )}
+      </Stepper>
       <figcaption className="border-t border-rule px-3.5 py-2.5 text-[12.5px] leading-relaxed text-fg-3">
         {figure.caption}
       </figcaption>

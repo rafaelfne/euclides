@@ -1,4 +1,5 @@
 import type { Figure } from '@/content/schema'
+import { Stepper } from './Stepper'
 
 /**
  * Duas árvores das mesmas chaves, em ordens de chegada diferentes.
@@ -56,14 +57,17 @@ const LEVEL = 46
 const R = 15
 
 export function TreeFigure({ figure }: { figure: Extract<Figure, { kind: 'tree' }> }) {
-  const trees = figure.sequences.map((seq) => {
-    let root: Node | null = null
-    for (const k of seq.keys) root = insert(root, k)
-    return { label: seq.label, nodes: place(root), height: heightOf(root), keys: seq.keys }
-  })
+  const total = figure.sequences[0]!.keys.length
 
-  return (
-    <figure className="m-0 border border-rule bg-panel">
+  const render = (upTo: number) => {
+    const trees = figure.sequences.map((seq) => {
+      const keys = seq.keys.slice(0, upTo + 1)
+      let root: Node | null = null
+      for (const k of keys) root = insert(root, k)
+      return { label: seq.label, nodes: place(root), height: heightOf(root), keys }
+    })
+    return (
+    <figure className="m-0">
       <div className="border-b border-rule bg-panel-head px-3.5 py-2">
         <span className="lbl">As mesmas chaves, duas ordens de chegada</span>
       </div>
@@ -78,7 +82,7 @@ export function TreeFigure({ figure }: { figure: Extract<Figure, { kind: 'tree' 
               <div className="flex items-baseline justify-between gap-2">
                 <span className="font-mono text-[11px] text-fg-2">{t.keys.join(' ')}</span>
                 <span
-                  className={`lbl ${t.height >= t.keys.length - 1 ? 'text-implementation' : 'text-contract'}`}
+                  className={`lbl ${t.keys.length > 2 && t.height >= t.keys.length - 1 ? 'text-implementation' : 'text-contract'}`}
                 >
                   altura {t.height}
                 </span>
@@ -104,7 +108,7 @@ export function TreeFigure({ figure }: { figure: Extract<Figure, { kind: 'tree' 
                       cy={n.y * LEVEL + 8 + R}
                       r={R}
                       fill="var(--panel)"
-                      stroke={t.height >= t.keys.length - 1 ? 'var(--implementation)' : 'var(--contract)'}
+                      stroke={t.keys.length > 2 && t.height >= t.keys.length - 1 ? 'var(--implementation)' : 'var(--contract)'}
                       strokeWidth="1.5"
                     />
                     <text
@@ -125,9 +129,23 @@ export function TreeFigure({ figure }: { figure: Extract<Figure, { kind: 'tree' 
           )
         })}
       </div>
+    </figure>
+    )
+  }
+
+  return (
+    <div className="border border-rule bg-panel">
+      <Stepper
+        count={total}
+        labelFor={(k) =>
+          figure.sequences.map((seq) => seq.keys[k]).join('  ·  ') + '  inseridas'
+        }
+      >
+        {render}
+      </Stepper>
       <figcaption className="border-t border-rule px-3.5 py-2.5 text-[12.5px] leading-relaxed text-fg-3">
         {figure.caption}
       </figcaption>
-    </figure>
+    </div>
   )
 }

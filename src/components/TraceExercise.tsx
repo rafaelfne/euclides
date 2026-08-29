@@ -12,6 +12,7 @@ import { cn } from '@/lib/utils'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { Panel, PanelBody, PanelHeader, PanelMeta, PanelTitle } from './ui/panel'
+import { Stepper } from './Stepper'
 
 /** Columns the student fills in; `step` and `key` are given. */
 const GIVEN = new Set(['step', 'key'])
@@ -93,7 +94,7 @@ export function TraceExercise({ unit, exercise }: { unit: Unit; exercise: TraceE
         </details>
 
         <div className="relative overflow-x-auto border border-rule">
-          <table className="w-full min-w-[720px] border-collapse">
+          <table className="w-full min-w-[720px] border-collapse [&_td:first-child]:w-16 [&_th:first-child]:w-16">
             <thead>
               <tr>
                 {exercise.columns.map((c) => (
@@ -101,7 +102,8 @@ export function TraceExercise({ unit, exercise }: { unit: Unit; exercise: TraceE
                     key={c.key}
                     className={cn(
                       'lbl border-b border-rule bg-panel-head px-2.5 py-2 text-left font-normal',
-                      GIVEN.has(c.key) && 'sticky left-0 z-10 border-r border-rule',
+                      c.key === 'step' && 'sticky left-0 z-10',
+                      c.key === 'key' && 'sticky left-[64px] z-10 border-r border-rule',
                     )}
                   >
                     {c.label}
@@ -119,7 +121,8 @@ export function TraceExercise({ unit, exercise }: { unit: Unit; exercise: TraceE
                         key={c.key}
                         className={cn(
                           'border-b border-rule-soft align-middle',
-                          GIVEN.has(c.key) && 'sticky left-0 z-10 border-r border-rule bg-panel',
+                          c.key === 'step' && 'sticky left-0 z-10 bg-panel',
+                          c.key === 'key' && 'sticky left-[64px] z-10 border-r border-rule bg-panel',
                           isDivergent && GIVEN.has(c.key) && 'bg-implementation-bg',
                         )}
                       >
@@ -186,6 +189,47 @@ export function TraceExercise({ unit, exercise }: { unit: Unit; exercise: TraceE
         {blanks === 0 && solved && (
           <div className="border-l-2 border-contract pl-4 text-[13.5px] leading-relaxed text-fg-2">
             O traço confere com a implementação de referência em todos os passos.
+          </div>
+        )}
+
+        {/*
+          O traço rodando, e só DEPOIS que o exercício fecha.
+          Preencher a tabela passo a passo é entregar a resposta, e o princípio 3
+          proíbe isso enquanto há tentativa em aberto. Resolvido ou com a escada
+          esgotada, o exercício acabou: aí a mesma animação deixa de ser cola e
+          vira a explicação que o aluno veio buscar. ADR-0019.
+        */}
+        {blanks === 0 && (solved || feedback?.exhausted) && reference.length > 0 && (
+          <div className="border border-rule bg-panel-head">
+            <div className="border-b border-rule px-3.5 py-2">
+              <span className="lbl">O traço rodando</span>
+            </div>
+            <Stepper
+              count={reference.length}
+              labelFor={(k) => `rodada ${k + 1} de ${reference.length}`}
+            >
+              {(upTo) => (
+                <div className="overflow-x-auto">
+                  <table className="w-full min-w-[560px] border-collapse">
+                    <tbody>
+                      {reference.slice(0, upTo + 1).map((r, i) => (
+                        <tr key={i} className={cn(i === upTo && 'm-fade-in bg-contract-bg')}>
+                          {exercise.columns.map((c) => (
+                            <td
+                              key={c.key}
+                              className="border-b border-rule-soft px-2.5 py-1.5 font-mono text-[12px]"
+                            >
+                              <span className="lbl mr-2 hidden sm:inline">{c.label}</span>
+                              <span className={i === upTo ? 'text-fg' : 'text-fg-3'}>{r[c.key]}</span>
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </Stepper>
           </div>
         )}
 

@@ -16,6 +16,17 @@ export default function Home() {
           </p>
         </div>
 
+        <Link
+          href="/como-funciona"
+          className="m-tap flex max-w-[720px] items-baseline gap-3 border border-contract-rule bg-contract-bg px-4 py-3 text-inherit hover:bg-panel-hover"
+        >
+          <span className="text-[14.5px] font-semibold text-fg">Primeira vez aqui?</span>
+          <span className="text-[13px] text-fg-3">
+            Como funciona, o que significa cada palavra, e por onde começar.
+          </span>
+          <span className="ml-auto font-mono text-[12px] text-contract">→</span>
+        </Link>
+
         <div className="flex flex-col gap-2">
           <span className="lbl">Primeiro módulo</span>
           <ul className="m-0 grid list-none grid-cols-1 gap-2 p-0 lg:grid-cols-2">

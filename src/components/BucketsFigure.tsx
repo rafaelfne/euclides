@@ -1,4 +1,5 @@
 import type { Figure } from '@/content/schema'
+import { Stepper } from './Stepper'
 
 /**
  * A tabela com chaining. A distribuição é derivada de m e das chaves, com a
@@ -12,16 +13,19 @@ const CELL = 78
 const NOTE = 190
 
 export function BucketsFigure({ figure }: { figure: Extract<Figure, { kind: 'buckets' }> }) {
-  const buckets = Array.from({ length: figure.m }, (_, i) => figure.keys.filter((k) => k % figure.m === i))
-  const widest = Math.max(...buckets.map((b) => b.length))
+  const full = Array.from({ length: figure.m }, (_, i) => figure.keys.filter((k) => k % figure.m === i))
+  const widest = Math.max(...full.map((b) => b.length))
   const w = PAD_LEFT + Math.max(1, widest) * CELL + NOTE
   const h = figure.m * ROW + 14
 
   const target = figure.searchFor
   const targetBucket = target === undefined ? -1 : target % figure.m
 
-  return (
-    <figure className="m-0 border border-rule bg-panel">
+  const render = (upTo: number) => {
+    const inserted = figure.keys.slice(0, upTo + 1)
+    const buckets = Array.from({ length: figure.m }, (_, i) => inserted.filter((k) => k % figure.m === i))
+    return (
+    <figure className="m-0">
       <div className="border-b border-rule bg-panel-head px-3.5 py-2">
         <span className="lbl">Chaining · m = {figure.m}, h(k) = k</span>
       </div>
@@ -104,7 +108,7 @@ export function BucketsFigure({ figure }: { figure: Extract<Figure, { kind: 'buc
           })}
         </svg>
       </div>
-      {target !== undefined && (
+      {target !== undefined && buckets[targetBucket]!.includes(target) && (
         <div className="border-t border-rule px-3.5 py-2 font-mono text-[11.5px] text-fg-3">
           buscar({target}): 1 endereço, e depois{' '}
           <span className="text-implementation">
@@ -113,9 +117,21 @@ export function BucketsFigure({ figure }: { figure: Extract<Figure, { kind: 'buc
           dentro do bucket {targetBucket}
         </div>
       )}
+    </figure>
+    )
+  }
+
+  return (
+    <div className="border border-rule bg-panel">
+      <Stepper
+        count={figure.keys.length}
+        labelFor={(k) => `inserida a chave ${figure.keys[k]} → bucket ${figure.keys[k]! % figure.m}`}
+      >
+        {render}
+      </Stepper>
       <figcaption className="border-t border-rule px-3.5 py-2.5 text-[12.5px] leading-relaxed text-fg-3">
         {figure.caption}
       </figcaption>
-    </figure>
+    </div>
   )
 }
