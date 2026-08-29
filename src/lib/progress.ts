@@ -34,10 +34,11 @@ export function write(next: Progress): void {
 }
 
 export type ExerciseState = Progress['units'][string]['exercises'][string]
+export type TraceRow = Record<string, string>
 
 export function recordAttempt(
   unitId: string, exerciseId: string,
-  patch: { solved: boolean; misconception?: string },
+  patch: { solved: boolean; misconception?: string; savedRows?: TraceRow[] },
 ): Progress {
   const p = read()
   const unit = p.units[unitId] ?? { exercises: {} }
@@ -56,6 +57,7 @@ export function recordAttempt(
     solvedClean: prev.solvedClean || (patch.solved && prev.attempts === 0 && triggered.length === 0),
     misconceptionsTriggered: triggered,
     freeText: prev.freeText,
+    savedRows: patch.savedRows ?? prev.savedRows,
     lastVisited: new Date().toISOString(),
   }
   p.units[unitId] = unit

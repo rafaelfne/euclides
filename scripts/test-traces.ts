@@ -15,7 +15,7 @@ import { bfsTrace, dfsTrace } from '../src/lib/reference/graphs'
 import { chainingInsertTrace } from '../src/lib/reference/hash-table'
 import { bfsOrder, dfsOrder } from '../src/lib/traversal'
 import { units } from '../src/content/index'
-import { findDivergence, buildFeedback } from '../src/lib/socratic'
+import { findDivergence, findFirstBlank, buildFeedback } from '../src/lib/socratic'
 
 let failures = 0
 const check = (name: string, ok: boolean, detail = '') => {
@@ -172,6 +172,54 @@ for (const u of units) {
       dfsOrder(figure.edges, figure.origin).join(' ') === popped(dfsTrace()),
       `figura ${dfsOrder(figure.edges, figure.origin).join(' ')}, gabarito ${popped(dfsTrace())}`)
   }
+}
+
+/*
+  Branco não é erro de raciocínio, e o motor não pode tratar os dois igual: a
+  devolutiva de quem errou a hipótese, entregue a quem só não preencheu, gasta
+  degrau da escada com quem ainda não tentou. Ver ADR-0020.
+*/
+{
+  const reference = [
+    { step: '1', key: 'a', total: '1', next: '2' },
+    { step: '2', key: 'b', total: '3', next: '4' },
+  ]
+  const columns = ['total', 'next']
+
+  const emBranco = findDivergence(
+    [{ step: '1', key: 'a', total: '1', next: '' }, reference[1]!], reference, columns,
+  )
+  check('branco é marcado como branco e nomeia a coluna',
+    emBranco.blank && emBranco.divergentField === 'next', JSON.stringify(emBranco))
+  check('branco não consome degrau da escada',
+    buildFeedback(emBranco, 1, undefined)?.rung === 0)
+
+  const errado = findDivergence(
+    [{ step: '1', key: 'a', total: '9', next: '2' }, reference[1]!], reference, columns,
+  )
+  check('valor errado não é confundido com branco', !errado.blank && errado.divergentField === 'total')
+  check('valor errado entra no degrau 1', buildFeedback(errado, 1, undefined)?.rung === 1)
+
+  // O vazamento que isto fecha: com uma célula errada na rodada 1 e branco na
+  // rodada 2, a verificação não conta tentativa (há branco) e a devolutiva
+  // entregava o diagnóstico do degrau 2 de graça. `findFirstBlank` varre o
+  // traço inteiro e ganha de qualquer divergência de valor.
+  const erradoEBranco = [
+    { step: '1', key: 'a', total: '9', next: '2' },
+    { step: '2', key: 'b', total: '3', next: '' },
+  ]
+  const b = findFirstBlank(erradoEBranco, columns)
+  check('branco em qualquer rodada vence o valor errado antes dele',
+    b?.step === 2 && b?.field === 'next', JSON.stringify(b))
+  check('sem branco, findFirstBlank devolve null', findFirstBlank(reference, columns) === null)
+
+  // Valor de enum não vai para a tela: a coluna é nomeada pelo rótulo.
+  const comRotulo = buildFeedback(
+    { firstDivergentStep: 1, divergentField: 'next', blank: true }, 1, undefined,
+    (k) => (k === 'next' ? 'i ao fim' : k),
+  )
+  check('a devolutiva usa o rótulo da coluna, não a chave',
+    Boolean(comRotulo?.head.includes('i ao fim')) && !comRotulo!.head.includes('next'), comRotulo?.head)
 }
 
 console.log(failures ? `\n  ${failures} falha(s)\n` : '\n  todas as checagens passaram\n')

@@ -19,6 +19,14 @@ export interface Divergence {
   firstDivergentStep: number | null
   /** Field that differs at that step, released only on the second attempt. */
   divergentField: string | null
+  /**
+   * A célula está EM BRANCO, não errada.
+   *
+   * Branco não é uma hipótese: não há raciocínio para diagnosticar, e gastar um
+   * degrau da escada socrática nele é gastar ajuda com quem ainda não tentou. O
+   * motor nomeia a coluna na hora e não conta tentativa.
+   */
+  blank: boolean
 }
 
 export function findDivergence(
@@ -29,14 +37,37 @@ export function findDivergence(
   for (let i = 0; i < reference.length; i++) {
     const ref = reference[i]!
     const got = submitted[i]
-    if (!got) return { firstDivergentStep: i + 1, divergentField: null }
+    if (!got) return { firstDivergentStep: i + 1, divergentField: null, blank: false }
     for (const col of columns) {
+      if (!(got[col] ?? '').trim()) {
+        return { firstDivergentStep: i + 1, divergentField: col, blank: true }
+      }
       if (!sameCell(got[col], ref[col])) {
-        return { firstDivergentStep: i + 1, divergentField: col }
+        return { firstDivergentStep: i + 1, divergentField: col, blank: false }
       }
     }
   }
-  return { firstDivergentStep: null, divergentField: null }
+  return { firstDivergentStep: null, divergentField: null, blank: false }
+}
+
+/**
+ * A primeira célula em branco do traço inteiro, em ordem de leitura.
+ *
+ * Existe separada de `findDivergence` porque branco GANHA de errado, e ganha em
+ * qualquer posição. Sem isso havia um vazamento: bastava preencher uma célula
+ * errada na rodada 1 e deixar o resto em branco para receber o diagnóstico do
+ * degrau 2 sem gastar tentativa, já que a verificação não conta tentativa
+ * enquanto há branco. Ver ADR-0020.
+ */
+export function findFirstBlank(
+  submitted: TraceStep[], columns: string[],
+): { step: number; field: string } | null {
+  for (let i = 0; i < submitted.length; i++) {
+    for (const col of columns) {
+      if (!(submitted[i]![col] ?? '').trim()) return { step: i + 1, field: col }
+    }
+  }
+  return null
 }
 
 const normalize = (v: string | undefined) => (v ?? '').replace(/\s+/g, '').toLowerCase()
@@ -87,9 +118,29 @@ export function buildFeedback(
   divergence: Divergence,
   attempt: number,
   misconception: Misconception | undefined,
+  /** Rótulo de tela da coluna. Valor de enum não vai para a tela; deriva 4. */
+  labelOf: (key: string) => string = (k) => k,
 ): Feedback | null {
   const step = divergence.firstDivergentStep
   if (step === null) return null
+
+  /*
+    Branco antes de qualquer degrau, e sem consumir degrau.
+
+    O motor não sabe distinguir "não sei" de "é vazio", e tratar os dois como a
+    mesma coisa produzia a devolutiva de quem errou o raciocínio para quem
+    apenas não preencheu. A coluna é nomeada na hora porque não há hipótese a
+    diagnosticar. Ver ADR-0020.
+  */
+  if (divergence.blank) {
+    return {
+      rung: 0,
+      exhausted: false,
+      head: `A coluna “${labelOf(divergence.divergentField ?? '')}” está em branco no passo ${step}.`,
+      body: 'Em branco não é uma resposta, e o motor não sabe distinguir “não sei” de “é vazio”. Preencha e verifique de novo; isto não conta como tentativa.',
+      misconceptionId: null,
+    }
+  }
 
   const correctSoFar = step > 1
     ? `Os passos 1 a ${step - 1} estão corretos.`
@@ -110,7 +161,7 @@ export function buildFeedback(
       ? {
           rung: 2,
           exhausted: false,
-          head: `A divergência está na coluna “${divergence.divergentField}”, no passo ${step}.`,
+          head: `A divergência está na coluna “${labelOf(divergence.divergentField)}”, no passo ${step}.`,
           body: 'Os outros valores desse passo estão certos. Só esse campo não.',
           misconceptionId: null,
         }

@@ -452,6 +452,15 @@ export const progress = z.object({
       /** The student's gap map, what the export-to-Claude button emits. */
       misconceptionsTriggered: z.array(z.string()),
       freeText: z.string().optional(),
+      /**
+       * As células que o aluno escreveu num exercício de traço.
+       *
+       * Sem isto, a tabela voltava vazia na recarga e o contador de tentativas
+       * voltava cheio: o aluno reabria o ciclo devendo três tentativas por um
+       * traço que ele não podia mais ver. Opcional, para o v1 gravado continuar
+       * válido.
+       */
+      savedRows: z.array(z.record(z.string(), z.string())).optional(),
       lastVisited: z.string(),
     })),
   })),

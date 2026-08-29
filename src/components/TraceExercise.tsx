@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import type { Unit, TraceExercise as TraceEx } from '@/content/schema'
 import { misconceptionById } from '@/content'
 import { referenceGenerators } from '@/lib/reference'
-import { buildFeedback, findDivergence, type TraceStep } from '@/lib/socratic'
+import { buildFeedback, findDivergence, findFirstBlank, type TraceStep } from '@/lib/socratic'
 import { TrapNote } from './TrapNote'
 import { exerciseState, recordAttempt } from '@/lib/progress'
 import { traceConventions } from '@/content/conventions'
@@ -31,9 +31,17 @@ export function TraceExercise({ unit, exercise }: { unit: Unit; exercise: TraceE
   const [attempts, setAttempts] = useState(0)
   const [checked, setChecked] = useState(false)
 
+  // Reidrata o traço inteiro, não só o contador. Sem isto a tabela voltava
+  // vazia com três tentativas gastas, e o aluno devia por um traço que não
+  // podia mais ver. ADR-0020.
   useEffect(() => {
     const st = exerciseState(unit.id, exercise.id)
-    if (st) setAttempts(st.attempts)
+    if (!st) return
+    setAttempts(st.attempts)
+    if (st.savedRows?.length) {
+      setRows((prev) => prev.map((r, i) => ({ ...r, ...(st.savedRows![i] ?? {}) })))
+      setChecked(st.attempts > 0)
+    }
   }, [unit.id, exercise.id])
 
   const blanks = rows.reduce(
@@ -45,13 +53,32 @@ export function TraceExercise({ unit, exercise }: { unit: Unit; exercise: TraceE
   const misconception = divergence.firstDivergentStep
     ? misconceptionById(unit, exercise.misconceptionByStep[String(divergence.firstDivergentStep)] ?? '')
     : undefined
-  const feedback = checked ? buildFeedback(divergence, attempts, misconception) : null
+  const labelOf = (key: string) => exercise.columns.find((c) => c.key === key)?.label ?? key
+
+  const feedback = checked && blanks === 0
+    ? buildFeedback(divergence, attempts, misconception, labelOf)
+    : null
+
+  // Com branco em qualquer lugar, a devolutiva é sobre o branco e mais nada:
+  // diagnosticar o valor errado aqui entregaria o degrau 2 de graça, porque
+  // verificar com branco não consome tentativa.
+  const firstBlank = checked ? findFirstBlank(rows, editable.map((c) => c.key)) : null
+  const blankFeedback = firstBlank
+    ? buildFeedback(
+        { firstDivergentStep: firstBlank.step, divergentField: firstBlank.field, blank: true },
+        attempts, undefined, labelOf,
+      )
+    : null
   const solved = checked && divergence.firstDivergentStep === null
 
   const set = (i: number, key: string, value: string) =>
     setRows((prev) => prev.map((r, j) => (j === i ? { ...r, [key]: value } : r)))
 
+  const saved = () => rows.map((r) => Object.fromEntries(editable.map((c) => [c.key, r[c.key] ?? ''])))
+
   const check = () => {
+    // Célula em branco não consome tentativa: o motor não tem hipótese para
+    // diagnosticar, e cobrar por ela é cobrar de quem ainda não tentou.
     if (blanks > 0) { setChecked(true); return }
     const next = attempts + 1
     setAttempts(next)
@@ -62,6 +89,7 @@ export function TraceExercise({ unit, exercise }: { unit: Unit; exercise: TraceE
       misconception: d.firstDivergentStep
         ? exercise.misconceptionByStep[String(d.firstDivergentStep)]
         : undefined,
+      savedRows: saved(),
     })
   }
 
@@ -101,7 +129,7 @@ export function TraceExercise({ unit, exercise }: { unit: Unit; exercise: TraceE
           baixo, e comparar exige as duas na tela. Um cartão por rodada troca
           rolagem horizontal por vertical, que é a que o dedo já faz.
         */}
-        <div className="flex flex-col gap-2.5 lg:hidden">
+        <div className="flex flex-col gap-2.5 min-[1100px]:hidden">
           {rows.map((r, i) => {
             const isDivergent = checked && divergence.firstDivergentStep === i + 1
             return (
@@ -134,7 +162,7 @@ export function TraceExercise({ unit, exercise }: { unit: Unit; exercise: TraceE
           })}
         </div>
 
-        <div className="relative hidden overflow-x-auto border border-rule lg:block">
+        <div className="relative hidden overflow-x-auto border border-rule min-[1100px]:block">
           <table className="w-full min-w-[720px] border-collapse [&_td:first-child]:w-16 [&_th:first-child]:w-16">
             <thead>
               <tr>
@@ -186,15 +214,15 @@ export function TraceExercise({ unit, exercise }: { unit: Unit; exercise: TraceE
           </table>
         </div>
 
-        {checked && blanks > 0 && (
-          <div className="border-l-2 border-rule pl-4">
-            <div className="text-[14.5px] font-semibold text-fg">
-              Faltam {blanks} {blanks === 1 ? 'célula' : 'células'} em branco.
+        {blankFeedback && (
+          <div className="m-rise border-l-2 border-cost pl-4">
+            <div className="flex items-baseline justify-between gap-4">
+              <div className="text-[14.5px] font-semibold text-cost">{blankFeedback.head}</div>
+              <span className="lbl whitespace-nowrap">
+                {blanks === 1 ? '1 célula em branco' : `${blanks} células em branco`}
+              </span>
             </div>
-            <div className="mt-1.5 text-[13.5px] leading-relaxed text-fg-2">
-              Em branco não é uma resposta, e o motor não sabe distinguir “não sei” de “é vazio”.
-              Preencha todas antes de verificar.
-            </div>
+            <div className="mt-1.5 text-[13.5px] leading-relaxed text-fg-2">{blankFeedback.body}</div>
           </div>
         )}
 
@@ -276,7 +304,7 @@ export function TraceExercise({ unit, exercise }: { unit: Unit; exercise: TraceE
 
         <div className="flex flex-wrap items-center gap-3.5">
           <Button onClick={check}>Verificar</Button>
-          <span className="lbl hidden lg:inline xl:hidden">a tabela rola para o lado →</span>
+          <span className="lbl hidden min-[1100px]:inline min-[1400px]:hidden">a tabela rola para o lado →</span>
           <span className="text-[12px] italic text-fg-4">errar não bloqueia, mas marca o ciclo</span>
         </div>
       </PanelBody>

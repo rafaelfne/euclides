@@ -115,6 +115,20 @@
     color: var(--fg-4);
   }
 
+  /*
+    Rótulo dentro de navegação sobe para 12px.
+
+    11px serve a um rótulo de seção, que é cromo ao lado do conteúdo que ele
+    nomeia. Não serve a um destino clicável: quem ainda não sabe o que está
+    procurando lê a navegação letra por letra, e é justamente esse leitor que a
+    trilha precisa manter. ADR-0020.
+  */
+  nav .lbl,
+  header .lbl {
+    font-size: 12px;
+    letter-spacing: 0.12em;
+  }
+
   /* Bloco de pseudocódigo com medianiz numerada, como um editor. */
   .pseudocode {
     background: #101218;
