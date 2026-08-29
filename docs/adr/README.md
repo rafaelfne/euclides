@@ -22,6 +22,7 @@
 | [0018](0018-fronteira-do-tom.md) | Acolhimento é dado derivado, ou não entra | Amaciar a frase dissolve o princípio 7; derivar o fato, não |
 | [0019](0019-rampa-medida.md) | Instância antes de abstração, e movimento que é argumento | Categoria sem caso é palavra sem referente; 44 de 62 ciclos não tinham número |
 | [0020](0020-branco-nao-e-hipotese.md) | Branco não é hipótese, e a tela reidrata o traço inteiro | Verificar com branco não conta tentativa, e isso vazava o diagnóstico de graça |
+| [0021](0021-perfil-local.md) | Perfil local, e o que a ausência de conta obriga | Sem servidor, exportar e apagar deixam de ser cortesia e viram obrigação |
 
 ## Como escrever o próximo
 

@@ -21,7 +21,7 @@ const NOW = Date.parse('2026-08-28T12:00:00.000Z')
 const daysAgo = (n: number) => new Date(NOW - n * 86_400_000).toISOString()
 
 const progress: Progress = {
-  schemaVersion: 1,
+  schemaVersion: 2,
   units: {
     hash: {
       exercises: {
@@ -87,9 +87,29 @@ check('nenhuma alternativa correta vaza no export', leakedAnswers.length === 0,
   leakedAnswers.join(' | ').slice(0, 120))
 check('o traço de referência não vaza no export', !md.includes('3:[3,11]'))
 
-const emptyMd = buildSessionExport(units, { schemaVersion: 1, units: {} }, NOW)
+const emptyMd = buildSessionExport(units, { schemaVersion: 2, units: {} }, NOW)
 check('progresso vazio gera export honesto, não vazio',
   emptyMd.includes('Nenhuma lacuna registrada') && emptyMd.startsWith('# Sessão do Euclides'))
 
-console.log(failures ? `\n  ${failures} falha(s)\n` : '\n  todas as checagens passaram\n')
+/*
+  O nome não sai do navegador por padrão.
+
+  O markdown é feito para ser colado num chat, e chat é fora daqui. Levar o
+  nome junto tem de ser uma escolha por vez, não o comportamento que ninguém
+  revisa. Ver ADR-0021.
+*/
+{
+  const comPerfil = { ...progress, profile: {
+    name: 'Marina', createdAt: '2026-08-29T00:00:00.000Z',
+    mode: 'revisao' as const, codeLanguage: 'pseudo' as const,
+  } }
+  const semNome = buildSessionExport(units, comPerfil, NOW)
+  const comNome = buildSessionExport(units, comPerfil, NOW, true)
+  check('o nome fica fora do export por padrão', !semNome.includes('Marina'))
+  check('o nome entra quando pedido', comNome.includes('Marina'))
+  check('sem nome no perfil, pedir o nome não quebra',
+    !buildSessionExport(units, progress, NOW, true).includes('undefined'))
+}
+
+console.log(failures ? `\n  ${failures} falha(s)\n` : '\n  todas passaram\n')
 process.exit(failures ? 1 : 0)

@@ -442,8 +442,38 @@ export const unit = z.discriminatedUnion('kind', [structureUnit, methodUnit])
 // Progress, localStorage, versioned, validated on read.
 // ---------------------------------------------------------------------------
 
+/**
+ * O perfil, e o que ele deliberadamente NÃO guarda.
+ *
+ * Nome é opcional e o app funciona idêntico sem ele. Não há e-mail, idade,
+ * empresa nem nada que identifique a pessoa fora deste navegador: as duas
+ * perguntas que existem servem para escolher o modo de leitura e para o
+ * nivelamento, e as duas podem ficar em branco.
+ *
+ * `codeLanguage` mora aqui e não numa chave solta. Ela era `euclides.codeLanguage`
+ * ao lado do progresso, e duas chaves para um estado só é a garantia de que
+ * exportar o perfil leva metade dele.
+ */
+export const profile = z.object({
+  name: z.string().optional(),
+  createdAt: z.string(),
+  experience: z.enum(['menos-de-1-ano', '1-a-3-anos', 'mais-de-3-anos']).optional(),
+  reviewsCode: z.enum(['nunca', 'as-vezes', 'sempre']).optional(),
+  mode: z.enum(['iniciante', 'revisao']),
+  codeLanguage: z.enum(['pseudo', 'typescript']),
+})
+
+/** O resultado da sondagem. Recomenda, e não destrava nem bloqueia nada. */
+export const placement = z.object({
+  takenAt: z.string(),
+  suggestedStart: z.string(),
+  clearedUnits: z.array(z.string()),
+})
+
 export const progress = z.object({
-  schemaVersion: z.literal(1),
+  schemaVersion: z.literal(2),
+  profile: profile.optional(),
+  placement: placement.optional(),
   units: z.record(z.string(), z.object({
     exercises: z.record(z.string(), z.object({
       attempts: z.number().int().nonnegative(),
@@ -466,6 +496,8 @@ export const progress = z.object({
   })),
 })
 
+export type Profile = z.infer<typeof profile>
+export type Placement = z.infer<typeof placement>
 export type CostClaim = z.infer<typeof costClaim>
 export type GlossaryTerm = z.infer<typeof glossaryTerm>
 export type AbstractDataType = z.infer<typeof abstractDataType>

@@ -1,6 +1,6 @@
 'use client'
 
-import { progress as progressSchema, type Progress } from '@/content/schema'
+import { progress as progressSchema, type Progress, type Profile } from '@/content/schema'
 
 /**
  * localStorage, versioned and validated on read. No backend, no auth, which
@@ -8,16 +8,61 @@ import { progress as progressSchema, type Progress } from '@/content/schema'
  *
  * A schema mismatch never breaks the screen: it resets and says so.
  */
-const KEY = 'euclides.progress.v1'
-const empty = (): Progress => ({ schemaVersion: 1, units: {} })
+const KEY = 'euclides.progress.v2'
+const KEY_V1 = 'euclides.progress.v1'
+const KEY_LANG = 'euclides.codeLanguage'
+
+const empty = (): Progress => ({ schemaVersion: 2, units: {} })
+
+/**
+ * Migração do v1, não destrutiva e sem perguntar nada.
+ *
+ * O `units` do v1 já é o `units` do v2, então a migração é acrescentar as
+ * chaves novas e absorver `euclides.codeLanguage`, que vivia solta ao lado. Duas
+ * chaves para um estado só é a garantia de que exportar o perfil leva metade
+ * dele. Ver ADR-0021.
+ *
+ * O v1 é DEIXADO no lugar de propósito: se a migração estiver errada, o dado
+ * original ainda existe. `clearAll` apaga os dois.
+ */
+function migrate(raw: unknown): Progress | null {
+  if (!raw || typeof raw !== 'object') return null
+  const v1 = raw as { schemaVersion?: number; units?: Progress['units'] }
+  if (v1.schemaVersion !== 1 || !v1.units) return null
+
+  let codeLanguage: 'pseudo' | 'typescript' = 'pseudo'
+  try {
+    const saved = window.localStorage.getItem(KEY_LANG)
+    if (saved === 'ts' || saved === 'typescript') codeLanguage = 'typescript'
+  } catch { /* modo privado */ }
+
+  return {
+    schemaVersion: 2,
+    // Sem nome: quem já estava usando o app nunca informou um, e inventar um
+    // perfil na migração seria decidir por quem não foi perguntado.
+    profile: { createdAt: new Date().toISOString(), mode: 'revisao', codeLanguage },
+    units: v1.units,
+  }
+}
 
 export function read(): Progress {
   if (typeof window === 'undefined') return empty()
   try {
     const raw = window.localStorage.getItem(KEY)
-    if (!raw) return empty()
-    const parsed = progressSchema.safeParse(JSON.parse(raw))
-    return parsed.success ? parsed.data : empty()
+    if (raw) {
+      const parsed = progressSchema.safeParse(JSON.parse(raw))
+      if (parsed.success) return parsed.data
+    }
+
+    const old = window.localStorage.getItem(KEY_V1)
+    if (old) {
+      const migrated = migrate(JSON.parse(old))
+      if (migrated) {
+        const parsed = progressSchema.safeParse(migrated)
+        if (parsed.success) { write(parsed.data); return parsed.data }
+      }
+    }
+    return empty()
   } catch {
     return empty()
   }
@@ -138,4 +183,65 @@ export function resumePoint(
     }
   }
   return null
+}
+
+
+// ---------------------------------------------------------------------------
+// Perfil
+// ---------------------------------------------------------------------------
+
+export function readProfile(): Profile | undefined {
+  return read().profile
+}
+
+export function saveProfile(patch: Partial<Profile>): Progress {
+  const p = read()
+  const next: Progress = {
+    ...p,
+    profile: {
+      createdAt: p.profile?.createdAt ?? new Date().toISOString(),
+      mode: p.profile?.mode ?? 'revisao',
+      codeLanguage: p.profile?.codeLanguage ?? 'pseudo',
+      ...p.profile,
+      ...patch,
+    },
+  }
+  write(next)
+  return next
+}
+
+/**
+ * O export do perfil inteiro, para levar o progresso para outro navegador.
+ *
+ * É o contrapeso de não ter conta: sem servidor, a portabilidade tem de ser
+ * explícita, e um arquivo que o dono guarda é mais privado que uma conta que
+ * alguém hospeda.
+ */
+export function exportProfile(): string {
+  return JSON.stringify(read(), null, 2)
+}
+
+export function importProfile(json: string): { ok: true } | { ok: false; reason: string } {
+  try {
+    const parsed = progressSchema.safeParse(JSON.parse(json))
+    if (!parsed.success) {
+      const migrated = migrate(JSON.parse(json))
+      const retry = migrated ? progressSchema.safeParse(migrated) : null
+      if (!retry?.success) return { ok: false, reason: 'o arquivo não é um perfil do Euclides' }
+      write(retry.data)
+      return { ok: true }
+    }
+    write(parsed.data)
+    return { ok: true }
+  } catch {
+    return { ok: false, reason: 'o arquivo não é JSON válido' }
+  }
+}
+
+/** Apaga tudo, inclusive o v1 que a migração deixou para trás de propósito. */
+export function clearAll(): void {
+  for (const k of [KEY, KEY_V1, KEY_LANG]) {
+    try { window.localStorage.removeItem(k) } catch { /* modo privado */ }
+  }
+  try { window.dispatchEvent(new Event(PROGRESS_EVENT)) } catch { /* sem window */ }
 }

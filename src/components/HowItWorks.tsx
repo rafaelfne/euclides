@@ -3,6 +3,7 @@ import { units } from '@/content'
 import { allTerms } from '@/content/glossary'
 import { APP } from '@/content/glossary'
 import { Panel, PanelBody, PanelHeader, PanelTitle } from './ui/panel'
+import { ProfileForm } from './ProfileForm'
 
 /**
  * A rampa de entrada, e ela é DERIVADA.
@@ -95,6 +96,8 @@ export function HowItWorks() {
           </p>
         </PanelBody>
       </Panel>
+
+      <ProfileForm />
 
       <div className="flex max-w-[820px] flex-col gap-2.5">
         <span className="lbl">Por onde começar</span>

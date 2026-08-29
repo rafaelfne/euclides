@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from 'react'
 import { toTypeScriptOrNull } from '@/lib/transliterate'
+import { readProfile, saveProfile, PROGRESS_EVENT } from '@/lib/progress'
 import { cn } from '@/lib/utils'
 import { Pseudocode } from './Pseudocode'
 
-const KEY = 'euclides.codeLanguage'
-type Lang = 'pseudo' | 'ts'
+type Lang = 'pseudo' | 'typescript'
 
 /**
  * O bloco de código, com a alternância pseudocódigo para TypeScript.
@@ -24,19 +24,21 @@ export function CodeBlock({ source }: { source: string }) {
   const typescript = toTypeScriptOrNull(source)
   const [lang, setLang] = useState<Lang>('pseudo')
 
+  // A escolha vive no perfil, não numa chave solta: duas chaves para um estado
+  // só é a garantia de que exportar o perfil leva metade dele. ADR-0021.
   useEffect(() => {
-    try {
-      const saved = window.localStorage.getItem(KEY)
-      if (saved === 'ts' || saved === 'pseudo') setLang(saved)
-    } catch { /* modo privado */ }
+    const sync = () => setLang(readProfile()?.codeLanguage ?? 'pseudo')
+    sync()
+    window.addEventListener(PROGRESS_EVENT, sync)
+    return () => window.removeEventListener(PROGRESS_EVENT, sync)
   }, [])
 
   const choose = (next: Lang) => {
     setLang(next)
-    try { window.localStorage.setItem(KEY, next) } catch { /* modo privado */ }
+    saveProfile({ codeLanguage: next })
   }
 
-  const tabs: Array<[Lang, string]> = [['pseudo', 'pseudocódigo'], ['ts', 'TypeScript']]
+  const tabs: Array<[Lang, string]> = [['pseudo', 'pseudocódigo'], ['typescript', 'TypeScript']]
 
   return (
     <div className="flex flex-col">
@@ -55,12 +57,12 @@ export function CodeBlock({ source }: { source: string }) {
             </button>
           ))}
           <span className="lbl ml-auto px-3">
-            {lang === 'ts' ? 'derivado do pseudocódigo' : 'a forma canônica'}
+            {lang === 'typescript' ? 'derivado do pseudocódigo' : 'a forma canônica'}
           </span>
         </div>
       )}
 
-      {lang === 'ts' && typescript !== null ? (
+      {lang === 'typescript' && typescript !== null ? (
         <pre className="pseudocode">
           <code className="block px-4 py-3 text-fg-2">{typescript}</code>
         </pre>

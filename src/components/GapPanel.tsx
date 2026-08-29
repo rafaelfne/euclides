@@ -11,6 +11,9 @@ import { Panel, PanelBody, PanelHeader, PanelMeta, PanelTitle } from './ui/panel
 export function GapPanel({ units }: { units: Unit[] }) {
   const [progress, setProgress] = useState<Progress | null>(null)
   const [copied, setCopied] = useState(false)
+  // Levar o nome para fora deste navegador é escolha por vez, e a caixa nasce
+  // desmarcada. ADR-0021.
+  const [withName, setWithName] = useState(false)
 
   useEffect(() => { setProgress(read()) }, [])
 
@@ -19,7 +22,7 @@ export function GapPanel({ units }: { units: Unit[] }) {
   }
 
   const gaps = collectGaps(units, progress, Date.now())
-  const markdown = buildSessionExport(units, progress, Date.now())
+  const markdown = buildSessionExport(units, progress, Date.now(), withName)
 
   const copy = async () => {
     try {
@@ -40,6 +43,18 @@ export function GapPanel({ units }: { units: Unit[] }) {
             ? 'copiado, cole no seu projeto do Claude'
             : 'markdown com suas lacunas, sem nenhuma resposta dentro'}
         </span>
+
+        {progress.profile?.name && (
+          <label className="ml-auto flex cursor-pointer items-center gap-2 text-[12.5px] text-fg-3">
+            <input
+              type="checkbox"
+              checked={withName}
+              onChange={(e) => setWithName(e.target.checked)}
+              className="accent-[var(--contract)]"
+            />
+            incluir meu nome
+          </label>
+        )}
       </div>
 
       {!gaps.length && (

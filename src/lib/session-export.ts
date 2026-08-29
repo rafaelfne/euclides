@@ -84,10 +84,20 @@ export function collectGaps(units: Unit[], progress: Progress, now: number): Uni
   return out
 }
 
-export function buildSessionExport(units: Unit[], progress: Progress, now: number): string {
+/**
+ * O markdown do painel de lacunas.
+ *
+ * `withName` é falso por padrão de propósito: este arquivo é feito para ser
+ * colado num chat, que é um lugar fora deste navegador. Levar o nome junto tem
+ * de ser uma escolha por vez, não o comportamento que ninguém revisa.
+ */
+export function buildSessionExport(
+  units: Unit[], progress: Progress, now: number, withName = false,
+): string {
   const gaps = collectGaps(units, progress, now)
+  const name = withName ? progress.profile?.name : undefined
   const md: string[] = [
-    '# Sessão do Euclides',
+    name ? `# Sessão do Euclides, de ${name}` : '# Sessão do Euclides',
     '',
     'Este arquivo descreve onde meu raciocínio quebrou, não o que é a resposta certa.',
     'Me corrija do jeito que a trilha corrige: aponte onde quebrou e faça a pergunta que',

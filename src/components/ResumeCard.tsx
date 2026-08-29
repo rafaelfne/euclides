@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { units } from '@/content'
-import { resumePoint, PROGRESS_EVENT, type Resume } from '@/lib/progress'
+import { resumePoint, readProfile, PROGRESS_EVENT, type Resume } from '@/lib/progress'
 
 /**
  * O cartão de retomada.
@@ -14,9 +14,10 @@ import { resumePoint, PROGRESS_EVENT, type Resume } from '@/lib/progress'
  */
 export function ResumeCard() {
   const [resume, setResume] = useState<Resume | null>(null)
+  const [name, setName] = useState<string | undefined>()
 
   useEffect(() => {
-    const sync = () => setResume(resumePoint(units))
+    const sync = () => { setResume(resumePoint(units)); setName(readProfile()?.name) }
     sync()
     window.addEventListener(PROGRESS_EVENT, sync)
     return () => window.removeEventListener(PROGRESS_EVENT, sync)
@@ -30,7 +31,11 @@ export function ResumeCard() {
       className="m-tap flex max-w-[720px] flex-col gap-1 border border-cost-rule bg-cost-bg px-4 py-3.5 text-inherit hover:bg-panel-hover"
     >
       <div className="flex items-baseline gap-3">
-        <span className="lbl text-cost">Continuar de onde parou</span>
+        {/* O nome aparece aqui e em mais dois lugares, e em nenhuma outra tela.
+            Cumprimentar a cada visita é ruído, não acolhimento. ADR-0021. */}
+        <span className="lbl text-cost">
+          {name ? `${name}, continue de onde parou` : 'Continuar de onde parou'}
+        </span>
         <span className="font-mono text-[12px] text-fg-4">
           {resume.daysAgo === 0 ? 'hoje' : resume.daysAgo === 1 ? 'ontem' : `há ${resume.daysAgo} dias`}
         </span>

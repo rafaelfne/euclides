@@ -42,6 +42,7 @@ export function Rail({ unitId }: { unitId?: string }) {
         <Link href="/traps" className="lbl m-tap px-4 py-2.5 hover:bg-panel-head hover:text-fg-2">Armadilhas</Link>
         <Link href="/glossary" className="lbl m-tap px-4 py-2.5 hover:bg-panel-head hover:text-fg-2">Glossário</Link>
         <Link href="/gaps" className="lbl m-tap px-4 py-2.5 hover:bg-panel-head hover:text-fg-2">Lacunas</Link>
+        <Link href="/perfil" className="lbl m-tap px-4 py-2.5 hover:bg-panel-head hover:text-fg-2">Perfil</Link>
       </div>
     </nav>
   )
