@@ -20,6 +20,10 @@ currículo do primeiro módulo e as decisões que travam a escrita.
 primeira leitura do repositório, com a evidência de cada uma. Não é uma das camadas acima; é
 um registro do que ainda não foi decidido.
 
+**`achados/`**, o que uma leitura do app encontrou e ainda não virou correção, datado. Cada
+documento é um retrato do dia em que foi escrito; confira o estado de cada item contra a
+`main` antes de agir.
+
 ## Ordem de leitura para quem chega
 
 1. `discovery/00-problema.md`, quem é o aluno e o que conta como sucesso
