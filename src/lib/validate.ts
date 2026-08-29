@@ -31,6 +31,7 @@ export const CHECKS = [
   ['custo', 'custo: toda implementação declara custo de toda operação do contrato'],
   ['cobertura', 'cobertura: toda parte do critério é produzida por alguma técnica'],
   ['vocabulário', 'vocabulário: nenhuma abstração vaga não registrada'],
+  ['ênfase', 'ênfase: asterisco de ênfase sempre emparelhado, e só na prosa do ciclo'],
   ['convenção', 'convenção: todo pseudocódigo respeita a folha de notação'],
   ['referência', 'referência: todo traço é gerado por implementação que roda'],
   ['formato', 'formato: toda coluna editável de traço declara como se escreve a resposta'],
@@ -256,6 +257,19 @@ export function checkAll(units: Unit[], terms: GlossaryTerm[]): Failure[] {
       fail('vocabulário', `${path}: usa "${w}", que não é termo registrado`)
     }
   }
+    // A prosa do ciclo aceita `**assim**` e mais nada. Fora dela, asterisco é
+  // literal — e um asterisco solto na tela já apareceu como `**não cresce**`.
+  const cycleBodies = new Set(units.flatMap((u) => u.cycles.flatMap((c) => c.body)))
+  for (const [, path, text] of authored) {
+    const marks = (text.match(/\*\*/g) ?? []).length
+    if (marks === 0) continue
+    if (!cycleBodies.has(text)) {
+      fail('ênfase', `${path}: usa ** fora da prosa do ciclo, onde ele não é interpretado`)
+    } else if (marks % 2 !== 0) {
+      fail('ênfase', `${path}: tem ${marks} marcas de ênfase — uma delas não fecha`)
+    }
+  }
+
   for (const e of allowedVagueUses) {
     if (!usedExceptions.has(e)) {
       fail('vocabulário', `licença órfã para "${e.word}" em ${e.unit}: o trecho “${e.quote}” não existe mais`)

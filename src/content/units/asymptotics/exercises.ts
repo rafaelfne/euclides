@@ -7,7 +7,7 @@ export const asymptoticsMisconceptions: Misconception[] = [
       'Se elas discordam, a frase original estava afirmando qual das duas? E quem lê tem como saber?',
       'Construa a entrada em que o pior caso acontece. Ela é rara, ou é a entrada mais comum que você tem?',
     ],
-    reviewCycle: 'asymptotics.c4' },
+    reviewCycle: 'asymptotics.c5' },
 
   { id: 'asymptotics.sem-unidade', label: 'Não dizer o que n conta',
     socraticQuestion: 'Comparar duas strings de mil caracteres custa o mesmo que comparar dois inteiros. Se não custa, o que a sua conta estava chamando de uma operação?',
@@ -21,7 +21,7 @@ export const asymptoticsMisconceptions: Misconception[] = [
     escalation: [
       'Caso médio fala de uma distribuição de entradas possíveis. Aqui a sequência é fixa e o custo alto é certo em posições conhecidas. Qual dos dois qualificadores descreve isso?',
     ],
-    reviewCycle: 'asymptotics.c5' },
+    reviewCycle: 'asymptotics.c6' },
 
   { id: 'asymptotics.constante-nao-importa', label: 'Ignorar constantes onde n é pequeno',
     socraticQuestion: 'Um algoritmo custa 1000·n e outro custa n². Para quais valores de n o segundo termina antes?',
@@ -35,6 +35,14 @@ export const asymptoticsMisconceptions: Misconception[] = [
     escalation: [
       'A entrada já ordenada é o pior caso, e é a mais comum de todas. O que "pior caso" está qualificando: a frequência da entrada, ou o custo dela?',
     ],
+    reviewCycle: 'asymptotics.c5' },
+
+  { id: 'asymptotics.custo-por-nivel-cresce', label: 'Supor que o custo cresce a cada nível da árvore de recursão',
+    socraticQuestion: 'No nível 2 há quatro chamadas de tamanho 2. Multiplique as duas e compare com o nível 0, que tem uma chamada de tamanho 8. Qual dos dois custa mais?',
+    escalation: [
+      'A cada nível o número de chamadas dobra e o tamanho de cada uma cai pela metade. O que o produto das duas faz?',
+      'Se todo nível custa o mesmo, o total é esse custo vezes o número de níveis. Quantos níveis existem até o tamanho chegar a 1?',
+    ],
     reviewCycle: 'asymptotics.c4' },
 
   { id: 'asymptotics.recorrencia-sem-base', label: 'Escrever a recorrência sem o caso base',
@@ -46,6 +54,32 @@ export const asymptoticsMisconceptions: Misconception[] = [
 ]
 
 export const asymptoticsExercises: Exercise[] = [
+  {
+    kind: 'trace', id: 'asymptotics.e7',
+    prompt:
+      'A relação é T(n) = 2·T(n/2) + n, com n = 8. Desenhe a árvore: uma linha por nível, ' +
+      'do topo até as chamadas de tamanho 1. Para cada nível, quantas chamadas existem, de que ' +
+      'tamanho é cada uma, quanto custa o nível inteiro, e quanto já foi gasto até ali.',
+    pseudocode: `função custo(n)
+    se n ≤ 1 então
+        retorne c
+    retorne 2 × custo(n / 2) + n`,
+    invariant: 'Em cada nível, o número de chamadas dobra e o tamanho de cada uma cai pela metade.',
+    columns: [
+      { key: 'step', label: 'nível' },
+      { key: 'calls', label: 'quantas chamadas', placeholder: 'um número' },
+      { key: 'size', label: 'tamanho de cada', placeholder: 'um número' },
+      { key: 'levelCost', label: 'custo do nível', placeholder: 'chamadas × tamanho' },
+      { key: 'accumulated', label: 'gasto até aqui', placeholder: 'um número' },
+    ],
+    conventions: [
+      { notation: '0', rule: 'o primeiro nível', why: 'A chamada de cima é o nível 0, não o 1: o número do nível é quantas vezes a entrada já foi dividida.' },
+      { notation: '4 × 2', rule: 'o custo de um nível', why: 'Quantas chamadas existem naquele nível, vezes o tamanho de cada uma. Escreva o resultado, não a conta.' },
+      { notation: '(última linha)', rule: 'onde a árvore para', why: 'No nível em que o tamanho chega a 1 — é o caso base, e é ele que decide quantos níveis existem.' },
+    ],
+    reference: 'asymptotics.recursion-tree-trace',
+    misconceptionByStep: { '3': 'asymptotics.custo-por-nivel-cresce' },
+  },
   {
     kind: 'choice', id: 'asymptotics.e0',
     prompt: '"Essa busca é O(1)." A frase não é falsa. O que falta nela para sobreviver a uma revisão?',

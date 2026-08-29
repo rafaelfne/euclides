@@ -8,6 +8,7 @@
  * conteúdo morto.
  */
 import { countEvenTrace } from '../src/lib/reference/tracing'
+import { recursionTreeTrace } from '../src/lib/reference/asymptotics'
 import { removeFirstTrace } from '../src/lib/reference/linear'
 import { bstInsertTrace } from '../src/lib/reference/trees'
 import { bfsTrace } from '../src/lib/reference/graphs'
@@ -39,6 +40,16 @@ check('tracing: o laço faz 4 rodadas para 7 elementos — o passo não é um',
 check('tracing: o passo marcado é onde i pula de 2 para 4',
   t1[1]!.read === '3' && t1[1]!.next === '4', `${t1[1]!.read}/${t1[1]!.next}`)
 
+const t0 = recursionTreeTrace()
+check('asymptotics: a árvore de n = 8 tem 4 níveis — log n + 1, não n',
+  t0.length === 4, `${t0.length} níveis`)
+check('asymptotics: o custo por nível não cresce',
+  new Set(t0.map((s) => s.levelCost)).size === 1, t0.map((s) => s.levelCost).join(','))
+check('asymptotics: as chamadas dobram e o tamanho cai pela metade',
+  t0.map((s) => s.calls).join(',') === '1,2,4,8' && t0.map((s) => s.size).join(',') === '8,4,2,1')
+check('asymptotics: o total é o custo de um nível vezes o número de níveis',
+  Number(t0[3]!.accumulated) === Number(t0[0]!.levelCost) * t0.length, t0[3]!.accumulated!)
+
 const t2 = removeFirstTrace()
 check('linear: remover a posição 0 custa 4 escritas para 5 elementos',
   t2.length === 4, `${t2.length} escritas`)
@@ -60,7 +71,7 @@ check('graphs: todo vértice sai da fila exatamente uma vez',
   new Set(t4.map((s) => s.key)).size === t4.length)
 
 for (const { unit, exercise } of traceExercises) {
-  const gen = { tracing: countEvenTrace, linear: removeFirstTrace, trees: bstInsertTrace, graphs: bfsTrace }[unit.id]
+  const gen = { tracing: countEvenTrace, asymptotics: recursionTreeTrace, linear: removeFirstTrace, trees: bstInsertTrace, graphs: bfsTrace }[unit.id]
   if (!gen) continue
   const reference = gen()
   const marked = Number(Object.keys(exercise.misconceptionByStep)[0])

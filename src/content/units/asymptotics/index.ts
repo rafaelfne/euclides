@@ -24,6 +24,7 @@ export const asymptoticsUnit: Unit = {
     { symbol: 'T(n)', means: 'o custo do procedimento para uma entrada desse tamanho' },
     { symbol: 'O(...)', means: 'um limite superior de crescimento, ignorando constantes' },
     { symbol: 'log n', means: 'quantas vezes dá para dividir n ao meio até chegar a um' },
+    { symbol: 'T(1)', means: 'o caso base: o custo da menor entrada que o procedimento resolve direto' },
   ],
 
   criterion: {
@@ -68,7 +69,7 @@ export const asymptoticsUnit: Unit = {
       id: 'recurrence',
       name: 'Recorrência',
       derivesCriterion: 'cost-claim',
-      summary: 'Escrever o custo em função do custo do subproblema, com um caso base, e resolver a relação.',
+      summary: 'Escrever o custo em função do custo do subproblema, com um caso base, e resolver a relação somando a árvore nível a nível.',
       produces: ['bound', 'regime', 'assumptions', 'measured-in'],
       wrongWhen: [
         { scenario: 'O procedimento é um laço simples, sem chamada a si mesmo',
@@ -134,6 +135,7 @@ export const asymptoticsUnit: Unit = {
         'Contar rodadas funciona enquanto o procedimento não chama a si mesmo. Quando ele chama, o número de níveis depende da entrada, e não há o que somar diretamente.',
         'A saída é escrever o custo em função do custo do subproblema: dividir ao meio e chamar duas vezes, gastando tempo linear para juntar, é T(n) = 2·T(n/2) + n. Resolver essa relação dá n log n.',
         'A parte que some com mais frequência é o caso base. Sem T(1), a relação não descreve nenhum procedimento que pare — ela é uma definição circular, e devolver "n log n" a partir dela é reconhecer um padrão, não derivar um custo.',
+        'Escrever a relação é o que este ciclo cobra. Resolvê-la é o próximo, e ele é onde o n log n deixa de ser afirmação e passa a ser conta.',
       ],
       pseudocode: `função custo(n)
     se n ≤ 1 então
@@ -142,7 +144,26 @@ export const asymptoticsUnit: Unit = {
       invariant: 'Toda relação de recorrência tem um caso base, e ele é o único ponto em que a recursão para.',
       exerciseId: 'asymptotics.e3' },
 
-    { id: 'asymptotics.c4', title: 'Regime: o pior caso não é o caso raro', layer: 'essential', band: 'failure',
+    { id: 'asymptotics.c4', title: 'A árvore de recursão, desenhada', layer: 'essential', band: 'technique', elaborates: 'recurrence',
+      introducesTerms: ['recursion-tree'],
+      body: [
+        'Escrever a relação é metade do trabalho. A outra metade é resolvê-la, e "resolver essa relação dá n log n" dito sem derivação é exatamente o reconhecimento de padrão que o ciclo anterior condena.',
+        'A derivação cabe num desenho. Cada nível da árvore tem duas grandezas: quantas chamadas existem ali e de que tamanho é cada uma. O custo do nível é o produto das duas, e é isso que a coluna do meio do exercício pede.',
+        'Duas coisas aparecem quando a tabela fica pronta, e nenhuma das duas é óbvia antes. A primeira: o custo por nível **não cresce** — as chamadas dobram e o tamanho cai pela metade, e o produto fica igual. A segunda: o número de níveis não é n, é quantas vezes dá para dividir n ao meio até chegar ao caso base, que é log n.',
+        'O total é o custo de um nível vezes o número de níveis. É daí que n log n sai, e não de reconhecer a forma da relação.',
+      ],
+      pseudocode: `função custo(n)
+    se n ≤ 1 então
+        retorne c
+    retorne 2 × custo(n / 2) + n`,
+      invariant: 'Em cada nível, o número de chamadas dobra e o tamanho de cada uma cai pela metade.',
+      workedExample: {
+        problem: 'Some o nível 1 de T(n) = 2·T(n/2) + n com n = 8: duas chamadas de tamanho 4.',
+        whatToNotice: 'Dá 8, o mesmo do nível 0, que tinha uma chamada de tamanho 8. É o produto que se mantém, e é ele que torna a soma um retângulo em vez de um triângulo.',
+      },
+      exerciseId: 'asymptotics.e7' },
+
+    { id: 'asymptotics.c5', title: 'Regime: o pior caso não é o caso raro', layer: 'essential', band: 'failure',
       introducesTerms: [],
       body: [
         'Pior caso, caso médio e melhor caso qualificam o **custo**, não a frequência da entrada. Dizer que algo é O(n²) no pior caso não afirma que esse caso é improvável.',
@@ -151,7 +172,7 @@ export const asymptoticsUnit: Unit = {
       ],
       exerciseId: 'asymptotics.e4' },
 
-    { id: 'asymptotics.c5', title: 'Amortizado não é caso médio', layer: 'essential', band: 'technique', elaborates: 'aggregate-amortized',
+    { id: 'asymptotics.c6', title: 'Amortizado não é caso médio', layer: 'essential', band: 'technique', elaborates: 'aggregate-amortized',
       introducesTerms: ['amortized-analysis'],
       body: [
         'Um array dinâmico dobra de capacidade quando enche. A inserção que dobra copia tudo e custa O(n); as outras custam O(1). Somando mil inserções, o total é O(n), e por inserção dá constante.',
@@ -160,7 +181,7 @@ export const asymptoticsUnit: Unit = {
       ],
       exerciseId: 'asymptotics.e5' },
 
-    { id: 'asymptotics.c6', title: 'Escolher a técnica pela forma do código', layer: 'essential', band: 'technique', elaborates: 'operation-counting',
+    { id: 'asymptotics.c7', title: 'Escolher a técnica pela forma do código', layer: 'essential', band: 'technique', elaborates: 'operation-counting',
       introducesTerms: [],
       body: [
         'As três técnicas não competem: elas respondem partes diferentes, e a forma do código diz qual usar.',

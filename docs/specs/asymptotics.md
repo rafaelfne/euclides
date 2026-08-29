@@ -1,6 +1,6 @@
 # Spec — Unidade 2: Análise assintótica
 
-**Status:** spec — não implementada
+**Status:** implementada
 **Kind:** `method` (ADR-0012).
 
 > Existe um esboço desta unidade em `scripts/test-schema.ts`, escrito para provar que a
@@ -60,11 +60,12 @@ Errada quando: o procedimento é um laço simples. Contar responde em uma linha.
 Âncora: é o raciocínio por trás de "dividir ao meio dá log n", que todo mundo repete e
 quase ninguém deriva.
 
-**A DEFINIR** — entra uma terceira, análise amortizada por método de agregação? Ela é a
-única que produz a parte `amortização` de forma direta, e sem ela a parte fica derivada de
-recorrência, que é indireto. Mas é a técnica mais abstrata das três, na unidade 2.
+A terceira entrou: **análise amortizada por agregação**. Ela é a única que produz a parte
+`amortização` de forma direta, e sem ela essa parte ficaria derivada de recorrência, que é
+indireto — e a checagem `cobertura` reprovaria uma parte do critério sem técnica que a
+produza.
 
-## Ciclos (proposta)
+## Ciclos, como implementados
 
 | # | banda | título | termos novos |
 |---|---|---|---|
@@ -72,19 +73,20 @@ recorrência, que é indireto. Mas é a técnica mais abstrata das três, na uni
 | c1 | técnica | Contar o que o laço executa | *(a definir)* |
 | c2 | critério | O que n conta, e o que ele ignora | unidade de medida |
 | c3 | técnica | Quando a conta não fecha: recorrência | recorrência, caso base |
-| c4 | falha | Regime: o pior caso não é o caso ruim | pior caso, caso médio |
-| c5 | falha | Amortizado não é caso médio | amortizado |
+| c4 | técnica | A árvore de recursão, desenhada | árvore de recursão |
+| c5 | falha | Regime: o pior caso não é o caso ruim | pior caso, caso médio |
+| c6 | técnica | Amortizado não é caso médio | análise amortizada |
+| c7 | técnica | Escolher a técnica pela forma do código | — |
 
-**Nota sobre c5:** confundir amortizado com caso médio é a armadilha mais valiosa da
+**Nota sobre c6:** confundir amortizado com caso médio é a armadilha mais valiosa da
 unidade e provavelmente merece o ciclo inteiro. São qualificadores independentes — um fala
 de distribuição de entradas, o outro de distribuição de custo ao longo de uma sequência —
 e a confusão sobrevive a uma graduação.
 
-**Conflito a resolver:** os termos `pior caso`, `caso médio` e `amortizado` já estão no
-glossário com `introducedIn: 'hash.c5'` e `'hash.c6'`. Se esta unidade é a 2 e hash é a 4,
-os pontos de introdução mudam de dono — e a checagem `glossário` vai reprovar até que
-mudem nos dois lados. É trabalho mecânico, mas precisa ser decidido: hash passa a *usar*
-termos introduzidos aqui.
+**Conflito ainda aberto:** os termos `pior caso`, `caso médio` e `amortizado` continuam com
+`introducedIn` apontando ciclos de hash, e esta unidade os usa sem declarar. Passa no gate —
+`introducedIn` e `introducesTerms` concordam — e inverte a ordem de leitura. Mover é
+mecânico; decidir que hash deixa de ser autocontida é editorial.
 
 ## Armadilhas conhecidas
 
@@ -95,21 +97,35 @@ Derivadas de `whenOmitted`, uma por parte, mais as clássicas:
 - `constante-nao-importa` — "O ignora constante" aplicado a n = 40
 - `pior-caso-e-o-caso-ruim` — supor que o pior caso é raro por definição
 
-**A DEFINIR** — sua leitura de quais o aluno erra. Ver a mesma nota no spec de `tracing`.
+Implementadas com nomes um pouco diferentes, e uma a mais: `custo-por-nivel-cresce`,
+exercitada pelo traço da árvore de recursão. Ela é a que o desenho deixa o aluno cometer com
+a própria mão — se o custo por nível crescesse, o total seria n², e a tabela mostra que não
+cresce antes de qualquer frase afirmar isso.
 
-## Critério de domínio (proposta)
+O aviso do spec de `tracing` continua valendo: a lista é candidata conhecida da área, não
+observação de aluno.
+
+## Critério de domínio
 
 Diante de um trecho de até trinta linhas: escrever a afirmação de custo com as cinco partes
 declaradas, e construir a entrada concreta que faz o regime declarado importar.
 
 ## Perguntas em aberto
 
-1. **Ordem contra hash.** Esta unidade é pré-requisito declarado da unidade de hash — os
-   `prerequisites` dela citam "notação O, e a distinção entre caso médio, pior caso e custo
-   amortizado". Hash foi escrita primeiro, de propósito. Reordenar os `introducedIn` é
-   mecânico; decidir se hash passa a *depender* de conteúdo escrito depois dela é editorial.
+1. **Ordem contra hash.** Ver o conflito acima — é a única pendência mecânica da unidade.
 2. **A unidade ensina a produzir o que o schema exige.** Isso é elegante e pode ser
    circular: o aluno vê `CostClaim` nas outras unidades antes de aprender a produzi-la.
    Vantagem pedagógica ou dívida?
 3. **Quantas classes de complexidade entram?** O enum `complexity` em
    `src/content/schema.ts` tem dez. Todas, ou um subconjunto?
+
+## Decidido na implementação
+
+**A derivação da recorrência virou um exercício de traço, não um parágrafo.** A primeira
+versão do `c3` afirmava "resolver essa relação dá n log n" e nunca mostrava como — que é
+exatamente o reconhecimento de padrão que o próprio ciclo condena duas frases depois.
+
+O `c4` desenha a árvore numa tabela que o aluno preenche: quantas chamadas por nível, de que
+tamanho, quanto custa o nível. As duas colunas carregam a derivação inteira — o custo por
+nível não cresce, e o número de níveis é log n e não n. É a diferença entre ler o resultado
+e produzi-lo.

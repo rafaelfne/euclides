@@ -41,6 +41,10 @@ código-fonte, Stack Overflow. O glossário em `src/content/glossary.ts` arbitra
 uma vez. Nunca invente um termo; se precisar de uma palavra que não está lá, registre-a
 com `isNot` e ponto de introdução antes de usá-la.
 
+**A prosa do ciclo aceita `**assim**` e mais nada.** É a única marcação interpretada, e a
+checagem `ênfase` reprova asterisco desemparelhado ou usado fora do `body` de um ciclo.
+Antes disso a prosa era texto puro e os asteriscos apareciam literais na tela.
+
 **Fronteira de idioma:**
 
 | camada | idioma | exemplo |

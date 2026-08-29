@@ -7,6 +7,7 @@ import type { Cycle, Exercise, Unit } from '@/content/schema'
 import { allTerms } from '@/content/glossary'
 import { conventions } from '@/content/conventions'
 import { cn } from '@/lib/utils'
+import { Prose } from './Prose'
 import { Pseudocode } from './Pseudocode'
 import { ChoiceExercise } from './ChoiceExercise'
 import { TraceExercise } from './TraceExercise'
@@ -51,7 +52,7 @@ export function CycleScreen({ unit, cycle, exercise }: { unit: Unit; cycle: Cycl
 
         <div className="flex max-w-[820px] flex-col gap-3.5">
           {cycle.body.map((p, i) => (
-            <p key={i} className="m-0 text-[14.5px] leading-[1.75] text-fg-2">{p}</p>
+            <p key={i} className="m-0 text-[14.5px] leading-[1.75] text-fg-2"><Prose>{p}</Prose></p>
           ))}
         </div>
 

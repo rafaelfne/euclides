@@ -458,13 +458,21 @@ export const asymptoticsGlossary: GlossaryTerm[] = [
     isNot: ['não é o caso vazio necessariamente — é o menor caso que o procedimento sabe responder direto'],
     falseFriends: [], introducedIn: 'asymptotics.c3' },
 
+  { id: 'recursion-tree', canonical: 'árvore de recursão', canonicalLanguage: 'pt',
+    alsoKnownAs: ['recursion tree'],
+    definition: 'O desenho das chamadas por nível, com quantas existem e de que tamanho, usado para somar o custo total.',
+    isNot: ['não é a árvore de dados de uma estrutura — é o registro das chamadas de um procedimento', 'não tem n níveis: tem tantos quantos couberem entre o tamanho da entrada e o caso base'],
+    falseFriends: [
+      { context: 'depuração', meaning: 'a call stack mostra as chamadas ABERTAS num instante; a árvore mostra todas as que acontecem ao longo da execução.' },
+    ], introducedIn: 'asymptotics.c4' },
+
   { id: 'amortized-analysis', canonical: 'análise amortizada', canonicalLanguage: 'pt',
     alsoKnownAs: ['amortized analysis'],
     definition: 'Somar o custo de uma sequência inteira de operações e dividir pelo número delas.',
     isNot: ['não é caso médio: aqui não há sorteio, a sequência é fixa e as operações caras acontecem em posições conhecidas', 'não é uma média empírica medida em produção'],
     falseFriends: [
       { context: 'contabilidade', meaning: 'amortizar é distribuir um custo ao longo de períodos. A metáfora é a mesma, e é de onde o nome veio.' },
-    ], introducedIn: 'asymptotics.c5' },
+    ], introducedIn: 'asymptotics.c6' },
 ]
 
 export const tracingGlossary: GlossaryTerm[] = [
