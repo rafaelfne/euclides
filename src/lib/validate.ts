@@ -29,11 +29,11 @@ export const CHECKS = [
   ['carga', `carga: nenhum ciclo passa de ${MAX_NEW_TERMS_PER_CYCLE} termos novos`],
   ['exercício', 'exercício: todo ciclo tem exercício, e todo exercício fecha um ciclo'],
   ['domínio', 'domínio: o critério de domínio referencia exercícios que existem'],
-  ['revisão', 'revisão: toda misconception aponta um ciclo de revisão que existe'],
+  ['desfaz', 'desfaz: toda misconception aponta o ciclo que a desfaz, e ele existe'],
   ['espinha', 'espinha: todo ciclo declara sua banda e a unidade abre pelo contrato'],
   ['exemplo', 'exemplo: toda implementação ou técnica estreia com exemplo trabalhado'],
-  ['síntese', `síntese: todo ciclo abre com uma frase de no máximo ${MAX_ONE_LINE_WORDS} palavras`],
-  ['instância', 'instância: os dois primeiros parágrafos do ciclo trazem um número real'],
+  ['abertura', `abertura: todo ciclo abre com uma frase de no máximo ${MAX_ONE_LINE_WORDS} palavras`],
+  ['número', 'número: os dois primeiros parágrafos do ciclo trazem um número real'],
   ['figura', 'figura: toda figura declara curvas distintas e uma faixa que cabe no eixo'],
   ['custo', 'custo: toda implementação declara custo de toda operação do contrato'],
   ['cobertura', 'cobertura: toda parte do critério é produzida por alguma técnica'],
@@ -45,9 +45,10 @@ export const CHECKS = [
   ['tradução', 'tradução: o pseudocódigo ou atravessa inteiro para TypeScript, ou é declarado prosa'],
   ['glossário', 'glossário: ids únicos, introdução declarada dos dois lados'],
   ['sobrecarga', 'sobrecarga: todo termo sobrecarregado declara seus falsos amigos'],
+  ['ambiguidade', 'ambiguidade: nenhuma palavra é reivindicada por dois termos, nem por termo e checagem'],
   ['estreia', 'estreia: nenhum termo aparece na prosa antes do ciclo que o estreia'],
-  ['sondagem', 'sondagem: toda sonda aponta um exercício de escolha que existe na unidade dela'],
-  ['chamado', 'chamado: toda unidade fecha, no último ciclo, o incidente que abriu'],
+  ['sonda', 'sonda: toda sonda do nivelamento aponta um exercício de escolha que existe na unidade dela'],
+  ['incidente', 'incidente: toda unidade fecha, no último ciclo, o incidente que abriu'],
 ] as const
 
 /** Colunas que o exercício já entrega preenchidas; ver `GIVEN` em TraceExercise. */
@@ -186,7 +187,7 @@ export function checkAll(units: Unit[], terms: GlossaryTerm[]): Failure[] {
     }
     for (const m of u.misconceptions) {
       if (!allCycleIds.has(m.reviewCycle)) {
-        fail('revisão', `${m.id}: reviewCycle "${m.reviewCycle}" não é um ciclo existente`)
+        fail('desfaz', `${m.id}: reviewCycle "${m.reviewCycle}" não é um ciclo existente`)
       }
     }
   }
@@ -339,14 +340,14 @@ export function checkAll(units: Unit[], terms: GlossaryTerm[]): Failure[] {
     for (const c of u.cycles) {
       const words = c.oneLine.trim().split(/\s+/).length
       if (words > MAX_ONE_LINE_WORDS) {
-        fail('síntese', `${c.id}: a frase de abertura tem ${words} palavras (teto ${MAX_ONE_LINE_WORDS})`)
+        fail('abertura', `${c.id}: a frase de abertura tem ${words} palavras (teto ${MAX_ONE_LINE_WORDS})`)
       }
       if (!/[.!?]$/.test(c.oneLine.trim())) {
-        fail('síntese', `${c.id}: a frase de abertura não termina em ponto`)
+        fail('abertura', `${c.id}: a frase de abertura não termina em ponto`)
       }
       const opening = c.body.slice(0, 2).join(' ')
       if (!/\d/.test(opening)) {
-        fail('instância', `${c.id}: nenhum número real nos dois primeiros parágrafos`)
+        fail('número', `${c.id}: nenhum número real nos dois primeiros parágrafos`)
       }
     }
 
@@ -578,6 +579,43 @@ export function checkAll(units: Unit[], terms: GlossaryTerm[]): Failure[] {
   }
 
   /*
+    --- ambiguidade ---------------------------------------------------------
+
+    Duas coisas com o mesmo nome, e o glossário arbitrando as duas ao mesmo
+    tempo. É a deriva 1 do CLAUDE.md, e ela reapareceu três vezes:
+
+    - `sondagem` era apelido de `probing` E o nome do nivelamento de entrada;
+    - `faixa` era apelido de `banda` E o nome do nível do aluno;
+    - `traço de execução` tinha DOIS verbetes, um da unidade 01 e um que eu
+      acrescentei sem procurar se já existia.
+
+    A checagem cobre os dois eixos: forma reivindicada por dois termos, e nome
+    de checagem igual a um termo. O segundo importa porque o relatório do
+    validador cita a checagem pelo nome, e "FALHA síntese" lia como se a unidade
+    08 tivesse falhado. Ver ADR-0029.
+  */
+  {
+    const claim = new Map<string, string[]>()
+    for (const t of terms) {
+      for (const form of [t.canonical, ...t.alsoKnownAs]) {
+        const key = fold(form)
+        claim.set(key, [...(claim.get(key) ?? []), t.id])
+      }
+    }
+    for (const [form, ids] of claim) {
+      if (ids.length > 1) {
+        fail('ambiguidade', `"${form}" é reivindicada por ${ids.join(' e ')}`)
+      }
+    }
+    for (const [id] of CHECKS) {
+      const owner = claim.get(fold(id))
+      if (owner) {
+        fail('ambiguidade', `a checagem "${id}" tem o nome de um termo do glossário (${owner.join(', ')})`)
+      }
+    }
+  }
+
+  /*
     --- estreia -------------------------------------------------------------
 
     Nasceu de uma deriva real: `pior caso`, `caso médio` e `amortizado` eram
@@ -622,7 +660,7 @@ export function checkAll(units: Unit[], terms: GlossaryTerm[]): Failure[] {
   }
 
   /*
-    --- chamado -------------------------------------------------------------
+    --- incidente -------------------------------------------------------------
 
     Toda unidade abre com um incidente concreto em `motivatingProblem`, e sem
     isto ela terminava sem voltar a ele. Uma história pela metade é pior que
@@ -636,19 +674,19 @@ export function checkAll(units: Unit[], terms: GlossaryTerm[]): Failure[] {
     for (const c of u.cycles) {
       const isLast = c.id === last?.id
       if (isLast && !c.postmortem) {
-        fail('chamado', `${u.id}: o último ciclo (${c.id}) não fecha o incidente da abertura`)
+        fail('incidente', `${u.id}: o último ciclo (${c.id}) não fecha o incidente da abertura`)
       }
       if (!isLast && c.postmortem) {
-        fail('chamado', `${c.id}: só o último ciclo da unidade fecha o chamado`)
+        fail('incidente', `${c.id}: só o último ciclo da unidade fecha o incidente`)
       }
       if (c.postmortem && !u.misconceptions.some((m) => m.id === c.postmortem!.trapId)) {
-        fail('chamado', `${c.id}: o postmortem aponta "${c.postmortem.trapId}", que não está no catálogo da unidade`)
+        fail('incidente', `${c.id}: o postmortem aponta "${c.postmortem.trapId}", que não está no catálogo da unidade`)
       }
     }
   }
 
   /*
-    --- sondagem ------------------------------------------------------------
+    --- sonda ------------------------------------------------------------
 
     A sondagem promete quatro minutos e reaproveita exercícios que já existem.
     As duas coisas quebram em silêncio: um id renomeado deixa a sonda apontando
@@ -658,25 +696,28 @@ export function checkAll(units: Unit[], terms: GlossaryTerm[]): Failure[] {
   for (const probe of probes) {
     const u = units.find((x) => x.id === probe.unitId)
     if (!u) {
-      fail('sondagem', `${probe.unitId}: a sonda aponta uma unidade que não existe`)
+      fail('sonda', `${probe.unitId}: a sonda aponta uma unidade que não existe`)
       continue
     }
     const ex = u.exercises.find((e) => e.id === probe.exerciseId)
     if (!ex) {
-      fail('sondagem', `${probe.unitId}: a sonda aponta "${probe.exerciseId}", que não existe na unidade`)
+      fail('sonda', `${probe.unitId}: a sonda aponta "${probe.exerciseId}", que não existe na unidade`)
       continue
     }
     if (ex.kind !== 'choice') {
-      fail('sondagem', `${probe.exerciseId} é "${ex.kind}", e a sondagem só cabe em quatro minutos com escolha`)
+      fail('sonda', `${probe.exerciseId} é "${ex.kind}", e o nivelamento só cabe em quatro minutos com escolha`)
     }
   }
 
   const sondadas = new Set(probes.map((p) => p.unitId))
   if (sondadas.size !== probes.length) {
-    fail('sondagem', 'duas sondas na mesma unidade: a sondagem é uma por unidade')
+    fail('sonda', 'duas sondas na mesma unidade: o nivelamento é uma sonda por unidade')
   }
 
   return failures
 }
+
+/** Sem acento e sem caixa: "Faixa" e "faixa" são a mesma reivindicação. */
+const fold = (s: string) => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
 
 const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')

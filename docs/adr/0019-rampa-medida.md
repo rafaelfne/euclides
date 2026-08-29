@@ -26,13 +26,13 @@ de `transition` em 26 KB. Procede.
 
 ### 1. Nenhum ciclo publica sem número real nos dois primeiros parágrafos
 
-A checagem `instância`. É a intervenção que resolve mais com menos: ataca os 44 ciclos com
+A checagem `número`. É a intervenção que resolve mais com menos: ataca os 44 ciclos com
 um movimento só, sem tocar na voz do produto. "Remover do começo custa mais" vira "tirar o
 primeiro de 5 elementos obriga 4 escritas; tirar o último, nenhuma".
 
 ### 2. Todo ciclo abre com uma frase, e ela tem teto
 
-`oneLine`, no máximo 20 palavras, cobrado pela checagem `síntese`. Vem **antes** da prosa e
+`oneLine`, no máximo 20 palavras, cobrado pela checagem `abertura`. Vem **antes** da prosa e
 nunca depois: quem não tem referente decide ali se continua lendo, e quem tem passa o olho.
 
 ### 3. `workedExample` é obrigatório
@@ -129,7 +129,7 @@ O custo de autoria subiu de novo, e agora são 25 checagens. Escrever uma unidad
 frase de abertura, número concreto na abertura e exemplo trabalhado por ciclo.
 
 O risco continua sendo o do ADR-0016, um andar acima: **nenhuma das checagens novas sabe se
-a peça é boa.** `instância` aceita qualquer dígito, e um número decorativo passa. A checagem
+a peça é boa.** `número` aceita qualquer dígito, e um número decorativo passa. A checagem
 garante que o autor teve de pensar num caso concreto; não garante que ele pensou bem.
 
 E há um custo que a decisão 6 cria: a transliteração é código que precisa acompanhar o
@@ -149,7 +149,7 @@ por isso que ele existe.
 
 ## Itens de ação
 
-1. [x] `instância` e `síntese` no validador; `workedExample` obrigatório
+1. [x] `número` e `abertura` no validador; `workedExample` obrigatório
 2. [x] 62 frases de abertura, 36 exemplos trabalhados, 46 aberturas com número
 3. [x] `Stepper` nas quatro figuras com passos, e `prefers-reduced-motion`
 4. [x] Traço rodando, trancado até o exercício fechar

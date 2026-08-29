@@ -46,7 +46,7 @@ lugar onde ela funciona.
 ### As sondas são dado declarado, com checagem
 
 `src/content/placement.ts` declara qual exercício sonda qual unidade, e a checagem
-`sondagem` reprova sonda que aponta para o nada, sonda repetida na mesma unidade, e sonda
+`sonda` reprova sonda que aponta para o nada, sonda repetida na mesma unidade, e sonda
 que não seja `choice`. As duas primeiras quebram em silêncio; a terceira estoura os quatro
 minutos prometidos sem que nada avise.
 
@@ -117,7 +117,7 @@ tem de continuar lá: se um dia a faixa aparecer sozinha em algum canto, virou X
 
 ## Itens de ação
 
-1. [x] `probes` em `src/content/placement.ts`, e a checagem `sondagem`
+1. [x] `probes` em `src/content/placement.ts`, e a checagem `sonda`
 2. [x] `/sondagem`, sem nota, sem devolutiva, gravando o resultado uma vez no fim
 3. [x] `unitState` com os quatro estados; `consolidada` exige volta limpa, não tempo
 4. [x] `level` com as cinco faixas, sempre com a regra e o que falta

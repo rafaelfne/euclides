@@ -112,7 +112,7 @@ export const hashGlossary: GlossaryTerm[] = [
     falseFriends: [], introducedIn: 'hash.c7' },
 
   { id: 'probing', canonical: 'probing', canonicalLanguage: 'en',
-    alsoKnownAs: ['sondagem', 'linear probing'],
+    alsoKnownAs: ['linear probing', 'sondagem linear'],
     definition: 'A sequência de posições visitadas a partir do endereço inicial até achar espaço.',
     isNot: ['não é busca linear na tabela inteira, segue uma ordem determinada por h'],
     falseFriends: [
@@ -183,7 +183,10 @@ export const graphsGlossary: GlossaryTerm[] = [
     ], introducedIn: 'graphs.c0' },
 
   { id: 'vertex', canonical: 'vértice', canonicalLanguage: 'pt',
-    alsoKnownAs: ['nó', 'vertex', 'node'],
+    // "nó" e "node" saíram: eles são de `node`, e o falso amigo abaixo já diz
+    // que a palavra é a mesma. Apelido reivindicado por dois termos é a deriva
+    // 1 do CLAUDE.md com outro nome.
+    alsoKnownAs: ['vertex'],
     definition: 'Cada um dos elementos que o grafo liga.',
     isNot: ['não é o nó de lista ligada, que carrega um ponteiro para o próximo, aqui as ligações moram na representação, não no elemento'],
     falseFriends: [
@@ -669,7 +672,7 @@ export const appGlossary: GlossaryTerm[] = [
     falseFriends: [{ context: 'grafos', meaning: 'na unidade de grafos, ciclo é um caminho que volta ao ponto de partida. Nada a ver com o ciclo de estudo.' }],
     introducedIn: APP },
 
-  { id: 'app.band', canonical: 'banda', canonicalLanguage: 'pt', alsoKnownAs: ['faixa', 'trilho'],
+  { id: 'app.band', canonical: 'banda', canonicalLanguage: 'pt', alsoKnownAs: ['trilho'],
     definition: 'Onde o ciclo fica no mapa da unidade: contrato, implementação ou custo, critério, técnica ou falha, quando a unidade é sobre um método.',
     isNot: ['não é dificuldade', 'não é ordem obrigatória de leitura'],
     falseFriends: [], introducedIn: APP },
@@ -689,16 +692,43 @@ export const appGlossary: GlossaryTerm[] = [
     isNot: ['não é o mesmo que errar uma vez', 'não é uma nota baixa, é um item para revisitar'],
     falseFriends: [], introducedIn: APP },
 
-  { id: 'app.revisit', canonical: 'revisita', canonicalLanguage: 'pt', alsoKnownAs: ['revisão'],
+  { id: 'app.revisit', canonical: 'revisita', canonicalLanguage: 'pt', alsoKnownAs: ['volta'],
     definition: 'Voltar a um ciclo já resolvido depois de um intervalo, para ver se o raciocínio ficou ou se só a resposta ficou.',
     isNot: ['não é refazer tudo', 'não é castigo por ter errado'],
     falseFriends: [], introducedIn: APP },
 
-  { id: 'app.trace', canonical: 'traço de execução', canonicalLanguage: 'pt', alsoKnownAs: ['trace', 'tabela de execução'],
-    definition: 'A tabela em que você escreve, rodada por rodada, o valor de cada nome que muda. É o exercício central da primeira unidade.',
-    isNot: ['não é rodar o código', 'não é log'],
-    falseFriends: [{ context: 'observabilidade', meaning: 'em sistemas distribuídos, um trace é o registro do caminho de uma requisição entre serviços. Mesma palavra, outro objeto.' }],
+  { id: 'app.rank', canonical: 'faixa', canonicalLanguage: 'pt', alsoKnownAs: [],
+    definition: 'O quanto você já consegue julgar, derivado das unidades dominadas: Leitor, Traçador, Analista, Revisor, Árbitro.',
+    isNot: ['não é nível, e não sobe por tempo de uso', 'não é a banda do ciclo, que é onde ele fica no mapa'],
+    falseFriends: [], introducedIn: APP },
+
+  { id: 'app.placement', canonical: 'sondagem', canonicalLanguage: 'pt', alsoKnownAs: ['nivelamento'],
+    definition: 'Seis perguntas, uma por unidade, que recomendam por onde começar. As respostas contam como os exercícios que elas são.',
+    isNot: ['não é prova e não tem nota', 'não bloqueia unidade nenhuma', 'não é a sondagem de probing, que é política de colisão da unidade 04'],
+    falseFriends: [
+      { context: 'tabelas hash', meaning: 'em open addressing, sondar é procurar a próxima posição livre. Mesma palavra, e é por isso que o glossário chama aquela de "sondagem linear".' },
+    ], introducedIn: APP },
+
+  { id: 'app.seal', canonical: 'selo de domínio', canonicalLanguage: 'pt', alsoKnownAs: ['selo'],
+    definition: 'O carimbo que acende quando os exercícios do critério saem na primeira tentativa, e ganha uma marca a mais na consolidação.',
+    isNot: ['não é troféu, e não existe selo de participação', 'não acende por ter visitado a unidade'],
+    falseFriends: [], introducedIn: APP },
+
+  { id: 'app.bestiary', canonical: 'bestiário', canonicalLanguage: 'pt', alsoKnownAs: ['caderno de armadilhas'],
+    definition: 'A lista das armadilhas com o estado de cada uma: não encontrada, ativada, desarmada.',
+    isNot: ['não é uma lista de leitura', 'ler a explicação não desarma nenhuma'],
+    falseFriends: [], introducedIn: APP },
+
+  { id: 'app.postmortem', canonical: 'postmortem', canonicalLanguage: 'en', alsoKnownAs: [],
+    definition: 'O fechamento do último ciclo, que retoma o incidente da abertura da unidade e pergunta qual armadilha estava ali, qual afirmação de custo faltava, e o que teria pego isso.',
+    isNot: ['não é um resumo da unidade', 'não é sobre culpa'],
+    falseFriends: [{ context: 'operações', meaning: 'num time de infraestrutura, postmortem é o documento depois de um incidente em produção. É a mesma ideia, e é de propósito.' }],
     introducedIn: APP },
+
+  { id: 'app.rung', canonical: 'degrau', canonicalLanguage: 'pt', alsoKnownAs: [],
+    definition: 'Um dos três níveis da devolutiva: onde quebrou, qual campo, e a pergunta que ataca a raiz. São sempre os mesmos, para toda armadilha.',
+    isNot: ['não é a escalation, que é do conteúdo e tem de uma a três tarefas dentro do terceiro degrau', 'nenhum degrau revela o valor correto'],
+    falseFriends: [], introducedIn: APP },
 
   { id: 'app.escalation', canonical: 'escalation', canonicalLanguage: 'en', alsoKnownAs: ['tarefas da armadilha'],
     definition: 'As tarefas que a devolutiva entrega quando você erra, de uma a três, uma por tentativa. Esgotadas, o exercício encerra.',

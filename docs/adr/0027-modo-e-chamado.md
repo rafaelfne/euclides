@@ -51,7 +51,7 @@ unidades, de propósito — é o roteiro que ele deve levar para a próxima revi
 o incidente retomado, qual armadilha estava ali, qual afirmação de custo faltava, e o que
 teria pego isso.
 
-A checagem `chamado` confere os dois lados: sem postmortem no último ciclo reprova, e com
+A checagem `incidente` confere os dois lados: sem postmortem no último ciclo reprova, e com
 postmortem em qualquer outro também. **Fechar o chamado no meio da unidade seria fechá-lo
 antes de o aluno ter as ferramentas para fechá-lo.** E o `trapId` tem de existir no catálogo
 da unidade.
@@ -96,5 +96,5 @@ seis meses são duas telas diferentes. A defesa é a tabela acima ficar curta.
 1. [x] `ModeToggle` no cabeçalho do ciclo, persistido em `profile.mode`
 2. [x] Exemplo trabalhado recolhido em revisão; `autoPlay` no `Stepper` só em iniciante
 3. [x] Frase de conforto derivada, nos 3 primeiros ciclos da unidade 01
-4. [x] `postmortem` no schema e a checagem `chamado`, conferindo os dois lados
+4. [x] `postmortem` no schema e a checagem `incidente`, conferindo os dois lados
 5. [x] Os 8 postmortems escritos, cada um amarrado a uma armadilha do catálogo

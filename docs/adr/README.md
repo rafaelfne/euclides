@@ -30,6 +30,7 @@
 | [0026](0026-camada-instrumento.md) | A camada instrumento, e o formato como parte do treino | Julgar um diff é diferente de julgar um arquivo; atalho tem de ter botão |
 | [0027](0027-modo-e-chamado.md) | O modo que eu tinha descartado, e o chamado que fecha | Esconder só é perda quando quem esconde não é o leitor |
 | [0028](0028-realce-semantico-real.md) | O realce do JavaScript é a folha de notação atravessada | A linguagem que o aluno vai revisar não pode ser a apagada |
+| [0029](0029-uma-palavra-uma-coisa.md) | Uma palavra pertence a uma coisa só, e isso vale para o nome das checagens | "FALHA síntese" lia como se a unidade 08 tivesse falhado |
 
 ## Como escrever o próximo
 

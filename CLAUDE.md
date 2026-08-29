@@ -47,8 +47,8 @@ nenhuma checagem confere, e cor autorada não sobrevive a redesenho. ADR-0017.
 
 **Nenhum ciclo publica sem um número real nos dois primeiros parágrafos.** Categoria sem
 caso é economia de tempo para quem já tem referente, e palavra sem referente para quem não
-tem, e 44 dos 62 ciclos não tinham nenhum número. A checagem `instância` cobra isso, e
-`síntese` cobra a frase de abertura de até 20 palavras, sem jargão, que vem antes da prosa.
+tem, e 44 dos 62 ciclos não tinham nenhum número. A checagem `número` cobra isso, e
+`abertura` cobra a frase de até 20 palavras, sem jargão, que vem antes da prosa.
 Exemplo trabalhado é obrigatório. ADR-0019.
 
 **Movimento é argumento, e argumento se lê no ritmo de quem lê.** Uma passada e para, nunca
@@ -77,8 +77,13 @@ percentual mede visita. ADR-0022.
 **Toda unidade fecha o chamado que abriu.** O último ciclo retoma o incidente do
 `motivatingProblem` num `postmortem` de quatro partes, iguais nas oito unidades: qual
 armadilha estava ali, qual afirmação de custo faltava, o que teria pego isso. A checagem
-`chamado` confere os dois lados, e fechar no meio da unidade seria fechar antes de o aluno
+`incidente` confere os dois lados, e fechar no meio da unidade seria fechar antes de o aluno
 ter as ferramentas. ADR-0027.
+
+**Uma palavra pertence a uma coisa só, e isso vale para o nome das checagens.** A checagem
+`ambiguidade` reprova forma reivindicada por dois termos e checagem com nome de termo. O
+relatório do validador cita a checagem pelo nome, e "FALHA síntese" lia como se a unidade 08
+tivesse falhado. ADR-0029.
 
 **Acolhimento é afirmação verificável, ou não entra.** O princípio 7 proíbe elogio vago, não
 proíbe informação verdadeira sobre dificuldade. A diferença é mecânica: "muita gente erra
