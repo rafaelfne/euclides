@@ -13,11 +13,14 @@ import { ProfileAvatar } from './ProfileAvatar'
 export function Rail({ unitId }: { unitId?: string }) {
   return (
     <nav className="hidden h-screen w-[212px] shrink-0 flex-col overflow-y-auto border-r border-rule-soft bg-rail lg:flex">
-      <div className="flex shrink-0 items-center justify-between gap-2 border-b border-rule-soft px-4 py-2.5">
-        <Link href="/" title="Euclides" aria-label="Euclides" className="m-tap flex shrink-0 items-center">
-          <Logo size={56} />
-        </Link>
-        <ProfileAvatar />
+      <div className="sticky top-0 z-10 shrink-0 border-b border-rule-soft bg-rail">
+        <div className="flex items-center justify-between gap-2 px-4 py-2.5">
+          <Link href="/" title="Euclides" aria-label="Euclides" className="m-tap flex shrink-0 items-center">
+            <Logo size={56} />
+          </Link>
+          <ProfileAvatar />
+        </div>
+        <div className="px-4 pb-2.5"><BandBadge compact /></div>
       </div>
 
       <div className="flex flex-col gap-px py-3">
@@ -46,7 +49,6 @@ export function Rail({ unitId }: { unitId?: string }) {
       </div>
 
       <div className="mt-auto flex flex-col border-t border-rule-soft pb-9">
-        <div className="px-4 py-2.5"><BandBadge compact /></div>
         <Link href="/como-funciona" className="lbl m-tap px-4 py-2.5 hover:bg-panel-head hover:text-fg-2">Como funciona</Link>
         <Link href="/traps" className="lbl m-tap px-4 py-2.5 hover:bg-panel-head hover:text-fg-2">Armadilhas</Link>
         <Link href="/glossary" className="lbl m-tap px-4 py-2.5 hover:bg-panel-head hover:text-fg-2">Glossário</Link>
