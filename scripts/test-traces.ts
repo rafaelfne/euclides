@@ -11,8 +11,9 @@ import { countEvenTrace } from '../src/lib/reference/tracing'
 import { recursionTreeTrace } from '../src/lib/reference/asymptotics'
 import { removeFirstTrace } from '../src/lib/reference/linear'
 import { bstInsertTrace } from '../src/lib/reference/trees'
-import { bfsTrace } from '../src/lib/reference/graphs'
+import { bfsTrace, dfsTrace } from '../src/lib/reference/graphs'
 import { chainingInsertTrace } from '../src/lib/reference/hash-table'
+import { bfsOrder, dfsOrder } from '../src/lib/traversal'
 import { units } from '../src/content/index'
 import { findDivergence, buildFeedback } from '../src/lib/socratic'
 
@@ -150,6 +151,26 @@ for (const u of units) {
     const reached = chainingInsertTrace().find((s) => s.content === drawn)
     check(`${c.id}: a tabela desenhada é um estado que o gabarito de fato atinge`,
       Boolean(reached), `figura ${drawn}`)
+  }
+}
+
+/*
+  A figura de percurso deriva das arestas declaradas no conteúdo; o gabarito
+  deriva de uma constante em src/lib/reference. São dois caminhos de código e
+  duas fontes de dado, e é por isso que a asserção vale alguma coisa.
+*/
+for (const u of units) {
+  for (const c of u.cycles) {
+    if (c.figure?.kind !== 'traversal' || u.id !== 'graphs') continue
+    const figure = c.figure
+    const popped = (steps: ReturnType<typeof bfsTrace>) =>
+      steps.map((s) => s.key!.split(': ')[1]).join(' ')
+    check(`${c.id}: a ordem em largura da figura é a do gabarito de graphs.e4`,
+      bfsOrder(figure.edges, figure.origin).join(' ') === popped(bfsTrace()),
+      `figura ${bfsOrder(figure.edges, figure.origin).join(' ')}, gabarito ${popped(bfsTrace())}`)
+    check(`${c.id}: a ordem em profundidade da figura é a do gabarito de graphs.e8`,
+      dfsOrder(figure.edges, figure.origin).join(' ') === popped(dfsTrace()),
+      `figura ${dfsOrder(figure.edges, figure.origin).join(' ')}, gabarito ${popped(dfsTrace())}`)
   }
 }
 

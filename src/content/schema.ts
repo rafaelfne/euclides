@@ -174,6 +174,21 @@ export const figure = z.discriminatedUnion('kind', [
     /** A chave cuja busca a figura anota, quando há uma. */
     searchFor: z.number().int().nonnegative().optional(),
   }),
+
+  /**
+   * O mesmo grafo percorrido de dois jeitos.
+   *
+   * As duas ordens e a posição de cada vértice são derivadas das arestas; o
+   * conteúdo declara só o grafo e a origem. A checagem exige que as duas ordens
+   * sejam diferentes — uma figura em que largura e profundidade coincidem
+   * ilustra o contrário do que o ciclo afirma.
+   */
+  z.object({
+    kind: z.literal('traversal'),
+    caption: z.string().min(1),
+    edges: z.array(z.object({ from: z.string().min(1), to: z.string().min(1) })).min(3),
+    origin: z.string().min(1),
+  }),
 ])
 
 // ---------------------------------------------------------------------------

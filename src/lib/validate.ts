@@ -15,6 +15,7 @@ import {
 import { OVERLOADED_TERMS, PLANNED } from '../content/glossary'
 import { vagueAbstractions, allowedVagueUses } from '../content/vocabulary'
 import { referenceGenerators } from './reference'
+import { bfsOrder, dfsOrder, vertices } from './traversal'
 
 export const CHECKS = [
   ['registro', 'registro: existe unidade registrada em src/content/index.ts'],
@@ -231,6 +232,23 @@ export function checkAll(units: Unit[], terms: GlossaryTerm[]): Failure[] {
         }
         if (f.searchFor !== undefined && !f.keys.includes(f.searchFor)) {
           fail('figura', `${c.id}: a busca anotada procura ${f.searchFor}, que não está na tabela`)
+        }
+      }
+
+      if (f.kind === 'traversal') {
+        const known = vertices(f.edges)
+        if (!known.includes(f.origin)) {
+          fail('figura', `${c.id}: a origem ${f.origin} não aparece em nenhuma aresta`)
+        } else {
+          const largura = bfsOrder(f.edges, f.origin)
+          const profundidade = dfsOrder(f.edges, f.origin)
+          const unreached = known.filter((v) => !largura.includes(v))
+          if (unreached.length) {
+            fail('figura', `${c.id}: ${unreached.join(', ')} não é alcançável a partir de ${f.origin}, e a figura desenharia um vértice que nenhum dos dois percursos visita`)
+          }
+          if (largura.join(' ') === profundidade.join(' ')) {
+            fail('figura', `${c.id}: os dois percursos dão a mesma ordem (${largura.join(' ')}), e a figura existe para mostrar que eles diferem`)
+          }
         }
       }
 

@@ -28,7 +28,7 @@ export const graphsMisconceptions: Misconception[] = [
     escalation: [
       'A matriz reserva espaço para toda ligação possível, e quase nenhuma existe. Qual é a razão entre as duas contas, e o que ela diz sobre a escolha?',
     ],
-    reviewCycle: 'graphs.c6' },
+    reviewCycle: 'graphs.c7' },
 
   { id: 'graphs.arvore-e-grafo', label: 'Aplicar a uma estrutura com ciclo o que só vale em árvore',
     socraticQuestion: 'Numa árvore, quantos caminhos existem entre a raiz e um nó qualquer? E num grafo com ciclo, entre dois vértices?',
@@ -135,6 +135,37 @@ export const graphsExercises: Exercise[] = [
       { correct: false, text: 'O mesmo nas duas: o percurso visita os mesmos vértices na mesma ordem', misconceptionId: 'graphs.bfs-e-dfs-equivalentes' },
       { correct: false, text: 'A matriz é melhor nas duas contas, porque consultar uma célula é constante', misconceptionId: 'graphs.matriz-para-esparso' },
     ],
+  },
+  {
+    kind: 'trace', id: 'graphs.e8',
+    prompt:
+      'O grafo é o mesmo do traço anterior: A→B, A→D, B→C, C→A, C→E e D→E. Agora a fila virou pilha, e ' +
+      'sai o último em vez do primeiro. Faça a busca em profundidade a partir de A. Para cada retirada: ' +
+      'quais vizinhos entraram agora, como fica a pilha, e quem já foi visitado.',
+    pseudocode: `função profundidade(G, origem)
+    pilha ← sequência com origem
+    visitados ← conjunto com origem
+    enquanto pilha não vazia faça
+        atual ← retirar último de pilha
+        para cada v em G.vizinhos(atual) faça
+            se v não está em visitados então
+                anexar v em visitados
+                anexar v em pilha`,
+    invariant: 'A pilha e a fila guardam os mesmos vértices; o que muda é de qual ponta se retira.',
+    columns: [
+      { key: 'step', label: 'retirada' },
+      { key: 'key', label: 'quem saiu' },
+      { key: 'added', label: 'vizinhos que entraram', placeholder: 'X Y ou nenhum' },
+      { key: 'queue', label: 'pilha depois', placeholder: 'X Y ou vazia' },
+      { key: 'visited', label: 'visitados', placeholder: 'V W X Y' },
+    ],
+    conventions: [
+      { notation: 'B D', rule: 'uma pilha ou um conjunto', why: 'Na pilha, da base para o topo — o último escrito é o próximo a sair. Em visitados, em ordem alfabética, porque conjunto não tem ordem própria.' },
+      { notation: 'nenhum', rule: 'nenhum vizinho novo entrou', why: 'O vértice tinha vizinhos, e todos já estavam visitados. Não é o mesmo que não ter vizinho.' },
+      { notation: 'vazia', rule: 'a pilha esvaziou', why: 'É o que encerra o percurso, igual à fila. O critério de parada não mudou.' },
+    ],
+    reference: 'graphs.dfs-trace',
+    misconceptionByStep: { '2': 'graphs.bfs-e-dfs-equivalentes' },
   },
   {
     kind: 'bug', id: 'graphs.e7',

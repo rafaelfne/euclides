@@ -111,6 +111,27 @@ sobre ela não discordar do exercício ao lado dela.
   Se um `kind` nascer sem poder ser amarrado a nada, aí sim a opção A merece ser reaberta
   para aquele caso.
 
+## O caso que quase não amarrou
+
+O quinto `kind`, `traversal`, foi o teste do critério corrigido. Quando ele entrou na fila,
+o registro dizia que era o que provavelmente não amarraria em nada: `graphs.e4` gerava a
+ordem em largura, e a ordem em profundidade não existia como referência. Escrever um gerador
+só para servir a figura teria produzido exatamente o que o critério condena — um desenho
+conferido contra código que ninguém mais usa.
+
+A saída não foi relaxar a regra, foi escrever o exercício que faltava. `graphs.e8` cobra o
+traço em profundidade sobre o mesmo grafo de `graphs.e4`, e a única diferença entre os dois
+pseudocódigos é a ponta de onde se retira. O gerador nasceu como gabarito, e a figura passou
+a ter dois traços para conferir em vez de nenhum.
+
+Isso mudou o conteúdo, não só a figura: `graphs.c5` empacotava três afirmações — a troca de
+estrutura, a garantia de menos arestas, e a ressalva do peso — e virou dois ciclos, um para
+a troca e outro para o que ela garante e o que não garante. A pergunta "esta figura consegue
+ser conferida?" achou um ciclo sobrecarregado que nenhuma checagem tinha achado.
+
+**É o argumento mais forte a favor da decisão até agora**, e ele não estava previsto: a
+exigência de amarração é um teste de coerência do conteúdo, não só do desenho.
+
 ## Itens de ação
 
 1. [x] `figure` no schema, com `curveShape` como enum
@@ -121,7 +142,5 @@ sobre ela não discordar do exercício ao lado dela.
 5. [x] `tree`, com a checagem de que as duas sequências comparam o mesmo conjunto de chaves
 6. [x] `buckets`, com a checagem de que a figura de colisão de fato tem uma colisão, e a
    asserção de que a tabela desenhada é um estado que o gabarito atinge
-7. [ ] Decidir o `kind` da última — largura contra profundidade. É a que provavelmente não
-   amarra em nada: `graphs.e4` gera a ordem em largura, e a de profundidade não existe como
-   referência. Se um gerador nascer só para a figura, o argumento que sustentou os quatro
-   primeiros não se aplica a ela.
+7. [x] `traversal`, com a checagem de que os dois percursos dão ordens diferentes e a de que
+   todo vértice desenhado é alcançável

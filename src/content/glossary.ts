@@ -274,7 +274,7 @@ export const graphsGlossary: GlossaryTerm[] = [
     isNot: ['não é ter poucos vértices — um grafo esparso pode ser enorme'],
     falseFriends: [
       { context: 'álgebra linear', meaning: 'matriz esparsa é a que tem quase tudo zero. É a mesma ideia, e é literalmente o que uma matriz de adjacência de grafo esparso vira.' },
-    ], introducedIn: 'graphs.c6' },
+    ], introducedIn: 'graphs.c7' },
 ]
 
 export const treesGlossary: GlossaryTerm[] = [

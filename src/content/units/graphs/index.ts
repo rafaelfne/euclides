@@ -181,16 +181,38 @@ export const graphsUnit: Unit = {
       invariant: 'Todo vértice entra na fila no máximo uma vez, porque entra em visitados no mesmo instante.',
       exerciseId: 'graphs.e4' },
 
-    { id: 'graphs.c5', title: 'Largura e profundidade respondem perguntas diferentes', layer: 'essential', band: 'cost',
+    { id: 'graphs.c5', title: 'Uma linha trocada muda o percurso inteiro', layer: 'essential', band: 'cost',
       introducesTerms: ['dfs'],
       body: [
-        'Trocar a fila por uma pilha muda o percurso inteiro: em vez de avançar por camadas, ele desce um ramo até o fim antes de voltar. As duas visitam os mesmos vértices e não respondem a mesma coisa.',
-        'A busca em largura chega a cada vértice pelo caminho com menos arestas, e por isso responde "qual a rota com menos escalas". A busca em profundidade não dá essa garantia, e em compensação encontra um caminho completo cedo e usa memória proporcional à profundidade, não à largura.',
-        'Uma ressalva que separa quem entendeu de quem decorou: "menos arestas" não é "menor custo". Se as arestas têm peso, nenhuma das duas responde caminho mais curto — isso é outro algoritmo, e está fora desta unidade.',
+        'A diferença entre os dois percursos é **uma linha**: onde a busca em largura retira o primeiro da fila, a busca em profundidade retira o último de uma pilha. Nada mais muda — o conjunto de visitados, a condição de parada e os vizinhos são os mesmos.',
+        'O efeito não é proporcional à mudança. Em vez de avançar por camadas, o percurso desce um ramo até o fim antes de voltar. As duas visitam **os mesmos vértices**, e visitam em ordens diferentes.',
+        'Guarde a diferença nesta forma, porque é ela que vai importar no próximo ciclo: a busca em largura alcança cada vértice pelo caminho com menos arestas; a busca em profundidade encontra um caminho completo mais cedo, e usa memória proporcional à profundidade, não à largura.',
+      ],
+      figure: {
+        kind: 'traversal',
+        origin: 'A',
+        edges: [
+          { from: 'A', to: 'B' }, { from: 'A', to: 'D' }, { from: 'B', to: 'C' },
+          { from: 'C', to: 'A' }, { from: 'C', to: 'E' }, { from: 'D', to: 'E' },
+        ],
+        caption: 'O número ao lado de cada vértice é a ordem em que ele foi visitado. Os dois percursos visitam os cinco, e a origem é o único vértice com o mesmo número nos dois painéis — os outros quatro trocam de posição. A posição no desenho é idêntica nos dois lados: as colunas são as camadas da busca em largura, e é por isso que a da esquerda avança coluna por coluna enquanto a da direita corta na diagonal.',
+      },
+      workedExample: {
+        problem: 'A partir de A, com A→B, A→D, B→C, C→A, C→E e D→E: a busca em largura sai A B D C E, e a em profundidade sai A D E B C.',
+        whatToNotice: 'Em largura, B sai antes de D porque entrou antes; em profundidade, D sai antes de B porque entrou por último. Os dois entraram no mesmo passo — o que mudou foi de qual ponta se retira.',
+      },
+      exerciseId: 'graphs.e8' },
+
+    { id: 'graphs.c6', title: 'Menos arestas não é menor custo', layer: 'essential', band: 'cost',
+      introducesTerms: [],
+      body: [
+        'A garantia da busca em largura tem uma forma exata, e a forma importa: ao alcançar um vértice **pela primeira vez**, ela chegou pelo caminho com o menor número de arestas. É isso que responde "qual a rota com menos escalas".',
+        'A ressalva separa quem entendeu de quem decorou: **menos arestas não é menor custo**. Se as arestas têm peso — duração, distância, preço — nenhum dos dois percursos responde caminho mais curto. Uma rota de duas escalas pode durar o dobro de uma de quatro.',
+        'Isso não é uma limitação a contornar com um ajuste. É outro problema, e ele tem outro algoritmo, fora desta unidade. Saber que a ferramenta não responde a pergunta é metade do julgamento.',
       ],
       exerciseId: 'graphs.e5' },
 
-    { id: 'graphs.c6', title: 'Esparso contra denso: onde a escolha vira', layer: 'essential', band: 'cost',
+    { id: 'graphs.c7', title: 'Esparso contra denso: onde a escolha vira', layer: 'essential', band: 'cost',
       introducesTerms: ['sparse'],
       body: [
         'A representação decide o custo do percurso, e é aqui que as duas escolhas do meio da unidade cobram a conta.',
@@ -199,7 +221,7 @@ export const graphsUnit: Unit = {
       ],
       exerciseId: 'graphs.e6' },
 
-    { id: 'graphs.c7', title: 'Quando o grafo é a escolha errada', layer: 'essential', band: 'cost',
+    { id: 'graphs.c8', title: 'Quando o grafo é a escolha errada', layer: 'essential', band: 'cost',
       introducesTerms: [],
       body: [
         'Volte ao contrato do primeiro ciclo. Tudo que ele não promete é onde a escolha falha — e aqui a lista de ausências é maior que a de operações, o que é próprio deste contrato.',

@@ -41,6 +41,36 @@ export function bfsTrace(): TraceStep[] {
   return steps
 }
 
+/**
+ * O traço para `graphs.e8`: mesma origem, mesmo grafo, pilha no lugar da fila.
+ *
+ * A única diferença em relação a `bfsTrace` é `pop()` contra `shift()`, e é
+ * exatamente essa a afirmação do ciclo. O aluno que escreve os dois traços
+ * lado a lado vê a troca de uma linha mudar a ordem inteira.
+ */
+export function dfsTrace(): TraceStep[] {
+  const stack = ['A']
+  const visited = new Set(['A'])
+  const steps: TraceStep[] = []
+
+  while (stack.length) {
+    const current = stack.pop()!
+    const neighbours = ADJACENCY[current] ?? []
+    const added = neighbours.filter((n) => !visited.has(n))
+    added.forEach((n) => { visited.add(n); stack.push(n) })
+
+    steps.push({
+      step: String(steps.length + 1),
+      key: `sai da pilha: ${current}`,
+      added: added.length ? added.join(' ') : 'nenhum',
+      queue: show(stack),
+      visited: [...visited].sort().join(' '),
+    })
+  }
+  return steps
+}
+
 export const graphsReferenceGenerators: Record<string, () => TraceStep[]> = {
   'graphs.bfs-trace': bfsTrace,
+  'graphs.dfs-trace': dfsTrace,
 }
