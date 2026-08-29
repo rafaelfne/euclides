@@ -118,6 +118,20 @@ export const asymptoticsUnit: Unit = {
         'A consequência: para n pequeno, a comparação assintótica não decide nada. Mil vezes n é maior que n ao quadrado até n chegar a mil. Se as suas coleções têm duzentos elementos, a afirmação que ganha na notação é a que perde na máquina.',
         'É por isso que "é O(n), então é a escolha certa" não é um argumento — e é a primeira vez nesta trilha em que a resposta correta é "depende, e o eixo é este".',
       ],
+      figure: {
+        kind: 'growth',
+        xLabel: 'n, elementos da coleção',
+        xMax: 1400,
+        curves: [
+          { label: '1000·n', shape: 'linear', factor: 1000 },
+          { label: 'n²', shape: 'quadratic', factor: 1 },
+        ],
+        highlight: { from: 20, to: 200, label: 'as coleções reais' },
+        caption:
+          'A faixa destacada é onde as suas coleções vivem, e ela cabe num traço perto da ' +
+          'origem. À esquerda do cruzamento a curva quadrática está por baixo: a afirmação que ' +
+          'ganha na notação é a que perde na máquina, e o gráfico mostra por quanto.',
+      },
       exerciseId: 'asymptotics.e1' },
 
     { id: 'asymptotics.c2', title: 'O que n conta, e o que ele ignora', layer: 'essential', band: 'criterion',

@@ -29,6 +29,7 @@ export const CHECKS = [
   ['revisão', 'revisão: toda misconception aponta um ciclo de revisão que existe'],
   ['espinha', 'espinha: todo ciclo declara sua banda e a unidade abre pelo contrato'],
   ['exemplo', 'exemplo: toda implementação ou técnica estreia com exemplo trabalhado'],
+  ['figura', 'figura: toda figura declara curvas distintas e uma faixa que cabe no eixo'],
   ['custo', 'custo: toda implementação declara custo de toda operação do contrato'],
   ['cobertura', 'cobertura: toda parte do critério é produzida por alguma técnica'],
   ['vocabulário', 'vocabulário: nenhuma abstração vaga não registrada'],
@@ -188,6 +189,28 @@ export function checkAll(units: Unit[], terms: GlossaryTerm[]): Failure[] {
     }
     if (u.cycles[0]!.band !== openingBand) {
       fail('espinha', `${u.id}: o primeiro ciclo é "${u.cycles[0]!.band}", deveria ser "${openingBand}"`)
+    }
+
+    // Uma figura afirma alguma coisa, e é a única peça do conteúdo que afirma
+    // por desenho. Ver ADR-0017.
+    for (const c of u.cycles) {
+      const f = c.figure
+      if (!f) continue
+      const labels = f.curves.map((x) => x.label)
+      if (new Set(labels).size !== labels.length) {
+        fail('figura', `${c.id}: duas curvas com o mesmo rótulo (${labels.join(', ')})`)
+      }
+      if (f.curves.length < 2) {
+        fail('figura', `${c.id}: uma curva sozinha não compara nada`)
+      }
+      if (f.highlight) {
+        if (f.highlight.from >= f.highlight.to) {
+          fail('figura', `${c.id}: a faixa destacada começa depois de terminar`)
+        }
+        if (f.highlight.to > f.xMax) {
+          fail('figura', `${c.id}: a faixa destacada (até ${f.highlight.to}) sai do eixo (até ${f.xMax})`)
+        }
+      }
     }
 
     // O ciclo em que uma implementação ou técnica APARECE pela primeira vez é

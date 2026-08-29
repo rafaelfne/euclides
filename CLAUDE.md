@@ -41,6 +41,10 @@ código-fonte, Stack Overflow. O glossário em `src/content/glossary.ts` arbitra
 uma vez. Nunca invente um termo; se precisar de uma palavra que não está lá, registre-a
 com `isNot` e ponto de introdução antes de usá-la.
 
+**Figura é dado, nunca desenho.** O ciclo declara a afirmação — as formas das curvas, os
+fatores, a faixa — e o componente emite o SVG. Um caminho autorado afirma coisas que
+nenhuma checagem confere, e cor autorada não sobrevive a redesenho. ADR-0017.
+
 **A prosa do ciclo aceita `**assim**` e mais nada.** É a única marcação interpretada, e a
 checagem `ênfase` reprova asterisco desemparelhado ou usado fora do `body` de um ciclo.
 Antes disso a prosa era texto puro e os asteriscos apareciam literais na tela.

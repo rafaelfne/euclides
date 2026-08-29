@@ -18,6 +18,7 @@
 | [0014](0014-mapa-e-trilha.md) | O mapa mostra a taxonomia; a trilha mostra a ordem | O mapa levava ao rehash antes da carga, e o ciclo não tinha saída |
 | [0015](0015-direcao-ide.md) | Direção de IDE, com Tailwind e shadcn/ui | Decisão de produto: o app deve parecer ferramenta, não material didático |
 | [0016](0016-rampa-de-entrada.md) | A rampa é mecanizada onde dá, declarada onde não dá | Dava para acertar 54 de 54 exercícios pelo formato, sem ler nada |
+| [0017](0017-figura-e-dado.md) | A figura é dado declarado; o SVG é o renderizador | Um caminho SVG afirma coisas que nenhuma checagem confere |
 
 ## Como escrever o próximo
 

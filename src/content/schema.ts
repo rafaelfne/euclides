@@ -91,6 +91,42 @@ export const implementation = z.object({
 })
 
 // ---------------------------------------------------------------------------
+// Figures — declared, never free-form.
+// ---------------------------------------------------------------------------
+
+/**
+ * Uma figura é DADO, não desenho.
+ *
+ * A curva não vem como caminho SVG nem como função: vem como uma forma nomeada
+ * e um fator, e o renderizador tem o mapa exaustivo. É a mesma disciplina do
+ * `CostClaim` — o que o autor não pode escrever importa tanto quanto o que
+ * pode. Uma figura arbitrária seria a primeira coisa da trilha a afirmar algo
+ * que nenhuma checagem consegue conferir. Ver ADR-0017.
+ */
+export const curveShape = z.enum(['constant', 'logarithmic', 'linear', 'linearithmic', 'quadratic'])
+
+export const figure = z.discriminatedUnion('kind', [
+  z.object({
+    kind: z.literal('growth'),
+    caption: z.string().min(1),
+    /** O que o eixo horizontal conta — a mesma disciplina de `measuredIn`. */
+    xLabel: z.string().min(1),
+    xMax: z.number().int().positive(),
+    curves: z.array(z.object({
+      label: z.string().min(1),
+      shape: curveShape,
+      factor: z.number().positive(),
+    })).min(2),
+    /** A faixa em que o problema real vive, quando ela não é o gráfico inteiro. */
+    highlight: z.object({
+      from: z.number().nonnegative(),
+      to: z.number().positive(),
+      label: z.string().min(1),
+    }).optional(),
+  }),
+])
+
+// ---------------------------------------------------------------------------
 // Cycles — the unit of study, and of cognitive load.
 // ---------------------------------------------------------------------------
 
@@ -124,6 +160,7 @@ export const cycle = z.object({
   body: z.array(z.string().min(1)).min(1),
   pseudocode: z.string().optional(),
   invariant: z.string().optional(),
+  figure: figure.optional(),
   workedExample: z.object({
     problem: z.string().min(1),
     whatToNotice: z.string().min(1),
@@ -344,6 +381,8 @@ export type GlossaryTerm = z.infer<typeof glossaryTerm>
 export type AbstractDataType = z.infer<typeof abstractDataType>
 export type Implementation = z.infer<typeof implementation>
 export type Cycle = z.infer<typeof cycle>
+export type Figure = z.infer<typeof figure>
+export type CurveShape = z.infer<typeof curveShape>
 export type NotationSymbol = z.infer<typeof notationSymbol>
 export type UnitKind = keyof typeof BANDS_BY_KIND
 export type JudgmentCriterion = z.infer<typeof judgmentCriterion>
