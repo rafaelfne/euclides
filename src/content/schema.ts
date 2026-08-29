@@ -183,6 +183,51 @@ export const figure = z.discriminatedUnion('kind', [
    * sejam diferentes, uma figura em que largura e profundidade coincidem
    * ilustra o contrário do que o ciclo afirma.
    */
+  /**
+   * A árvore de recursão, nível a nível.
+   *
+   * O ciclo `asymptotics.c4` se chama "A árvore de recursão, desenhada" e não
+   * tinha desenho. O conteúdo declara a recorrência — em quantos pedaços divide,
+   * por quanto o tamanho cai, e o custo de juntar — e o componente deriva os
+   * níveis, as chamadas por nível e o custo de cada um.
+   */
+  z.object({
+    kind: z.literal('recursion'),
+    caption: z.string().min(1),
+    /** T(n) = branches · T(n/divisor) + n. */
+    branches: z.number().int().min(1),
+    divisor: z.number().int().min(2),
+    n: z.number().int().min(2),
+  }),
+
+  /**
+   * A dobra de capacidade: uma inserção por passo, e a média ao lado.
+   *
+   * O conteúdo declara quantas inserções e a capacidade inicial; as posições em
+   * que a cópia acontece saem da regra de dobrar, nunca de uma lista digitada.
+   */
+  z.object({
+    kind: z.literal('growth-doubling'),
+    caption: z.string().min(1),
+    insertions: z.number().int().min(4),
+    initialCapacity: z.number().int().min(1),
+  }),
+
+  /**
+   * Estabilidade: os mesmos elementos, dois algoritmos, um empate.
+   *
+   * `items` declara valor e etiqueta de chegada. A comparação é pelo valor, e o
+   * que a figura mostra é o que cada algoritmo faz com o empate.
+   */
+  z.object({
+    kind: z.literal('stability'),
+    caption: z.string().min(1),
+    items: z.array(z.object({
+      value: z.number().int(),
+      tag: z.string().min(1),
+    })).min(4),
+  }),
+
   z.object({
     kind: z.literal('traversal'),
     caption: z.string().min(1),

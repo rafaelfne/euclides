@@ -26,6 +26,7 @@
 | [0022](0022-nivelamento.md) | Nivelamento que recomenda, e estado que não sobe pelo relógio | Nota vira a coisa perseguida; consolidada exige voltar, não esperar |
 | [0023](0023-contadores-honestos.md) | Três contadores, e o teste que todo número novo tem de passar | Número sem a regra que o move é pontuação disfarçada |
 | [0024](0024-bestiario-e-revisita.md) | O bestiário, o selo, e a fila que conta voltas em vez de dias | Ler a explicação não desarma; sequência de dias sobe por login |
+| [0025](0025-diagramas.md) | Oito diagramas, e o orçamento que o React Flow estourou | O ciclo chamado "desenhada" não tinha desenho; 78 KB uma vez, e só para grafo |
 
 ## Como escrever o próximo
 

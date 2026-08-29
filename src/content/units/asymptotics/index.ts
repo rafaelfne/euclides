@@ -183,7 +183,6 @@ export const asymptoticsUnit: Unit = {
       oneLine: "As chamadas dobram, o tamanho cai pela metade, e o custo do nível fica igual.",
       body: [
         'Escrever a relação é metade do trabalho. A outra metade é resolvê-la, e "resolver essa relação dá n log n" dito sem derivação é exatamente o reconhecimento de padrão que o ciclo anterior condena. Para n = 8, os níveis são 3, e cada um custa 8.',
-        'A derivação cabe num desenho. Cada nível da árvore tem duas grandezas: quantas chamadas existem ali e de que tamanho é cada uma. O custo do nível é o produto das duas, e é isso que a coluna do meio do exercício pede.',
         'Duas coisas aparecem quando a tabela fica pronta, e nenhuma das duas é óbvia antes. A primeira: o custo por nível **não cresce**, as chamadas dobram e o tamanho cai pela metade, e o produto fica igual. A segunda: o número de níveis não é n, é quantas vezes dá para dividir n ao meio até chegar ao caso base, que é log n.',
         'O total é o custo de um nível vezes o número de níveis. É daí que n log n sai, e não de reconhecer a forma da relação.',
       ],
@@ -191,6 +190,13 @@ export const asymptoticsUnit: Unit = {
     se n ≤ 1 então
         retorne c
     retorne 2 × custo(n / 2) + n`,
+      figure: {
+        kind: 'recursion',
+        branches: 2,
+        divisor: 2,
+        n: 8,
+        caption: 'Cada nível tem duas grandezas: quantas chamadas existem ali e de que tamanho é cada uma. O custo do nível é o produto, e a coluna da direita mostra que ele não muda: as chamadas dobram enquanto o tamanho cai pela metade. O número de níveis não é n, é quantas vezes dá para dividir n ao meio até chegar ao caso base.',
+      },
       invariant: 'Em cada nível, o número de chamadas dobra e o tamanho de cada uma cai pela metade.',
       workedExample: {
         problem: 'Some o nível 1 de T(n) = 2·T(n/2) + n com n = 8: duas chamadas de tamanho 4.',
@@ -216,10 +222,16 @@ export const asymptoticsUnit: Unit = {
       introducesTerms: ['amortized-analysis', 'amortized'],
       oneLine: "Mil inserções custam O(n) no total, e isso não é o mesmo que caso médio.",
       body: [
-        'Um array dinâmico dobra de capacidade quando enche. A inserção que dobra copia tudo e custa O(n); as outras custam O(1). Somando mil inserções, o total é O(n), e por inserção dá constante.',
+        'Um array dinâmico dobra de capacidade quando enche, e a figura abaixo mostra as 16 primeiras inserções: as barras vermelhas são as que copiaram tudo.',
         'Isso é amortização, e ela não é caso médio. Caso médio fala de uma distribuição de entradas possíveis, e responde "se eu sortear uma entrada, quanto custa". Amortização fala de uma sequência fixa e conhecida de operações, sem sorteio nenhum: as inserções caras acontecem em posições que dá para apontar no dedo.',
         'Os dois qualificadores são independentes e podem aparecer juntos. "O(1) amortizado no caso médio" afirma duas coisas diferentes, e a unidade de tabelas hash usa exatamente essa frase.',
       ],
+      figure: {
+        kind: 'growth-doubling',
+        insertions: 16,
+        initialCapacity: 1,
+        caption: 'A barra é o custo de cada inserção e a linha é a média até ali. Os picos são altíssimos e raros, e a média desce e estabiliza abaixo de 2. É essa forma que "amortizado" descreve, e é por isso que ela não é a mesma coisa que caso médio: os picos estão em posições que dá para apontar no dedo, não numa distribuição sorteada.',
+      },
       workedExample: {
         problem: 'Some o custo de oito inserções seguidas num array que começa com capacidade 1 e dobra quando enche.',
         whatToNotice: 'As caras acontecem nas inserções 1, 2, 3, 5 e 9, posições que dá para apontar antes de rodar. Nenhum sorteio decidiu isso, e é o que separa amortizado de caso médio.',

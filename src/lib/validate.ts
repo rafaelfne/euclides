@@ -259,6 +259,44 @@ export function checkAll(units: Unit[], terms: GlossaryTerm[]): Failure[] {
         }
       }
 
+      if (f.kind === 'recursion') {
+        // Se as chamadas não multiplicam mais rápido do que o tamanho cai, o
+        // custo por nível cresce, e a figura afirma o contrário do que o ciclo
+        // ensina. É a única forma de a árvore de recursão mentir.
+        if (f.branches > f.divisor) {
+          fail('figura', `${c.id}: com ${f.branches} chamadas e divisor ${f.divisor}, o custo por nível CRESCE, e a figura afirma que ele fica igual`)
+        }
+        if (f.n % f.divisor !== 0) {
+          fail('figura', `${c.id}: n = ${f.n} não é divisível por ${f.divisor}, e os níveis sairiam fracionários`)
+        }
+      }
+
+      if (f.kind === 'growth-doubling') {
+        // Sem pelo menos duas dobras não há o que ver: uma cópia isolada não
+        // mostra a média estabilizando, que é a afirmação do ciclo.
+        let cap = f.initialCapacity
+        let doublings = 0
+        for (let n = 0; n < f.insertions; n++) {
+          if (n === cap) { cap *= 2; doublings++ }
+        }
+        if (doublings < 2) {
+          fail('figura', `${c.id}: só ${doublings} dobra em ${f.insertions} inserções, e a média não chega a estabilizar`)
+        }
+      }
+
+      if (f.kind === 'stability') {
+        // Sem empate, os dois algoritmos devolvem a mesma coisa e a figura
+        // ilustra o oposto do que o ciclo afirma.
+        const values = f.items.map((i) => i.value)
+        if (new Set(values).size === values.length) {
+          fail('figura', `${c.id}: nenhum valor se repete, e sem empate a estabilidade não aparece`)
+        }
+        const tags = f.items.map((i) => i.tag)
+        if (new Set(tags).size !== tags.length) {
+          fail('figura', `${c.id}: duas etiquetas iguais, e é a etiqueta que guarda a ordem de chegada`)
+        }
+      }
+
       if (f.kind === 'traversal') {
         const known = vertices(f.edges)
         if (!known.includes(f.origin)) {

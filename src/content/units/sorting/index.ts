@@ -144,9 +144,19 @@ export const sortingUnit: Unit = {
       oneLine: "Um algoritmo estável mantém a ordem de chegada entre 2 elementos que empatam.",
       body: [
         'Volte aos pedidos ordenados por data e depois por cliente. A segunda ordenação comparou clientes; para 2 pedidos do mesmo cliente, ela disse "empate". E o que um algoritmo faz com um empate não está no contrato.',
-        'Um algoritmo estável resolve o empate mantendo a ordem em que os elementos chegaram. Um instável resolve como for conveniente para ele. As duas saídas estão ordenadas por cliente; só uma preserva o trabalho da ordenação anterior.',
         'O comparador também tem uma obrigação, e ela é fácil de quebrar sem perceber: se ele diz que x vem antes de y e que y vem antes de z, ele precisa dizer que x vem antes de z. Um comparador que se contradiz não produz uma ordem errada, produz uma saída que não é ordem nenhuma.',
       ],
+      figure: {
+        kind: 'stability',
+        items: [
+          { value: 3, tag: 'a' },
+          { value: 1, tag: 'b' },
+          { value: 3, tag: 'c' },
+          { value: 2, tag: 'd' },
+          { value: 3, tag: 'e' },
+        ],
+        caption: 'As duas saídas estão ordenadas pelo número, e as etiquetas discordam. A única diferença entre os dois algoritmos é o que cada um faz quando o comparador diz "empate": um mantém a ordem de chegada, o outro resolve como for conveniente para ele. Foi essa ordem de chegada que a ordenação anterior tinha produzido.',
+      },
       workedExample: {
         problem: 'Duas ordenações de [(3,Ana), (1,Bia), (3,Caio)] por número, uma estável e uma não.',
         whatToNotice: 'As duas devolvem 1, 3, 3. Só olhando os nomes dá para saber qual foi qual, e é por isso que este defeito passa em teste que compara só as chaves.',
