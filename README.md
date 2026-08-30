@@ -1,83 +1,125 @@
 # Euclides
 
-Trilha de fundamentos de computação para reconstruir base técnica com um fim
-explícito: julgar código gerado por IA sem executá-lo.
+Euclides é uma trilha de fundamentos de computação para quem quer reconstruir a
+base técnica e julgar código gerado por IA sem executá-lo.
 
-O nome é o princípio de design. Nos *Elementos*, nada é assumido que não esteja
-declarado — e aqui a mesma regra vale no código: complexidade não existe sem
-regime e hipóteses, termo não existe sem o que ele não é, notação não existe sem
-sua convenção.
+O conteúdo parte de problemas concretos e chega à abstração. Cada ciclo combina
+uma explicação curta, um exemplo trabalhado, uma figura visual e um exercício que
+produz uma evidência verificável. O app não mede leitura nem tempo de tela: uma
+unidade só avança quando o raciocínio aparece no exercício.
+
+## O que existe
+
+- 8 unidades, 62 ciclos, 62 exercícios e 52 armadilhas catalogadas.
+- Pseudocódigo em português como forma canônica; TypeScript aparece quando pode ser
+  derivado sem criar uma segunda fonte de verdade.
+- Figuras interativas com a mesma linguagem visual: execução passo a passo,
+  estruturas lineares, hashing, grafos, árvores, ordenação e crescimento assintótico.
+- Modo **Guiado** para ver contexto e exemplos abertos, e modo **Conciso** para
+  revisar o núcleo do conceito.
+- Busca rápida por termo, ciclo, armadilha ou tela com `⌘K` no macOS e `Ctrl+K` no
+  Windows/Linux.
+- Progresso salvo apenas neste navegador, sem conta, servidor, banco ou coleta de
+  dados.
+- Painéis de lacunas, armadilhas e revisitas. Exercícios resolvidos também podem
+  receber uma frase de revisão para levar a uma revisão de código com um assistente
+  de IA.
+
+## Comece pelo app
+
+```bash
+npm install
+npm run dev
+```
+
+Abra [http://localhost:3000](http://localhost:3000). A página inicial leva à unidade
+01; a [sondagem](/sondagem/) oferece seis perguntas opcionais para recomendar por
+onde começar.
+
+Rotas principais:
+
+| rota | propósito |
+|---|---|
+| `/` | início da trilha e retomada |
+| `/como-funciona/` | método de estudo e convenções |
+| `/sondagem/` | nivelamento opcional |
+| `/units/[unit]/` | mapa de uma unidade |
+| `/units/[unit]/cycles/[cycle]` | leitura, figura e exercício de um ciclo |
+| `/glossary/` | termos canônicos, falsos amigos e definições |
+| `/traps/` | caderno de armadilhas ativadas |
+| `/revisitas/` | exercícios que venceram o intervalo de revisão |
+| `/gaps/` | lacunas e exportação de uma sessão para um assistente de IA |
+| `/perfil/` | preferências, progresso, exportação e recomeço |
+
+## Como o método funciona
+
+1. Um caso do trabalho apresenta o problema.
+2. A pessoa observa uma figura ou exemplo e prevê o próximo estado quando isso é
+   parte do argumento.
+3. O exercício pede uma tabela, uma escolha justificada ou a linha onde o código
+   quebra.
+4. Se uma resposta ativa uma armadilha, o app aponta onde o raciocínio divergiu e
+   faz uma pergunta menor. Ele nunca revela a alternativa correta como devolutiva.
+5. Uma resolução de primeira tentativa conta para domínio; uma revisita limpa,
+   depois do intervalo, conta para consolidação.
 
 ## Arquitetura
 
-Export estático puro (`output: 'export'`). Sem servidor, sem função serverless,
-sem banco, sem auth. Custo marginal por leitor: zero — que é a condição para
-publicar.
+O projeto é um export estático do Next.js (`output: 'export'`). Não há API, função
+serverless, banco, autenticação ou LLM em runtime. O progresso é mantido no
+navegador e pode ser exportado manualmente pelo perfil ou pelo painel de lacunas.
 
-Não há LLM em runtime. A correção socrática é **antecipação em tempo de
-autoria**: as ideias erradas são catalogadas, cada distractor aponta uma, e o
-motor revela onde o raciocínio quebrou em três degraus sem nunca revelar o valor — e,
-esgotada a escalada da armadilha, encerra o exercício em vez de repetir a última dica.
+O conteúdo autorado é a fonte de verdade. As figuras recebem dados declarados pelo
+ciclo e os componentes derivam a representação visual. Os traces de referência são
+gerados por implementações registradas, e o feedback socrático é produzido pelo
+motor a partir do catálogo de armadilhas.
 
-## O validador pedagógico
+Arquivos de entrada mais importantes:
 
-`npm run build` roda `npm run validate` antes do `next build`. Cada checagem é um
-princípio do projeto virado em erro de compilação:
+```text
+src/content/schema.ts             modelo das unidades, ciclos e figuras
+src/content/index.ts              registro das unidades
+src/content/glossary.ts           vocabulário canônico
+src/content/units/<id>/           conteúdo e exercícios de cada unidade
+src/lib/validate.ts               checagens pedagógicas chamáveis
+src/lib/reference/                geradores dos traces de referência
+src/lib/socratic.ts               três degraus de devolutiva
+src/components/                  telas, figuras e primitivas visuais
+docs/specs/                       specs versionados das unidades
+docs/adr/                         decisões arquiteturais
+```
 
-| checagem | o que protege |
-|---|---|
-| registro | existe unidade registrada, e o gate lê o mesmo registro que o app |
-| schema | o content model inteiro |
-| distractor | toda alternativa errada nomeia uma ideia errada existente |
-| órfã | nenhuma ideia errada é declarada e não exercitada |
-| socrática | toda pergunta termina em `?` — é pergunta, não explicação |
-| carga | nenhum ciclo passa de 4 termos novos |
-| exercício | todo ciclo tem exercício, e todo exercício fecha um ciclo |
-| domínio | o critério de domínio referencia exercícios que existem |
-| revisão | toda ideia errada aponta um ciclo de revisão que existe |
-| espinha | a banda pertence ao kind da unidade, e a unidade abre pela banda de abertura |
-| custo | toda implementação declara custo de toda operação do contrato |
-| cobertura | toda parte do critério é produzida por alguma técnica |
-| vocabulário | nenhuma abstração vaga fora do glossário |
-| convenção | todo pseudocódigo respeita a folha de notação |
-| referência | todo traço é gerado por implementação que roda, da própria unidade |
-| glossário | ids únicos, e a introdução de um termo declarada dos dois lados |
-| sobrecarga | todo termo sobrecarregado declara seus falsos amigos |
+## Qualidade e comandos
 
-A lista viva é `CHECKS`, no topo de `scripts/validate-content.ts`; o relatório é derivado
-dela, e por isso esta tabela não traz um total — o número na prosa foi a primeira coisa a
-ficar desatualizada. Não há nível de aviso. Um aviso é uma regra que ninguém cumpre.
+O validador pedagógico é a autoridade do conteúdo. Ele confere registro, schema,
+exercícios, armadilhas, carga cognitiva, terminologia, convenções, traces,
+traduções, figuras, cobertura e fechamento do incidente de cada unidade. A lista
+viva está em `CHECKS`, no topo de `scripts/validate-content.ts`.
 
-`npm run docs:check` é o gate irmão, para o que fica fora de `src/content/`: todo caminho
-de arquivo citado em `docs/` e `.claude/` precisa existir. Ver ADR-0011.
+```bash
+npm run dev         # servidor de desenvolvimento
+npm run validate    # gate pedagógico
+npm run docs:check  # caminhos citados na documentação
+npm run typecheck   # TypeScript em modo strict
+npm test            # suítes em scripts/test-*.ts
+npm run build       # validação + checagem de docs + export em out/
+```
 
-## A ponte com o Claude
+O build não deve rodar ao mesmo tempo que o servidor de desenvolvimento, porque
+ambos usam o cache do Next.js. Pare o servidor antes de executar `npm run build`.
 
-O progresso mora no navegador (ADR-0009). O painel de lacunas em `/gaps` mostra o que está
-aberto sem percentual nenhum — resolver em quatro tentativas e resolver na primeira são
-coisas diferentes — e copia um markdown para colar num projeto do Claude.
+## Autoria e documentação
 
-O que ele carrega: tentativas, o que saiu limpo, as armadilhas que dispararam e a pergunta
-que cada uma já fez na tela. O que ele nunca carrega: uma entrada de `escalation` não
-alcançada, ou o texto de uma alternativa correta. O princípio 3 não deixa de valer porque
-o texto saiu do app, e o teste do export checa as duas ausências.
+O design pedagógico nasce em `docs/specs/`, passa pelo fluxo de implementação e é
+auditado contra terminologia, armadilhas e carga cognitiva. As decisões que não
+devem ser refeitas por preferência visual estão em `docs/adr/`. O contrato completo
+do projeto e o mapa dos arquivos estão em [`CLAUDE.md`](CLAUDE.md); as instruções
+para agentes e ferramentas locais ficam em [`AGENTS.md`](AGENTS.md).
 
 ## Fronteira de idioma
 
 | camada | idioma |
 |---|---|
-| código e rotas | inglês |
-| conteúdo autorado | pt-BR |
-| pseudocódigo | pt-BR |
+| código, rotas e identificadores | inglês |
+| conteúdo autorado e pseudocódigo | pt-BR |
 | código do sandbox | inglês |
-
-## Comandos
-
-```
-npm run dev         desenvolvimento
-npm run validate    só o validador pedagógico
-npm run docs:check  caminhos citados em docs/ e .claude/
-npm run typecheck   tsc --strict
-npm test            todas as suítes em scripts/test-*.ts
-npm run build       validador + docs:check + export estático em out/
-```
