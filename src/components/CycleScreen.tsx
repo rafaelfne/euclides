@@ -82,22 +82,10 @@ export function CycleScreen({ unit, cycle, exercise }: { unit: Unit; cycle: Cycl
           </div>
         )}
 
-        {/*
-          A frase de abertura vem ANTES da prosa e nunca depois: quem não tem
-          referente para o vocabulário do app precisa dela para decidir se
-          continua lendo, e quem tem passa o olho e pula. ADR-0019.
-        */}
         <p className="m-0 mb-5 max-w-[820px] border-l-2 border-contract pl-4 text-[17px] leading-snug text-fg">
           {cycle.oneLine}
         </p>
 
-        {/*
-          A tradução em linguagem cotidiana, e só no modo iniciante.
-
-          Ela vem DEPOIS da abertura e ANTES da prosa, que é a ordem em que ela
-          serve: a abertura diz o que o ciclo afirma, este parágrafo mostra o
-          fenômeno sem nomear nada, e a prosa nomeia. ADR-0016.
-        */}
         {mode === 'iniciante' && cycle.plainly && (
           <p className="m-0 mb-5 max-w-[820px] border border-rule-soft bg-panel-head px-4 py-3 text-[14px] leading-[1.75] text-fg-3">
             {cycle.plainly}

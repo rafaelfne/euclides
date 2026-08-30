@@ -126,6 +126,11 @@ export const hashUnit: Unit = {
     { id: 'hash.c0', title: 'O contrato, antes da estrutura', layer: 'essential', band: 'contract',
       introducesTerms: ['adt', 'map'],
       oneLine: "O Map associa chave a valor e não promete ordem nenhuma.",
+      plainly:
+        'Um cadastro precisa associar um e-mail ao perfil correspondente. Quem consulta quer passar ' +
+        'o e-mail e receber o perfil; não quer saber em que ordem os cadastros chegaram nem qual é ' +
+        'o menor e-mail. Antes de discutir como guardar, deixe claro qual pergunta o sistema precisa ' +
+        'responder e quais perguntas ele pode recusar.',
       body: [
         'Antes de qualquer estrutura, o contrato. Um Map associa chave a valor e oferece 4 operações, e é tudo o que ele oferece.',
         'O que interessa aqui não é a lista de operações; é a lista do que o contrato NÃO cobre. Ordem não está lá. Nem mínimo, nem faixa, nem “os vinte primeiros”. Guarde essa ausência: no último ciclo ela volta como a resposta inteira.',
@@ -139,6 +144,11 @@ export const hashUnit: Unit = {
     { id: 'hash.c1', title: 'A aposta: transformar chave em endereço', layer: 'essential', band: 'implementation', elaborates: 'chaining',
       introducesTerms: ['hash', 'hash-function'],
       oneLine: "Se a chave virar um índice, o acesso vira 1 operação.",
+      plainly:
+        'Procurar um e-mail entre milhões, um por um, é lento. A ideia é transformar o e-mail numa ' +
+        'indicação de onde olhar, como usar um número de apartamento em vez de procurar em todas as ' +
+        'portas. Se a indicação levar direto ao lugar certo, a busca deixa de depender da quantidade ' +
+        'total de cadastros.',
       body: [
         'Acesso em O(1) só existe por índice. Se a chave virasse um índice, o problema estaria resolvido, e toda tabela hash é exatamente essa aposta.',
       ],
@@ -152,6 +162,11 @@ export const hashUnit: Unit = {
     { id: 'hash.c2', title: 'Colisão é matemática, não defeito', layer: 'essential', band: 'implementation', elaborates: 'chaining',
       introducesTerms: ['collision', 'pigeonhole'],
       oneLine: "Com 4 buckets e 5 chaves, duas colidem. Não há h que evite isso.",
+      plainly:
+        'Você tem quatro gavetas e precisa guardar cinco documentos. Mesmo que escolha os números ' +
+        'das gavetas com cuidado, dois documentos terão de dividir uma delas. Isso não é falha do ' +
+        'cálculo nem azar dos documentos: há mais coisas para guardar do que destinos possíveis. O ' +
+        'sistema precisa decidir o que fazer quando isso acontece.',
       body: [
         'Quantas strings existem? Quantos buckets você tem? Com 1000 buckets e 1001 chaves distintas, pelo menos 2 caem no mesmo lugar, e isso vale para qualquer h que se escreva.',
         'Isso muda o problema: não se trata de evitar colisão, e sim de decidir o que fazer quando ela ocorre.',
@@ -198,6 +213,11 @@ export const hashUnit: Unit = {
     { id: 'hash.c4', title: 'Load factor', layer: 'essential', band: 'cost',
       introducesTerms: ['load-factor', 'uniform-hashing'],
       oneLine: "Com m = 1000 e n = 750, α é 0,75 e centenas de buckets ainda estão vazios.",
+      plainly:
+        'Uma tabela pode ter mil lugares e setecentos e cinquenta pares guardados. Em média, ela ' +
+        'ainda está folgada, embora muitas posições estejam vazias e algumas já tenham mais de um ' +
+        'par. O número útil não é só quantos pares existem nem só quantos lugares existem: é quanto ' +
+        'um está ocupando do outro.',
       body: [
         'O load factor é a razão α = n/m entre pares armazenados e posições disponíveis. Com chaining ele pode passar de 1 sem que nada quebre.',
         'Ele não mede quanto da memória está ocupada. Numa tabela com m = 1000 e n = 750, estime quantos buckets estão vazios antes de calcular, e depois calcule.',
@@ -211,6 +231,11 @@ export const hashUnit: Unit = {
     { id: 'hash.c5', title: 'Rehash e o custo amortizado', layer: 'essential', band: 'implementation', elaborates: 'chaining',
       introducesTerms: ['rehash'],
       oneLine: "A tabela dobra e reinsere tudo; copiar quebraria a invariante de posição.",
+      plainly:
+        'Uma estante ficou cheia demais e ganhou o dobro de prateleiras. Não basta pegar cada livro ' +
+        'e manter a mesma prateleira: o número da prateleira dependia da quantidade antiga de ' +
+        'prateleiras. Com a estante maior, cada livro precisa descobrir de novo onde fica. É caro ' +
+        'naquele momento, mas não acontece a cada livro novo.',
       body: [
         'Quando α passa do limite, a tabela dobra e reinsere. Reinsere, não copia: com m indo de 4 para 8, a chave 11 sai do bucket 3 e vai para o 3 de novo, mas a chave 4 sai do 0 e vai para o 4.',
         'O rehash custa O(n+m) pontualmente. Como ele acontece a cada duplicação, o custo por inserção continua constante quando espalhado ao longo da sequência.',
@@ -235,6 +260,11 @@ export const hashUnit: Unit = {
     { id: 'hash.c6', title: 'O custo, com todos os qualificadores', layer: 'essential', band: 'cost',
       introducesTerms: [],
       oneLine: "A frase \"hash é O(1)\" omite 4 coisas, e cada omissão muda o que ela afirma.",
+      plainly:
+        '“Encontrar por e-mail leva um passo” omite quase tudo que decide se essa frase vale. Vale ' +
+        'para dados distribuídos de certa forma, para uma tabela ainda pouco ocupada, para uma ' +
+        'pergunta por igualdade e, mesmo assim, fala de uma média. A conta só informa algo quando ' +
+        'traz suas condições junto.',
       body: [
         'A frase “hash é O(1)” omite quatro coisas: o regime, a hipótese de hashing uniforme, a amortização vinda do rehash, e o que n mede, porque ela ignora o custo de hashear a própria chave.',
         'Neste ciclo cada um dos quatro é nomeado, e você reescreve a afirmação de forma que ela sobreviva a uma code review.',
@@ -248,6 +278,11 @@ export const hashUnit: Unit = {
     { id: 'hash.c7', title: 'Open addressing e a deleção que apaga demais', layer: 'deep-dive', band: 'implementation', elaborates: 'open-addressing',
       introducesTerms: ['open-addressing', 'probing', 'clustering', 'tombstone'],
       oneLine: "Entre α = 0,8 e α = 0,9 as sondagens vão de 12,5 para 48,1.",
+      plainly:
+        'Uma tabela guarda tudo no próprio espaço e, quando o lugar calculado já está ocupado, ' +
+        'procura o próximo disponível. Isso evita listas separadas, mas deixa marcas no caminho. Se ' +
+        'apagar um item simplesmente esvaziando a posição, uma busca pode parar cedo e concluir que ' +
+        'um item posterior não existe.',
       body: [
         'Outra implementação do mesmo contrato, com perfil oposto: sem ponteiros, melhor localidade de cache, e degradação muito mais abrupta.',
         'Entre α = 0,8 e α = 0,9 a busca sem sucesso vai de 12,5 para 48,1 sondagens medidas, enquanto o chaining sai de 1,40 para 1,45. E remover não pode esvaziar a posição: isso interrompe a cadeia de sondagem e some com o que veio depois.',
@@ -261,6 +296,11 @@ export const hashUnit: Unit = {
     { id: 'hash.c8', title: 'Quando a tabela hash é a escolha errada', layer: 'essential', band: 'cost',
       introducesTerms: ['hash-flooding'],
       oneLine: "A tabela hash falha exatamente onde o Map não prometeu nada.",
+      plainly:
+        'Uma tabela é ótima para responder se uma chave exata existe. Ela não ajuda a listar todos ' +
+        'os pedidos entre duas datas, nem a devolver os primeiros cem em ordem. E, se alguém escolhe ' +
+        'as chaves de propósito para fazê-las cair no mesmo lugar, a busca deixa de ser curta. A ' +
+        'estrutura certa depende da pergunta e de quem controla a entrada.',
       body: [
         'Volte às 4 operações do primeiro ciclo. Tudo que elas não prometem é exatamente onde esta estrutura falha, e a lista de ausências que você guardou lá é a resposta inteira deste ciclo.',
       ],

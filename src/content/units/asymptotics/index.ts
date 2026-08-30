@@ -105,6 +105,11 @@ export const asymptoticsUnit: Unit = {
     { id: 'asymptotics.c0', title: 'A afirmação que passa na revisão e não vale nada', layer: 'essential', band: 'criterion',
       introducesTerms: ['big-o', 'cost-claim'],
       oneLine: "Dizer o custo sem dizer o regime e as hipóteses não afirma quase nada.",
+      plainly:
+        'Numa revisão alguém escreve “essa busca é rápida”. Outra pessoa pergunta: rápida em qual ' +
+        'situação, contando o quê, e supondo o quê sobre os dados? Sem essas respostas, duas ' +
+        'implementações muito diferentes recebem o mesmo rótulo. A frase parece técnica, mas ainda ' +
+        'não permite prever nada.',
       body: [
         '"Hash é O(1)." A frase não é falsa. Ela está incompleta em quatro lugares, e cada omissão produz uma frase que soa igualmente precisa.',
         'Uma afirmação de custo verificável carrega cinco partes: o limite, o regime, se ele é amortizado, sob quais hipóteses vale, e o que n conta. Este ciclo apresenta as cinco; os próximos atacam uma de cada vez, e cada um deles começa pela frase que a omissão produz.',
@@ -154,6 +159,11 @@ export const asymptoticsUnit: Unit = {
     { id: 'asymptotics.c2', title: 'O que n conta, e o que ele ignora', layer: 'essential', band: 'criterion',
       introducesTerms: ['measured-in'],
       oneLine: "A conta soma elementos e costuma ignorar o tamanho de cada elemento.",
+      plainly:
+        'Contar cem registros não é o mesmo que contar cem arquivos de vídeo. Duas coleções podem ' +
+        'ter o mesmo número de itens e exigir trabalhos muito diferentes para comparar, copiar ou ' +
+        'ler cada item. Antes de aceitar uma conta, pergunte o que está sendo contado e o que ficou ' +
+        'fora dela.',
       body: [
         'Toda afirmação de custo conta alguma coisa e ignora outra, e quase nunca diz qual é qual. "Procurar numa lista de 1000 é O(n)" conta os 1000 elementos e ignora o tamanho de cada um.',
         'Isso é aceitável quando comparar dois elementos custa o mesmo sempre, inteiros, por exemplo. Deixa de ser quando os elementos são URLs de tamanhos diferentes: a operação que a conta chamou de unitária passa a depender de uma segunda grandeza que a afirmação não menciona.',
@@ -168,6 +178,11 @@ export const asymptoticsUnit: Unit = {
     { id: 'asymptotics.c3', title: 'Quando a conta não fecha: recorrência', layer: 'essential', band: 'technique', elaborates: 'recurrence',
       introducesTerms: ['recurrence', 'base-case'],
       oneLine: "Quando o procedimento chama a si mesmo, escreva o custo em função do subproblema.",
+      plainly:
+        'Um procedimento divide uma lista ao meio, resolve cada metade e junta as respostas. Contar ' +
+        'um laço não basta, porque o mesmo trabalho reaparece em listas menores. Escrever a conta ' +
+        'como “o trabalho de agora mais o trabalho das partes” torna visível o que se repete e onde ' +
+        'ele finalmente para.',
       body: [
         'Contar rodadas funciona enquanto o procedimento não chama a si mesmo. Quando ele chama, o número de níveis depende da entrada, e não há o que somar diretamente.',
         'A saída é escrever o custo em função do custo do subproblema: dividir ao meio e chamar duas vezes, gastando tempo linear para juntar, é T(n) = 2·T(n/2) + n. Resolver essa relação dá n log n.',
@@ -188,6 +203,11 @@ export const asymptoticsUnit: Unit = {
     { id: 'asymptotics.c4', title: 'A árvore de recursão, desenhada', layer: 'essential', band: 'technique', elaborates: 'recurrence',
       introducesTerms: ['recursion-tree'],
       oneLine: "As chamadas dobram, o tamanho cai pela metade, e o custo do nível fica igual.",
+      plainly:
+        'Dividir oito itens ao meio cria duas tarefas de quatro; depois quatro tarefas de dois; ' +
+        'depois oito tarefas de um. Cada camada tem mais tarefas, mas cada tarefa ficou menor. ' +
+        'Desenhar essas camadas mostra por que o trabalho de uma camada pode ficar igual ao da ' +
+        'anterior, mesmo com mais chamadas abertas.',
       body: [
         'Escrever a relação é metade do trabalho. A outra metade é resolvê-la, e "resolver essa relação dá n log n" dito sem derivação é exatamente o reconhecimento de padrão que o ciclo anterior condena. Para n = 8, os níveis são 3, e cada um custa 8.',
         'Duas coisas aparecem quando a tabela fica pronta, e nenhuma das duas é óbvia antes. A primeira: o custo por nível **não cresce**, as chamadas dobram e o tamanho cai pela metade, e o produto fica igual. A segunda: o número de níveis não é n, é quantas vezes dá para dividir n ao meio até chegar ao caso base, que é log n.',
@@ -214,6 +234,11 @@ export const asymptoticsUnit: Unit = {
     { id: 'asymptotics.c5', title: 'Regime: o pior caso não é o caso raro', layer: 'essential', band: 'failure',
       introducesTerms: ['worst-case', 'average-case'],
       oneLine: "O pior caso do quicksort ingênuo é a entrada já ordenada, que é a mais comum.",
+      plainly:
+        'Um algoritmo escolhe sempre o primeiro item como referência. Com dados misturados, ele ' +
+        'divide bem o trabalho; com dados já em ordem, deixa quase tudo de um lado e recomeça. A ' +
+        'entrada que parece mais organizada é justamente a que produz o pior caminho. “Raro” não ' +
+        'quer dizer “seguro de ignorar”.',
       body: [
         'Pior caso, caso médio e melhor caso qualificam o **custo**, não a frequência da entrada. Dizer que algo é O(n²) no pior caso não afirma que esse caso é improvável, ele pode ser 100% das suas entradas.',
         'O exemplo que desfaz a confusão de uma vez: o pior caso do quicksort com pivô no primeiro elemento é a entrada já ordenada, a mais comum que existe num sistema real. O pior caso ali não é raro; é o caso normal.',
@@ -228,6 +253,11 @@ export const asymptoticsUnit: Unit = {
     { id: 'asymptotics.c6', title: 'Amortizado não é caso médio', layer: 'essential', band: 'technique', elaborates: 'aggregate-amortized',
       introducesTerms: ['amortized-analysis', 'amortized'],
       oneLine: "Mil inserções custam O(n) no total, e isso não é o mesmo que caso médio.",
+      plainly:
+        'Um bloco de memória cresce e, de vez em quando, precisa copiar tudo para um bloco maior. ' +
+        'Essa cópia isolada é cara. Mas ela acontece depois de muitas inserções baratas e atende ' +
+        'muitas das próximas. Para julgar esse custo, não olhe uma inserção sozinha: olhe a ' +
+        'sequência inteira de inserções.',
       body: [
         'Um array dinâmico dobra de capacidade quando enche, e a figura abaixo mostra as 16 primeiras inserções: as barras vermelhas são as que copiaram tudo.',
         'Isso é amortização, e ela não é caso médio. Caso médio fala de uma distribuição de entradas possíveis, e responde "se eu sortear uma entrada, quanto custa". Amortização fala de uma sequência fixa e conhecida de operações, sem sorteio nenhum: as inserções caras acontecem em posições que dá para apontar no dedo.',
@@ -248,6 +278,11 @@ export const asymptoticsUnit: Unit = {
     { id: 'asymptotics.c7', title: 'Escolher a técnica pela forma do código', layer: 'essential', band: 'technique', elaborates: 'operation-counting',
       introducesTerms: [],
       oneLine: "A forma do código escolhe a técnica: laço conta, chamada recorre, dobra agrega.",
+      plainly:
+        'Antes de calcular, olhe a forma do código. Se há um laço, conte o que cada volta faz. Se ' +
+        'uma função chama a si mesma com parte da entrada, descreva o trabalho que sobra. Se o custo ' +
+        'grande aparece só depois de muitas operações, some a sequência. A forma do código diz qual ' +
+        'pergunta resolve o custo.',
       body: [
         'As 3 técnicas não competem: elas respondem partes diferentes, e a forma do código diz qual usar.',
         'Laço simples, sem chamada a si mesmo e sem nada que redistribua custo: contagem de operações responde limite, regime, hipóteses e unidade de medida, e responde em uma linha.',

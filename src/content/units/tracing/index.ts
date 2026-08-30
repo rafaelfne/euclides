@@ -91,6 +91,11 @@ export const tracingUnit: Unit = {
     { id: 'tracing.c0', title: 'O que é saber o que um código faz', layer: 'essential', band: 'criterion',
       introducesTerms: ['execution-trace', 'state', 'iteration'],
       oneLine: "Entender um código é saber dizer o valor de cada nome a cada rodada.",
+      plainly:
+        'Um pull request passa nos testes, mas ninguém testou a lista vazia. Dizer que o código ' +
+        '"funciona" não responde ao que importa: qual valor cada variável tem depois de cada ' +
+        'volta, quando ele para e o que devolve. Ler código é conseguir responder isso sem ' +
+        'apertar executar.',
       body: [
         '"Eu li e entendi" não é uma afirmação verificável. Ela vira uma quando carrega 4 coisas: quais nomes guardam o estado, o valor de cada um a cada rodada, a condição que decide se há próxima rodada, e o que a função devolve.',
         'Cada uma dessas quatro partes, quando falta, produz uma frase que soa certa. Sem a condição, sai "o laço roda n vezes". Sem o estado por rodada, sai "no fim, total é a soma de tudo", uma afirmação sobre o fim, derivada de nada. Guarde essas frases: elas são as armadilhas desta unidade, e você vai reencontrá-las nas outras sete.',
@@ -104,6 +109,11 @@ export const tracingUnit: Unit = {
     { id: 'tracing.c1', title: 'A condição que decide se há próxima rodada', layer: 'essential', band: 'criterion',
       introducesTerms: ['guard'],
       oneLine: "Um laço para por causa da condição, não por causa do tamanho da coleção.",
+      plainly:
+        'Um laço percorre uma lista enquanto ainda há item para ler. Ele não para porque a lista ' +
+        'tinha dez itens; para quando a pergunta feita antes de cada volta deixa de ser verdadeira. ' +
+        'Troque a lista por uma menor ou avance de dois em dois: o tamanho continua sendo dez, mas ' +
+        'o número de voltas muda.',
       body: [
         'Um laço sobre 10 elementos não roda necessariamente 10 vezes. Um laço testa uma condição, executa um corpo, e testa de novo. Que isso acabe percorrendo a coleção é consequência de como o corpo mexe no índice, não é a definição.',
         'A diferença importa no momento em que o corpo mexe em outra coisa além do índice. Se ele remove um elemento da própria coleção, os dois lados da condição mudam na mesma rodada: o índice sobe e o tamanho desce. O percurso deixa de ser o que a leitura ingênua supõe, e nada no código avisa.',
@@ -117,6 +127,11 @@ export const tracingUnit: Unit = {
     { id: 'tracing.c2', title: 'Simular passo a passo', layer: 'essential', band: 'technique', elaborates: 'step-simulation',
       introducesTerms: [],
       oneLine: "Escreva uma coluna por nome que muda e uma linha por rodada.",
+      plainly:
+        'Duas pessoas discordam sobre o resultado de um laço numa revisão. Em vez de cada uma ' +
+        'repetir a própria intuição, elas fazem uma tabela: uma linha por volta e uma coluna para ' +
+        'cada valor que pode mudar a resposta. A tabela não adivinha o fim; ela mostra como cada ' +
+        'volta produz a próxima.',
       body: [
         'A primeira técnica é escrever a tabela: 1 coluna por nome que muda, 1 linha por rodada. A regra é uma só, e ela é o que separa a tabela de um chute: cada linha é derivada da anterior.',
         'A parte difícil não é a conta, é decidir quais colunas existem. Um nome que muda dentro do laço e não está na tabela é um valor que você vai adivinhar quando precisar dele, e o traço inteiro passa a depender desse chute.',
@@ -139,6 +154,11 @@ export const tracingUnit: Unit = {
     { id: 'tracing.c3', title: 'A propriedade que sobrevive a cada rodada', layer: 'essential', band: 'technique', elaborates: 'invariant-reasoning',
       introducesTerms: ['loop-invariant'],
       oneLine: "A invariante é a frase que já é verdade antes da primeira rodada.",
+      plainly:
+        'Você quer saber se um laço está acumulando o resultado certo, mas acompanhar cem voltas ' +
+        'uma por uma não resolve. Procure uma frase que já seja verdadeira antes de começar e ' +
+        'continue verdadeira depois de cada volta. Se essa frase sobreviver, ela explica por que o ' +
+        'resultado final pode ser confiado.',
       body: [
         'A tabela responde sobre uma entrada. A invariante responde sobre todas: é uma propriedade que vale antes de cada rodada e continua valendo depois dela.',
         'O teste que separa uma invariante de uma conclusão é este: ela precisa valer **antes da primeira rodada**, com o laço ainda sem ter feito nada. "No fim, total é a soma de tudo" não passa nesse teste, é a conclusão. "Ao começar a rodada de i, total é a soma das posições 0 até i − 1" passa, e é dela que a conclusão sai.',
@@ -153,6 +173,11 @@ export const tracingUnit: Unit = {
     { id: 'tracing.c4', title: 'A fronteira, e a entrada que ninguém testou', layer: 'essential', band: 'failure',
       introducesTerms: ['off-by-one', 'empty-case'],
       oneLine: "Numa coleção de 5 elementos, a última posição é 4, e o vazio é o outro caso.",
+      plainly:
+        'Um código parece certo com cinco itens, mas quebra quando não há item nenhum ou quando só ' +
+        'resta o último. Esses casos não são detalhes raros: são os pontos em que o código tenta ' +
+        'ler uma posição que não existe. Antes de confiar numa conta com posições, pergunte o que ' +
+        'acontece no vazio e na borda.',
       body: [
         'Duas famílias de erro moram na fronteira, e as duas passam em teste feito com a entrada típica.',
         'A primeira é a posição: numa coleção de n elementos, a última posição válida é n − 1, e o primeiro valor que a condição precisa recusar é n. Trocar `<` por `≤` move essa linha em uma casa, e uma casa é o suficiente.',
@@ -167,6 +192,11 @@ export const tracingUnit: Unit = {
     { id: 'tracing.c5', title: 'O laço não roda n vezes', layer: 'essential', band: 'failure',
       introducesTerms: [],
       oneLine: "Quantas rodadas acontecem depende da condição e do passo, nunca só do tamanho.",
+      plainly:
+        '“A lista tem mil itens, então o laço roda mil vezes” parece razoável até o contador ' +
+        'avançar de dois em dois, ou até parar quando encontra o primeiro erro. O número de voltas ' +
+        'vem da pergunta que mantém o laço vivo e do tamanho do passo, não do tamanho da lista ' +
+        'sozinho.',
       body: [
         'Volte ao critério do primeiro ciclo. A parte que falta com mais frequência é a condição que governa, e a frase que ela produz quando falta é a mais comum de todas: "o laço roda n vezes". Sobre 7 elementos, andando de 2 em 2, ele roda 4.',
         'Quantas rodadas acontecem é decidido por duas coisas juntas, a condição de parada e o passo com que o índice anda. O tamanho da coleção aparece numa das duas, e sozinho não responde nada.',
@@ -181,6 +211,11 @@ export const tracingUnit: Unit = {
     { id: 'tracing.c6', title: 'O que não chega a ser avaliado', layer: 'essential', band: 'failure',
       introducesTerms: ['short-circuit'],
       oneLine: "Se o primeiro lado de um \"e\" é falso, o segundo não chega a ser avaliado.",
+      plainly:
+        'Uma validação tem duas partes: “o usuário existe” e “ele pode editar”. Se a primeira já ' +
+        'falha, o programa não precisa nem perguntar a segunda. Isso evita trabalho e também evita ' +
+        'erros: uma parte do código pode parecer perigosa no papel, mas nunca é alcançada quando a ' +
+        'primeira resposta já encerra a decisão.',
       body: [
         'Numa condição composta, o segundo lado nem sempre é avaliado. Se o primeiro lado de um "e" já é falso, o resultado está decidido, e a linguagem não avalia o resto. Numa coleção de 0 elementos, é essa regra que separa um código que roda de um que quebra.',
         'Isso deixa de ser detalhe no momento em que avaliar o segundo lado quebraria, um acesso fora da coleção, uma divisão por zero, uma chamada em algo ausente. A ordem dos dois lados deixa de ser estilo e passa a ser a diferença entre funcionar e falhar.',

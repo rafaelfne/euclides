@@ -120,6 +120,11 @@ export const linearUnit: Unit = {
     { id: 'linear.c0', title: 'O que a lista promete, e promete por posição', layer: 'essential', band: 'contract',
       introducesTerms: ['list', 'position'],
       oneLine: "A lista responde \"o que está na posição 3\", nunca \"onde está o valor 3\".",
+      plainly:
+        'Uma fila de jobs guarda o primeiro, o segundo e o terceiro pedido. Ela responde rápido ' +
+        'ao pedido “o que está na posição três?”. Mas, se a pergunta virar “onde está o job da ' +
+        'cliente Ana?”, ela precisa olhar um por um. A forma de guardar dados responde bem a certas ' +
+        'perguntas e não promete as outras.',
       body: [
         'Uma lista é uma sequência de elementos em posições, e as 4 operações são todas sobre posição: obter, inserir, remover, tamanho.',
         'A lista do que ela não promete é curta e cara: onde está um valor, se um valor existe, qual é o menor, quais estão numa faixa. Nada disso sai das quatro operações sem percorrer tudo. Guarde essa ausência, a unidade seguinte existe para prometer a primeira delas.',
@@ -133,6 +138,11 @@ export const linearUnit: Unit = {
     { id: 'linear.c1', title: 'Pilha: o que sobra quando só uma ponta é acessível', layer: 'essential', band: 'contract',
       introducesTerms: ['stack'],
       oneLine: "Numa pilha só a última ponta é acessível, e as duas operações custam 1.",
+      plainly:
+        'Uma tela abre outra tela, que abre outra. Ao apertar voltar, a última tela aberta precisa ' +
+        'sair primeiro. Esse é o comportamento de uma pilha: só a ponta mais recente está ' +
+        'disponível. É ótimo para desfazer uma sequência; é ruim quando você precisa tirar algo que ' +
+        'ficou no meio.',
       body: [
         'Uma pilha é a lista com uma restrição: só a última ponta é acessível. Empilhar põe no fim, desempilhar tira do fim, e as 2 custam 1 operação, obter por posição não existe.',
         'A restrição não é uma perda, é o que torna as duas operações constantes em qualquer implementação, e é o que permite a quem lê o código saber, sem verificar, que ninguém vai varrer a coleção.',
@@ -147,6 +157,10 @@ export const linearUnit: Unit = {
     { id: 'linear.c2', title: 'Fila, e por que ela não é a pilha ao contrário', layer: 'essential', band: 'contract',
       introducesTerms: ['queue'],
       oneLine: "A fila devolve A, B, C onde a pilha devolve B, C, A.",
+      plainly:
+        'Chegam pedidos A, B e C para um worker. Se ele atende quem chegou primeiro, a ordem é A, ' +
+        'depois B, depois C. Se ele atende o mais recente, a ordem muda por completo. As duas ' +
+        'formas guardam os mesmos pedidos; a diferença está em qual extremidade entrega o próximo.',
       body: [
         'Uma fila restringe a outra ponta: entra no fim, sai do começo. Parece a pilha invertida, e com 3 elementos já dá para ver que não é.',
         'A diferença aparece assim que as operações são intercaladas. Empilhe A, empilhe B, tire um, empilhe C, tire tudo: a pilha devolve B, C, A. A fila, com as mesmas operações, devolve A, B, C. Uma não é o inverso da outra; elas respondem a perguntas diferentes.',
@@ -161,6 +175,11 @@ export const linearUnit: Unit = {
     { id: 'linear.c3', title: 'Array dinâmico e o custo de andar uma casa', layer: 'essential', band: 'implementation', elaborates: 'dynamic-array',
       introducesTerms: ['dynamic-array', 'capacity'],
       oneLine: "Tirar o primeiro de 5 elementos obriga 4 escritas; tirar o último, nenhuma.",
+      plainly:
+        'Tirar o último item de uma lista é só apagar a última posição. Tirar o primeiro deixa um ' +
+        'buraco: todos os demais precisam andar uma casa para a esquerda. Com cinco itens são quatro ' +
+        'movimentos; com dez mil, são quase dez mil. O custo não está em remover o item, está em ' +
+        'fechar o espaço que ele deixou.',
       body: [
         'A primeira implementação guarda tudo num bloco contíguo. O endereço de uma posição sai de uma conta, e é por isso que obter é constante, nada é percorrido.',
         'O preço aparece quando o meio muda. Para tirar o elemento da posição p, todos os que estavam à direita precisam andar uma casa, uma escrita por elemento. A chamada é uma; as escritas são n − p − 1.',
@@ -189,6 +208,10 @@ export const linearUnit: Unit = {
     { id: 'linear.c4', title: 'Lista ligada e o nó em mãos', layer: 'essential', band: 'implementation', elaborates: 'linked-list',
       introducesTerms: ['linked-list', 'node'],
       oneLine: "Religar dois ponteiros custa 1; chegar até o nó certo pode custar 500.",
+      plainly:
+        'Você já está parado no item certo de uma fila encadeada e quer retirar esse item. Basta ' +
+        'ligar o anterior ao próximo. Mas chegar até ele pode exigir atravessar quinhentos itens, ' +
+        'um por um. Mudar o trecho local é barato; descobrir onde mexer pode ser a parte cara.',
       body: [
         'A segunda implementação abre mão do bloco: cada elemento mora num nó que aponta para o próximo. Nada precisa andar uma casa, porque nada é vizinho de nada por endereço.',
         'Isso troca um custo por outro. Religar dois ponteiros é constante, mas chegar até o nó certo é percorrer. "Remoção é O(1) numa lista ligada" é verdade **depois** que alguém pagou para achar o nó, e a operação que se pede na prática é "remova o valor X", que inclui a busca.',
@@ -203,6 +226,11 @@ export const linearUnit: Unit = {
     { id: 'linear.c5', title: 'A tabela de custos não conta tudo', layer: 'essential', band: 'cost',
       introducesTerms: ['cache-locality'],
       oneLine: "Ler um endereço traz os vizinhos junto, e a tabela de custos não conta isso.",
+      plainly:
+        'Duas formas de guardar uma lista podem ter a mesma tabela de custos no papel. Na máquina, ' +
+        'uma delas mantém dados vizinhos juntos e a outra espalha cada item em um lugar diferente. ' +
+        'Ler um item pode trazer vários vizinhos úteis de uma vez, ou exigir buscar outra região da ' +
+        'memória a cada salto.',
       body: [
         'Pela tabela, a lista ligada ganha em inserção e a escolha parece decidida. Na prática, somar 1 milhão de inteiros num bloco contíguo costuma terminar em uma fração do tempo de percorrer os mesmos 1 milhão em nós ligados, e o motivo não aparece em notação O.',
         'Ler um endereço traz os vizinhos junto. Percorrer um bloco contíguo aproveita isso a cada passo; percorrer uma lista ligada salta para endereços quaisquer, e cada salto pode não aproveitar nada.',
@@ -217,6 +245,11 @@ export const linearUnit: Unit = {
     { id: 'linear.c6', title: 'Quando a lista é a escolha errada', layer: 'essential', band: 'cost',
       introducesTerms: [],
       oneLine: "A lista é a escolha errada quando a pergunta é por valor, não por posição.",
+      plainly:
+        'Você guarda pedidos numa sequência e depois precisa responder “existe um pedido com este ' +
+        'código?”. A sequência sabe responder por posição, não por valor. Ela pode procurar, mas ' +
+        'terá de olhar até encontrar ou acabar. Quando a pergunta principal é por valor, a estrutura ' +
+        'certa começa na próxima unidade.',
       body: [
         'Volte às 4 operações do primeiro ciclo. Tudo que elas não prometem é onde a escolha falha.',
         'A lista é a escolha errada quando a pergunta é por valor e não por posição; quando a carga concentra inserção e remoção numa ponta que a implementação escolhida não favorece; e quando alguém leu a tabela de custos sem ler as hipóteses dela.',

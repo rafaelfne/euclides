@@ -161,6 +161,11 @@ export const treesUnit: Unit = {
     { id: 'trees.c0', title: 'O que a ordem compra, e o que ela cobra', layer: 'essential', band: 'contract',
       introducesTerms: ['sorted-map', 'key-order'],
       oneLine: "A ordem entre as chaves vira operação, e o custo 1 do Map vai embora.",
+      plainly:
+        'Um relatório pede todos os pedidos entre duas datas, já em ordem. Uma tabela que encontra ' +
+        'uma data exata muito rápido não sabe caminhar do dia 1º ao dia 15. Para responder ' +
+        'intervalos, os dados precisam manter uma ordem. Esse ganho traz um preço: procurar uma ' +
+        'chave exata deixa de ser um salto direto.',
       body: [
         'O contrato desta unidade é o Map da unidade anterior mais 1 promessa: as chaves têm ordem, e a estrutura sabe usá-la. Mínimo, máximo e faixa passam a ser operações, e não varreduras.',
         'A promessa é sobre chave. O valor guardado nunca é comparado com nada, e percorrer a estrutura em ordem devolve as chaves ordenadas, não os valores. Essa distinção parece pedante até a primeira vez que alguém espera o contrário.',
@@ -175,6 +180,11 @@ export const treesUnit: Unit = {
     { id: 'trees.c1', title: 'A busca binária virada estrutura', layer: 'essential', band: 'implementation', elaborates: 'bst',
       introducesTerms: ['bst', 'subtree'],
       oneLine: "Cada nó separa as chaves menores das maiores, e procurar é escolher um lado.",
+      plainly:
+        'Você procura uma data numa coleção ordenada e, a cada comparação, descarta metade das ' +
+        'opções. Uma árvore guarda essa mesma decisão em cada ponto: valores menores seguem por um ' +
+        'lado, maiores pelo outro. Procurar não percorre tudo; a cada escolha, uma parte inteira ' +
+        'deixa de importar.',
       body: [
         'A ideia é a busca binária guardada em ponteiros: cada nó separa as chaves menores das maiores, e procurar é descer escolhendo 1 lado por comparação. Com 1 milhão de chaves bem distribuídas, são cerca de 20 comparações.',
         'A invariante é uma frase e sustenta tudo o que vem depois: para todo nó, toda chave da subárvore esquerda é menor que a dele, e toda da direita é maior. É ela que permite descartar metade da estrutura a cada comparação, e é ela que uma busca que desce pelos dois lados joga fora sem perceber.',
@@ -198,6 +208,11 @@ export const treesUnit: Unit = {
     { id: 'trees.c2', title: 'Altura não é log n', layer: 'essential', band: 'implementation', elaborates: 'bst',
       introducesTerms: ['height', 'degeneration'],
       oneLine: "Insira 1, 2, 3, 4, 5 numa árvore vazia e ela vira uma lista de altura 4.",
+      plainly:
+        'Inserir 1, depois 2, depois 3 parece inofensivo. Mas, se cada valor maior sempre vai para ' +
+        'a direita, a estrutura fica como uma lista inclinada: para chegar ao último, você passa por ' +
+        'todos os anteriores. Ter poucos níveis não é uma propriedade automática; depende de como os ' +
+        'valores chegaram.',
       body: [
         'O custo de toda operação desta estrutura é a altura. E a invariante de ordem não diz nada sobre altura.',
         'Insira 1, 2, 3, 4 e 5 numa árvore vazia: cada chave vira o filho direito da anterior, a altura vira n − 1, e a estrutura virou uma lista ligada com ponteiros a mais. Toda operação passou a custar O(n), e a invariante continua valendo.',
@@ -224,6 +239,11 @@ export const treesUnit: Unit = {
     { id: 'trees.c3', title: 'Balancear: a rotação', layer: 'essential', band: 'implementation', elaborates: 'avl',
       introducesTerms: ['rotation', 'balancing'],
       oneLine: "A rotação baixa a altura e não muda a ordem das chaves.",
+      plainly:
+        'Três valores chegam em ordem e formam uma escada: 1 aponta para 2, que aponta para 3. A ' +
+        'busca pelo último precisa descer dois níveis. Trocar quem fica no meio reduz o caminho sem ' +
+        'trocar a ordem dos valores. O conserto não muda o que a coleção contém; muda o formato do ' +
+        'caminho até ela.',
       body: [
         'Se o custo é a altura, a saída é impedir a altura de crescer. Uma rotação troca quem é pai de quem entre 2 nós vizinhos: a subárvore desce 1 nível de um lado e sobe 1 do outro.',
         'O que a rotação **não** muda é a ordem: percorrer a árvore antes e depois devolve exatamente a mesma sequência de chaves. Isso não é um efeito colateral feliz, é a condição para a operação ser legítima, e é o que dá para conferir num exemplo de três nós em trinta segundos.',
@@ -247,6 +267,11 @@ export const treesUnit: Unit = {
     { id: 'trees.c4', title: 'Garantido não é o mesmo que esperado', layer: 'essential', band: 'cost',
       introducesTerms: [],
       oneLine: "A árvore promete O(log n) sempre; a tabela hash promete O(1) quase sempre.",
+      plainly:
+        'Uma tabela costuma responder uma chave exata em pouco tempo, mas depende de os dados se ' +
+        'comportarem bem. Uma árvore mantida baixa faz mais comparações, porém limita esse número ' +
+        'mesmo quando a entrada vem em uma ordem ruim. A escolha não é entre “rápido” e “lento”; é ' +
+        'entre uma média melhor e uma garantia mais forte.',
       body: [
         'Tabela hash oferece O(1) no caso médio e O(n) no pior. Árvore balanceada oferece O(log n) no pior caso, para toda entrada. Comparar os dois números sem os qualificadores é comparar coisas diferentes.',
         'A escolha depende de quem controla a entrada. Se as chaves são suas, o caso médio descreve o que vai acontecer. Se elas vêm de fora, alguém pode escolher a entrada que ativa o pior caso, e a garantia passa a valer mais que a média.',
@@ -261,6 +286,11 @@ export const treesUnit: Unit = {
     { id: 'trees.c5', title: 'B-tree e o custo do acesso a disco', layer: 'deep-dive', band: 'implementation', elaborates: 'b-tree',
       introducesTerms: ['b-tree'],
       oneLine: "Em disco o que custa é visitar um nó, e 20 visitas por consulta é caro.",
+      plainly:
+        'Ler um nó de uma árvore na memória é barato. Ler um nó no disco pode custar muito mais que ' +
+        'comparar dezenas de valores. Em vez de guardar uma chave por página, um índice de banco ' +
+        'guarda muitas chaves juntas e reduz o número de páginas visitadas. O formato do nó muda ' +
+        'porque a parte cara mudou.',
       body: [
         'Quando a estrutura mora em disco, a unidade de medida muda: o que custa não é comparar chaves, é visitar um nó. Uma árvore binária balanceada com 1 milhão de chaves tem altura perto de 20, e 20 acessos a disco por consulta é caro.',
         'A B-tree resolve mudando o formato do nó: centenas de chaves e centenas de filhos por nó. A altura cai para três ou quatro, e a busca dentro do nó, que agora tem muitas chaves, acontece em memória e é barata.',
@@ -275,6 +305,10 @@ export const treesUnit: Unit = {
     { id: 'trees.c6', title: 'Quando a árvore é a escolha errada', layer: 'essential', band: 'cost',
       introducesTerms: [],
       oneLine: "A árvore é a escolha errada quando nenhuma consulta pede ordem.",
+      plainly:
+        'Você só precisa responder se um e-mail exato existe. Não precisa de menor valor, nem de ' +
+        'intervalo, nem de ordem de chegada. Manter os dados ordenados cobra comparações e manutenção ' +
+        'que não ajudam essa pergunta. Quando a ordem não será consultada, ela é custo sem retorno.',
       body: [
         'Volte ao contrato do primeiro ciclo. Tudo que ele não promete é onde a escolha falha, e desta vez há 1 ausência nova: o tempo constante que o contrato anterior prometia.',
         'A árvore é a escolha errada quando nenhuma consulta pede ordem: ali a ordem está sendo paga em cada operação e não está comprando nada. É a decisão inversa da que abre esta unidade, e as duas se justificam pela mesma leitura da carga de trabalho.',

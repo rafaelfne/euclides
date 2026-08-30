@@ -90,10 +90,12 @@ sabe se a peça é boa**, só que ela existe.
 - **Fica exposto:** o validador continua cego a renderização. `code` e `faultyLines` foram
   obrigatórios e ignorados por muito tempo, e a mesma coisa pode acontecer com qualquer
   campo novo. `scripts/test-traces.ts` é a resposta parcial, e ela cobre só traço.
-- **Dívida declarada, sem checagem:** a rampa textual continua faltando, "como funciona"
-  na primeira visita, tradução em linguagem cotidiana por ciclo, estimativa de duração,
-  visualizações nos cinco pontos em que uma imagem faz o trabalho de três parágrafos, e a
-  alternância entre pseudocódigo e linguagem real. Nenhuma delas é bug; todas são produto.
+- **Decidido, sem checagem:** todo ciclo agora tem uma tradução em linguagem cotidiana,
+  mostrada somente no modo Iniciante, entre a abertura e a prosa canônica. O campo é
+  preenchido nos 62 ciclos; sua qualidade continua sendo julgamento pedagógico, não uma
+  regra automática. Ainda ficam produto: "como funciona" na primeira visita, estimativa de
+  duração, visualizações nos cinco pontos em que uma imagem faz o trabalho de três
+  parágrafos, e a alternância entre pseudocódigo e linguagem real.
 - **A observar, e agora decidido:** a severidade do tom. O princípio 7 é inegociável e não
   é o mesmo que ausência de acolhimento. A fronteira ficou no ADR-0018: acolhimento é
   afirmação verificável sobre dado que o app já tem, ou não entra.
@@ -104,4 +106,4 @@ sabe se a peça é boa**, só que ela existe.
 2. [x] Alternativas embaralhadas por id; justificativa em `why`, revelada ao resolver
 3. [x] `BugExercise` com código, medianiz e linha clicável
 4. [x] `/glossary` e `/traps`, sobre o dado que já existia
-5. [ ] Decidir a rampa textual, é produto, e não entra por checagem
+5. [x] Tradução em linguagem cotidiana nos 62 ciclos, somente no modo Iniciante

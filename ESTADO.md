@@ -1,13 +1,13 @@
-# Estado do Euclides em 29/08/2026
+# Estado do Euclides em 30/08/2026
 
 Arquivo de passagem para abrir sessão nova. Descreve o que existe, o que está aberto e as
 decisões que não devem ser refeitas sem motivo.
 
 ## Onde o trabalho está
 
-Branch `claude/repo-onboarding-validation-1524ca`, **37 commits à frente de `main`**, nada
-mesclado. Um arquivo fora do controle de versão de propósito: `PERGUNTAS-DE-ONBOARDING.md`,
-que foi o handoff de onboarding e nunca teve destino decidido.
+`main` contém todo o trabalho anterior, até `0eda143`. Esta nova etapa está na branch
+`codex/rampa-cotidiana`. Os dois arquivos locais `.codex/` e `AGENTS.md` não pertencem ao
+repositório e devem continuar fora do controle de versão.
 
 O gate passa inteiro: `npm run validate` (31 checagens), `npm run docs:check`,
 `npm run typecheck`, `npm test` (13 suítes), `npm run build` (82 páginas).
@@ -26,7 +26,7 @@ Rotas: `/`, `/como-funciona`, `/sondagem`, `/perfil`, `/revisitas`, `/traps`, `/
 
 Nenhuma dependência de desenho. `@xyflow/react` e `dagre` entraram e saíram no mesmo dia:
 as duas figuras de grafo que iam justificar os 78 KB nasceram sem tocar neles, e a árvore de
-recursão foi reescrita em SVG. As dez figuras são SVG inline.
+recursão foi reescrita em SVG. As 11 figuras são SVG inline.
 
 ## Decisões que não devem ser refeitas
 
@@ -62,11 +62,6 @@ que alguém a comete.
 Ofereci construir o instrumento para levantar isso — um registro por exercício do que foi
 respondido e em qual tentativa, exportável — e a oferta segue de pé.
 
-### Trabalho que eu faria a seguir
-
-**Traduzir cada ciclo em linguagem cotidiana** é o que sobrou da rampa do ADR-0016, e é o
-único item de trabalho meu ainda aberto. É julgamento pedagógico e não entra por checagem.
-
 ### O que fechou em 29/08/2026
 
 As três checagens de ponto cego: `acesa` confere `lineByColumn` contra o pseudocódigo do
@@ -83,6 +78,13 @@ A reoferta da sondagem, que vence por progresso e nunca por data, e mora só no 
 (ADR-0022). E a regra de cada faixa passou a dizer capacidade, com o checklist em campo
 próprio.
 
+### O que fechou em 30/08/2026
+
+Todo ciclo agora tem uma tradução em linguagem cotidiana, exibida só no modo Iniciante entre
+a frase de abertura e a prosa canônica. São 62 textos; o ADR-0016 registra que essa é uma
+decisão de produto e que a qualidade deles continua dependendo de revisão pedagógica, não de
+checagem automática.
+
 ### Itens que dependem de uso, não de código
 
 Remedir a direção visual depois de um mês escrevendo conteúdo nela (ADR-0015), e revisar os
@@ -90,18 +92,12 @@ intervalos de revisita de 3, 10 e 30 dias depois de alguém passar por eles algu
 (ADR-0024). Os números foram escolhidos sem evidência de que 3, 10 e 30 sejam melhores que
 outros três. Os dois esperam alguém usar o app, não trabalho meu.
 
-## Duas coisas sobre como eu escrevo
+## Vocabulário de trabalho
 
-O output style **Direto** foi reescrito hoje e está em `~/.claude/output-styles/direto.md`.
-A sessão nova carrega a versão nova limpa; nesta ele foi lido e seguido como instrução de
-mensagem, convivendo com a versão antiga que já estava no system prompt.
-
-E há uma correção de vocabulário que vale carregar. Eu vinha inventando termo e usando como
-se fosse vocabulário estabelecido. Medi e separei: `deriva`, `espinha`, `degrau`, `gate` e
-`sonda` vieram do scaffold e do `CLAUDE.md` original, então são do projeto e devem ser
-usados. O que era invenção minha foi trocado — `andaime` virou scaffold, `amarração` virou
-conferência, `fresta` virou ponto cego. E "a checagem morde", que eu escrevia em conversa,
-foi cortado por soar estranho em vez de preciso.
+`deriva`, `espinha`, `degrau`, `gate` e `sonda` vieram do scaffold e do `CLAUDE.md` original,
+então são do projeto e podem ser usados. Evite palavras criadas para explicar o projeto:
+`andaime` virou scaffold, `amarração` virou conferência e `fresta` virou ponto cego. Prefira
+uma descrição concreta a metáforas para falhas ou checagens.
 
 ## Onde ler mais
 
