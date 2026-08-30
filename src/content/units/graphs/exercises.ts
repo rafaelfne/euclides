@@ -111,19 +111,19 @@ export const graphsExercises: Exercise[] = [
     conventions: [
       { notation: 'B D', rule: 'um conjunto ou uma fila', why: 'Os vértices separados por espaço. Na fila, na ordem em que saem; em visitados, em ordem alfabética, conjunto não tem ordem própria, e a alfabética é a convenção para poder comparar.' },
       { notation: 'nenhum', rule: 'nenhum vizinho novo entrou', why: 'O vértice tinha vizinhos, e todos já estavam visitados. Não é o mesmo que não ter vizinho.' },
-      { notation: 'vazia', rule: 'a fila esvaziou', why: 'É o que encerra o percurso. Se ela nunca esvazia no seu traço, essa é a resposta do exercício.' },
+      { notation: 'vazia', rule: 'a fila esvaziou', why: 'É o que encerra o percurso. Se ela nunca esvazia no seu trace, essa é a resposta do exercício.' },
     ],
     reference: 'graphs.bfs-trace',
     misconceptionByStep: { '4': 'graphs.percurso-sem-visitados' },
   },
   {
     kind: 'choice', id: 'graphs.e5',
-    prompt: 'Você precisa do caminho com menos escalas entre dois aeroportos. As escalas não têm duração associada. Qual percurso responde, e por quê?',
+    prompt: 'Num mapa sem duração ou preço, uma estratégia explora primeiro todas as rotas com uma etapa, depois com duas, depois com três. Outra segue uma rota até o fim antes de voltar. Qual encontra a rota com menos etapas?',
     choices: [
-      { correct: true, text: 'Busca em largura, porque ela avança por camadas',
+      { correct: true, text: 'A primeira, chamada busca em largura, porque avança por camadas',
         why: 'Ao alcançar um vértice pela primeira vez, ela chegou pelo caminho com menos arestas. A busca em profundidade não dá essa garantia.' },
-      { correct: false, text: 'Busca em profundidade: ela encontra um caminho completo antes, e o primeiro caminho encontrado é o mais curto', misconceptionId: 'graphs.bfs-e-dfs-equivalentes' },
-      { correct: false, text: 'Qualquer uma das duas: as duas visitam todos os vértices alcançáveis e devolvem o mesmo resultado', misconceptionId: 'graphs.bfs-e-dfs-equivalentes' },
+      { correct: false, text: 'A segunda, porque terminar uma rota cedo garante que ela seja menor', misconceptionId: 'graphs.bfs-e-dfs-equivalentes' },
+      { correct: false, text: 'Qualquer uma, porque ambas acabam visitando os mesmos lugares', misconceptionId: 'graphs.bfs-e-dfs-equivalentes' },
     ],
   },
   {
@@ -139,7 +139,7 @@ export const graphsExercises: Exercise[] = [
   {
     kind: 'trace', id: 'graphs.e8',
     prompt:
-      'O grafo é o mesmo do traço anterior: A→B, A→D, B→C, C→A, C→E e D→E. Agora a fila virou pilha, e ' +
+      'O grafo é o mesmo do trace anterior: A→B, A→D, B→C, C→A, C→E e D→E. Agora a fila virou pilha, e ' +
       'sai o último em vez do primeiro. Faça a busca em profundidade a partir de A. Para cada retirada: ' +
       'quais vizinhos entraram agora, como fica a pilha, e quem já foi visitado.',
     pseudocode: `função profundidade(G, origem)

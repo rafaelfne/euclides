@@ -94,7 +94,7 @@ export const hashGlossary: GlossaryTerm[] = [
     alsoKnownAs: ['uniform hashing', 'simple uniform hashing'],
     definition: 'Hipótese de que cada chave tem a mesma chance de cair em qualquer bucket.',
     isNot: ['não é uma propriedade verificada, é uma hipótese sob a qual o custo médio vale'],
-    falseFriends: [], introducedIn: 'hash.c4' },
+    falseFriends: [], introducedIn: 'hash.c6' },
 
   { id: 'rehash', canonical: 'rehash', canonicalLanguage: 'en',
     alsoKnownAs: ['redimensionamento', 'resize'],
@@ -480,8 +480,8 @@ export const asymptoticsGlossary: GlossaryTerm[] = [
 ]
 
 export const tracingGlossary: GlossaryTerm[] = [
-  { id: 'execution-trace', canonical: 'traço de execução', canonicalLanguage: 'pt',
-    alsoKnownAs: ['teste de mesa', 'execution trace', 'dry run'],
+  { id: 'execution-trace', canonical: 'execution trace', canonicalLanguage: 'en',
+    alsoKnownAs: ['trace', 'dry run', 'teste de mesa', 'traço de execução'],
     definition: 'A tabela do estado do programa, uma linha por rodada, cada linha derivada da anterior.',
     isNot: ['não é a saída do programa, é o caminho até ela', 'não é depuração: nada é executado'],
     falseFriends: [
@@ -688,7 +688,7 @@ export const appGlossary: GlossaryTerm[] = [
     falseFriends: [], introducedIn: APP },
 
   { id: 'app.gap', canonical: 'lacuna', canonicalLanguage: 'pt', alsoKnownAs: ['gap'],
-    definition: 'Uma armadilha que você ativou e ainda não desativou resolvendo o exercício dela na primeira tentativa.',
+    definition: 'Uma armadilha que você ativou e ainda não desativou voltando ao exercício depois do intervalo e resolvendo-o sem ativá-la de novo.',
     isNot: ['não é o mesmo que errar uma vez', 'não é uma nota baixa, é um item para revisitar'],
     falseFriends: [], introducedIn: APP },
 
@@ -702,7 +702,7 @@ export const appGlossary: GlossaryTerm[] = [
     isNot: [
       'não é nível, e não sobe por tempo de uso',
       'não é a banda do ciclo, que é onde ele fica no mapa',
-      'a faixa "code tracer" não é o traço de execução: uma é quem você já consegue ser, o outro é a tabela que você escreve no exercício',
+      'a faixa "code tracer" não é o execution trace: uma é quem você já consegue ser, o outro é a tabela que você escreve no exercício',
     ],
     falseFriends: [], introducedIn: APP },
 

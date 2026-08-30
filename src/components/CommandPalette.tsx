@@ -5,6 +5,35 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { units } from '@/content'
 import { allTerms } from '@/content/glossary'
 import { cn } from '@/lib/utils'
+import { Search } from 'lucide-react'
+
+export const COMMAND_PALETTE_EVENT = 'euclides:command-palette'
+
+export function PlatformSearchShortcut() {
+  const [shortcut, setShortcut] = useState<string | null>(null)
+
+  useEffect(() => {
+    const platform = `${navigator.platform} ${navigator.userAgent}`
+    setShortcut(/Mac|iPhone|iPad|iPod/.test(platform) ? '⌘K' : 'Ctrl+K')
+  }, [])
+
+  return shortcut ? <>{shortcut}</> : null
+}
+
+export function CommandPaletteButton() {
+  return (
+    <button
+      type="button"
+      onClick={() => window.dispatchEvent(new Event(COMMAND_PALETTE_EVENT))}
+      className="m-tap flex cursor-pointer items-center gap-2 border border-rule bg-panel-head px-2.5 py-1 text-[12px] text-fg-3 hover:text-fg"
+      aria-label="Buscar termo, ciclo, armadilha ou tela"
+    >
+      <Search size={13} />
+      <span>Buscar</span>
+      <span className="hidden font-mono text-[10px] text-fg-5 sm:inline"><PlatformSearchShortcut /></span>
+    </button>
+  )
+}
 
 /**
  * O salto rápido, em ⌘K.
@@ -77,6 +106,16 @@ function buildIndex(): Item[] {
 const normalize = (s: string) =>
   s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
 
+const resultRank = (item: Item, query: string) => {
+  const label = normalize(item.label)
+  if (label === query) return 0
+  if (item.kind === 'termo' && label.startsWith(query)) return 1
+  if (item.kind === 'termo' && label.includes(query)) return 2
+  if (label.startsWith(query)) return 3
+  if (label.includes(query)) return 4
+  return 5
+}
+
 export function CommandPalette() {
   const router = useRouter()
   const [open, setOpen] = useState(false)
@@ -90,6 +129,9 @@ export function CommandPalette() {
     if (!q) return index.slice(0, 12)
     return index
       .filter((i) => normalize(`${i.label} ${i.id} ${i.hint}`).includes(q))
+      .map((item, order) => ({ item, order, rank: resultRank(item, q) }))
+      .sort((a, b) => a.rank - b.rank || a.order - b.order)
+      .map(({ item }) => item)
       .slice(0, 40)
   }, [index, query])
 
@@ -109,8 +151,13 @@ export function CommandPalette() {
       }
       if (e.key === 'Escape') setOpen(false)
     }
+    const openPalette = () => { setOpen(true); setAt(0) }
     window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
+    window.addEventListener(COMMAND_PALETTE_EVENT, openPalette)
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      window.removeEventListener(COMMAND_PALETTE_EVENT, openPalette)
+    }
   }, [])
 
   useEffect(() => { setAt(0) }, [query])
@@ -135,7 +182,7 @@ export function CommandPalette() {
             if (e.key === 'ArrowUp') { e.preventDefault(); setAt((i) => Math.max(0, i - 1)) }
             if (e.key === 'Enter') { e.preventDefault(); go(results[at]) }
           }}
-          placeholder="ciclo, termo, armadilha ou tela"
+          placeholder="busque um termo, ciclo, armadilha ou tela"
           className="border-b border-rule bg-panel-head px-4 py-3 text-[15px] text-fg placeholder:text-fg-5 focus:outline-none"
         />
 

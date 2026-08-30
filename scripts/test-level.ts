@@ -1,5 +1,5 @@
 import { units } from '../src/content/index'
-import { probes } from '../src/content/placement'
+import { MAX_PROBE_LABEL_WORDS, MAX_PROBE_PROMPT_WORDS, probes } from '../src/content/placement'
 import { level, unitState, stalePlacement, BANDS } from '../src/lib/level'
 import type { Progress } from '../src/content/schema'
 
@@ -113,6 +113,16 @@ check('há uma sonda por unidade das seis primeiras',
   probes.length === 6 && probes.every((p, i) => p.unitId === units[i]!.id))
 check('toda sonda descreve a capacidade que ela sonda',
   probes.every((p) => p.whatItProbes.length > 10))
+check('toda sonda tem um rótulo concreto antes do nome da unidade',
+  probes.every((p) => p.label.length > 5))
+check('todo rótulo de sonda cabe em seis palavras',
+  probes.every((p) => p.label.trim().split(/\s+/).length <= MAX_PROBE_LABEL_WORDS))
+check('todo enunciado de sonda cabe em quarenta palavras',
+  probes.every((p) => {
+    const unit = units.find((candidate) => candidate.id === p.unitId)!
+    const exercise = unit.exercises.find((candidate) => candidate.id === p.exerciseId)!
+    return exercise.prompt.trim().split(/\s+/).length <= MAX_PROBE_PROMPT_WORDS
+  }))
 
 /*
   A sondagem envelhece pelo PROGRESSO, nunca pelo relógio.

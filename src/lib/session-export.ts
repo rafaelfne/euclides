@@ -1,7 +1,7 @@
 import type { Progress, Unit } from '@/content/schema'
 
 /**
- * The bridge with Claude, and the reason `localStorage` was enough (ADR-0009).
+ * The bridge with an AI assistant, and the reason `localStorage` was enough (ADR-0009).
  *
  * What it carries is the student's state, never the content's answers: how
  * many attempts, what was solved and how cleanly, which traps fired, and the
@@ -32,8 +32,9 @@ export interface UnitGaps {
 
 const DAY_MS = 86_400_000
 
-function verdictFor(attempts: number, solved: boolean, solvedClean: boolean): string {
+function verdictFor(attempts: number, solved: boolean, solvedClean: boolean, misconceptionCount: number): string {
   if (!solved) return `aberto depois de ${attempts} ${attempts === 1 ? 'tentativa' : 'tentativas'}`
+  if (solvedClean && misconceptionCount > 0) return 'resolvido na primeira tentativa; uma armadilha apareceu depois'
   if (solvedClean) return 'resolvido na primeira tentativa, sem ativar armadilha'
   return `resolvido em ${attempts} tentativas, chegar lá não é o mesmo que dominar`
 }
@@ -64,7 +65,7 @@ export function collectGaps(units: Unit[], progress: Progress, now: number): Uni
         attempts: state.attempts,
         solved: state.solved,
         solvedClean: state.solvedClean,
-        verdict: verdictFor(state.attempts, state.solved, state.solvedClean),
+        verdict: verdictFor(state.attempts, state.solved, state.solvedClean, state.misconceptionsTriggered.length),
         misconceptions: state.misconceptionsTriggered
           .map((id) => unit.misconceptions.find((m) => m.id === id))
           .filter((m): m is Unit['misconceptions'][number] => Boolean(m))

@@ -21,6 +21,8 @@ export function Stepper({
   labelFor,
   children,
   autoPlay = false,
+  startAt,
+  canAdvance,
 }: {
   count: number
   labelFor: (step: number) => string
@@ -31,8 +33,10 @@ export function Stepper({
    * o exercício. Continua sendo uma passada e continua parando. ADR-0027.
    */
   autoPlay?: boolean
+  startAt?: number
+  canAdvance?: (step: number) => boolean
 }) {
-  const [step, setStep] = useState(count - 1)
+  const [step, setStep] = useState(startAt ?? count - 1)
   const [playing, setPlaying] = useState(false)
   const reduced = useRef(false)
 
@@ -61,12 +65,14 @@ export function Stepper({
       <div className="min-w-0">{children(step)}</div>
 
       <div className="flex flex-wrap items-center gap-2 border-t border-rule px-3 py-2">
-        <button
-          onClick={play}
-          className="m-tap cursor-pointer border border-rule bg-panel-head px-2.5 py-1 font-mono text-[12px] text-fg-2 hover:text-fg"
-        >
-          {playing ? 'parar' : 'rodar uma vez'}
-        </button>
+        {!canAdvance && (
+          <button
+            onClick={play}
+            className="m-tap cursor-pointer border border-rule bg-panel-head px-2.5 py-1 font-mono text-[12px] text-fg-2 hover:text-fg"
+          >
+            {playing ? 'parar' : 'rodar uma vez'}
+          </button>
+        )}
         <button
           onClick={() => { setPlaying(false); setStep((s) => Math.max(0, s - 1)) }}
           disabled={step === 0}
@@ -76,7 +82,7 @@ export function Stepper({
         </button>
         <button
           onClick={() => { setPlaying(false); setStep((s) => Math.min(count - 1, s + 1)) }}
-          disabled={step === count - 1}
+          disabled={step === count - 1 || (canAdvance ? !canAdvance(step) : false)}
           className="m-tap cursor-pointer border border-rule bg-panel-head px-2.5 py-1 font-mono text-[12px] text-fg-2 hover:text-fg disabled:cursor-default disabled:text-fg-5"
         >
           →
@@ -86,10 +92,15 @@ export function Stepper({
           {Array.from({ length: count }, (_, i) => (
             <button
               key={i}
-              onClick={() => { setPlaying(false); setStep(i) }}
+              onClick={() => {
+                if (i > step && (i > step + 1 || (canAdvance && !canAdvance(step)))) return
+                setPlaying(false)
+                setStep(i)
+              }}
+              disabled={i > step && (i > step + 1 || (canAdvance ? !canAdvance(step) : false))}
               aria-label={`passo ${i + 1}`}
               className={cn(
-                'm-tap h-1.5 w-5 cursor-pointer border-0',
+                'm-tap h-1.5 w-5 cursor-pointer border-0 disabled:cursor-default',
                 i <= step ? 'bg-contract' : 'bg-rule',
               )}
             />

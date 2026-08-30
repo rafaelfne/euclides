@@ -16,7 +16,7 @@ export default function GapsPage() {
         </p>
         <p className="m-0 mb-7 max-w-[760px] text-[13px] leading-relaxed text-fg-3">
           O progresso mora neste navegador e não sai dele sozinho. O botão abaixo copia um markdown
-          com suas lacunas para você colar num projeto do Claude, ele carrega suas tentativas e as
+          com suas lacunas para você colar no seu assistente de IA, ele carrega suas tentativas e as
           armadilhas que você ativou, nunca a resposta de um exercício.
         </p>
         <GapPanel units={units} />

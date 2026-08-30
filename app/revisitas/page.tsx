@@ -15,7 +15,7 @@ export default function Page() {
           </h1>
           <p className="m-0 text-[14px] leading-relaxed text-fg-3">
             Um exercício entra na fila {REVISIT_STEPS.join(', ')} dias depois de cada volta
-            limpa, e só entra depois de ter saído limpo alguma vez. Voltar sujo devolve ele
+            limpa, e só entra depois de ter saído limpo alguma vez. Errar novamente na revisita devolve o exercício
             para o primeiro degrau. Abrir o app não move nada aqui.
           </p>
         </div>

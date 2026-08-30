@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { units, misconceptionById } from '@/content'
 import { probes } from '@/content/placement'
 import type { Choice } from '@/content/schema'
@@ -10,24 +10,6 @@ import { seededShuffle } from '@/lib/shuffle'
 import { cn } from '@/lib/utils'
 import { Panel, PanelBody, PanelHeader, PanelMeta, PanelTitle } from './ui/panel'
 
-/**
- * A sondagem de entrada.
- *
- * Duas decisões que a fazem valer alguma coisa, e as duas contrariam o que uma
- * sondagem costuma ser:
- *
- * 1. **Não há nota nem percentual.** O resultado é uma frase sobre por onde
- *    começar. Um número aqui viraria a coisa que o aluno persegue, e o que ele
- *    deve perseguir é a unidade certa.
- *
- * 2. **As respostas CONTAM.** São os mesmos exercícios que moram nos ciclos, e
- *    tratá-los como simulado criaria duas verdades sobre o mesmo exercício: uma
- *    no painel de lacunas e outra aqui. Errar aqui ativa a armadilha, exatamente
- *    como erraria lá, e a tela avisa isso antes de começar.
- *
- * Nada é bloqueado pelo resultado. Uma unidade vencida entra marcada para
- * revisita, e revisitar não é a mesma coisa que estudar do zero. Ver ADR-0022.
- */
 type Answers = Record<string, { correct: boolean; misconceptionId?: string }>
 
 export function Placement() {
@@ -54,6 +36,8 @@ export function Placement() {
     setAt((i) => i + 1)
   }
 
+  const skip = () => setAt((i) => i + 1)
+
   if (at === -1) return <Intro onStart={() => setAt(0)} />
   if (!probe || !exercise || exercise.kind !== 'choice' || !unit) {
     return <Result answers={answers} />
@@ -77,7 +61,7 @@ export function Placement() {
           ))}
         </div>
 
-        <span className="lbl">{unit.title}</span>
+        <span className="lbl">{probe.label}</span>
         <p className="m-0 text-[15px] leading-relaxed text-fg">{exercise.prompt}</p>
 
         <div className="flex flex-col gap-1.5">
@@ -92,8 +76,15 @@ export function Placement() {
           ))}
         </div>
 
+        <button
+          onClick={skip}
+          className="m-tap self-start border border-rule bg-panel px-3 py-2 text-[12.5px] text-fg-3 hover:text-fg"
+        >
+          Ainda não sei
+        </button>
+
         <p className="m-0 text-[12px] text-fg-4">
-          Sem devolutiva agora. Ela mora no ciclo, junto do conteúdo que a explica.
+          A explicação aparece no ciclo correspondente, junto do conteúdo necessário.
         </p>
       </PanelBody>
     </Panel>
@@ -108,13 +99,16 @@ function Intro({ onStart }: { onStart: () => void }) {
         Seis perguntas, uma por unidade, para saber por onde começar.
       </h1>
       <p className="m-0 text-[14.5px] leading-relaxed text-fg-2">
-        Não há nota, não há percentual e nada fica bloqueado. No fim você recebe uma frase
-        dizendo em qual unidade começar e quais já dá para tratar como revisita.
+        Não há nota e nada fica bloqueado. No fim, o app recomenda a primeira unidade que
+        vale estudar com calma.
       </p>
       <p className="m-0 text-[14.5px] leading-relaxed text-fg-2">
-        <strong className="font-semibold text-fg">As respostas contam.</strong> São os mesmos
-        exercícios que moram nos ciclos, e não faria sentido medir duas vezes a mesma coisa com
-        dois resultados diferentes. Errar aqui ativa a armadilha, exatamente como erraria lá.
+        Cada pergunta traz o contexto necessário. Você não precisa conhecer os nomes técnicos
+        das unidades para responder.
+      </p>
+      <p className="m-0 text-[14.5px] leading-relaxed text-fg-2">
+        <strong className="font-semibold text-fg">Suas respostas ficam salvas.</strong> Quando
+        você abrir uma unidade, ela continuará exatamente de onde esta sondagem parou.
       </p>
       <div className="flex flex-wrap items-center gap-4">
         <button
@@ -132,18 +126,24 @@ function Intro({ onStart }: { onStart: () => void }) {
 }
 
 function Result({ answers }: { answers: Answers }) {
-  const cleared = probes.filter((p) => answers[p.unitId]?.correct).map((p) => p.unitId)
-  const missed = probes.filter((p) => answers[p.unitId] && !answers[p.unitId]!.correct)
+  const cleared = useMemo(
+    () => probes.filter((p) => answers[p.unitId]?.correct).map((p) => p.unitId),
+    [answers],
+  )
+  const missed = useMemo(
+    () => probes.filter((p) => answers[p.unitId] && !answers[p.unitId]!.correct),
+    [answers],
+  )
   const suggested = probes.find((p) => !answers[p.unitId]?.correct)?.unitId ?? 'synthesis'
 
-  // O resultado é gravado uma vez, no fim. Gravar a cada resposta deixaria um
-  // nivelamento pela metade no perfil se alguém fechar a aba no meio.
-  if (typeof window !== 'undefined') {
+  useEffect(() => {
     const p = read()
-    if (p.placement?.suggestedStart !== suggested) {
+    const sameCleared = p.placement?.clearedUnits.length === cleared.length
+      && p.placement.clearedUnits.every((unitId, index) => unitId === cleared[index])
+    if (p.placement?.suggestedStart !== suggested || !sameCleared) {
       write({ ...p, placement: { takenAt: new Date().toISOString(), suggestedStart: suggested, clearedUnits: cleared } })
     }
-  }
+  }, [cleared, suggested])
 
   const unitOf = (id: string) => units.find((u) => u.id === id)!
   const start = unitOf(suggested)
@@ -154,10 +154,10 @@ function Result({ answers }: { answers: Answers }) {
 
       <p className="m-0 text-[17px] leading-relaxed text-fg">
         {cleared.length === 0
-          ? 'Nenhuma das seis saiu de primeira, e é para isso que a trilha começa no começo.'
+          ? 'A melhor entrada é a primeira unidade. Ela constrói a base usada pelas demais.'
           : cleared.length === probes.length
-            ? 'As seis saíram de primeira. Comece pela síntese, e trate as outras como revisita.'
-            : `Você já julga ${cleared.map((id) => unitOf(id).title.toLowerCase()).join(', ')} sem tropeçar.`}
+            ? 'As seis respostas saíram de primeira. Comece pela síntese e depois revise as anteriores.'
+            : `Você respondeu de primeira às perguntas de ${cleared.map((id) => unitOf(id).title.toLowerCase()).join(', ')}.`}
       </p>
 
       <div className="flex flex-col gap-2 border border-contract-rule bg-contract-bg p-4">
@@ -170,7 +170,7 @@ function Result({ answers }: { answers: Answers }) {
 
       {missed.length > 0 && (
         <div className="flex flex-col gap-2">
-          <span className="lbl">O que cada uma sondava</span>
+          <span className="lbl">O que vale estudar</span>
           {missed.map((p) => {
             const u = unitOf(p.unitId)
             const m = answers[p.unitId]?.misconceptionId
@@ -180,7 +180,7 @@ function Result({ answers }: { answers: Answers }) {
               <div key={p.unitId} className="border-l-2 border-implementation pl-4">
                 <div className="text-[14px] text-fg-2">{u.title}</div>
                 <div className="text-[13px] leading-relaxed text-fg-3">{p.whatItProbes}</div>
-                {m && <div className="mt-0.5 text-[12.5px] text-implementation">armadilha ativada: {m.label}</div>}
+                {m && <div className="mt-0.5 text-[12.5px] text-implementation">ideia a rever: {m.label}</div>}
               </div>
             )
           })}
@@ -189,7 +189,7 @@ function Result({ answers }: { answers: Answers }) {
 
       {cleared.length > 0 && (
         <div className="flex flex-col gap-1.5 border-t border-rule pt-4">
-          <span className="lbl">Marcadas para revisita, não para estudo</span>
+          <span className="lbl">Conteúdos para revisar</span>
           <div className="flex flex-wrap gap-2">
             {cleared.map((id) => (
               <Link
@@ -202,8 +202,8 @@ function Result({ answers }: { answers: Answers }) {
             ))}
           </div>
           <span className="text-[12.5px] leading-relaxed text-fg-4">
-            Uma unidade vencida na sondagem não está dominada: dominada exige os exercícios do
-            critério na primeira tentativa, e a sondagem fez uma pergunta por unidade.
+            Acertar uma pergunta indica que você pode avançar. Domínio exige resolver os
+            exercícios centrais da unidade e voltar a eles depois.
           </span>
         </div>
       )}

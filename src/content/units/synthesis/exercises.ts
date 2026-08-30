@@ -78,9 +78,9 @@ export const synthesisExercises: Exercise[] = [
   },
   {
     kind: 'choice', id: 'synthesis.e3',
-    prompt: 'Um cache precisa responder "esse item está aqui?" em tempo constante e "qual o item usado há mais tempo?" também em tempo constante. Nenhuma estrutura isolada responde as duas. O que isso indica?',
+    prompt: 'Uma fila de jobs precisa retirar o mais antigo e também cancelar qualquer job pelo identificador, ambos em tempo constante. Nenhuma estrutura isolada responde as duas. O que isso indica?',
     choices: [
-      { correct: true, text: 'Que a resposta é composição: tabela hash da chave para o nó, e lista ligada mantendo a ordem de uso',
+      { correct: true, text: 'Compor tabela hash por identificador com lista ligada por ordem de chegada',
         why: 'Cada uma responde uma das perguntas, e as duas apontam para os mesmos dados' },
       { correct: false, text: 'Que uma das duas exigências precisa ser relaxada, porque nenhuma estrutura oferece as duas garantias', misconceptionId: 'synthesis.composicao-nao-considerada' },
       { correct: false, text: 'Que a estrutura certa é a árvore balanceada, que fica entre as duas', misconceptionId: 'synthesis.composicao-nao-considerada' },

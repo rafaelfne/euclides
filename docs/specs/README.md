@@ -5,7 +5,7 @@ specs, e as oito unidades estão implementadas e registradas.
 
 | # | spec | kind | status |
 |---|---|---|---|
-| 1 | [tracing](tracing.md), Lógica e teste de mesa | `method` | implementada |
+| 1 | [tracing](tracing.md), Lógica e execution trace | `method` | implementada |
 | 2 | [asymptotics](asymptotics.md), Análise assintótica | `method` | implementada |
 | 3 | [linear](linear.md), Estruturas lineares | `structure` | implementada |
 | 4 | [hash](hash.md), Tabelas hash | `structure` | implementada |

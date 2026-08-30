@@ -1,55 +1,48 @@
-/**
- * As seis sondas do nivelamento, uma por unidade das seis primeiras.
- *
- * Cada uma é um exercício que já existe, escolhido pelo julgamento central da
- * unidade: acertá-la de primeira é evidência de que aquele terreno já foi
- * andado. Não são necessariamente os exercícios do critério de domínio, e a
- * distinção importa — o critério mede domínio, a sonda mede se vale começar
- * ali.
- *
- * Só `choice` entra. A sondagem promete quatro minutos, e um traço de oito
- * rodadas não cabe em quatro minutos. A checagem `sondagem` reprova qualquer
- * outra forma.
- *
- * `whatItProbes` é o que a tela mostra ao devolver o resultado. Ele descreve a
- * CAPACIDADE, nunca a resposta, porque a sondagem também é conteúdo e o
- * princípio 3 vale aqui igual.
- */
 export interface Probe {
   unitId: string
   exerciseId: string
+  label: string
   whatItProbes: string
 }
+
+export const MAX_PROBE_PROMPT_WORDS = 40
+export const MAX_PROBE_LABEL_WORDS = 6
 
 export const probes: Probe[] = [
   {
     unitId: 'tracing',
-    exerciseId: 'tracing.e5',
-    whatItProbes: 'contar rodadas pela condição e pelo passo, não pelo tamanho da coleção',
+    exerciseId: 'tracing.e4',
+    label: 'Entrada sem elementos',
+    whatItProbes: 'testar a entrada vazia antes de confiar no caso típico',
   },
   {
     unitId: 'asymptotics',
     exerciseId: 'asymptotics.e4',
-    whatItProbes: 'saber quando o regime declarado muda a conclusão',
+    label: 'Custo em entradas diferentes',
+    whatItProbes: 'usar o pior caso quando qualquer entrada válida pode chegar ao sistema',
   },
   {
     unitId: 'linear',
     exerciseId: 'linear.e2',
+    label: 'Custo escondido numa fila',
     whatItProbes: 'ver o custo que uma implementação de fila esconde',
   },
   {
     unitId: 'hash',
     exerciseId: 'hash.e5',
-    whatItProbes: 'escolher pela operação que domina a carga, e não pela mais interessante',
+    label: 'Consulta que precisa de ordem',
+    whatItProbes: 'reconhecer quando uma tabela hash não responde a pergunta pedida',
   },
   {
     unitId: 'trees',
     exerciseId: 'trees.e2',
+    label: 'Forma criada pela ordem de chegada',
     whatItProbes: 'reconhecer a entrada que degrada uma árvore sem balanceamento',
   },
   {
     unitId: 'graphs',
     exerciseId: 'graphs.e5',
+    label: 'Caminho com menos etapas',
     whatItProbes: 'separar menos arestas de menor custo',
   },
 ]

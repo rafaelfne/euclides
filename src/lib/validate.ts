@@ -20,7 +20,7 @@ import { build, heightOf, inorder, rebalanceOnce } from './bst'
 import { insertionRounds, totalShifts } from './insertion'
 import { untranslated } from './transliterate'
 import { TOKENIZERS } from './highlight'
-import { probes } from '../content/placement'
+import { MAX_PROBE_LABEL_WORDS, MAX_PROBE_PROMPT_WORDS, probes } from '../content/placement'
 
 export const CHECKS = [
   ['registro', 'registro: existe unidade registrada em src/content/index.ts'],
@@ -34,7 +34,7 @@ export const CHECKS = [
   ['domínio', 'domínio: o critério de domínio referencia exercícios que existem'],
   ['desfaz', 'desfaz: toda misconception aponta o ciclo que a desfaz, e ele existe'],
   ['espinha', 'espinha: todo ciclo declara sua banda e a unidade abre pelo contrato'],
-  ['exemplo', 'exemplo: toda implementação ou técnica estreia com exemplo trabalhado'],
+  ['exemplo', 'exemplo: todo exemplo mostra a resolução, e toda implementação ou técnica estreia com um'],
   ['abertura', `abertura: todo ciclo abre com uma frase de no máximo ${MAX_ONE_LINE_WORDS} palavras`],
   ['número', 'número: os dois primeiros parágrafos do ciclo trazem um número real'],
   ['figura', 'figura: toda figura declara curvas distintas e uma faixa que cabe no eixo'],
@@ -43,8 +43,8 @@ export const CHECKS = [
   ['vocabulário', 'vocabulário: nenhuma abstração vaga não registrada'],
   ['ênfase', 'ênfase: asterisco de ênfase sempre emparelhado, e só na prosa do ciclo'],
   ['convenção', 'convenção: todo pseudocódigo respeita a folha de notação'],
-  ['referência', 'referência: todo traço é gerado por implementação que roda'],
-  ['formato', 'formato: toda coluna editável de traço declara como se escreve a resposta'],
+  ['referência', 'referência: todo trace é gerado por implementação que roda'],
+  ['formato', 'formato: toda coluna editável de trace declara como se escreve a resposta'],
   ['tradução', 'tradução: o pseudocódigo ou atravessa inteiro para TypeScript, ou é declarado prosa'],
   ['glossário', 'glossário: ids únicos, introdução declarada dos dois lados'],
   ['sobrecarga', 'sobrecarga: todo termo sobrecarregado declara seus falsos amigos'],
@@ -223,11 +223,54 @@ export function checkAll(units: Unit[], terms: GlossaryTerm[]): Failure[] {
       fail('espinha', `${u.id}: o primeiro ciclo é "${u.cycles[0]!.band}", deveria ser "${openingBand}"`)
     }
 
+    if (!u.cycles.some((c) => c.figure)) {
+      fail('figura', `${u.id}: a unidade não tem nenhum exemplo visual derivado`)
+    }
+
     // Uma figura afirma alguma coisa, e é a única peça do conteúdo que afirma
     // por desenho. Ver ADR-0017.
     for (const c of u.cycles) {
       const f = c.figure
       if (!f) continue
+      if (f.kind === 'execution-trace') {
+        if (f.initialIndex >= f.values.length) {
+          fail('figura', `${c.id}: o índice inicial ${f.initialIndex} já está fora da coleção de ${f.values.length} elementos`)
+        }
+        const visited = Math.ceil((f.values.length - f.initialIndex) / f.indexStep)
+        if (visited < 2) {
+          fail('figura', `${c.id}: o trace visita só ${visited} elemento, e não mostra uma transição entre rodadas`)
+        }
+      }
+      if (f.kind === 'lru-composition') {
+        if (new Set(f.items).size !== f.items.length) {
+          fail('figura', `${c.id}: a composição repete um item e criaria duas fontes para a mesma chave`)
+        }
+        const missing = f.accesses.filter((item) => !f.items.includes(item))
+        if (missing.length) {
+          fail('figura', `${c.id}: os acessos ${missing.join(', ')} não existem no estado inicial`)
+        }
+        if (new Set(f.accesses).size === 1) {
+          fail('figura', `${c.id}: todos os acessos são iguais e não mostram duas mudanças de ordem`)
+        }
+      }
+      if (f.kind === 'linked-list-removal' && f.targetIndex >= f.values.length) {
+        fail('figura', `${c.id}: o alvo ${f.targetIndex} não existe na lista de ${f.values.length} nós`)
+      }
+      if (f.kind === 'graph-representations') {
+        if (new Set(f.vertices).size !== f.vertices.length) {
+          fail('figura', `${c.id}: a representação repete um vértice`)
+        }
+        const unknown = f.edges.flatMap((edge) => [edge.from, edge.to]).filter((vertex) => !f.vertices.includes(vertex))
+        if (unknown.length) {
+          fail('figura', `${c.id}: as arestas citam vértices ausentes: ${[...new Set(unknown)].join(', ')}`)
+        }
+      }
+      if (f.kind === 'hash-address' && new Set(f.keys.map((key) => key % f.m)).size === f.keys.length) {
+        fail('figura', `${c.id}: as chaves não compartilham endereço e não mostram a limitação da transformação`)
+      }
+      if (f.kind === 'quicksort-partition' && f.pivotIndex >= f.values.length) {
+        fail('figura', `${c.id}: o pivô ${f.pivotIndex} não existe na coleção de ${f.values.length} elementos`)
+      }
       if (f.kind === 'growth') {
         const labels = f.curves.map((x) => x.label)
         if (new Set(labels).size !== labels.length) {
@@ -314,6 +357,28 @@ export function checkAll(units: Unit[], terms: GlossaryTerm[]): Failure[] {
         }
         if (f.searchFor !== undefined && !f.keys.includes(f.searchFor)) {
           fail('figura', `${c.id}: a busca anotada procura ${f.searchFor}, que não está na tabela`)
+        }
+      }
+
+      if (f.kind === 'bucket-comparison') {
+        const [left, right] = f.cases
+        if (left.keys.length !== right.keys.length) {
+          fail('figura', `${c.id}: os dois casos têm quantidades diferentes de chaves`)
+        }
+        if (left.keys.join(',') !== right.keys.join(',')) {
+          fail('figura', `${c.id}: os dois casos precisam usar as mesmas chaves na mesma ordem`)
+        }
+        for (const item of f.cases) {
+          if (new Set(item.keys).size !== item.keys.length) {
+            fail('figura', `${c.id}: o caso "${item.label}" repete uma chave`)
+          }
+          if (!item.keys.includes(item.searchFor)) {
+            fail('figura', `${c.id}: o caso "${item.label}" procura uma chave que não está na tabela`)
+          }
+        }
+        const occupied = f.cases.map((item) => new Set(item.keys.map((key) => item.hash === 'zero' ? 0 : key % f.m)).size)
+        if (occupied[0] === occupied[1]) {
+          fail('figura', `${c.id}: os dois casos ocupam a mesma quantidade de buckets`)
         }
       }
 
@@ -434,6 +499,9 @@ export function checkAll(units: Unit[], terms: GlossaryTerm[]): Failure[] {
     // antes dele a definição é taxonomia sem chão. Ver ADR-0016.
     const debuted = new Set<string>()
     for (const c of u.cycles) {
+      if (/^(calcule|conte|compare|corte|enuncie|escreva|estime|intercale|olhe|ordene|peça|percorra|remova|some|trace|busque|insira)\b/i.test(c.workedExample.problem.trim())) {
+        fail('exemplo', `${c.id}: o exemplo pede a tarefa em vez de mostrar a resolução`)
+      }
       if (!c.elaborates || debuted.has(c.elaborates)) continue
       debuted.add(c.elaborates)
       if (!c.workedExample) {
@@ -561,7 +629,7 @@ export function checkAll(units: Unit[], terms: GlossaryTerm[]): Failure[] {
       const steps = gen()
       if (steps.length < 2) { fail('referência', `${ex.id}: gerador produz ${steps.length} passo(s)`); continue }
       for (const col of ex.columns) {
-        if (!(col.key in steps[0]!)) fail('referência', `${ex.id}: coluna "${col.key}" ausente no traço gerado`)
+        if (!(col.key in steps[0]!)) fail('referência', `${ex.id}: coluna "${col.key}" ausente no trace gerado`)
       }
 
       // ADR-0013: coluna dada não precisa de formato; coluna que o aluno
@@ -579,7 +647,7 @@ export function checkAll(units: Unit[], terms: GlossaryTerm[]): Failure[] {
         }
       }
       for (const step of Object.keys(ex.misconceptionByStep)) {
-        if (Number(step) > steps.length) fail('referência', `${ex.id}: misconception no passo ${step}, traço tem ${steps.length}`)
+        if (Number(step) > steps.length) fail('referência', `${ex.id}: misconception no passo ${step}, trace tem ${steps.length}`)
       }
     }
   }
@@ -608,7 +676,7 @@ export function checkAll(units: Unit[], terms: GlossaryTerm[]): Failure[] {
       const keys = new Set(ex.columns.map((c) => c.key))
       for (const [key, line] of Object.entries(ex.lineByColumn)) {
         if (!keys.has(key)) {
-          fail('acesa', `${ex.id}: lineByColumn aponta a coluna "${key}", que o traço não tem`)
+          fail('acesa', `${ex.id}: lineByColumn aponta a coluna "${key}", que o trace não tem`)
           continue
         }
         if (line > lines.length) {
@@ -823,6 +891,15 @@ export function checkAll(units: Unit[], terms: GlossaryTerm[]): Failure[] {
     }
     if (ex.kind !== 'choice') {
       fail('sonda', `${probe.exerciseId} é "${ex.kind}", e o nivelamento só cabe em quatro minutos com escolha`)
+      continue
+    }
+    const promptWords = ex.prompt.trim().split(/\s+/).length
+    if (promptWords > MAX_PROBE_PROMPT_WORDS) {
+      fail('sonda', `${probe.exerciseId}: enunciado tem ${promptWords} palavras, máximo ${MAX_PROBE_PROMPT_WORDS}`)
+    }
+    const labelWords = probe.label.trim().split(/\s+/).length
+    if (labelWords > MAX_PROBE_LABEL_WORDS) {
+      fail('sonda', `${probe.exerciseId}: rótulo tem ${labelWords} palavras, máximo ${MAX_PROBE_LABEL_WORDS}`)
     }
   }
 

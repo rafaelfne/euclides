@@ -200,8 +200,8 @@ export const linearUnit: Unit = {
           'diferença entre capacidade e tamanho.',
       },
       workedExample: {
-        problem: 'Remover a posição 0 de um bloco com 10, 20, 30, 40, 50.',
-        whatToNotice: 'A última posição continua guardando 50 depois da última escrita. Só o tamanho muda, e o bloco não encolhe.',
+        problem: 'Remover a posição 0 de [10, 20, 30, 40, 50] escreve 20 na 0, 30 na 1, 40 na 2 e 50 na 3: quatro escritas, bloco [20, 30, 40, 50, 50].',
+        whatToNotice: 'Depois das escritas, o tamanho lógico cai para 4 e a última posição física continua guardando 50. Tamanho mudou; capacidade não.',
       },
       exerciseId: 'linear.e3' },
 
@@ -217,9 +217,15 @@ export const linearUnit: Unit = {
         'Isso troca um custo por outro. Religar dois ponteiros é constante, mas chegar até o nó certo é percorrer. "Remoção é O(1) numa lista ligada" é verdade **depois** que alguém pagou para achar o nó, e a operação que se pede na prática é "remova o valor X", que inclui a busca.',
         'A operação que a lista ligada realmente perde é obter por posição. Não há conta que dê o endereço da posição 500: só existe seguir quinhentos ponteiros.',
       ],
+      figure: {
+        kind: 'linked-list-removal',
+        values: ['A', 'B', 'C', 'X', 'D'],
+        targetIndex: 3,
+        caption: 'Para remover X, quatro nós são visitados antes de uma única religação. Numa lista de mil nós, a figura repete o mesmo salto até mil vezes; a parte local continua sendo uma operação.',
+      },
       workedExample: {
-        problem: 'Remova o valor X de uma lista ligada de mil nós, e depois remova o nó que você já tem em mãos.',
-        whatToNotice: 'A segunda operação é a mesma religação de ponteiros da primeira. Toda a diferença de custo está no que aconteceu antes dela.',
+        problem: 'Para remover o valor X de mil nós, percorra até mil e religue dois ponteiros. Com o nó de X já em mãos, resta apenas a religação.',
+        whatToNotice: 'A mudança local é a mesma nos dois casos. O custo linear pertence à busca pelo nó, não à religação.',
       },
       exerciseId: 'linear.e4' },
 

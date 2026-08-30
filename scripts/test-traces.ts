@@ -7,7 +7,7 @@
  * interessante, e um traço cujo passo marcado é trivial passa no gate sendo
  * conteúdo morto.
  */
-import { countEvenTrace } from '../src/lib/reference/tracing'
+import { countEvenTrace, strideValuesTrace } from '../src/lib/reference/tracing'
 import { recursionTreeTrace } from '../src/lib/reference/asymptotics'
 import { removeFirstTrace } from '../src/lib/reference/linear'
 import { bstInsertTrace } from '../src/lib/reference/trees'
@@ -17,6 +17,7 @@ import { bfsOrder, dfsOrder, bfsRounds, reachesCycle } from '../src/lib/traversa
 import { edgePath, positions, type Dims } from '../src/lib/graph-layout'
 import { units } from '../src/content/index'
 import { findDivergence, findFirstBlank, buildFeedback } from '../src/lib/socratic'
+import { referenceGenerators } from '../src/lib/reference'
 
 let failures = 0
 const check = (name: string, ok: boolean, detail = '') => {
@@ -42,6 +43,12 @@ check('tracing: o laço faz 4 rodadas para 7 elementos, o passo não é um',
   t1.length === 4, `${t1.length} rodadas`)
 check('tracing: o passo marcado é onde i pula de 2 para 4',
   t1[1]!.read === '3' && t1[1]!.next === '4', `${t1[1]!.read}/${t1[1]!.next}`)
+
+const strides = strideValuesTrace()
+check('tracing: o passo aditivo produz os índices sem inferir pelo tamanho',
+  strides[0]!.values === '0, 3, 6, 9' && strides[0]!.rejected === '12')
+check('tracing: o passo multiplicativo produz outra contagem sob a mesma condição',
+  strides[1]!.values === '1, 2, 4, 8' && strides[1]!.rejected === '16')
 
 const t0 = recursionTreeTrace()
 check('asymptotics: a árvore de n = 8 tem 4 níveis, log n + 1, não n',
@@ -74,7 +81,7 @@ check('graphs: todo vértice sai da fila exatamente uma vez',
   new Set(t4.map((s) => s.key)).size === t4.length)
 
 for (const { unit, exercise } of traceExercises) {
-  const gen = { tracing: countEvenTrace, asymptotics: recursionTreeTrace, linear: removeFirstTrace, trees: bstInsertTrace, graphs: bfsTrace }[unit.id]
+  const gen = referenceGenerators[exercise.reference]
   if (!gen) continue
   const reference = gen()
   const marked = Number(Object.keys(exercise.misconceptionByStep)[0])

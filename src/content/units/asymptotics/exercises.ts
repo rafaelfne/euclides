@@ -122,12 +122,12 @@ export const asymptoticsExercises: Exercise[] = [
   },
   {
     kind: 'choice', id: 'asymptotics.e4',
-    prompt: 'Uma tabela hash tem custo O(1) no caso médio e O(n) no pior. Um serviço público recebe as chaves de quem chama. Qual dos dois números decide o dimensionamento?',
+    prompt: 'Para n itens, um algoritmo costuma fazer cerca de n comparações, mas algumas entradas válidas fazem n². Como qualquer cliente pode enviar essas entradas, qual custo serve para garantir o tempo máximo de uma requisição?',
     choices: [
-      { correct: true, text: 'O pior caso, porque quem escolhe as chaves pode escolhê-las para colidir',
-        why: 'E aí o pior caso deixa de ser improvável e passa a ser o normal' },
-      { correct: false, text: 'O caso médio, porque o pior caso é uma possibilidade teórica que quase nunca ocorre', misconceptionId: 'asymptotics.pior-caso-e-raro' },
-      { correct: false, text: 'Nenhum dos dois isoladamente: a média entre eles descreve o comportamento real', misconceptionId: 'asymptotics.sem-regime' },
+      { correct: true, text: 'n², porque a garantia precisa cobrir toda entrada válida',
+        why: 'Se o cliente escolhe a entrada, ele também pode produzir o caso que exige mais trabalho.' },
+      { correct: false, text: 'n, porque ele descreve o comportamento que costuma acontecer', misconceptionId: 'asymptotics.pior-caso-e-raro' },
+      { correct: false, text: 'A média entre n e n², porque ela aproxima o comportamento real', misconceptionId: 'asymptotics.sem-regime' },
     ],
   },
   {

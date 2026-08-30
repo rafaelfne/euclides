@@ -87,7 +87,7 @@ não são implementações do contrato.
 - `arvore-e-grafo`, supor que o que vale em árvore vale aqui (é a ponte com a unidade 5)
 
 `percurso-sem-visitados` é a mais valiosa e a mais barata de exercitar: é um exercício de
-traço em que o aluno preenche a fila e o conjunto de visitados passo a passo, e o traço
+trace em que o aluno preenche a fila e o conjunto de visitados passo a passo, e o trace
 **não termina** se ele esquecer o conjunto. O erro aparece na própria tabela.
 
 **A DEFINIR**, sua leitura.
@@ -104,7 +104,7 @@ em largura responde que a busca em profundidade não responde.
    informação sobre o modelo, não só sobre esta unidade.
 2. **Peso entra?** Sem peso, "caminho mais curto" é busca em largura e cabe. Com peso, é
    Dijkstra, e é outra unidade de tamanho.
-3. **Um exercício de traço de busca em largura precisa de gerador novo** em
+3. **Um exercício de trace de busca em largura precisa de gerador novo** em
    `src/lib/reference/`, com id prefixado `graphs.`. O formato da célula "conjunto de
    visitados" precisa de `placeholder` e provavelmente de entrada em `traceConventions`
    (ADR-0013), conjunto não tem ordem, e comparar por igualdade de string reprovaria quem

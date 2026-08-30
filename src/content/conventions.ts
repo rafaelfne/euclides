@@ -25,7 +25,6 @@ export const conventions = [
 export const traceConventions = [
   { notation: '(em cinza)', rule: 'o texto claro na célula', why: 'É o formato esperado, nunca a resposta. Ele não conta como preenchimento.' },
   { notation: '(vazio)', rule: 'deixar em branco', why: 'Não é uma resposta. Toda linha e toda coluna editável precisam de valor.' },
-  { notation: '0,75', rule: 'número', why: 'Vírgula decimal, e a casa a mais não muda nada: 0,75 e 0,750 valem igual.' },
 ]
 
 /** Language boundary, declared because leaving it implicit is how drift starts. */

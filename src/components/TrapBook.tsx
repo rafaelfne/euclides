@@ -35,11 +35,13 @@ export function TrapBook({ units }: { units: Unit[] }) {
   const [entries, setEntries] = useState<TrapEntry[]>([])
   const [filter, setFilter] = useState<TrapState | 'todas'>('todas')
   const [recent, setRecent] = useState<string | null>(null)
+  const [hydrated, setHydrated] = useState(false)
 
   useEffect(() => {
     const sync = () => {
       const rows = trapBook(units, read())
       setEntries(rows)
+      setHydrated(true)
 
       /*
         A mais recém-ativada ganha o destaque que decai.
@@ -56,6 +58,8 @@ export function TrapBook({ units }: { units: Unit[] }) {
     window.addEventListener(PROGRESS_EVENT, sync)
     return () => window.removeEventListener(PROGRESS_EVENT, sync)
   }, [units])
+
+  if (!hydrated) return <p className="text-[14px] text-fg-3">Lendo o estado das armadilhas…</p>
 
   const count = (s: TrapState) => entries.filter((e) => e.state === s).length
   const shown = entries.filter((e) => filter === 'todas' || e.state === filter)

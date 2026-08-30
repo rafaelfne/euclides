@@ -10,35 +10,19 @@ import { cn } from '@/lib/utils'
 import { Panel, PanelBody, PanelHeader, PanelMeta, PanelTitle } from './ui/panel'
 import { TrapNote } from './TrapNote'
 
-/**
- * The distractor mechanic. Feedback never contains the answer, it contains
- * the TASK that produces the answer, taken from the misconception the wrong
- * choice named. That mapping is enforced by the schema, so a lazy distractor
- * cannot exist.
- */
 export function ChoiceExercise({
   unit, exerciseId, prompt, choices,
 }: { unit: Unit; exerciseId: string; prompt: string; choices: Choice[] }) {
-  // A ordem é sorteada pelo id do exercício: estável entre recargas, e sem
-  // relação nenhuma com a ordem em que o autor escreveu.
   const shown = seededShuffle(choices, exerciseId)
 
   const [picked, setPicked] = useState<number | null>(null)
   const [attempts, setAttempts] = useState(0)
 
-  // Sem isto o exercício voltava para "sem tentativa" a cada recarga, embora o
-  // painel de lacunas já tivesse registrado o resultado. O progresso existia e
-  // a tela não o lia.
   useEffect(() => {
     const st = exerciseState(unit.id, exerciseId)
     if (!st) return
     setAttempts(st.attempts)
 
-    // A alternativa escolhida não é guardada, e não precisa ser: ela é DERIVÁVEL
-    // do que o progresso já sabe. Resolvido devolve a correta; não resolvido
-    // devolve a alternativa da última armadilha ativada. Sem isto o exercício
-    // voltava com o contador de tentativas e sem a explicação, o aluno perdia
-    // o melhor conteúdo do ciclo exatamente ao voltar para revisar. ADR-0019.
     if (st.solved) {
       const i = shown.findIndex((c) => c.correct)
       if (i >= 0) setPicked(i)
@@ -48,7 +32,6 @@ export function ChoiceExercise({
     if (!last) return
     const i = shown.findIndex((c) => !c.correct && c.misconceptionId === last)
     if (i >= 0) setPicked(i)
-    // `shown` é estável: seededShuffle é função pura do id do exercício.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [unit.id, exerciseId])
 
@@ -148,28 +131,31 @@ export function ChoiceExercise({
                 : `Resolvido em ${attempts} tentativas. Chegar lá não é o mesmo que dominar, este exercício volta na revisita.`}
             </div>
 
-            {/*
-              O acerto não ensinava nada: o aluno saía sem saber por que as
-              outras falham, e é ali que as distratoras deste app rendem, cada
-              uma nomeia uma armadilha real. Revelado só depois de resolver, o
-              princípio 3 continua de pé.
-            */}
-            <div className="border border-rule bg-panel-head px-4 py-3.5">
-              <div className="lbl mb-2.5">Por que cada uma</div>
-              <div className="flex flex-col gap-2.5">
+            <div className="border border-rule bg-panel-head">
+              <div className="border-b border-rule px-4 py-2.5">
+                <div className="lbl">Compare as alternativas</div>
+              </div>
+              <div className="divide-y divide-rule">
                 {shown.map((c, i) => {
                   const m = c.correct ? undefined : misconceptionById(unit, c.misconceptionId)
                   return (
-                    <div key={i} className="flex flex-col gap-1">
-                      <div className="flex items-baseline gap-2">
-                        <Badge tone={c.correct ? 'contract' : 'implementation'}>
-                          {c.correct ? 'certa' : 'armadilha'}
-                        </Badge>
-                        <span className="text-[12.5px] leading-snug text-fg-3">{c.text}</span>
+                    <div
+                      key={i}
+                      className={cn(
+                    'grid grid-cols-[minmax(0,1fr)_auto] gap-x-4 gap-y-2 border-l-2 px-4 py-3',
+                        c.correct ? 'border-contract' : 'border-implementation',
+                      )}
+                    >
+                      <div className="text-[13px] leading-relaxed text-fg">
+                        {c.text}
                       </div>
-                      <span className="pl-1 text-[12.5px] leading-relaxed text-fg-2">
-                        {c.correct ? c.why : m?.label}
-                      </span>
+                      <Badge tone={c.correct ? 'contract' : 'implementation'} className="w-fit self-start">
+                        {c.correct ? 'se sustenta' : 'suposição errada'}
+                      </Badge>
+                      <div className="col-span-2 grid grid-cols-[5.5rem_minmax(0,1fr)] gap-3 border-t border-rule pt-2 text-[12.5px] leading-relaxed text-fg-2">
+                        <span className="lbl pt-0.5">Leitura</span>
+                        <span className="min-w-0">{c.correct ? c.why : m?.label}</span>
+                      </div>
                     </div>
                   )
                 })}

@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { Rail } from './Rail'
-import { CommandPalette } from './CommandPalette'
+import { CommandPalette, CommandPaletteButton } from './CommandPalette'
 import { MobileBar } from './MobileBar'
 import { BandBadge } from './BandBadge'
 
@@ -21,7 +21,8 @@ export function AppShell({ unitId, tabs, children }: { unitId?: string; tabs?: R
         <MobileBar unitId={unitId} />
         <div className="flex shrink-0 items-stretch border-b border-rule-soft bg-rail">
           {tabs}
-          <div className="ml-auto flex shrink-0 items-center py-2 pr-4 pl-4">
+          <div className="ml-auto flex shrink-0 items-center gap-3 py-2 pr-4 pl-4">
+            <CommandPaletteButton />
             <BandBadge compact />
           </div>
         </div>

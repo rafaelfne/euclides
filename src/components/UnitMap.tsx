@@ -102,6 +102,10 @@ export function UnitMap({ unit }: { unit: Unit }) {
 
   return (
     <div className="flex flex-grow flex-col gap-5 overflow-y-auto px-4 py-6 sm:px-7">
+      <div className="flex max-w-[820px] flex-col gap-1">
+        <span className="lbl">Unidade {String(unit.number).padStart(2, '0')}</span>
+        <h1 className="m-0 text-[30px] font-semibold leading-tight">{unit.title}</h1>
+      </div>
       <div className="flex items-start gap-4">
         <p className="m-0 max-w-[720px] text-[14.5px] leading-relaxed text-fg-2">{unit.motivatingProblem}</p>
         <MasterySeal unit={unit} />

@@ -29,7 +29,7 @@ Uma frase, e ela é operacional:
 > Diante de um trecho de código gerado por IA, o aluno consegue dizer o que ele faz,
 > qual seu custo, onde ele quebra e o que trocaria, **sem executar**.
 
-Cada palavra puxa uma decisão de produto. "Sem executar" é por que existe teste de mesa
+Cada palavra puxa uma decisão de produto. "Sem executar" é por que existe execution trace
 interativo. "Onde ele quebra" é por que todo `CostClaim` carrega hipóteses. "O que
 trocaria" é por que toda implementação declara o cenário em que ela é a escolha errada.
 
@@ -41,7 +41,7 @@ trocaria" é por que toda implementação declara o cenário em que ela é a esc
 
 ## Escopo do primeiro módulo
 
-Lógica e teste de mesa; análise assintótica; estruturas lineares; tabelas hash; árvores;
+Lógica e execution trace; análise assintótica; estruturas lineares; tabelas hash; árvores;
 grafos; ordenação e busca; e uma síntese que exige justificar a escolha de estrutura
 diante de um problema novo.
 

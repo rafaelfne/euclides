@@ -169,6 +169,13 @@ export const graphsUnit: Unit = {
         'Isso torna vizinhos barato, a lista já está pronta, e existeAresta proporcional ao grau do vértice, porque é preciso percorrer a lista procurando. Em grafo real o grau é pequeno, e essa varredura quase nunca importa.',
         'É a escolha padrão de toda biblioteca, e a razão está na forma dos grafos que aparecem: um usuário pertence a alguns times, uma página aponta para algumas páginas, uma cidade faz fronteira com algumas cidades.',
       ],
+      figure: {
+        kind: 'graph-representations',
+        vertices: ['A', 'B', 'C', 'D'],
+        edges: [{ from: 'A', to: 'B' }, { from: 'A', to: 'C' }, { from: 'C', to: 'D' }],
+        focus: 'list',
+        caption: 'A lista guarda somente as três arestas existentes. A matriz ao lado já reserva dezesseis respostas, inclusive as treze ausências.',
+      },
       workedExample: {
         problem: 'Pergunte existeAresta(u, v) para um vértice com três vizinhos e para um com trezentos.',
         whatToNotice: 'A operação é a mesma e o custo não é. Um grafo real tem quase todos os vértices no primeiro caso, e é essa forma, não a operação, que justifica a escolha.',
@@ -188,9 +195,16 @@ export const graphsUnit: Unit = {
         'O preço está no espaço, e ele não depende das arestas: dez mil vértices custam cem milhões de células, tenha o grafo vinte mil arestas ou cinquenta milhões. A matriz paga por toda ligação que poderia existir.',
         'E ela cobra de novo no percurso: listar os vizinhos de um vértice exige varrer a linha inteira, mesmo que ele tenha um vizinho só.',
       ],
+      figure: {
+        kind: 'graph-representations',
+        vertices: ['A', 'B', 'C', 'D'],
+        edges: [{ from: 'A', to: 'B' }, { from: 'A', to: 'C' }, { from: 'C', to: 'D' }],
+        focus: 'matrix',
+        caption: 'O grafo não mudou. Agora o destaque está na matriz: consultar um par é direto, mas cada par possível ocupa uma célula, exista a aresta ou não.',
+      },
       workedExample: {
-        problem: 'Conte as células de uma matriz para dez mil vértices e as arestas de uma rede social com esse tamanho.',
-        whatToNotice: 'Cem milhões de células para guardar algumas centenas de milhares de fatos. O espaço não depende do que existe: depende do que poderia existir.',
+        problem: 'Com dez mil vértices, a matriz reserva 10.000² = 100 milhões de células. Se existem 200 mil arestas, 99,8% das possibilidades guardadas são ausências.',
+        whatToNotice: 'O espaço da matriz depende do que poderia existir, não do que existe. A representação paga também por cada aresta ausente.',
       },
       exerciseId: 'graphs.e3' },
 
@@ -259,8 +273,8 @@ export const graphsUnit: Unit = {
         caption: 'O número ao lado de cada vértice é a ordem em que ele foi visitado. Os dois percursos visitam os cinco, e a origem é o único vértice com o mesmo número nos dois painéis, os outros quatro trocam de posição. A posição no desenho é idêntica nos dois lados: as colunas são as camadas da busca em largura, e é por isso que a da esquerda avança coluna por coluna enquanto a da direita corta na diagonal.',
       },
       workedExample: {
-        problem: 'A partir de A, com A→B, A→D, B→C, C→A, C→E e D→E: a busca em largura sai A B D C E, e a em profundidade sai A D E B C.',
-        whatToNotice: 'Em largura, B sai antes de D porque entrou antes; em profundidade, D sai antes de B porque entrou por último. Os dois entraram no mesmo passo, o que mudou foi de qual ponta se retira.',
+        problem: 'Com A→B, A→C, B→D e C→E, a busca em largura retira A, B, C, D, E; usando pilha, a busca em profundidade retira A, C, E, B, D.',
+        whatToNotice: 'B e C entram juntos. A fila retira B primeiro; a pilha retira C. Essa única escolha muda todo o restante sem mudar quais vértices são alcançados.',
       },
       exerciseId: 'graphs.e8' },
 

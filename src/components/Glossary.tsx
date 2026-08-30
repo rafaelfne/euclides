@@ -19,6 +19,7 @@ import { Panel, PanelBody, PanelHeader, PanelMeta, PanelTitle } from './ui/panel
  */
 export function Glossary({ terms }: { terms: GlossaryTerm[] }) {
   const [query, setQuery] = useState('')
+  const [showAppTerms, setShowAppTerms] = useState(false)
 
   const unitOf = useMemo(() => {
     const map = new Map<string, { id: string; number: number; title: string }>()
@@ -47,8 +48,10 @@ export function Glossary({ terms }: { terms: GlossaryTerm[] }) {
     return by
   }, [shown, unitOf])
 
-  // O vocabulário do app abre a lista: é o que o aluno precisa para ler o resto.
-  const ordered = [APP, ...units.map((u) => u.id), PLANNED, 'outros'].filter((k) => groups.has(k))
+  const ordered = query.trim()
+    ? [APP, ...units.map((u) => u.id), PLANNED, 'outros'].filter((k) => groups.has(k))
+    : [...units.map((u) => u.id), PLANNED, 'outros'].filter((k) => groups.has(k))
+  const hiddenAppCount = !query.trim() && !showAppTerms ? (groups.get(APP)?.length ?? 0) : 0
 
   return (
     <div className="flex flex-col gap-3">
@@ -60,7 +63,7 @@ export function Glossary({ terms }: { terms: GlossaryTerm[] }) {
           className="w-full max-w-[420px] border border-rule bg-panel px-3 py-2 text-[13px] text-fg placeholder:text-fg-5 focus:outline-none focus:ring-1 focus:ring-contract"
         />
         <span className="text-[12.5px] text-fg-4">
-          {shown.length} de {terms.length} termos
+          {shown.length - hiddenAppCount} de {terms.length} termos visíveis
         </span>
       </div>
 
@@ -74,7 +77,7 @@ export function Glossary({ terms }: { terms: GlossaryTerm[] }) {
                 {unit
                   ? unit.title
                   : key === APP
-                    ? 'O vocabulário desta trilha'
+                    ? 'Como o Euclides funciona'
                     : key === PLANNED
                       ? 'Termos de unidades futuras'
                       : 'Outros'}
@@ -125,6 +128,29 @@ export function Glossary({ terms }: { terms: GlossaryTerm[] }) {
           </Panel>
         )
       })}
+
+      {!query.trim() && groups.has(APP) && (
+        <button
+          onClick={() => setShowAppTerms((value) => !value)}
+          className="m-tap max-w-[900px] border border-rule bg-panel px-3.5 py-2 text-left text-[12.5px] text-fg-3 hover:text-fg"
+        >
+          {showAppTerms ? 'ocultar como o Euclides funciona' : 'mostrar como o Euclides funciona'}
+        </button>
+      )}
+
+      {!query.trim() && showAppTerms && groups.has(APP) && (
+        <Panel className="max-w-[900px]">
+          <PanelHeader><PanelTitle className="text-fg-2">Como o Euclides funciona</PanelTitle></PanelHeader>
+          <PanelBody className="flex flex-col gap-4">
+            {groups.get(APP)!.map((t) => (
+              <div key={t.id} id={t.id} className="scroll-mt-6 border-l-2 border-rule pl-4">
+                <div className="font-mono text-[13.5px] font-semibold text-contract">{t.canonical}</div>
+                <p className="m-0 mt-1 text-[13.5px] leading-relaxed text-fg-2">{t.definition}</p>
+              </div>
+            ))}
+          </PanelBody>
+        </Panel>
+      )}
 
       {shown.length === 0 && (
         <p className={cn('max-w-[640px] text-[14px] leading-relaxed text-fg-2')}>

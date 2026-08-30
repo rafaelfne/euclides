@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react'
 import { units } from '@/content'
 import type { Profile } from '@/content/schema'
 import {
-  clearAll, cycleStatus, exportProfile, importProfile, read, readProfile, saveProfile,
+  clearAll, cycleStatus, exportProfile, importProfile, read, readProfile, resetTrail, saveProfile,
   PROGRESS_EVENT, type CycleStatus,
 } from '@/lib/progress'
 import { humanMinutes, unitMinutes } from '@/lib/duration'
@@ -38,6 +38,7 @@ export function ProfileScreen() {
   const [byUnit, setByUnit] = useState<Array<{ id: string; title: string; done: number; total: number }>>([])
   const [message, setMessage] = useState<string | null>(null)
   const [confirming, setConfirming] = useState(false)
+  const [confirmingReset, setConfirmingReset] = useState(false)
   const fileInput = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -110,10 +111,10 @@ export function ProfileScreen() {
         <PanelBody className="flex flex-col gap-4">
           <Toggle
             label="Modo"
-            options={[['iniciante', 'Iniciante'], ['revisao', 'Revisão']]}
+            options={[['iniciante', 'Guiado'], ['revisao', 'Conciso']]}
             value={profile?.mode ?? 'revisao'}
             onPick={(v) => setProfile(saveProfile({ mode: v as Profile['mode'] }).profile)}
-            hint="Iniciante abre o exemplo trabalhado e roda o diagrama uma vez. Revisão deixa tudo recolhido."
+            hint="Guiado mostra o contexto, abre o exemplo e percorre a figura. Conciso mostra o núcleo e mantém o exemplo recolhido."
           />
           <Toggle
             label="Código"
@@ -150,6 +151,45 @@ export function ProfileScreen() {
       </Panel>
 
       <Panel>
+        <PanelHeader><PanelTitle>Recomeçar a trilha</PanelTitle></PanelHeader>
+        <PanelBody className="flex flex-col gap-3.5">
+          <p className="m-0 text-[13px] leading-relaxed text-fg-3">
+            Zera tentativas, lacunas, revisitas, selos e sondagem. Seu nome, modo de leitura e
+            preferência de código continuam iguais.
+          </p>
+
+          <div className="flex flex-wrap items-center gap-2">
+            {confirmingReset ? (
+              <>
+                <button
+                  onClick={() => {
+                    resetTrail()
+                    setConfirmingReset(false)
+                    setMessage('Trilha reiniciada. Você voltou a code reader.')
+                  }}
+                  className="m-tap cursor-pointer border border-implementation bg-implementation-bg px-3 py-1.5 text-[13px] text-fg"
+                >
+                  Sim, recomeçar
+                </button>
+                <button
+                  onClick={() => setConfirmingReset(false)}
+                  className="m-tap cursor-pointer px-2 text-[13px] text-fg-4 hover:text-fg-2"
+                >
+                  cancelar
+                </button>
+              </>
+            ) : (
+              <Action onClick={() => setConfirmingReset(true)}>Recomeçar</Action>
+            )}
+          </div>
+
+          {message?.startsWith('Trilha reiniciada') && (
+            <p className="m-0 m-rise text-[13px] text-contract">{message}</p>
+          )}
+        </PanelBody>
+      </Panel>
+
+      <Panel>
         <PanelHeader><PanelTitle>Levar embora, ou apagar</PanelTitle></PanelHeader>
         <PanelBody className="flex flex-col gap-3.5">
           <div className="flex flex-wrap gap-2">
@@ -182,7 +222,9 @@ export function ProfileScreen() {
             )}
           </div>
 
-          {message && <p className="m-0 m-rise text-[13px] text-contract">{message}</p>}
+          {message && !message.startsWith('Trilha reiniciada') && (
+            <p className="m-0 m-rise text-[13px] text-contract">{message}</p>
+          )}
 
           <p className="m-0 text-[12.5px] leading-relaxed text-fg-4">
             O arquivo exportado contém o seu progresso, as armadilhas que você ativou e o perfil.

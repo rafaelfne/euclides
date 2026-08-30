@@ -8,27 +8,6 @@ import { cn } from '@/lib/utils'
 import { ChoiceExercise } from './ChoiceExercise'
 import { Panel, PanelBody, PanelHeader, PanelMeta, PanelTitle } from './ui/panel'
 
-/**
- * O exercício de caça ao defeito, que até aqui nunca existiu na tela.
- *
- * `kind: 'bug'` era roteado para o componente de escolha, então `code` e
- * `faultyLines` eram dados obrigatórios que nenhuma tela lia: o enunciado dizia
- * "marque a linha defeituosa" e não havia código nem linha para marcar. O
- * validador não pega isso, ele checa o dado, não a renderização.
- *
- * São dois estágios, porque é o que os enunciados já prometiam: marcar a linha
- * certa pela razão errada não conta. As consequências só aparecem depois que a
- * linha está certa, e uma linha errada não diz qual é a certa.
- *
- * Com `addedLines` declarado, o bloco é renderizado como DIFF DE REVISÃO, com a
- * medianiz de `+` e o cabeçalho de pull request. O formato faz parte do treino:
- * é nele que o aluno vai encontrar código de outra pessoa no trabalho, e julgar
- * um diff é diferente de julgar um arquivo. ADR-0026.
- *
- * O realce é o mesmo do pseudocódigo, e isso é o argumento: `===` e `<=` saem no
- * azul da folha de notação, com o significado no hover, porque metade das
- * armadilhas do catálogo mora exatamente ali. ADR-0028.
- */
 export function BugExercise({ unit, exercise }: { unit: Unit; exercise: BugHuntExercise }) {
   const [picked, setPicked] = useState<number | null>(null)
   const [tries, setTries] = useState(0)
@@ -122,7 +101,7 @@ export function BugExercise({ unit, exercise }: { unit: Unit; exercise: BugHuntE
               ? `Clique na linha que você recusaria nesta revisão. A linguagem é ${exercise.language}.`
               : `Clique na linha que você acha defeituosa. A linguagem é ${exercise.language}.`)}
             {picked !== null && !found && 'Essa linha faz o que ela promete. Releia o que cada linha garante, e procure a que garante algo diferente do que o comentário ou o nome dela promete.'}
-            {found && 'Linha certa. Agora a consequência, e marcar a linha certa pela razão errada não conta.'}
+            {found && 'Linha encontrada. Agora escolha o que ela provoca.'}
           </div>
         </PanelBody>
       </Panel>

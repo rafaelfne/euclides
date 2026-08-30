@@ -150,7 +150,7 @@ export function buildFeedback(
     return {
       rung: 1,
       exhausted: false,
-      head: `Seu traço diverge no passo ${step}.`,
+      head: `Seu trace diverge no passo ${step}.`,
       body: `${correctSoFar} Volte ao passo ${step} e reexecute a condição que o governa, linha por linha.`,
       misconceptionId: null,
     }
@@ -168,7 +168,7 @@ export function buildFeedback(
       : {
           rung: 2,
           exhausted: false,
-          head: `Seu traço termina antes do passo ${step}.`,
+          head: `Seu trace termina antes do passo ${step}.`,
           body: `${correctSoFar} O que falta não é um valor corrigido: é o passo em si. Releia a condição que decide se há um passo ${step}.`,
           misconceptionId: null,
         }

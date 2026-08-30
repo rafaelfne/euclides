@@ -107,6 +107,61 @@ export const curveShape = z.enum(['constant', 'logarithmic', 'linear', 'linearit
 
 export const figure = z.discriminatedUnion('kind', [
   z.object({
+    kind: z.literal('execution-trace'),
+    caption: z.string().min(1),
+    values: z.array(z.number()).min(2),
+    initialIndex: z.number().int().nonnegative(),
+    indexStep: z.number().int().positive(),
+    initialAccumulator: z.number(),
+    operation: z.enum(['sum', 'count-even']),
+  }),
+
+  z.object({
+    kind: z.literal('lru-composition'),
+    caption: z.string().min(1),
+    items: z.array(z.string().min(1)).min(3),
+    accesses: z.array(z.string().min(1)).min(2),
+  }),
+
+  z.object({
+    kind: z.literal('linked-list-removal'),
+    caption: z.string().min(1),
+    values: z.array(z.string().min(1)).min(3),
+    targetIndex: z.number().int().nonnegative(),
+  }),
+
+  z.object({
+    kind: z.literal('graph-representations'),
+    caption: z.string().min(1),
+    vertices: z.array(z.string().min(1)).min(3),
+    edges: z.array(z.object({
+      from: z.string().min(1),
+      to: z.string().min(1),
+    })).min(2),
+    focus: z.enum(['list', 'matrix']),
+  }),
+
+  z.object({
+    kind: z.literal('hash-address'),
+    caption: z.string().min(1),
+    m: z.number().int().positive(),
+    keys: z.array(z.number().int().nonnegative()).min(2),
+  }),
+
+  z.object({
+    kind: z.literal('merge-structure'),
+    caption: z.string().min(1),
+    values: z.array(z.number()).min(4),
+  }),
+
+  z.object({
+    kind: z.literal('quicksort-partition'),
+    caption: z.string().min(1),
+    values: z.array(z.number()).min(4),
+    pivotIndex: z.number().int().nonnegative(),
+  }),
+
+  z.object({
     kind: z.literal('growth'),
     caption: z.string().min(1),
     /** O que o eixo horizontal conta, a mesma disciplina de `measuredIn`. */
@@ -190,6 +245,18 @@ export const figure = z.discriminatedUnion('kind', [
     keys: z.array(z.number().int().nonnegative()).min(3),
     /** A chave cuja busca a figura anota, quando há uma. */
     searchFor: z.number().int().nonnegative().optional(),
+  }),
+
+  z.object({
+    kind: z.literal('bucket-comparison'),
+    caption: z.string().min(1),
+    m: z.number().int().positive(),
+    cases: z.array(z.object({
+      label: z.string().min(1),
+      keys: z.array(z.number().int().nonnegative()).min(3),
+      searchFor: z.number().int().nonnegative(),
+      hash: z.enum(['mod', 'zero']),
+    })).length(2),
   }),
 
   /**

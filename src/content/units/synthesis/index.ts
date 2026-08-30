@@ -157,8 +157,14 @@ export const synthesisUnit: Unit = {
         'O preço da composição é a manutenção: toda inserção e toda remoção precisam acontecer nas duas, e um esquecimento aí produz duas fontes de verdade que discordam. É um custo real, e ele entra na justificativa.',
       ],
       workedExample: {
-        problem: 'Corte os contratos para um cache que precisa de contém em O(1) e do item usado há mais tempo em O(1).',
-        whatToNotice: 'Nada sobrevive ao corte, e a conclusão não é relaxar o requisito. É que a resposta são duas estruturas apontando para os mesmos dados.',
+        problem: 'Numa LRU cache, a tabela hash localiza o nó pela chave em O(1); a lista ligada move esse nó para a frente e mantém o menos recente na outra ponta, também em O(1).',
+        whatToNotice: 'Nenhuma das duas responde sozinha. As duas apontam para o mesmo item, e toda atualização precisa manter ambas coerentes.',
+      },
+      figure: {
+        kind: 'lru-composition',
+        caption: 'O mapa não mantém ordem e a lista não procura por chave. A composição funciona porque os dois lados apontam para os mesmos nós.',
+        items: ['sessão A', 'sessão B', 'sessão C', 'sessão D'],
+        accesses: ['sessão C', 'sessão B'],
       },
       exerciseId: 'synthesis.e3' },
 
@@ -176,8 +182,8 @@ export const synthesisUnit: Unit = {
         'Escrever o número é o que separa a condição de uma intenção. "Revisar quando ficar lento" não é gatilho, porque ninguém mede o mesmo "lento" duas vezes.',
       ],
       workedExample: {
-        problem: 'Escreva a condição de expiração de uma escolha por varredura linear, com o número dentro.',
-        whatToNotice: '"Revisar quando ficar lento" não é gatilho, porque ninguém mede o mesmo lento duas vezes. "Acima de mil itens, ou se aparecer consulta por faixa" é.',
+        problem: 'Uma lista simples foi escolhida para até 80 feature flags consultadas só por nome: “revisar acima de 500 flags ou quando houver consulta por prefixo”.',
+        whatToNotice: 'O gatilho tem um número e uma mudança de operação. “Revisar quando ficar lento” não permite que duas pessoas reconheçam o mesmo momento.',
       },
       exerciseId: 'synthesis.e4' },
 

@@ -20,7 +20,7 @@ import { TraceExercise } from './TraceExercise'
 import { BugExercise } from './BugExercise'
 import { Badge } from './ui/badge'
 import { Panel, PanelBody, PanelHeader, PanelTitle } from './ui/panel'
-import { exerciseState, PROGRESS_EVENT } from '@/lib/progress'
+import { exerciseState, PROGRESS_EVENT, saveExerciseNote } from '@/lib/progress'
 import { BAND_LABEL, BAND_TONE, LAYER_LABEL, TONE_TEXT } from './band-tokens'
 
 /**
@@ -172,6 +172,8 @@ export function CycleScreen({ unit, cycle, exercise }: { unit: Unit; cycle: Cycl
               : <BugExercise unit={unit} exercise={exercise} />}
         </div>
 
+        <ReviewTransfer unit={unit} cycle={cycle} exerciseId={exercise.id} />
+
         {/*
           A sequência existia só no array. Sem isto a tela do ciclo terminava
           no botão de verificar e o aluno voltava ao mapa para achar o próximo
@@ -213,6 +215,47 @@ export function CycleScreen({ unit, cycle, exercise }: { unit: Unit; cycle: Cycl
         <CycleAside unit={unit} cycle={cycle} exercise={exercise} />
       </aside>
     </>
+  )
+}
+
+function ReviewTransfer({ unit, cycle, exerciseId }: { unit: Unit; cycle: Cycle; exerciseId: string }) {
+  const [solved, setSolved] = useState(false)
+  const [text, setText] = useState('')
+
+  useEffect(() => {
+    const sync = () => {
+      const state = exerciseState(unit.id, exerciseId)
+      setSolved(Boolean(state?.solved))
+      setText(state?.freeText ?? '')
+    }
+    sync()
+    window.addEventListener(PROGRESS_EVENT, sync)
+    return () => window.removeEventListener(PROGRESS_EVENT, sync)
+  }, [unit.id, exerciseId])
+
+  if (!solved) return null
+
+  const scaffold = unit.kind === 'structure'
+    ? 'Eu escolheria ___ quando a operação dominante fosse ___; evitaria quando ___; o custo é ___ sob a hipótese ___. '
+    : 'Eu afirmaria ___ porque o estado mostra ___; a técnica ___ falha quando ___. '
+
+  return (
+    <section className="mt-5 max-w-[860px] border border-contract-rule bg-contract-bg px-4 py-3.5">
+      <div className="lbl mb-1.5 text-contract">Leve para uma revisão de código com IA</div>
+      <p className="m-0 mb-3 text-[13px] leading-relaxed text-fg-3">
+        Sem repetir o exemplo, escreva uma frase que você usaria para aceitar ou contestar código gerado. Use este molde se travar:
+      </p>
+      <p className="m-0 mb-3 font-mono text-[12px] leading-relaxed text-fg-2">{scaffold}</p>
+      <textarea
+        aria-label={`Frase de revisão sobre ${cycle.title}`}
+        value={text}
+        onChange={(event) => setText(event.target.value)}
+        onBlur={() => saveExerciseNote(unit.id, exerciseId, text)}
+        placeholder="Escreva com suas palavras"
+        rows={3}
+        className="w-full resize-y border border-rule bg-panel px-3 py-2 text-[13px] leading-relaxed text-fg outline-none focus:border-contract"
+      />
+    </section>
   )
 }
 

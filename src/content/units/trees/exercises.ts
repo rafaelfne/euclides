@@ -89,12 +89,12 @@ export const treesExercises: Exercise[] = [
   },
   {
     kind: 'choice', id: 'trees.e2',
-    prompt: 'Um índice em memória usa árvore de busca sem balanceamento. As chaves chegam de um exportador que as emite em ordem crescente. O que acontece?',
+    prompt: 'Numa árvore de busca, uma chave maior segue para a direita. Sem nenhum balanceamento, são inseridas 10, 20, 30 e 40, nessa ordem. Que forma aparece?',
     choices: [
-      { correct: true, text: 'Cada chave vira o filho direito da anterior',
+      { correct: true, text: 'Uma corrente para a direita, uma chave abaixo da outra',
         why: 'A altura vira n − 1 e toda busca passa a custar O(n): a estrutura virou uma lista ligada com ponteiros a mais.' },
-      { correct: false, text: 'Nada de grave: a busca continua O(log n), que é a complexidade da árvore de busca', misconceptionId: 'trees.bst-e-log-n' },
-      { correct: false, text: 'A árvore fica com profundidade zero, porque nenhum nó tem filho esquerdo', misconceptionId: 'trees.altura-e-profundidade' },
+      { correct: false, text: 'Uma árvore equilibrada, porque há quatro chaves diferentes', misconceptionId: 'trees.bst-e-log-n' },
+      { correct: false, text: 'Uma corrente para a esquerda, seguindo a ordem de inserção', misconceptionId: 'trees.altura-e-profundidade' },
     ],
   },
   {

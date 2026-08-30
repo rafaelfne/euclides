@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { units } from '@/content'
 import { read, PROGRESS_EVENT } from '@/lib/progress'
-import { dueRevisits, REVISIT_STEPS, type Due } from '@/lib/traps'
+import { dueRevisits, upcomingRevisit, REVISIT_STEPS, type Due, type Upcoming } from '@/lib/traps'
 
 /**
  * A fila de revisitas.
@@ -16,9 +16,15 @@ import { dueRevisits, REVISIT_STEPS, type Due } from '@/lib/traps'
  */
 export function RevisitQueue({ compact = false }: { compact?: boolean }) {
   const [due, setDue] = useState<Due[]>([])
+  const [upcoming, setUpcoming] = useState<Upcoming | null>(null)
 
   useEffect(() => {
-    const sync = () => setDue(dueRevisits(units, read(), Date.now()))
+    const sync = () => {
+      const progress = read()
+      const now = Date.now()
+      setDue(dueRevisits(units, progress, now))
+      setUpcoming(upcomingRevisit(units, progress, now))
+    }
     sync()
     window.addEventListener(PROGRESS_EVENT, sync)
     return () => window.removeEventListener(PROGRESS_EVENT, sync)
@@ -27,8 +33,9 @@ export function RevisitQueue({ compact = false }: { compact?: boolean }) {
   if (!due.length) {
     return compact ? null : (
       <p className="max-w-[640px] text-[14px] leading-relaxed text-fg-2">
-        Nada vencido. A fila enche sozinha: {REVISIT_STEPS.join(', ')} dias depois de cada
+        Nenhuma revisita venceu. A fila enche sozinha: {REVISIT_STEPS.join(', ')} dias depois de cada
         volta limpa, e um exercício só entra depois de ter saído limpo alguma vez.
+        {upcoming && <> Próxima: {new Intl.DateTimeFormat('pt-BR', { dateStyle: 'medium' }).format(upcoming.at)} · {upcoming.cycleTitle}.</>}
       </p>
     )
   }

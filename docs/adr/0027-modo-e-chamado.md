@@ -10,7 +10,7 @@ Duas coisas ficaram abertas depois do ADR-0019, e uma delas eu tinha fechado err
 
 ## Decisão
 
-### O alternador Iniciante / Revisão volta, e o ADR-0019 estava errado
+### O alternador Guiado / Conciso volta, e o ADR-0019 estava errado
 
 O ADR-0019 descartou este alternador com o seguinte argumento: depois que a frase de
 abertura, o exemplo trabalhado e o diagrama viraram incondicionais, o modo iniciante não
@@ -22,7 +22,7 @@ o diagrama rodando são ruído entre a prosa e o exercício, e recolher é ganho
 
 O que muda entre os modos:
 
-| | iniciante | revisão |
+| | guiado | conciso |
 |---|---|---|
 | exemplo trabalhado | aberto | recolhido |
 | diagrama | roda uma passada ao abrir | parado, no último passo |

@@ -1,17 +1,7 @@
 import type { TraceStep } from '../socratic'
 
-/**
- * Reference implementation. It exists to GENERATE the correct trace.
- *
- * The loop advances by two, not by one. Everything the unit teaches hangs on
- * that: a student who reads "percorre a coleção" and assumes one round per
- * element diverges at the second round, and the divergence is in `i`, the
- * variable he did not observe.
- */
-
 const A = [4, 7, 3, 9, 6, 1, 8]
 
-/** The trace for `tracing.e2`: contar_pares sobre [4, 7, 3, 9, 6, 1, 8]. */
 export function countEvenTrace(): TraceStep[] {
   const steps: TraceStep[] = []
   let total = 0
@@ -33,6 +23,30 @@ export function countEvenTrace(): TraceStep[] {
   return steps
 }
 
+export function strideValuesTrace(): TraceStep[] {
+  const length = 10
+  const additiveValues: number[] = []
+  const multiplicativeValues: number[] = []
+  let additiveIndex = 0
+  let multiplicativeIndex = 1
+
+  while (additiveIndex < length) {
+    additiveValues.push(additiveIndex)
+    additiveIndex += 3
+  }
+
+  while (multiplicativeIndex < length) {
+    multiplicativeValues.push(multiplicativeIndex)
+    multiplicativeIndex *= 2
+  }
+
+  return [
+    { step: '1', key: 'i ← i + 3', values: additiveValues.join(', '), rejected: String(additiveIndex) },
+    { step: '2', key: 'j ← j × 2', values: multiplicativeValues.join(', '), rejected: String(multiplicativeIndex) },
+  ]
+}
+
 export const tracingReferenceGenerators: Record<string, () => TraceStep[]> = {
   'tracing.count-even-trace': countEvenTrace,
+  'tracing.stride-values-trace': strideValuesTrace,
 }

@@ -41,12 +41,12 @@ Sequência:
    de erro fechado, sempre.
 5. **Os ciclos.** Teto de quatro termos novos, cada um fechando no seu exercício.
 6. **A legenda das letras.** Toda letra que aparece no pseudocódigo, na invariante ou numa
-   coluna de traço entra em `symbols`, com o significado em palavras e sem outra letra
+   coluna de trace entra em `symbols`, com o significado em palavras e sem outra letra
    dentro. `m` é "quantas posições a tabela tem", não "o tamanho da tabela, ou seja n/α".
    O schema exige, e a razão está no ADR-0013: para quem está reconstruindo base, cada
    letra não explicada é uma variável a mais para segurar enquanto tenta seguir o
    raciocínio, e o raciocínio é a única coisa que a trilha treina.
-7. **A implementação de referência**, para todo exercício de traço.
+7. **A implementação de referência**, para todo exercício de trace.
 8. **O critério de domínio**, operacional.
 
 ## O teste de cada peça
@@ -72,7 +72,12 @@ posto, não é o aluno que está. E a alternativa correta se distingue das outra
 conteúdo? Se ela é a mais longa, ou a única com justificativa colada, o aluno acerta pelo
 formato, mova a justificativa para `why`, que é onde ela é revelada depois.
 
-**Traço:** um aluno que entendeu a matéria e nunca viu este exercício sabe COMO escrever a
+**Sonda:** ela se sustenta antes da unidade? O enunciado traz o contexto e explica a regra
+operacional sem exigir o nome técnico. Cobra uma capacidade só, tem no máximo 40 palavras
+e recebe um rótulo concreto de até seis palavras. Se junta colisão, dimensionamento e pior
+caso, separe: a sondagem deve localizar a primeira lacuna, não comprimir o ciclo inteiro.
+
+**Trace:** um aluno que entendeu a matéria e nunca viu este exercício sabe COMO escrever a
 resposta? Toda coluna editável declara `placeholder` com o formato, nunca com um valor do
 gabarito, e o formato bate com o que o gerador emite. Teste: cubra o gerador e tente
 preencher a primeira linha. Se você hesitou sobre vírgula, casas decimais ou como se escreve
@@ -82,13 +87,18 @@ por um erro de digitação.
 **Ciclo:** abre pelo problema ou pela estrutura? Quatro termos novos com dois parágrafos é
 diferente de quatro termos com oito; o validador só conta os termos.
 
+**Exemplo trabalhado:** mostra a resolução ou apenas manda o aluno fazer? “Calcule”,
+“compare” e “escreva” são enunciados, não exemplos. O exemplo declara o estado inicial,
+as transformações intermediárias e a afirmação que sai delas; o exercício cobra outra
+entrada para exigir transferência.
+
 **Critério de domínio:** é verificável sem julgamento? "Entende tabelas hash" não é.
 "Diante de uma implementação que nunca viu, em menos de cinco minutos e sem executar,
 nomeia a política de colisão e constrói uma entrada que a leve a O(n)" é.
 
 ## O gabarito é computado, nunca digitado
 
-Todo exercício de traço aponta uma função em `src/lib/reference/`. Se você digitou o
+Todo exercício de trace aponta uma função em `src/lib/reference/`. Se você digitou o
 resultado esperado à mão, refaça, foi assim que a primeira versão da unidade de hash
 afirmou que o rehash disparava na inserção do 8, quando o próprio pseudocódigo dizia que
 era na do 4.

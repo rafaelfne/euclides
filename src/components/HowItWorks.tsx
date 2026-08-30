@@ -4,6 +4,7 @@ import { allTerms } from '@/content/glossary'
 import { APP } from '@/content/glossary'
 import { Panel, PanelBody, PanelHeader, PanelTitle } from './ui/panel'
 import { ProfileForm } from './ProfileForm'
+import { PlatformSearchShortcut } from './CommandPalette'
 
 /**
  * A rampa de entrada, e ela é DERIVADA.
@@ -17,6 +18,9 @@ export function HowItWorks() {
   const traps = units.flatMap((u) => u.misconceptions)
   const exercises = units.flatMap((u) => u.exercises)
   const vocabulary = allTerms.filter((t) => t.introducedIn === APP)
+  const onboardingTerms = ['app.cycle', 'app.trap', 'app.gap', 'app.revisit']
+    .map((id) => vocabulary.find((term) => term.id === id))
+    .filter((term): term is NonNullable<typeof term> => Boolean(term))
 
   const numbers = [
     { n: units.length, label: 'unidades' },
@@ -31,12 +35,13 @@ export function HowItWorks() {
       <div className="flex max-w-[760px] flex-col gap-3.5">
         <span className="lbl">Como funciona</span>
         <h1 className="m-0 text-[32px] font-semibold leading-tight">
-          Você lê pouco, escreve bastante, e erra de propósito.
+          Você lê pouco, prevê antes de avançar e escreve para conferir.
         </h1>
         <p className="m-0 text-[15px] leading-relaxed text-fg-2">
           Esta trilha existe para uma coisa só: conseguir olhar um trecho de código que você não
-          escreveu, de um colega ou de uma IA, e dizer o que ele custa, sem rodar. Não é
-          preparação para entrevista e não é revisão de faculdade.
+          escreveu, de um colega ou de uma IA, e dizer o que ele faz, quanto trabalho e memória
+          exige e onde pode quebrar, sem rodar. Não é preparação para entrevista e não é revisão
+          de faculdade.
         </p>
         <p className="m-0 text-[15px] leading-relaxed text-fg-2">
           O jeito de estudar aqui é diferente do de assistir a um curso, e vale saber disso antes
@@ -46,21 +51,51 @@ export function HowItWorks() {
         </p>
       </div>
 
-      <ul className="m-0 flex flex-wrap list-none gap-x-8 gap-y-3 p-0">
-        {numbers.map((x) => (
-          <li key={x.label} className="flex items-baseline gap-2">
-            <span className="font-mono text-[22px] text-contract">{x.n}</span>
-            <span className="text-[13px] text-fg-3">{x.label}</span>
-          </li>
-        ))}
-      </ul>
+      <Panel className="max-w-[820px]">
+        <PanelHeader>
+          <PanelTitle>O que acontece em um ciclo</PanelTitle>
+        </PanelHeader>
+        <PanelBody className="grid gap-3 sm:grid-cols-3">
+          {[
+            ['1', 'Leia um caso', 'Um problema do trabalho e poucos parágrafos apresentam a ideia.'],
+            ['2', 'Preveja antes de avançar', 'Nos exemplos que avançam por estado, diga o que vem a seguir antes de continuar.'],
+            ['3', 'Produza uma resposta', 'Preencha um trace, justifique uma escolha ou localize a linha do defeito.'],
+          ].map(([number, title, body]) => (
+            <div key={number} className="border border-rule bg-panel-head p-3.5">
+              <div className="mb-2 flex items-center gap-2">
+                <span className="flex h-6 w-6 items-center justify-center border border-contract-rule font-mono text-[12px] text-contract">
+                  {number}
+                </span>
+                <span className="text-[13.5px] font-semibold text-fg">{title}</span>
+              </div>
+              <p className="m-0 text-[12.5px] leading-relaxed text-fg-3">{body}</p>
+            </div>
+          ))}
+          <p className="m-0 sm:col-span-3 text-[12.5px] leading-relaxed text-fg-4">
+            Se a resposta ativar uma armadilha, o app não revela o gabarito: ele propõe uma tarefa
+            menor para você refazer o raciocínio.
+          </p>
+        </PanelBody>
+      </Panel>
+
+      <div className="flex flex-col gap-2">
+        <span className="lbl">A trilha inteira, não o que você precisa fazer hoje</span>
+        <ul className="m-0 flex flex-wrap list-none gap-x-8 gap-y-3 p-0">
+          {numbers.map((x) => (
+            <li key={x.label} className="flex items-baseline gap-2">
+              <span className="font-mono text-[22px] text-contract">{x.n}</span>
+              <span className="text-[13px] text-fg-3">{x.label}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
 
       <Panel className="max-w-[820px]">
         <PanelHeader>
-          <PanelTitle>As seis palavras que o app usa o tempo todo</PanelTitle>
+          <PanelTitle>Quatro palavras para começar</PanelTitle>
         </PanelHeader>
         <PanelBody className="flex flex-col gap-3.5">
-          {vocabulary.slice(0, 6).map((t) => (
+          {onboardingTerms.map((t) => (
             <div key={t.id} className="border-l-2 border-rule pl-4">
               <div className="font-mono text-[13.5px] font-semibold text-contract">{t.canonical}</div>
               <p className="m-0 mt-0.5 text-[13.5px] leading-relaxed text-fg-2">{t.definition}</p>
@@ -68,14 +103,14 @@ export function HowItWorks() {
             </div>
           ))}
           <Link href="/glossary" className="font-mono text-[12px] text-fg-4 hover:text-contract">
-            as outras {allTerms.length - 6} no glossário →
+            as outras {allTerms.length - onboardingTerms.length} no glossário →
           </Link>
         </PanelBody>
       </Panel>
 
       <Panel className="max-w-[820px]">
         <PanelHeader>
-          <PanelTitle>Três coisas que costumam assustar, e não deveriam</PanelTitle>
+          <PanelTitle>Três escolhas deste app</PanelTitle>
         </PanelHeader>
         <PanelBody className="flex flex-col gap-3.5 text-[13.5px] leading-relaxed text-fg-2">
           <p className="m-0">
@@ -84,10 +119,10 @@ export function HowItWorks() {
             é a mesma coisa que o `insert` que você escreve no trabalho, sem a sintaxe no caminho.
           </p>
           <p className="m-0">
-            <strong className="font-semibold text-fg">Errar é o método, não o acidente.</strong>{' '}
-            As {traps.length} armadilhas do catálogo foram escritas antes de você chegar. Quando
-            você ativa uma, o app não dá a resposta, ele dá a tarefa que produz a resposta, no
-            máximo três vezes, e depois manda parar.
+            <strong className="font-semibold text-fg">Você não precisa escolher uma resposta errada de propósito.</strong>{' '}
+            Responda o que acredita. As {traps.length} armadilhas foram escritas antes de você
+            chegar; quando uma aparece, o app registra a primeira tentativa e oferece a tarefa que
+            produz a resposta, no máximo três vezes. Uma revisita limpa mostra que o raciocínio ficou.
           </p>
           <p className="m-0">
             <strong className="font-semibold text-fg">O tom é seco.</strong>{' '}
@@ -105,10 +140,9 @@ export function HowItWorks() {
         </PanelHeader>
         <PanelBody className="grid grid-cols-[auto_1fr] items-baseline gap-x-4 gap-y-1.5">
           {[
-            ['⌘K', 'saltar para um ciclo, termo, armadilha ou tela'],
             ['j / k', 'próximo ciclo, ciclo anterior'],
             ['1 … 9', 'escolher a alternativa'],
-            ['Enter', 'verificar o traço'],
+            ['Enter', 'verificar o trace'],
             ['esc', 'fechar'],
           ].map(([key, what]) => (
             <div key={key} className="contents">
@@ -116,6 +150,12 @@ export function HowItWorks() {
               <span className="text-[13px] text-fg-3">{what}</span>
             </div>
           ))}
+          <div className="contents">
+            <span className="font-mono text-[12.5px] whitespace-nowrap text-contract">
+              <PlatformSearchShortcut />
+            </span>
+            <span className="text-[13px] text-fg-3">buscar um termo, ciclo, armadilha ou tela</span>
+          </div>
         </PanelBody>
       </Panel>
 
@@ -129,7 +169,8 @@ export function HowItWorks() {
           <span className="text-[13px] leading-snug text-fg-3">{units[0]!.learningObjective}</span>
         </Link>
         <p className="m-0 text-[12.5px] text-fg-4">
-          As unidades têm ordem. Cada uma usa o vocabulário que a anterior estabeleceu.{' '}
+          Se esta é sua primeira visita, comece pelo primeiro ciclo da unidade 01. As unidades têm
+          ordem e cada uma usa o vocabulário que a anterior estabeleceu.{' '}
           <Link href="/sondagem" className="underline decoration-rule underline-offset-2 hover:text-fg-2">
             Se você já programa há um tempo, seis perguntas dizem por onde começar.
           </Link>

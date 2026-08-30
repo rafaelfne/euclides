@@ -136,6 +136,19 @@ export function exerciseState(unitId: string, exerciseId: string): ExerciseState
   return read().units[unitId]?.exercises[exerciseId]
 }
 
+export function saveExerciseNote(unitId: string, exerciseId: string, freeText: string): Progress {
+  const p = read()
+  const unit = p.units[unitId] ?? { exercises: {} }
+  const prev: ExerciseState = unit.exercises[exerciseId] ?? {
+    attempts: 0, solved: false, solvedClean: false,
+    misconceptionsTriggered: [], lastVisited: new Date().toISOString(),
+  }
+  unit.exercises[exerciseId] = { ...prev, freeText: freeText.trim() || undefined }
+  p.units[unitId] = unit
+  write(p)
+  return p
+}
+
 export type CycleStatus = 'pending' | 'attempted' | 'clean' | 'review'
 
 export function cycleStatus(
@@ -174,6 +187,8 @@ export function resumePoint(
   units: Array<{ id: string; title: string; cycles: Array<{ id: string; title: string; exerciseId: string }> }>,
 ): Resume | null {
   const p = read()
+  const hasAttempts = Object.values(p.units).some((unit) => Object.keys(unit.exercises).length > 0)
+  if (!hasAttempts) return null
   let best: (Resume & { at: number }) | null = null
 
   for (const u of units) {
@@ -265,4 +280,15 @@ export function clearAll(): void {
     try { window.localStorage.removeItem(k) } catch { /* modo privado */ }
   }
   try { window.dispatchEvent(new Event(PROGRESS_EVENT)) } catch { /* sem window */ }
+}
+
+export function resetTrail(): Progress {
+  const current = read()
+  const next: Progress = {
+    schemaVersion: 2,
+    profile: current.profile,
+    units: {},
+  }
+  write(next)
+  return next
 }

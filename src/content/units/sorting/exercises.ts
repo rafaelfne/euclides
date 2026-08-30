@@ -145,7 +145,7 @@ export const sortingExercises: Exercise[] = [
   },
   {
     kind: 'bug', id: 'sorting.e7',
-    prompt: 'Este comparador é plausível e passa numa revisão distraída. Marque a linha defeituosa e escolha a consequência. Marcar a linha certa pela razão errada não conta.',
+    prompt: 'Este comparador é plausível e passa numa revisão distraída. Marque a linha defeituosa. Depois, identifique o efeito dela no programa.',
     language: 'javascript',
     code: `items.sort((a, b) => {
   if (a.priority === b.priority) return 0

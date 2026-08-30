@@ -114,7 +114,7 @@ recursão, e o `c8` volta a ele para mostrar que a biblioteca usa os dois juntos
 código gerado por IA que um júnior aceita, porque a saída está certa.
 
 A que mais rende exercício é `sort-e-estavel`, e o motivo é o mesmo de
-`rehash-copia-buckets` na unidade 4: **o defeito é parcial.** No traço de `sorting.e3`, quem
+`rehash-copia-buckets` na unidade 4: **o defeito é parcial.** No trace de `sorting.e3`, quem
 inverte o desempate produz uma saída ordenada, só a letra denuncia. É por isso que ele
 sobrevive a um teste que compara apenas as chaves.
 

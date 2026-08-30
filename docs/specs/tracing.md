@@ -1,6 +1,6 @@
-# Spec, Unidade 1: Lógica e teste de mesa
+# Spec, Unidade 1: Lógica e execution trace
 
-**Status:** spec, não implementada
+**Status:** implementada e revisada
 **Kind:** `method` (ADR-0012). O assunto não é uma estrutura: é o julgamento que o aluno
 tem de produzir diante de um trecho de código.
 
@@ -21,7 +21,7 @@ A pergunta que abre a unidade: **como se sabe o que um laço faz sem rodá-lo?**
 
 ## Critério, o julgamento que a unidade ensina a produzir
 
-`Traço de execução`, o estado do programa a cada passo.
+`Execution trace`, o estado do programa a cada passo.
 
 | parte | o que ela afirma |
 |---|---|
@@ -59,19 +59,21 @@ tentando dizer, e quase sempre diz mal.
 (execução simbólica, com faixas em vez de valores)? Ela é a que mais transfere para
 revisão de código real, e é a mais difícil de exercitar com espaço de erro fechado.
 
-## Ciclos (proposta)
+## Ciclos
 
 | # | banda | título | termos novos |
 |---|---|---|---|
-| c0 | critério | O que é saber o que um código faz | traço de execução, estado |
-| c1 | técnica | Simular passo a passo | invariante de laço *(a definir)* |
-| c2 | técnica | A propriedade que sobrevive a cada passo | invariante |
-| c3 | falha | Onde a leitura quebra: fronteira e caso vazio | caso-base, off-by-one |
-| c4 | falha | O laço não roda n vezes | *(a definir)* |
+| c0 | critério | O que é saber o que um código faz | execution trace, estado |
+| c1 | critério | A condição que decide se há próxima rodada | condição de guarda |
+| c2 | técnica | Simular passo a passo | — |
+| c3 | técnica | A propriedade que sobrevive a cada rodada | invariante de laço |
+| c4 | falha | A fronteira, e a entrada que ninguém testou | off-by-one, caso vazio |
+| c5 | falha | O laço não roda n vezes | — |
+| c6 | falha | O que não chega a ser avaliado | curto-circuito |
 
-**A DEFINIR**, o número de ciclos. Cinco é o mínimo que cobre as duas técnicas e as duas
-famílias de falha; se a unidade de entrada precisa ser mais lenta que as outras (e
-provavelmente precisa, porque é a primeira), ela vira sete ou oito.
+Sete ciclos mantêm a unidade de entrada mais lenta que as seguintes. O segundo exercício de
+trace fica em c5: o aluno produz as sequências de índices de dois laços sob a mesma condição,
+em vez de reconhecer a contagem correta entre alternativas.
 
 ## Armadilhas conhecidas
 
@@ -93,22 +95,17 @@ justamente o que o validador não consegue pegar.
 
 Diante de um laço de até vinte linhas que nunca viu, sem executar e em menos de cinco
 minutos: nomear as variáveis que carregam o estado, dizer quantas vezes o corpo roda **em
-função da condição**, produzir o traço dos três primeiros passos e do último, e dizer o
+função da condição**, produzir o trace dos três primeiros passos e do último, e dizer o
 que a função devolve para a entrada vazia.
 
-**A DEFINIR**, quais exercícios entram em `requiresClean`.
+`tracing.e2` e `tracing.e5` entram em `requiresClean`: um cobra o estado completo por rodada;
+o outro cobra a sequência produzida pela condição e pelo passo.
 
-## Perguntas em aberto
+## Decisões tomadas
 
-1. **É unidade de método mesmo?** ADR-0012 diz que sim, mas esta é a primeira aplicação da
-   espinha nova e o spec é o lugar de conferir. Se `criterion.parts` não couber, o ADR-0012
-   registra que isso é sinal de uma terceira espinha, não de um campo opcional.
-2. **Esta unidade estreia o exercício de traço para o aluno.** O ADR-0013 declarou o formato
-   e a legenda das letras porque o aluno de hash chegava sem eles, aqui ele chega sem *nada*.
-   O primeiro traço da trilha precisa de tratamento especial, ou as convenções declaradas
-   bastam?
-3. **Recursão entra aqui ou fica para árvores?** ADR-0003 cita recursão como assunto sem
-   estrutura central. Traçar uma chamada recursiva é a mesma técnica com outra pilha, mas o
-   custo cognitivo é outro.
-4. **Qual linguagem nos exercícios de bug hunt?** A unidade de hash usa JavaScript. A
-   fronteira de idioma cobre pseudocódigo e sandbox, não a linguagem do `kind: 'bug'`.
+1. A unidade usa `kind: method`; as quatro partes do critério couberam sem campo opcional.
+2. O primeiro trace declara o formato de cada coluna e mostra as convenções antes da tabela.
+3. Recursão fica fora desta unidade e estreia quando a trilha já estabeleceu o trace iterativo.
+4. O bug hunt usa JavaScript, identificado na própria tela.
+5. A sonda de nivelamento usa `tracing.e4`, que cabe no limite de quatro minutos; `tracing.e5`
+   deixa de ser escolha porque faz parte do critério de domínio.

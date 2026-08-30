@@ -139,7 +139,7 @@ export const sortingUnit: Unit = {
         'O que interessa aqui é a lista do que essa promessa NÃO cobre. Ela não diz o que aconteceu com os elementos que o comparador considera iguais. Não diz quanta memória foi usada. Não diz se a ordem que a entrada já trazia foi aproveitada. Guarde essa lista: cada item dela é uma garantia que alguns algoritmos oferecem e outros não, e escolher entre eles é escolher qual dessas você precisa.',
       ],
       workedExample: {
-        problem: "Ordene [3, 1, 2] por valor: sai [1, 2, 3]. Agora ordene 3 pedidos que empatam no cliente: o contrato não diz qual dos 3 vem primeiro.",
+        problem: "Ordenar [3, 1, 2] produz [1, 2, 3]. Ordenar três pedidos do mesmo cliente pode produzir qualquer permutação dos três e ainda satisfazer o contrato.",
         whatToNotice: "A saída está ordenada nos dois casos. O que ficou em aberto no segundo é o que os próximos ciclos cobram.",
       },
       exerciseId: 'sorting.e0' },
@@ -168,8 +168,8 @@ export const sortingUnit: Unit = {
         caption: 'As duas saídas estão ordenadas pelo número, e as etiquetas discordam. A única diferença entre os dois algoritmos é o que cada um faz quando o comparador diz "empate": um mantém a ordem de chegada, o outro resolve como for conveniente para ele. Foi essa ordem de chegada que a ordenação anterior tinha produzido.',
       },
       workedExample: {
-        problem: 'Duas ordenações de [(3,Ana), (1,Bia), (3,Caio)] por número, uma estável e uma não.',
-        whatToNotice: 'As duas devolvem 1, 3, 3. Só olhando os nomes dá para saber qual foi qual, e é por isso que este defeito passa em teste que compara só as chaves.',
+        problem: 'Em [(3,Ana), (1,Bia), (3,Caio)], a saída estável é [(1,Bia), (3,Ana), (3,Caio)]; uma saída não estável pode trocar Ana e Caio.',
+        whatToNotice: 'As duas sequências de chaves são 1, 3, 3. Só as etiquetas revelam se a ordem de chegada no empate foi preservada.',
       },
       exerciseId: 'sorting.e1' },
 
@@ -196,8 +196,8 @@ export const sortingUnit: Unit = {
         A[j + 1] ← x`,
       invariant: 'Ao começar a rodada de i, as posições 0 até i − 1 já estão ordenadas entre si.',
       workedExample: {
-        problem: 'Ordene [1, 2, 4, 3, 5] com insertion sort e conte os deslocamentos.',
-        whatToNotice: 'Um único deslocamento, numa coleção de cinco. O laço interno quase não roda porque a parte à esquerda já estava pronta, e nenhuma linha do código detectou isso.',
+        problem: 'Em [1, 2, 4, 3, 5], insertion sort mantém 1, 2 e 4; ao inserir 3, desloca apenas o 4; o 5 já fica no lugar. Total: um deslocamento.',
+        whatToNotice: 'A parte à esquerda já estava pronta e o laço interno quase não rodou. A entrada, não uma condição especial no código, produziu o caso barato.',
       },
       figure: {
         kind: 'insertion',
@@ -226,6 +226,11 @@ export const sortingUnit: Unit = {
         'Se intercalar é barato, ordenar vira dividir ao meio até sobrar um elemento, que já está ordenado sozinho, e intercalar de volta. São log n níveis, cada um custando n. O limite é O(n log n), e ele vale para toda entrada, não para a média delas.',
         'A linha que decide o empate na intercalação é a linha que decide a estabilidade da coleção inteira. Tomar o da esquerda quando os dois primeiros comparam como iguais preserva a ordem de chegada; tomar o da direita a inverte. É uma comparação, e as duas custam o mesmo.',
       ],
+      figure: {
+        kind: 'merge-structure',
+        values: [8, 3, 7, 4, 6, 2, 5, 1],
+        caption: 'A divisão cria log n níveis. Na volta, cada nível intercala todos os elementos uma vez; é por isso que o custo total fica em O(n log n), independentemente da entrada.',
+      },
       pseudocode: `função intercalar(E, D)
     S ← sequência vazia
     enquanto E não vazia e D não vazia faça
@@ -238,8 +243,8 @@ export const sortingUnit: Unit = {
       pseudocodeIsProse: true,
       invariant: 'S está ordenada, e todo elemento que ainda está em E ou em D é maior ou igual ao último de S.',
       workedExample: {
-        problem: 'Intercale [2, 5] com [5, 7] duas vezes: uma tomando o da esquerda no empate, outra o da direita.',
-        whatToNotice: 'As duas saídas são 2, 5, 5, 7, idênticas se você olhar só as chaves. É por isso que um teste que compara chaves não pega a perda de estabilidade.',
+        problem: 'Intercalando [2a, 5b] e [5c, 7d], escolher a esquerda no empate produz 2a, 5b, 5c, 7d; escolher a direita produz 2a, 5c, 5b, 7d.',
+        whatToNotice: 'As chaves são 2, 5, 5, 7 nos dois casos. As etiquetas mostram a única diferença: qual elemento empatado saiu primeiro.',
       },
       exerciseId: 'sorting.e3' },
 
@@ -256,9 +261,15 @@ export const sortingUnit: Unit = {
         'Quando o pivô cai perto do meio, as partes têm metade do tamanho e o total é O(n log n). Quando ele cai no extremo, uma parte fica vazia e a outra fica com todo o resto, são n rodadas em vez de log n, e o total é O(n²).',
         'A escolha do pivô é livre, e é ela que decide qual dos dois cenários acontece. Escolher sempre o primeiro elemento transforma uma coleção que já chega ordenada, a mais comum de todas, no pior caso.',
       ],
+      figure: {
+        kind: 'quicksort-partition',
+        values: [1, 2, 3, 4, 5, 6, 7],
+        pivotIndex: 0,
+        caption: 'Com o primeiro elemento como pivô numa entrada ordenada, uma partição fica vazia e a outra guarda quase tudo. Repetir isso produz n níveis em vez de log n.',
+      },
       workedExample: {
-        problem: 'Ordene [1, 2, 3, 4, 5] com quicksort tomando o primeiro elemento como pivô.',
-        whatToNotice: 'Toda partição devolve uma parte vazia. A entrada mais bem comportada que existe ativou o pior caso, e nenhuma delas parece rara.',
+        problem: 'Em [1, 2, 3, 4, 5], o primeiro pivô 1 separa 0 e 4 elementos; depois 2 separa 0 e 3; o padrão continua até o fim.',
+        whatToNotice: 'Toda partição deixa uma parte vazia. A entrada já ordenada ativa profundidade n e custo quadrático.',
       },
       exerciseId: 'sorting.e4' },
 

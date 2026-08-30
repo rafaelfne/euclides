@@ -111,3 +111,30 @@ export function dueRevisits(units: Unit[], p: Progress, now: number): Due[] {
 
   return out.sort((a, b) => b.daysOverdue - a.daysOverdue)
 }
+
+export interface Upcoming {
+  unit: Unit
+  exerciseId: string
+  cycleId: string
+  cycleTitle: string
+  at: number
+  step: number
+}
+
+export function upcomingRevisit(units: Unit[], p: Progress, now: number): Upcoming | null {
+  const upcoming: Upcoming[] = []
+  for (const unit of units) {
+    const states = p.units[unit.id]?.exercises ?? {}
+    for (const [exerciseId, st] of Object.entries(states)) {
+      const honored = (st.revisits ?? []).filter((r) => r.clean).length
+      if (!st.solvedClean && honored === 0) continue
+      const step = Math.min(honored, REVISIT_STEPS.length - 1)
+      const cycle = unit.cycles.find((c) => c.exerciseId === exerciseId)
+      if (!cycle) continue
+      const at = new Date(st.lastVisited).getTime() + REVISIT_STEPS[step]! * DAY
+      if (at <= now) continue
+      upcoming.push({ unit, exerciseId, cycleId: cycle.id, cycleTitle: cycle.title, at, step })
+    }
+  }
+  return upcoming.sort((a, b) => a.at - b.at)[0] ?? null
+}

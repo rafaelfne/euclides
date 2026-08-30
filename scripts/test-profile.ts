@@ -48,7 +48,7 @@ async function run() {
   store.set('euclides.progress.v1', JSON.stringify(V1))
   store.set('euclides.codeLanguage', 'ts')
 
-  const { read, clearAll, exportProfile, importProfile, saveProfile } =
+  const { read, clearAll, exportProfile, importProfile, resetTrail, resumePoint, saveProfile } =
     await import('../src/lib/progress')
 
   const migrated = read()
@@ -69,6 +69,21 @@ async function run() {
   saveProfile({ name: 'Marina', mode: 'iniciante' })
   check('salvar o perfil preserva o progresso',
     read().units.hash?.exercises['hash.e1']?.attempts === 2 && read().profile?.name === 'Marina')
+
+  const beforeReset = exportProfile()
+  resetTrail()
+  check('recomeçar zera as unidades', Object.keys(read().units).length === 0)
+  check('recomeçar preserva nome e preferências',
+    read().profile?.name === 'Marina' && read().profile?.mode === 'iniciante')
+  check('recomeçar apaga a sondagem', read().placement === undefined)
+  check('recomeçar remove o cartão de retomada', resumePoint([
+    {
+      id: 'hash',
+      title: 'Tabelas Hash',
+      cycles: [{ id: 'hash.c0', title: 'O contrato', exerciseId: 'hash.e0' }],
+    },
+  ]) === null)
+  importProfile(beforeReset)
 
   const dump = exportProfile()
   clearAll()

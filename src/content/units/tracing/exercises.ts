@@ -2,10 +2,10 @@ import type { Exercise, Misconception } from '../../schema'
 
 export const tracingMisconceptions: Misconception[] = [
   { id: 'tracing.laco-roda-n-vezes', label: 'Contar rodadas pelo tamanho da coleção em vez de pela condição',
-    socraticQuestion: 'Escreva os valores que i assume até o laço parar, um por linha. Quantas linhas você escreveu?',
+    socraticQuestion: 'A frase “o laço roda o tamanho da coleção” informa a condição de parada e o passo do índice? Quais evidências ainda faltam para conferir a contagem?',
     escalation: [
-      'Compare esse número com o tamanho da coleção. Se eles diferem, qual linha do código decide a diferença?',
-      'A condição de parada olha i, e o passo do laço decide de quanto em quanto i anda. Qual das duas você usou para contar?',
+      'Monte dois laços hipotéticos sobre dez elementos: um avança de um em um e outro de dois em dois. A frase sobre o tamanho permite distinguir quantas rodadas cada um faz?',
+      'Quando houver código, anote a condição de parada e o passo antes de contar. Qual dessas duas linhas impede que o tamanho sozinho determine as rodadas?',
     ],
     reviewCycle: 'tracing.c5' },
 
@@ -17,14 +17,14 @@ export const tracingMisconceptions: Misconception[] = [
     reviewCycle: 'tracing.c4' },
 
   { id: 'tracing.estado-nao-observado', label: 'Traçar o índice e esquecer o acumulador',
-    socraticQuestion: 'Liste todos os nomes cujo valor muda dentro do laço. Quantos deles aparecem no seu traço?',
+    socraticQuestion: 'Liste todos os nomes cujo valor muda dentro do laço. Quantos deles aparecem no seu trace?',
     escalation: [
-      'Um nome que muda e não está no traço é um valor que você está adivinhando. Qual das colunas você conseguiria preencher sem ele?',
+      'Um nome que muda e não está no trace é um valor que você está adivinhando. Qual das colunas você conseguiria preencher sem ele?',
     ],
     reviewCycle: 'tracing.c2' },
 
   { id: 'tracing.vazio-nao-considerado', label: 'Nunca perguntar o que acontece com zero elementos',
-    socraticQuestion: 'Rode o traço para a coleção vazia. Quantas rodadas acontecem, e o que a função devolve?',
+    socraticQuestion: 'Faça o trace para a coleção vazia. Quantas rodadas acontecem, e o que a função devolve?',
     escalation: [
       'Se nenhuma rodada acontece, o valor devolvido é o que foi inicializado antes do laço. Esse valor está correto para uma coleção vazia?',
     ],
@@ -33,7 +33,7 @@ export const tracingMisconceptions: Misconception[] = [
   { id: 'tracing.mutacao-durante-iteracao', label: 'Alterar a coleção enquanto a percorre',
     socraticQuestion: 'A condição compara i com o tamanho da coleção. Se o corpo remove um elemento, o que acontece com os dois lados dessa comparação?',
     escalation: [
-      'Um lado cresce e o outro encolhe na mesma rodada. Escreva o traço de uma remoção no meio e diga qual elemento nunca é visitado.',
+      'Um lado cresce e o outro encolhe na mesma rodada. Escreva o trace de uma remoção no meio e diga qual elemento nunca é visitado.',
     ],
     reviewCycle: 'tracing.c1' },
 
@@ -100,7 +100,6 @@ export const tracingExercises: Exercise[] = [
       { notation: '(linhas)', rule: 'quantas rodadas há', why: 'A tabela já tem uma linha por rodada. Se o número surpreender você, essa surpresa é o exercício.' },
     ],
     reference: 'tracing.count-even-trace',
-    // Qual linha do pseudocódigo escreve cada coluna. Ver `lineByColumn`.
     lineByColumn: { read: 5, even: 5, total: 6, next: 7 },
     misconceptionByStep: { '2': 'tracing.laco-roda-n-vezes' },
   },
@@ -116,7 +115,7 @@ export const tracingExercises: Exercise[] = [
   },
   {
     kind: 'choice', id: 'tracing.e4',
-    prompt: 'Uma função devolve o maior elemento de uma coleção. Ela começa com maior ← A[0] e percorre a partir de i = 1. Que entrada quebra essa função?',
+    prompt: 'Uma função procura o maior valor. Antes de verificar o tamanho da coleção, ela lê A[0], o primeiro elemento. Em qual entrada essa primeira leitura é inválida?',
     choices: [
       { correct: true, text: 'A coleção vazia',
         why: 'A[0] é lido antes de qualquer verificação, e numa coleção vazia não existe posição 0.' },
@@ -125,14 +124,32 @@ export const tracingExercises: Exercise[] = [
     ],
   },
   {
-    kind: 'choice', id: 'tracing.e5',
-    prompt: 'Um laço tem condição i < |A| e avança com i ← i + 3. A coleção tem dez elementos. Quantas rodadas acontecem?',
-    choices: [
-      { correct: true, text: 'Quatro: i vale 0, 3, 6 e 9, e para em 12',
-        why: 'O passo do laço decide, não o tamanho da coleção' },
-      { correct: false, text: 'Dez, uma por elemento, porque o laço percorre a coleção', misconceptionId: 'tracing.laco-roda-n-vezes' },
-      { correct: false, text: 'Três: i vale 0, 3 e 6, porque 9 mais 3 passa do fim', misconceptionId: 'tracing.off-by-one' },
+    kind: 'trace', id: 'tracing.e5',
+    prompt:
+      'Os dois laços continuam enquanto o índice é menor que 10. Escreva, para cada passo, os valores ' +
+      'que entram no corpo e o primeiro valor recusado pela condição.',
+    pseudocode: `i ← 0
+enquanto i < 10 faça
+    processar(i)
+    i ← i + 3
+
+j ← 1
+enquanto j < 10 faça
+    processar(j)
+    j ← j × 2`,
+    invariant: 'Ao começar cada rodada, o índice é o próximo valor produzido pelo passo daquele laço.',
+    columns: [
+      { key: 'step', label: 'caso' },
+      { key: 'key', label: 'passo' },
+      { key: 'values', label: 'valores que entram no corpo', placeholder: '0, 0, 0' },
+      { key: 'rejected', label: 'primeiro valor recusado', placeholder: '0' },
     ],
+    conventions: [
+      { notation: '0, 0, 0', rule: 'uma sequência de valores', why: 'Separe os valores por vírgula e espaço, na ordem em que aparecem.' },
+      { notation: '0', rule: 'o primeiro valor recusado', why: 'É o valor de i no primeiro teste em que a condição é falsa.' },
+    ],
+    reference: 'tracing.stride-values-trace',
+    misconceptionByStep: { '2': 'tracing.laco-roda-n-vezes' },
   },
   {
     kind: 'bug', id: 'tracing.e6',

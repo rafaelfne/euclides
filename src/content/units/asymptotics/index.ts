@@ -151,8 +151,8 @@ export const asymptoticsUnit: Unit = {
           'ganha na notação é a que perde na máquina, e o gráfico mostra por quanto.',
       },
       workedExample: {
-        problem: "Com n = 200: 1000·n dá 200 mil, e n² dá 40 mil. O algoritmo \"melhor\" na notação custa 5 vezes mais.",
-        whatToNotice: "Ache o n em que os dois empatam antes de escolher. Se as suas coleções vivem abaixo dele, a notação está respondendo sobre um tamanho que você não tem.",
+        problem: "Com n = 500: 1000·n dá 500 mil, enquanto n² dá 250 mil. As duas expressões empatam apenas em n = 1000.",
+        whatToNotice: "Abaixo do ponto de empate, o termo quadrático ainda custa menos. A notação descreve o crescimento; o tamanho real e as constantes dizem de que lado do cruzamento o sistema vive.",
       },
       exerciseId: 'asymptotics.e1' },
 
@@ -195,8 +195,8 @@ export const asymptoticsUnit: Unit = {
     retorne 2 × custo(n / 2) + n`,
       invariant: 'Toda relação de recorrência tem um caso base, e ele é o único ponto em que a recursão para.',
       workedExample: {
-        problem: 'Escreva a relação de uma busca binária: ela olha o meio e chama a si mesma numa das metades.',
-        whatToNotice: 'Dá T(n) = T(n/2) + c, com um único T(n/2) e não dois. O que separa esta relação da do merge sort é o número de chamadas por nível, e é ele que decide log n contra n log n.',
+        problem: 'A busca binária compara o meio, descarta uma metade e continua em apenas uma delas: T(1) = c e T(n) = T(n/2) + c.',
+        whatToNotice: 'Há um único T(n/2), porque uma metade é descartada. No merge sort aparecem dois porque as duas metades precisam ser resolvidas.',
       },
       exerciseId: 'asymptotics.e3' },
 
@@ -226,8 +226,8 @@ export const asymptoticsUnit: Unit = {
       },
       invariant: 'Em cada nível, o número de chamadas dobra e o tamanho de cada uma cai pela metade.',
       workedExample: {
-        problem: 'Some o nível 1 de T(n) = 2·T(n/2) + n com n = 8: duas chamadas de tamanho 4.',
-        whatToNotice: 'Dá 8, o mesmo do nível 0, que tinha uma chamada de tamanho 8. É o produto que se mantém, e é ele que torna a soma um retângulo em vez de um triângulo.',
+        problem: 'Em T(n) = 2·T(n/2) + n com n = 8, o nível 0 custa 1×8 = 8; o nível 1 tem duas chamadas de tamanho 4 e custa 2×4 = 8.',
+        whatToNotice: 'As chamadas dobraram e o tamanho caiu pela metade, então o produto ficou igual. Repetir essa derivação em cada nível produz um retângulo, não um triângulo.',
       },
       exerciseId: 'asymptotics.e7' },
 
@@ -242,7 +242,7 @@ export const asymptoticsUnit: Unit = {
       body: [
         'Pior caso, caso médio e melhor caso qualificam o **custo**, não a frequência da entrada. Dizer que algo é O(n²) no pior caso não afirma que esse caso é improvável, ele pode ser 100% das suas entradas.',
         'O exemplo que desfaz a confusão de uma vez: o pior caso do quicksort com pivô no primeiro elemento é a entrada já ordenada, a mais comum que existe num sistema real. O pior caso ali não é raro; é o caso normal.',
-        'E quando a entrada vem de fora, a distinção deixa de ser acadêmica: quem escolhe as chaves pode escolhê-las para ativar o pior caso de propósito. É a mesma família de problema que a unidade de tabelas hash chama de hash flooding.',
+        'Quando a entrada vem de fora, a distinção deixa de ser acadêmica. Se qualquer cliente pode enviar uma entrada válida, a garantia de tempo precisa cobrir também a entrada que produz o caminho mais caro.',
       ],
       workedExample: {
         problem: "Quicksort com pivô no primeiro elemento, sobre [1, 2, 3, 4, 5]: as partições ficam de tamanho 0 e 4, depois 0 e 3, e assim por diante. São 4 níveis em vez de 3, e o custo vai a n².",
@@ -270,8 +270,8 @@ export const asymptoticsUnit: Unit = {
         caption: 'A barra é o custo de cada inserção e a linha é a média até ali. Os picos são altíssimos e raros, e a média desce e estabiliza abaixo de 2. É essa forma que "amortizado" descreve, e é por isso que ela não é a mesma coisa que caso médio: os picos estão em posições que dá para apontar no dedo, não numa distribuição sorteada.',
       },
       workedExample: {
-        problem: 'Some o custo de oito inserções seguidas num array que começa com capacidade 1 e dobra quando enche.',
-        whatToNotice: 'As caras acontecem nas inserções 1, 2, 3, 5 e 9, posições que dá para apontar antes de rodar. Nenhum sorteio decidiu isso, e é o que separa amortizado de caso médio.',
+        problem: 'Com capacidade inicial 1, oito inserções custam 1, 2, 3, 1, 5, 1, 1 e 1 operações: total 15, média 1,875.',
+        whatToNotice: 'As cópias acontecem nas inserções 2, 3 e 5, posições determinadas pela dobra. Nenhum sorteio decidiu onde ficam os picos.',
       },
       exerciseId: 'asymptotics.e5' },
 
@@ -290,8 +290,8 @@ export const asymptoticsUnit: Unit = {
         'Usar recorrência num laço simples não está errado, está caro, e é sinal de que a forma do código não foi lida antes da conta começar.',
       ],
       workedExample: {
-        problem: 'Olhe três procedimentos sem contar nada: um laço sobre a coleção, um que chama a si mesmo em metades, e um append num array dinâmico.',
-        whatToNotice: 'A forma decide a técnica antes de qualquer conta começar. Escolher errado aqui não dá resultado errado, dá o resultado certo por um caminho caro.',
+        problem: 'Laço simples → contagem de operações; duas chamadas sobre metades → recorrência; append com dobras ocasionais → agregação da sequência.',
+        whatToNotice: 'A forma do código escolhe a técnica antes da conta. A técnica não é outro resultado: é o caminho mais curto que ainda deriva o resultado.',
       },
       postmortem: {
         incident: "Volte à consulta que foi de 40 ms com dez mil registros para 4 s com um milhão, sem ninguém mudar o código.",

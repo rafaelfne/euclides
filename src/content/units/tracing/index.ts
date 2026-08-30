@@ -5,7 +5,7 @@ export const tracingUnit: Unit = {
   kind: 'method',
   id: 'tracing',
   number: 1,
-  title: 'Lógica e teste de mesa',
+  title: 'Lógica e execution trace',
   learningObjective:
     'Dizer o que um trecho de código faz, quantas vezes o laço dele roda e o que ele devolve ' +
     'nas entradas de fronteira, sem executar, e sabendo dizer de onde cada afirmação veio.',
@@ -24,12 +24,13 @@ export const tracingUnit: Unit = {
     { symbol: '|A|', means: 'quantos elementos a coleção tem' },
     { symbol: 'A[i]', means: 'o elemento que está na posição i' },
     { symbol: 'i', means: 'a posição que o laço está examinando' },
+    { symbol: 'j', means: 'a posição que o segundo laço está examinando' },
     { symbol: 'total', means: 'o valor que vai sendo acumulado entre as rodadas' },
   ],
 
   criterion: {
     id: 'execution-trace',
-    name: 'Traço de execução',
+    name: 'Execution trace',
     produces: 'o estado do programa a cada rodada, e o que ele devolve no fim',
     parts: [
       { id: 'variables', name: 'variáveis observadas',
@@ -98,11 +99,20 @@ export const tracingUnit: Unit = {
         'apertar executar.',
       body: [
         '"Eu li e entendi" não é uma afirmação verificável. Ela vira uma quando carrega 4 coisas: quais nomes guardam o estado, o valor de cada um a cada rodada, a condição que decide se há próxima rodada, e o que a função devolve.',
-        'Cada uma dessas quatro partes, quando falta, produz uma frase que soa certa. Sem a condição, sai "o laço roda n vezes". Sem o estado por rodada, sai "no fim, total é a soma de tudo", uma afirmação sobre o fim, derivada de nada. Guarde essas frases: elas são as armadilhas desta unidade, e você vai reencontrá-las nas outras sete.',
+        'Cada uma dessas quatro partes, quando falta, produz uma frase que soa certa. Sem a condição, sai "o laço roda n vezes". Sem o estado por rodada, sai "no fim, total é a soma de tudo", uma afirmação sobre o fim, derivada de nada. Guarde essas frases: elas são as armadilhas desta unidade, e você vai reencontrá-las nas outras sete unidades da trilha.',
       ],
       workedExample: {
-        problem: "Some as posições pares de [4, 7, 3]: o resultado é 7, e as quatro partes do critério são \"total e i guardam o estado\", \"total vale 0, depois 4, depois 7\", \"para quando i chega a 3\" e \"devolve 7\".",
-        whatToNotice: "Sem a terceira parte, \"o laço roda 3 vezes\" soa certo e não é verificável. Repare que o único jeito de escrever a segunda parte é rodada por rodada.",
+        problem: "Para somar [4, 7, 3], comece com i = 0 e total = 0. As rodadas produzem (i=1, total=4), (i=2, total=11) e (i=3, total=14); então i < 3 fica falso e a função devolve 14.",
+        whatToNotice: "A afirmação final nasce de estados observáveis: valores iniciais, três transformações, primeira condição falsa e saída. Remova um elo e outra pessoa já não consegue conferir a conclusão.",
+      },
+      figure: {
+        kind: 'execution-trace',
+        caption: 'A condição decide se existe uma rodada; só então o elemento é lido e o estado muda.',
+        values: [4, 7, 3],
+        initialIndex: 0,
+        indexStep: 1,
+        initialAccumulator: 0,
+        operation: 'sum',
       },
       exerciseId: 'tracing.e0' },
 
@@ -134,7 +144,7 @@ export const tracingUnit: Unit = {
         'volta produz a próxima.',
       body: [
         'A primeira técnica é escrever a tabela: 1 coluna por nome que muda, 1 linha por rodada. A regra é uma só, e ela é o que separa a tabela de um chute: cada linha é derivada da anterior.',
-        'A parte difícil não é a conta, é decidir quais colunas existem. Um nome que muda dentro do laço e não está na tabela é um valor que você vai adivinhar quando precisar dele, e o traço inteiro passa a depender desse chute.',
+        'A parte difícil não é a conta, é decidir quais colunas existem. Um nome que muda dentro do laço e não está na tabela é um valor que você vai adivinhar quando precisar dele, e o trace inteiro passa a depender desse chute.',
       ],
       pseudocode: `função contar_pares(A)
     total ← 0
@@ -146,8 +156,17 @@ export const tracingUnit: Unit = {
     retorne total`,
       invariant: 'Ao começar cada rodada, total conta os elementos pares entre as posições já visitadas.',
       workedExample: {
-        problem: 'Trace contar_pares sobre [4, 7, 3] com o passo i ← i + 1 em vez de i ← i + 2.',
-        whatToNotice: 'São três rodadas em vez de duas, e o total muda. A tabela não ficou errada por conta errada: ficou diferente porque uma linha do código é outra.',
+        problem: 'Com A = [4, 7, 3] e passo i ← i + 1: (i=0, lê 4, total=1) → (i=1, lê 7, total=1) → (i=2, lê 3, total=1) → i=3 para.',
+        whatToNotice: 'Cada estado vem do anterior e de uma linha do código. Trocar o passo para i ← i + 2 remove a rodada de i = 1; não existe salto que a tabela possa adivinhar.',
+      },
+      figure: {
+        kind: 'execution-trace',
+        caption: 'O exemplo avança de um em um. No exercício, o passo muda para dois e o trace precisa mudar com ele.',
+        values: [4, 7, 3],
+        initialIndex: 0,
+        indexStep: 1,
+        initialAccumulator: 0,
+        operation: 'count-even',
       },
       exerciseId: 'tracing.e2' },
 
@@ -165,8 +184,8 @@ export const tracingUnit: Unit = {
         'Ela também não dispensa a tabela. Quando você não consegue enunciar a propriedade, simule três rodadas: ela quase sempre está escrita ali, esperando ser lida.',
       ],
       workedExample: {
-        problem: 'Enuncie a invariante de um laço que acha o maior elemento, e teste-a antes da primeira rodada.',
-        whatToNotice: 'Ela precisa valer com nenhuma posição visitada, e é aí que aparece de onde `maior` tem de ser inicializado. A invariante não descreve o laço: ela cobra a inicialização.',
+        problem: 'Para achar o maior de [8, 3, 11], inicialize maior = 8 e i = 1. Antes de cada rodada, maior é o maior valor entre as posições 0 e i − 1: primeiro 8, depois 8, por fim 11.',
+        whatToNotice: 'A propriedade já vale antes da primeira comparação porque maior veio da posição 0. Inicializar maior com 0 quebraria a mesma afirmação numa coleção só de números negativos.',
       },
       exerciseId: 'tracing.e3' },
 
@@ -229,7 +248,7 @@ export const tracingUnit: Unit = {
         incident: "Volte ao pull request de trinta linhas que passava nos testes. O laço tinha uma condição composta, e o segundo lado quebrava com a coleção vazia.",
         trapId: "tracing.curto-circuito",
         missingClaim: "nenhuma: a unidade 01 não afirma custo. O que faltava era a frase \"para a coleção vazia, esta função devolve X\", e ninguém a escreveu.",
-        whatWouldCatch: "O traço das três primeiras rodadas mais o caso de zero rodadas. Dois minutos de tabela, sem executar nada.",
+        whatWouldCatch: "O trace das três primeiras rodadas mais o caso de zero rodadas. Dois minutos de tabela, sem executar nada.",
       },
       exerciseId: 'tracing.e6' },
   ],
@@ -243,7 +262,7 @@ export const tracingUnit: Unit = {
       'O aluno domina esta unidade quando, diante de um laço de até vinte linhas que nunca ' +
       'viu, consegue sem executar: nomear as variáveis que carregam o estado, dizer quantas ' +
       'rodadas acontecem a partir da condição e do passo, não do tamanho da coleção, ' +
-      'produzir o traço das três primeiras rodadas, e dizer o que a função devolve para a ' +
+      'produzir o trace das três primeiras rodadas, e dizer o que a função devolve para a ' +
       'coleção vazia.',
     requiresClean: ['tracing.e2', 'tracing.e5'],
     revisitIntervalDays: 7,

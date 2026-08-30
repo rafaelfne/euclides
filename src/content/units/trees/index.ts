@@ -200,8 +200,8 @@ export const treesUnit: Unit = {
     retorne T`,
       invariant: 'Para todo nó, toda chave da subárvore esquerda é menor que a dele, e toda da direita é maior.',
       workedExample: {
-        problem: 'Busque a chave 40 na árvore que sai de inserir 50, 30, 70, 20 e 40.',
-        whatToNotice: 'São três comparações, e cada uma descartou metade do que restava. É a busca binária: o que muda é que a divisão está guardada em ponteiros, não recalculada.',
+        problem: 'Na árvore criada por 50, 30, 70, 20 e 40, buscar 40 compara com 50, desce à esquerda; compara com 30, desce à direita; compara com 40 e encontra.',
+        whatToNotice: 'Foram três comparações e em cada uma um lado inteiro deixou de importar. A divisão está guardada nos ponteiros.',
       },
       exerciseId: 'trees.e1' },
 
@@ -217,7 +217,7 @@ export const treesUnit: Unit = {
         'O custo de toda operação desta estrutura é a altura. E a invariante de ordem não diz nada sobre altura.',
         'Insira 1, 2, 3, 4 e 5 numa árvore vazia: cada chave vira o filho direito da anterior, a altura vira n − 1, e a estrutura virou uma lista ligada com ponteiros a mais. Toda operação passou a custar O(n), e a invariante continua valendo.',
         'A entrada que produz isso é a coleção já ordenada, a mais comum que existe num sistema real, porque identificador cresce e exportador exporta em ordem. Aqui, como na unidade de análise de custo, o pior caso não é o caso raro.',
-        'Vale separar duas palavras que costumam ser trocadas: altura é do nó mais alto até a folha mais distante, contada de baixo para cima; profundidade é da raiz até um nó, contada de cima para baixo. A árvore tem uma altura; cada nó tem a sua profundidade.',
+        'Vale separar duas palavras que costumam ser trocadas: a profundidade de um nó é o caminho da raiz até ele, contado de cima para baixo; a altura de um nó é o caminho mais longo dele até uma folha, contado de baixo para cima. A altura da árvore é a altura da raiz.',
       ],
       figure: {
         kind: 'tree',
@@ -231,8 +231,8 @@ export const treesUnit: Unit = {
           'ordenada, a entrada mais comum que existe num sistema real.',
       },
       workedExample: {
-        problem: 'Percorra as duas árvores em ordem simétrica e compare as duas saídas.',
-        whatToNotice: 'São idênticas. A invariante de ordem não diz nada sobre altura, e é por isso que a estrutura pode virar uma lista sem nunca ficar incorreta.',
+        problem: 'As sequências 50, 30, 70, 20, 40, 35 e 20, 30, 35, 40, 50, 70 produzem formas diferentes; a travessia em ordem das duas é 20, 30, 35, 40, 50, 70.',
+        whatToNotice: 'A saída ordenada é idêntica enquanto as alturas diferem. A invariante de ordem não limita a altura.',
       },
       exerciseId: 'trees.e2' },
 
@@ -297,8 +297,8 @@ export const treesUnit: Unit = {
         'É o índice padrão de todo banco relacional, e explica por que um índice serve para igualdade, faixa e ordenação ao mesmo tempo, enquanto um índice hash, que a unidade anterior descreveu, serve só para a primeira.',
       ],
       workedExample: {
-        problem: 'Compare a altura de uma árvore binária balanceada com um milhão de chaves e a de uma B-tree com 200 chaves por nó.',
-        whatToNotice: 'Vinte contra três. As duas são O(log n); o que muda é a base do logaritmo, e ela some na notação justamente porque a notação ignora constantes.',
+        problem: 'Com um milhão de chaves, uma árvore binária balanceada tem cerca de log₂(1.000.000) ≈ 20 níveis; uma B-tree com 200 chaves por nó tem cerca de log₂₀₀(1.000.000) ≈ 3.',
+        whatToNotice: 'As duas são O(log n), mas três acessos a disco e vinte acessos a disco não são o mesmo custo. A base some na notação e domina a escolha física.',
       },
       exerciseId: 'trees.e5' },
 

@@ -99,7 +99,7 @@ export function TraceExercise({ unit, exercise }: { unit: Unit; exercise: TraceE
   return (
     <Panel>
       <PanelHeader>
-        <PanelTitle>Exercício · traço de execução</PanelTitle>
+        <PanelTitle>Exercício · execution trace</PanelTitle>
         <PanelMeta>{attempts === 0 ? 'sem tentativa' : `tentativa ${attempts}`}</PanelMeta>
       </PanelHeader>
       <PanelBody className="flex flex-col gap-4">
@@ -260,12 +260,12 @@ export function TraceExercise({ unit, exercise }: { unit: Unit; exercise: TraceE
 
         {blanks === 0 && solved && (
           <div className="border-l-2 border-contract pl-4 text-[13.5px] leading-relaxed text-fg-2">
-            O traço confere com a implementação de referência em todos os passos.
+            O trace confere com a implementação de referência em todos os passos.
           </div>
         )}
 
         {/*
-          O traço rodando, e só DEPOIS que o exercício fecha.
+          O trace rodando, e só DEPOIS que o exercício fecha.
           Preencher a tabela passo a passo é entregar a resposta, e o princípio 3
           proíbe isso enquanto há tentativa em aberto. Resolvido ou com a escada
           esgotada, o exercício acabou: aí a mesma animação deixa de ser cola e
@@ -283,7 +283,7 @@ export function TraceExercise({ unit, exercise }: { unit: Unit; exercise: TraceE
         {blanks === 0 && (solved || feedback?.exhausted) && reference.length > 0 && !exercise.lineByColumn && (
           <div className="border border-rule bg-panel-head">
             <div className="border-b border-rule px-3.5 py-2">
-              <span className="lbl">O traço rodando</span>
+              <span className="lbl">O trace rodando</span>
             </div>
             <Stepper
               count={reference.length}

@@ -52,9 +52,9 @@ chaining.
 | c1 | implementação | A aposta: transformar chave em endereço | função de hash |
 | c2 | implementação | Colisão é matemática, não defeito | colisão, casa dos pombos |
 | c3 | implementação | Chaining e a invariante de posição | bucket, chaining, invariante de posição |
-| c4 | custo | Load factor | load factor, hashing uniforme |
+| c4 | custo | Load factor: pares por bucket | load factor |
 | c5 | implementação | Rehash e o custo amortizado | rehash, amortizado |
-| c6 | custo | O custo, com todos os qualificadores | pior caso, caso médio |
+| c6 | custo | Quando a busca deixa de custar constante | hashing uniforme, pior caso, caso médio |
 | c7 | implementação *(aprofundamento)* | Open addressing e a deleção que apaga demais | open addressing, probing, clustering, tombstone |
 | c8 | custo | Quando a tabela hash é a escolha errada | hash flooding |
 
@@ -64,7 +64,7 @@ chaining.
 `load-factor-memoria` · `delecao-ingenua` · `ordem`
 
 A mais valiosa é `rehash-copia-buckets`, e vale registrar por quê: se o rehash copia
-buckets em vez de reinserir, **o defeito é parcial**, no traço de exemplo, 3 e 11 seguem
+buckets em vez de reinserir, **o defeito é parcial**, no trace de exemplo, 3 e 11 seguem
 encontráveis e só o 7 some. É exatamente por isso que esse bug passa em teste manual e
 aparece em produção.
 
@@ -80,13 +80,17 @@ revisita feita ao menos sete dias depois.
 
 ## Decisões de conteúdo que a implementação não deixa ver
 
-**A implementação de referência do traço `hash.e1` usa `h(k) = k`.** É deliberado: o que
-o traço ensina é rehash, invariante de posição e a evolução de α; uma h realista só
+**A implementação de referência do trace `hash.e1` usa `h(k) = k`.** É deliberado: o que
+o trace ensina é rehash, invariante de posição e a mudança de endereço; uma h realista só
 acrescentaria aritmética que o aluno teria de simular à mão a cada passo, e o erro dele
 passaria a ser de conta, não de raciocínio.
 
+O trace pede apenas três resultados por inserção: se houve rehash, o número de buckets e
+onde as chaves ficaram. `n` repete o número do passo e α pode ser derivado de n/m; cobrar
+os dois na mesma tabela mede preenchimento, não compreensão do redimensionamento.
+
 O custo é que a aposta anunciada no ciclo `hash.c1`, transformar chave em endereço, o
-aluno lê na prosa e nunca executa no traço. Se um exercício futuro precisar exercitar a
+aluno lê na prosa e nunca executa no trace. Se um exercício futuro precisar exercitar a
 função em si, ele é outro exercício, com outro gerador; não é uma troca de `h` neste.
 
 ## Lacunas conhecidas

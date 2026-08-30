@@ -10,6 +10,9 @@ import { PlacementInvite } from '@/components/PlacementInvite'
 import { RevisitQueue } from '@/components/RevisitQueue'
 
 export default function Home() {
+  const first = units[0]!
+  const remaining = units.slice(1)
+
   return (
     <AppShell>
       <div className="flex flex-grow flex-col gap-7 overflow-y-auto px-4 py-8 sm:px-7">
@@ -40,10 +43,30 @@ export default function Home() {
         <ResumeCard />
         <PlacementInvite />
 
+        <div className="flex max-w-[720px] flex-col gap-2">
+          <span className="lbl">Comece aqui</span>
+          <Link
+            href={`/units/${first.id}`}
+            className="flex flex-col gap-2 border border-contract-rule bg-contract-bg px-4 py-4 text-inherit hover:bg-panel-hover"
+          >
+            <div className="flex items-baseline gap-2.5">
+              <span className="font-mono text-[12px] text-contract">01</span>
+              <span className="text-[18px] font-semibold">{first.title}</span>
+              <span className="ml-auto"><UnitStateDot unit={first} withLabel /></span>
+            </div>
+            <span className="text-[13px] leading-snug text-fg-3">
+              Aprenda a acompanhar o estado de um laço e prever o que ele devolve sem executar.
+            </span>
+            <span className="font-mono text-[12px] text-contract">
+              abrir a unidade · {first.cycles.length} ciclos · {humanMinutes(unitMinutes(first))} →
+            </span>
+          </Link>
+        </div>
+
         <div className="flex flex-col gap-2">
-          <span className="lbl">Primeiro módulo</span>
+          <span className="lbl">Depois da unidade 01</span>
           <ul className="m-0 grid list-none grid-cols-1 gap-2 p-0 lg:grid-cols-2">
-            {units.map((u) => (
+            {remaining.map((u) => (
               <li key={u.id}>
                 <Link
                   href={`/units/${u.id}`}

@@ -48,13 +48,11 @@ export const hashExercises: Exercise[] = [
     columns: [
       { key: 'step', label: 'passo' }, { key: 'key', label: 'chave' },
       { key: 'rehash', label: 'rehash?', placeholder: 'sim ou não' },
-      { key: 'n', label: 'pares guardados (n)', placeholder: '0' },
       { key: 'm', label: 'posições (m)', placeholder: '0' },
-      { key: 'alpha', label: 'carga (α)', placeholder: '0,000' },
       { key: 'content', label: 'onde cada chave está', placeholder: '0:[12,20] 5:[45]' },
     ],
     conventions: [
-      { notation: '0:[12,20]', rule: 'uma posição ocupada', why: 'O número da posição, dois-pontos, e as chaves que estão nela. Só as chaves, o valor guardado não entra no traço.' },
+      { notation: '0:[12,20]', rule: 'uma posição ocupada', why: 'O número da posição, dois-pontos, e as chaves que estão nela. Só as chaves, o valor guardado não entra no trace.' },
       { notation: '0:[12,20] 5:[45]', rule: 'a tabela inteira', why: 'Só as posições que têm alguma chave, da menor para a maior, separadas por espaço.' },
       { notation: '—', rule: 'tabela vazia', why: 'Nenhuma posição ocupada ainda.' },
       { notation: 'sim / não', rule: 'houve rehash', why: 'Responda as seis linhas. Deixar em branco não é dizer não.' },
@@ -74,13 +72,13 @@ export const hashExercises: Exercise[] = [
   },
   {
     kind: 'bug', id: 'hash.e3',
-    prompt: 'Esta implementação de inserção é plausível e idiomática. Marque a linha defeituosa e escolha a consequência. Marcar a linha certa pela razão errada não conta.',
+    prompt: 'Esta implementação de inserção é plausível e idiomática. Marque a linha defeituosa. Depois, identifique o efeito dela no programa.',
     language: 'javascript',
     code: `insert(key, value) {
-if ((this.n + 1) / this.m > 0.75) this.resize(this.m * 2)
-const i = this.hash(key) % this.m
-this.buckets[i].push([key, value])
-this.n++
+  if ((this.n + 1) / this.m > 0.75) this.resize(this.m * 2)
+  const i = this.hash(key) % this.m
+  this.buckets[i].push([key, value])
+  this.n++
 }`,
     faultyLines: [4],
     consequences: [
@@ -112,9 +110,9 @@ this.n++
   },
   {
     kind: 'choice', id: 'hash.e1c',
-    prompt: 'Com m = 4 e o bucket 3 contendo [3, 7, 11], quantas comparações de chave a busca por 11 faz?',
+    prompt: 'Com m = 5 e o bucket 2 contendo [2, 7, 12, 17], quantas comparações de chave a busca por 17 faz?',
     choices: [
-      { correct: true, text: 'Três',
+      { correct: true, text: 'Quatro',
         why: 'Calcular o endereço é uma operação, comparar chaves dentro do bucket é outra' },
       { correct: false, text: 'Uma, porque a busca numa tabela hash é O(1)', misconceptionId: 'hash.o1-sem-qualificar' },
       { correct: false, text: 'Nenhuma, o endereço já entrega o par diretamente', misconceptionId: 'hash.colisao-e-bug' },
@@ -122,12 +120,12 @@ this.n++
   },
   {
     kind: 'choice', id: 'hash.e2a',
-    prompt: 'Tabela com chaining, m = 1000 e n = 750, portanto α = 0,75. Estime antes de calcular: quantos buckets você espera encontrar vazios?',
+    prompt: 'As duas tabelas guardam as chaves 0 a 7. Em A, h(k) = k mod 8; em B, h(k) = 0. O que muda ao buscar 7?',
     choices: [
-      { correct: true, text: 'Cerca de 470',
-        why: 'Quase metade, porque as colisões concentram vários pares em poucos buckets' },
-      { correct: false, text: '250, já que 75% da tabela está ocupada', misconceptionId: 'hash.load-factor-memoria' },
-      { correct: false, text: 'Nenhum: com α abaixo de 1 todo bucket recebe pelo menos um par', misconceptionId: 'hash.load-factor-memoria' },
+      { correct: true, text: 'Na entrada B, a busca compara até 8 chaves',
+        why: 'O endereço leva ao bucket em um passo, mas a busca ainda percorre o conteúdo daquele bucket.' },
+      { correct: false, text: 'Nada: as duas buscas custam uma operação', misconceptionId: 'hash.o1-sem-qualificar' },
+      { correct: false, text: 'A entrada B não pode existir numa tabela hash', misconceptionId: 'hash.colisao-e-bug' },
     ],
   },
   {
@@ -142,12 +140,12 @@ this.n++
   },
   {
     kind: 'choice', id: 'hash.e5',
-    prompt: 'Cache de sessão: contém(sessao) a cada requisição, e um job que expira as vinte mais antigas por minuto. Qual estrutura escolher?',
+    prompt: 'Uma tabela hash encontra rapidamente um e-mail exato, mas não mantém os cadastros em ordem de data. O sistema agora precisa listar todos os cadastros feitos entre duas datas. O que isso mostra?',
     choices: [
-      { correct: true, text: 'Nenhuma das duas sozinha',
-        why: 'Tabela hash para contém, e uma lista por ordem de chegada para as mais antigas' },
-      { correct: false, text: 'Tabela hash, que responde contém em O(1) e é a operação dominante', misconceptionId: 'hash.ordem' },
-      { correct: false, text: 'Lista por ordem de chegada, que já tem as mais antigas na ponta', misconceptionId: 'hash.ordem' },
+      { correct: true, text: 'A tabela hash sozinha não responde bem a consulta por intervalo',
+        why: 'Ela localiza uma chave exata, mas não preserva a ordem necessária para começar e terminar numa faixa de datas.' },
+      { correct: false, text: 'A tabela hash continua ideal porque cada cadastro tem uma chave', misconceptionId: 'hash.ordem' },
+      { correct: false, text: 'Basta calcular o hash das duas datas e ler o que estiver entre elas', misconceptionId: 'hash.ordem' },
     ],
   },
 ]

@@ -68,7 +68,7 @@ export const linearExercises: Exercise[] = [
   },
   {
     kind: 'choice', id: 'linear.e2',
-    prompt: 'Uma fila de jobs foi implementada com um array, enfileirando no fim e desenfileirando da posição 0. Com dez mil pendentes ela começou a atrasar, sem que a carga tivesse mudado. Por quê?',
+    prompt: 'Uma fila guarda os jobs num array: novos jobs entram no fim e o próximo sai da posição 0. Por que cada retirada fica mais cara quando a fila cresce?',
     choices: [
       { correct: true, text: 'Desenfileirar da posição 0 desloca todos os outros uma casa',
         why: 'O custo por job cresce com o tamanho da fila, então a carga não precisou mudar para o atraso aparecer.' },

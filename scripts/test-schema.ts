@@ -99,6 +99,16 @@ const fixture: Unit = {
       oneLine: 'Some o que cada laço executa e a conta fecha em 1 linha.',
       body: ['Somar o que cada laço executa responde 3 das 4 partes, e cala sobre a quarta.'],
       workedExample: { problem: 'Fixture.', whatToNotice: 'Fixture.' },
+      figure: {
+        kind: 'growth',
+        caption: 'Fixture.',
+        xLabel: 'n',
+        xMax: 10,
+        curves: [
+          { label: 'n', shape: 'linear', factor: 1 },
+          { label: 'n²', shape: 'quadratic', factor: 1 },
+        ],
+      },
       exerciseId: 'fixture.e1' },
     { id: 'fixture.c2', title: 'Recorrência', layer: 'essential',
       band: 'technique', elaborates: 'recurrence', introducesTerms: [],
@@ -205,6 +215,16 @@ const badPart = {
 }
 check('whenOmitted apontando parte inexistente reprova',
   checkAll([...units, badPart], allTerms).some((f) => f.check === 'cobertura'))
+
+const exemploSemResolucao = {
+  ...fixture,
+  cycles: [
+    { ...fixture.cycles[0]!, workedExample: { problem: 'Calcule o resultado.', whatToNotice: 'Fixture.' } },
+    ...fixture.cycles.slice(1),
+  ],
+}
+check('exemplo que devolve a tarefa sem resolução reprova',
+  checkAll([...units, exemploSemResolucao], allTerms).some((f) => f.check === 'exemplo'))
 
 /*
   As duas checagens do ADR-0026 e do ADR-0028, pelo lado negativo.

@@ -98,7 +98,7 @@ Derivadas de `whenOmitted`, uma por parte, mais as clássicas:
 - `pior-caso-e-o-caso-ruim`, supor que o pior caso é raro por definição
 
 Implementadas com nomes um pouco diferentes, e uma a mais: `custo-por-nivel-cresce`,
-exercitada pelo traço da árvore de recursão. Ela é a que o desenho deixa o aluno cometer com
+exercitada pelo trace da árvore de recursão. Ela é a que o desenho deixa o aluno cometer com
 a própria mão, se o custo por nível crescesse, o total seria n², e a tabela mostra que não
 cresce antes de qualquer frase afirmar isso.
 
@@ -121,7 +121,7 @@ declaradas, e construir a entrada concreta que faz o regime declarado importar.
 
 ## Decidido na implementação
 
-**A derivação da recorrência virou um exercício de traço, não um parágrafo.** A primeira
+**A derivação da recorrência virou um exercício de trace, não um parágrafo.** A primeira
 versão do `c3` afirmava "resolver essa relação dá n log n" e nunca mostrava como, que é
 exatamente o reconhecimento de padrão que o próprio ciclo condena duas frases depois.
 

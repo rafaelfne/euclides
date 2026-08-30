@@ -47,8 +47,12 @@ lugar onde ela funciona.
 
 `src/content/placement.ts` declara qual exercício sonda qual unidade, e a checagem
 `sonda` reprova sonda que aponta para o nada, sonda repetida na mesma unidade, e sonda
-que não seja `choice`. As duas primeiras quebram em silêncio; a terceira estoura os quatro
-minutos prometidos sem que nada avise.
+que não seja `choice`. Ela também limita o enunciado a 40 palavras e o rótulo a seis.
+
+A sonda aparece antes do conteúdo da unidade. Por isso ela precisa trazer todo o contexto
+necessário, explicar qualquer regra operacional em linguagem comum e cobrar uma capacidade
+só. O rótulo nomeia a situação concreta, não a disciplina. Termos técnicos pertencem à
+explicação posterior; não podem ser pré-requisito para entender a pergunta.
 
 ### Quatro estados, todos derivados, nenhum subindo pelo relógio
 

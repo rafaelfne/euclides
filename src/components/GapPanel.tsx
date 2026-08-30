@@ -45,7 +45,7 @@ export function GapPanel({ units }: { units: Unit[] }) {
         <Button onClick={copy}>Copiar sessão</Button>
         <span className="text-[12.5px] italic text-fg-4">
           {copied
-            ? 'copiado, cole no seu projeto do Claude'
+            ? 'copiado, cole no seu assistente de IA'
             : 'markdown com suas lacunas, sem nenhuma resposta dentro'}
         </span>
 
