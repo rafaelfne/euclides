@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" fill="none">
+  <rect width="1200" height="630" fill="#16181D"/>
+  <rect x="32" y="32" width="1136" height="566" rx="18" stroke="#2E343E"/>
+  <path d="M88 106H690" stroke="#2A3A54"/>
+  <text x="88" y="88" fill="#7EA6E0" font-family="Arial, sans-serif" font-size="18" font-weight="700" letter-spacing="4">EUCLIDES</text>
+  <text x="88" y="210" fill="#D8DBE0" font-family="Arial, sans-serif" font-size="64" font-weight="700">Leia o que</text>
+  <text x="88" y="286" fill="#D8DBE0" font-family="Arial, sans-serif" font-size="64" font-weight="700">o código promete.</text>
+  <text x="88" y="366" fill="#A7AEBA" font-family="Arial, sans-serif" font-size="26">Fundamentos de computação para julgar</text>
+  <text x="88" y="404" fill="#A7AEBA" font-family="Arial, sans-serif" font-size="26">código gerado por IA sem executá-lo.</text>
+  <rect x="88" y="492" width="8" height="44" rx="4" fill="#D6A44C"/>
+  <text x="116" y="521" fill="#939DAC" font-family="Arial, sans-serif" font-size="20">Nada é assumido que não esteja declarado.</text>
+  <g transform="translate(900 315)" stroke="#7EA6E0" stroke-linecap="round" stroke-linejoin="round">
+    <g stroke-width="4" stroke-dasharray="10 9" opacity=".55">
+      <circle cx="-62" cy="0" r="94"/>
+      <circle cx="62" cy="0" r="94"/>
+    </g>
+    <path d="M-62 0H62L0-80Z" stroke-width="7"/>
+    <circle cx="-62" cy="0" r="7" fill="#7EA6E0" stroke="none"/>
+    <circle cx="62" cy="0" r="7" fill="#7EA6E0" stroke="none"/>
+  </g>
+  <text x="1006" y="506" fill="#939DAC" font-family="Arial, sans-serif" font-size="18" letter-spacing="3">TRILHA 00—08</text>
+</svg>
