@@ -124,7 +124,7 @@ export const linearUnit: Unit = {
         'Uma fila de jobs guarda o primeiro, o segundo e o terceiro pedido. Ela responde rápido ' +
         'ao pedido “o que está na posição três?”. Mas, se a pergunta virar “onde está o job da ' +
         'cliente Ana?”, ela precisa olhar um por um. A forma de guardar dados responde bem a certas ' +
-        'perguntas e não promete as outras.',
+        'perguntas, mas não promete responder a outras.',
       body: [
         'Uma lista é uma sequência de elementos em posições, e as 4 operações são todas sobre posição: obter, inserir, remover, tamanho.',
         'A lista do que ela não promete é curta e cara: onde está um valor, se um valor existe, qual é o menor, quais estão numa faixa. Nada disso sai das quatro operações sem percorrer tudo. Guarde essa ausência, a unidade seguinte existe para prometer a primeira delas.',
