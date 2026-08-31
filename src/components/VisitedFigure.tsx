@@ -1,19 +1,10 @@
 import type { Figure } from '@/content/schema'
 import { bfsRounds, type Edge, type Round } from '@/lib/traversal'
-import { edgePath, edgesOf, positions, type Dims } from '@/lib/graph-layout'
+import { positions, type Dims } from '@/lib/graph-layout'
+import { flowEdges, FlowCanvas, type FlowNode, type FlowTone } from './FlowCanvas'
 import { Stepper } from './Stepper'
 
-/**
- * A mesma busca em largura, com e sem marcar visitados.
- *
- * O que a figura mostra é a FILA, e não a ordem de visita: a afirmação de
- * `graphs.c4` é que sem marcação ela nunca esvazia, e isso só aparece
- * acompanhando o tamanho dela rodada a rodada. As duas colunas rodam a mesma
- * busca com uma linha de diferença, que é exatamente a diferença que o ciclo
- * ensina.
- */
 const DIMS: Dims = { col: 84, row: 58, r: 17, pad: 26 }
-const R = DIMS.r
 
 function Graph({
   edges, origin, current, accent,
@@ -21,52 +12,17 @@ function Graph({
   edges: Edge[]
   origin: string
   current: string | undefined
-  accent: string
+  accent: FlowTone
 }) {
-  const { at, width, height } = positions(edges, origin, DIMS)
-  const marker = `ponta-${accent.replace(/\W/g, '')}`
+  const { at, height } = positions(edges, origin, DIMS)
+  const nodes: FlowNode[] = [...at.entries()].map(([vertex, point]) => ({
+    id: vertex,
+    type: 'euclides',
+    position: { x: point.x, y: point.y },
+    data: { label: vertex, tone: vertex === current ? accent : 'neutral' },
+  }))
 
-  return (
-    <svg viewBox={`0 0 ${width} ${height}`} className="w-full" style={{ maxWidth: width * 1.5 }}>
-      <defs>
-        <marker id={marker} markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto">
-          <path d="M0,0 L6,3 L0,6 Z" fill="var(--rule)" />
-        </marker>
-      </defs>
-      {edgesOf(edges).map(({ from, to }) => (
-        <path
-          key={`${from}-${to}`}
-          d={edgePath(at.get(from)!, at.get(to)!, DIMS)}
-          fill="none"
-          stroke="var(--rule)"
-          strokeWidth="1.25"
-          markerEnd={`url(#${marker})`}
-        />
-      ))}
-      {[...at.entries()].map(([v, p]) => (
-        <g key={v}>
-          <circle
-            cx={p.x}
-            cy={p.y}
-            r={R}
-            fill={v === current ? 'var(--panel-head)' : 'var(--panel)'}
-            stroke={v === current ? accent : 'var(--rule)'}
-            strokeWidth="1.5"
-          />
-          <text
-            x={p.x}
-            y={p.y + 4}
-            textAnchor="middle"
-            fill={v === current ? accent : 'var(--fg-3)'}
-            fontSize="12"
-            fontFamily="var(--mono)"
-          >
-            {v}
-          </text>
-        </g>
-      ))}
-    </svg>
-  )
+  return <FlowCanvas nodes={nodes} edges={flowEdges(edges, 'neutral', at)} height={Math.max(155, height + 22)} ariaLabel={`grafo, vértice atual ${current ?? 'nenhum'}`} />
 }
 
 function Queue({ round, accent }: { round: Round | undefined; accent: string }) {
@@ -103,8 +59,8 @@ export function VisitedFigure({
   const com = bfsRounds(figure.edges, figure.origin, { marking: true, maxRounds: figure.rounds })
 
   const colunas = [
-    { titulo: 'sem marcar visitados', accent: 'var(--implementation)', run: sem },
-    { titulo: 'marcando visitados', accent: 'var(--contract)', run: com },
+    { titulo: 'sem marcar visitados', accent: 'implementation' as FlowTone, run: sem },
+    { titulo: 'marcando visitados', accent: 'contract' as FlowTone, run: com },
   ]
 
   return (
@@ -127,7 +83,7 @@ export function VisitedFigure({
                 return (
                   <div key={c.titulo} className="flex flex-col gap-2 border border-rule-soft bg-panel-head p-2.5">
                     <div className="flex items-baseline justify-between gap-2">
-                      <span className="lbl" style={{ color: c.accent }}>{c.titulo}</span>
+                      <span className={`lbl text-${c.accent}`}>{c.titulo}</span>
                       <span className="font-mono text-[11px] text-fg-4">
                         {acabou && c.run.drained
                           ? 'terminou'
@@ -142,7 +98,7 @@ export function VisitedFigure({
                       current={round?.dequeued}
                       accent={c.accent}
                     />
-                    <Queue round={round} accent={c.accent} />
+                    <Queue round={round} accent={`var(--${c.accent})`} />
                     <span className="text-[11.5px] leading-snug text-fg-4">
                       {c.run.drained
                         ? `esvaziou em ${c.run.rounds.length} rodadas`

@@ -10,7 +10,6 @@ import { cn } from '@/lib/utils'
 import { cycleMinutes, humanMinutes } from '@/lib/duration'
 import { CycleFigure } from './CycleFigure'
 import { CycleShortcuts } from './CycleShortcuts'
-import { ModeToggle, useMode } from './ModeToggle'
 import { Prose } from './Prose'
 import { TermCard } from './TermCard'
 import { findMarks } from '@/lib/glossary-link'
@@ -23,11 +22,6 @@ import { Panel, PanelBody, PanelHeader, PanelTitle } from './ui/panel'
 import { exerciseState, PROGRESS_EVENT, saveExerciseNote } from '@/lib/progress'
 import { BAND_LABEL, BAND_TONE, LAYER_LABEL, TONE_TEXT } from './band-tokens'
 
-/**
- * The cycle is the unit of navigation, not the page: prose, worked example and
- * exercise live in one scroll. Splitting the exercise onto its own screen is an
- * invitation to skip it, and the exercise is the product.
- */
 export function CycleScreen({ unit, cycle, exercise }: { unit: Unit; cycle: Cycle; exercise: Exercise }) {
   const index = unit.cycles.findIndex((c) => c.id === cycle.id)
   const prev = unit.cycles[index - 1]
@@ -36,20 +30,8 @@ export function CycleScreen({ unit, cycle, exercise }: { unit: Unit; cycle: Cycl
     .map((id) => allTerms.find((t) => t.id === id))
     .filter((t): t is NonNullable<typeof t> => Boolean(t))
   const tone = BAND_TONE[cycle.band]
-  const mode = useMode()
-
-  /*
-    A frase de conforto aparece só nos três primeiros ciclos da unidade 01, e só
-    no modo iniciante. Ela é derivada, não autorada: o número de armadilhas vem
-    do catálogo, e é o ADR-0018 valendo — acolhimento é afirmação verificável.
-  */
   const firstCycles = unit.number === 1 && unit.cycles.findIndex((c) => c.id === cycle.id) < 3
 
-  // Os termos que ESTE ciclo estreia, mais o vocabulário do app, que não
-  // estreia em ciclo nenhum e é o que falta para quem chega sem referente.
-  //
-  // A ligação é uma por ciclo, não uma por parágrafo: o mesmo termo sublinhado
-  // três vezes na mesma tela vira ruído, e a estreia acontece uma vez só.
   const linkable = [...cycle.introducesTerms, ...allTerms.filter((t) => t.id.startsWith('app.')).map((t) => t.id)]
   const remaining = new Set(linkable)
   const termsPerParagraph = cycle.body.map((text) => {
@@ -66,7 +48,6 @@ export function CycleScreen({ unit, cycle, exercise }: { unit: Unit; cycle: Cycl
           <span className={cn('lbl', TONE_TEXT[tone])}>{BAND_LABEL[cycle.band]}</span>
           {LAYER_LABEL[cycle.layer] && <span className="lbl text-cost">· {LAYER_LABEL[cycle.layer]}</span>}
           <span className="lbl ml-auto">{humanMinutes(cycleMinutes(unit, cycle.id))}</span>
-          <ModeToggle />
         </div>
 
         <h1 className="m-0 mb-4 max-w-[820px] text-[30px] font-semibold leading-tight text-fg">{cycle.title}</h1>
@@ -86,13 +67,13 @@ export function CycleScreen({ unit, cycle, exercise }: { unit: Unit; cycle: Cycl
           {cycle.oneLine}
         </p>
 
-        {mode === 'iniciante' && cycle.plainly && (
+        {cycle.plainly && (
           <p className="m-0 mb-5 max-w-[820px] border border-rule-soft bg-panel-head px-4 py-3 text-[14px] leading-[1.75] text-fg-3">
             {cycle.plainly}
           </p>
         )}
 
-        {mode === 'iniciante' && firstCycles && (
+        {firstCycles && (
           <p className="m-0 mb-5 max-w-[820px] text-[13px] leading-relaxed text-fg-4">
             Errar aqui é o esperado: esta unidade tem {unit.misconceptions.length} armadilhas
             catalogadas, escritas antes de você chegar. O app não dá a resposta, dá a tarefa
@@ -108,7 +89,7 @@ export function CycleScreen({ unit, cycle, exercise }: { unit: Unit; cycle: Cycl
 
         {cycle.figure && (
           <div className="mt-6 max-w-[820px]">
-            <CycleFigure figure={cycle.figure} autoPlay={mode === 'iniciante'} />
+            <CycleFigure figure={cycle.figure} />
           </div>
         )}
 
@@ -118,12 +99,8 @@ export function CycleScreen({ unit, cycle, exercise }: { unit: Unit; cycle: Cycl
           </div>
         )}
 
-        {/*
-          Aberto no modo iniciante, recolhido no de revisão. Quem já julgou este
-          conteúdo não quer o exemplo entre a prosa e o exercício. ADR-0027.
-        */}
         <details
-          open={mode === 'iniciante'}
+          open
           className="mt-6 max-w-[820px] border border-cost-rule bg-cost-bg"
         >
           <summary className="lbl cursor-pointer px-3.5 py-2 text-cost">Exemplo trabalhado</summary>
@@ -133,13 +110,6 @@ export function CycleScreen({ unit, cycle, exercise }: { unit: Unit; cycle: Cycl
           </div>
         </details>
 
-        {/*
-          O chamado fecha aqui, e só no último ciclo.
-          A unidade abriu com um incidente concreto e passou por sete ciclos de
-          técnica; sem voltar a ele, o aluno guarda a abertura e nunca recebe a
-          resposta. As quatro perguntas são as mesmas em todas as unidades, de
-          propósito: é o roteiro que ele deve levar embora. ADR-0027.
-        */}
         {cycle.postmortem && (
           <div className="mt-8 max-w-[860px] border border-cost-rule bg-cost-bg">
             <div className="border-b border-cost-rule px-4 py-2">
@@ -174,11 +144,6 @@ export function CycleScreen({ unit, cycle, exercise }: { unit: Unit; cycle: Cycl
 
         <ReviewTransfer unit={unit} cycle={cycle} exerciseId={exercise.id} />
 
-        {/*
-          A sequência existia só no array. Sem isto a tela do ciclo terminava
-          no botão de verificar e o aluno voltava ao mapa para achar o próximo
-          à mão, e o mapa está ordenado por banda, não por leitura.
-        */}
         <nav className="mt-12 flex max-w-[860px] justify-between gap-5 border-t border-rule-soft pt-4">
           {prev ? (
             <Link href={`/units/${unit.id}/cycles/${prev.id}`} className="max-w-[340px] text-inherit hover:text-fg">

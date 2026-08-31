@@ -223,6 +223,9 @@ export function checkAll(units: Unit[], terms: GlossaryTerm[]): Failure[] {
       fail('espinha', `${u.id}: o primeiro ciclo é "${u.cycles[0]!.band}", deveria ser "${openingBand}"`)
     }
 
+    if (!u.cycles[0]!.figure) {
+      fail('figura', `${u.id}: o primeiro ciclo precisa de uma figura introdutória`)
+    }
     if (!u.cycles.some((c) => c.figure)) {
       fail('figura', `${u.id}: a unidade não tem nenhum exemplo visual derivado`)
     }
@@ -256,13 +259,26 @@ export function checkAll(units: Unit[], terms: GlossaryTerm[]): Failure[] {
       if (f.kind === 'linked-list-removal' && f.targetIndex >= f.values.length) {
         fail('figura', `${c.id}: o alvo ${f.targetIndex} não existe na lista de ${f.values.length} nós`)
       }
-      if (f.kind === 'graph-representations') {
+      if (f.kind === 'concept-flow') {
+        const ids = f.nodes.map((node) => node.id)
+        if (new Set(ids).size !== ids.length) {
+          fail('figura', `${c.id}: o fluxo conceitual repete um nó`)
+        }
+        const unknown = f.edges.flatMap((edge) => [edge.from, edge.to]).filter((id) => !ids.includes(id))
+        if (unknown.length) {
+          fail('figura', `${c.id}: o fluxo conceitual cita nós ausentes: ${[...new Set(unknown)].join(', ')}`)
+        }
+      }
+      if (f.kind === 'graph-basics' || f.kind === 'graph-representations') {
         if (new Set(f.vertices).size !== f.vertices.length) {
           fail('figura', `${c.id}: a representação repete um vértice`)
         }
         const unknown = f.edges.flatMap((edge) => [edge.from, edge.to]).filter((vertex) => !f.vertices.includes(vertex))
         if (unknown.length) {
           fail('figura', `${c.id}: as arestas citam vértices ausentes: ${[...new Set(unknown)].join(', ')}`)
+        }
+        if (f.kind === 'graph-basics' && !f.vertices.includes(f.origin)) {
+          fail('figura', `${c.id}: a origem "${f.origin}" não é vértice do grafo declarado`)
         }
       }
       if (f.kind === 'hash-address' && new Set(f.keys.map((key) => key % f.m)).size === f.keys.length) {

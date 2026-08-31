@@ -135,6 +135,21 @@ export const hashUnit: Unit = {
         'Antes de qualquer estrutura, o contrato. Um Map associa chave a valor e oferece 4 operações, e é tudo o que ele oferece.',
         'O que interessa aqui não é a lista de operações; é a lista do que o contrato NÃO cobre. Ordem não está lá. Nem mínimo, nem faixa, nem “os vinte primeiros”. Guarde essa ausência: no último ciclo ela volta como a resposta inteira.',
       ],
+      figure: {
+        kind: 'concept-flow',
+        nodes: [
+          { id: 'key', label: 'chave', tone: 'contract' },
+          { id: 'map', label: 'Map', tone: 'contract' },
+          { id: 'value', label: 'valor', tone: 'contract' },
+          { id: 'no-order', label: 'sem ordem', tone: 'cost' },
+        ],
+        edges: [
+          { from: 'key', to: 'map' },
+          { from: 'map', to: 'value' },
+          { from: 'map', to: 'no-order' },
+        ],
+        caption: 'O Map responde chave → valor. A ausência de ordem também faz parte do contrato: ela não aparece como operação.',
+      },
       workedExample: {
         problem: "Guarde 3 pares em um Map: \"b\"→1, \"a\"→2, \"c\"→3. Peça o valor de \"a\": 1 operação. Peça \"a menor chave\": nenhuma das 4 operações responde.",
         whatToNotice: "A ausência de ordem não é limitação de implementação, é o contrato. Guarde essa lista, ela é a resposta do último ciclo.",

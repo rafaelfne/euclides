@@ -66,15 +66,14 @@ async function run() {
   const antes = migrated.profile?.createdAt
   check('ler duas vezes não recria o perfil', read().profile?.createdAt === antes)
 
-  saveProfile({ name: 'Marina', mode: 'iniciante' })
+  saveProfile({ name: 'Marina' })
   check('salvar o perfil preserva o progresso',
     read().units.hash?.exercises['hash.e1']?.attempts === 2 && read().profile?.name === 'Marina')
 
   const beforeReset = exportProfile()
   resetTrail()
   check('recomeçar zera as unidades', Object.keys(read().units).length === 0)
-  check('recomeçar preserva nome e preferências',
-    read().profile?.name === 'Marina' && read().profile?.mode === 'iniciante')
+  check('recomeçar preserva nome e preferências', read().profile?.name === 'Marina')
   check('recomeçar apaga a sondagem', read().placement === undefined)
   check('recomeçar remove o cartão de retomada', resumePoint([
     {

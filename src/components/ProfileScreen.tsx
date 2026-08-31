@@ -18,14 +18,6 @@ import { SealRow } from './MasterySeal'
 import { RevisitQueue } from './RevisitQueue'
 import { UnitStateDot } from './UnitStateDot'
 
-/**
- * O perfil, e as três ações que o tornam honesto.
- *
- * Sem conta e sem servidor, portabilidade e apagamento não são cortesias: são a
- * contrapartida. Exportar é o que permite trocar de navegador sem perder nada,
- * e apagar é o que permite ir embora sem pedir licença a ninguém. As duas são
- * locais e imediatas. Ver ADR-0021.
- */
 const STATUS_LABEL: Record<CycleStatus, string> = {
   pending: 'não visitado',
   attempted: 'em curso',
@@ -107,15 +99,12 @@ export function ProfileScreen() {
       </Panel>
 
       <Panel>
-        <PanelHeader><PanelTitle>Como você lê</PanelTitle></PanelHeader>
+        <PanelHeader><PanelTitle>Preferências</PanelTitle></PanelHeader>
         <PanelBody className="flex flex-col gap-4">
-          <Toggle
-            label="Modo"
-            options={[['iniciante', 'Guiado'], ['revisao', 'Conciso']]}
-            value={profile?.mode ?? 'revisao'}
-            onPick={(v) => setProfile(saveProfile({ mode: v as Profile['mode'] }).profile)}
-            hint="Guiado mostra o contexto, abre o exemplo e percorre a figura. Conciso mostra o núcleo e mantém o exemplo recolhido."
-          />
+          <p className="m-0 text-[13px] leading-relaxed text-fg-3">
+            A trilha usa uma única leitura guiada: contexto, exemplo trabalhado e figura aparecem
+            junto do exercício.
+          </p>
           <Toggle
             label="Código"
             options={[['pseudo', 'Pseudocódigo'], ['typescript', 'TypeScript']]}
@@ -154,8 +143,8 @@ export function ProfileScreen() {
         <PanelHeader><PanelTitle>Recomeçar a trilha</PanelTitle></PanelHeader>
         <PanelBody className="flex flex-col gap-3.5">
           <p className="m-0 text-[13px] leading-relaxed text-fg-3">
-            Zera tentativas, lacunas, revisitas, selos e sondagem. Seu nome, modo de leitura e
-            preferência de código continuam iguais.
+            Zera tentativas, lacunas, revisitas, selos e sondagem. Seu nome e preferência de código
+            continuam iguais.
           </p>
 
           <div className="flex flex-wrap items-center gap-2">

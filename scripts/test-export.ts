@@ -101,7 +101,7 @@ check('progresso vazio gera export honesto, não vazio',
 {
   const comPerfil = { ...progress, profile: {
     name: 'Marina', createdAt: '2026-08-29T00:00:00.000Z',
-    mode: 'revisao' as const, codeLanguage: 'pseudo' as const,
+    codeLanguage: 'pseudo' as const,
   } }
   const semNome = buildSessionExport(units, comPerfil, NOW)
   const comNome = buildSessionExport(units, comPerfil, NOW, true)

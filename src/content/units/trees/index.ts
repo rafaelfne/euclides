@@ -171,6 +171,23 @@ export const treesUnit: Unit = {
         'A promessa é sobre chave. O valor guardado nunca é comparado com nada, e percorrer a estrutura em ordem devolve as chaves ordenadas, não os valores. Essa distinção parece pedante até a primeira vez que alguém espera o contrário.',
         'E ela tem preço declarado: obter por chave deixa de ser uma conta e passa a ser um caminho. A lista do que este contrato não promete inclui, agora, o tempo constante que o anterior prometia.',
       ],
+      figure: {
+        kind: 'concept-flow',
+        nodes: [
+          { id: 'keys', label: 'chaves', tone: 'neutral' },
+          { id: 'order', label: 'ordem entre chaves', tone: 'contract' },
+          { id: 'range', label: 'mínimo, máximo e faixa', tone: 'contract' },
+          { id: 'lookup', label: 'obter por chave: caminho', tone: 'cost' },
+        ],
+        edges: [
+          { from: 'keys', to: 'order' },
+          { from: 'order', to: 'range' },
+          { from: 'order', to: 'lookup' },
+        ],
+        caption:
+          'A estrutura ordenada acrescenta uma promessa: compara as chaves para responder ' +
+          'mínimo, máximo e faixa. O ganho troca o salto direto por um caminho.',
+      },
       workedExample: {
         problem: "Com 3 pares, \"b\"→1, \"a\"→2, \"c\"→3, pedir a menor chave devolve \"a\" em poucos passos. No Map da unidade anterior, a mesma pergunta obrigava a varrer os 3.",
         whatToNotice: "Ganhou mínimo, máximo e faixa. Perdeu o acesso por conta: obter uma chave virou descer um caminho.",
@@ -217,7 +234,7 @@ export const treesUnit: Unit = {
         'O custo de toda operação desta estrutura é a altura. E a invariante de ordem não diz nada sobre altura.',
         'Insira 1, 2, 3, 4 e 5 numa árvore vazia: cada chave vira o filho direito da anterior, a altura vira n − 1, e a estrutura virou uma lista ligada com ponteiros a mais. Toda operação passou a custar O(n), e a invariante continua valendo.',
         'A entrada que produz isso é a coleção já ordenada, a mais comum que existe num sistema real, porque identificador cresce e exportador exporta em ordem. Aqui, como na unidade de análise de custo, o pior caso não é o caso raro.',
-        'Vale separar duas palavras que costumam ser trocadas: a profundidade de um nó é o caminho da raiz até ele, contado de cima para baixo; a altura de um nó é o caminho mais longo dele até uma folha, contado de baixo para cima. A altura da árvore é a altura da raiz.',
+        'Vale separar duas palavras que costumam ser trocadas: a profundidade de um nó é o caminho da raiz até ele, contado de cima para baixo; a altura de um nó é o caminho mais longo dele até uma folha, contado de baixo para cima. Portanto, a altura da árvore é a altura da raiz: o caminho da raiz até a folha mais distante.',
       ],
       figure: {
         kind: 'tree',

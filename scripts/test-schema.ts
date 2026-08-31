@@ -92,6 +92,15 @@ const fixture: Unit = {
       layer: 'essential', band: 'criterion', introducesTerms: [],
       oneLine: 'A afirmação de custo tem 5 partes, e a incompleta é a que passa.',
       body: ['A afirmação incompleta é a que passa na revisão. São 5 partes; comece pelo que ela omite.'],
+      figure: {
+        kind: 'concept-flow',
+        caption: 'Uma afirmação de custo só fica verificável quando suas partes estão declaradas.',
+        nodes: [
+          { id: 'claim', label: 'afirmação', tone: 'contract' },
+          { id: 'parts', label: '5 partes', tone: 'implementation' },
+        ],
+        edges: [{ from: 'claim', to: 'parts' }],
+      },
       workedExample: { problem: 'Fixture.', whatToNotice: 'Fixture.' },
       exerciseId: 'fixture.e0' },
     { id: 'fixture.c1', title: 'Contagem de operações', layer: 'essential',

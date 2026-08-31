@@ -1,63 +1,25 @@
 import type { Figure } from '@/content/schema'
 import { build, heightOf, inorder, place, rebalanceOnce, ROTATION_LABEL, type Placed } from '@/lib/bst'
+import { layoutTreeRelations } from '@/lib/tree-layout'
+import { flowEdges, FlowCanvas, type FlowNode } from './FlowCanvas'
 
-/**
- * A mesma árvore antes e depois da rotação, com as duas travessias embaixo.
- *
- * As travessias aparecem porque a afirmação do ciclo não é "a altura cai": é
- * "a altura cai E a ordem não muda". Mostrar só as duas árvores deixa a metade
- * que legitima a operação por conta da memória de quem lê, e é justamente a
- * metade que se confere em trinta segundos.
- */
-const COL = 42
-const LEVEL = 46
-const R = 15
+function treeLayout(nodes: Placed[]) {
+  const relations = nodes.flatMap((node) => {
+    if (!node.parent) return []
+    const parent = nodes.find((candidate) => candidate.x === node.parent!.x && candidate.y === node.parent!.y)
+    return parent ? [{ from: parent.key, to: node.key }] : []
+  })
+  return layoutTreeRelations(nodes.map((node) => node.key), relations)
+}
 
-function Tree({ nodes, moved }: { nodes: Placed[]; moved: Set<number> }) {
-  const cols = Math.max(...nodes.map((n) => n.x)) + 1
-  const levels = Math.max(...nodes.map((n) => n.y)) + 1
-  const cx = (n: { x: number }) => n.x * COL + 12 + R
-  const cy = (n: { y: number }) => n.y * LEVEL + 8 + R
-
-  return (
-    <svg viewBox={`0 0 ${cols * COL + 24} ${levels * LEVEL + 16}`} className="w-full">
-      {nodes.map((n) =>
-        n.parent ? (
-          <line
-            key={`e${n.key}`}
-            x1={cx(n.parent)}
-            y1={cy(n.parent)}
-            x2={cx(n)}
-            y2={cy(n)}
-            stroke="var(--rule)"
-            strokeWidth="1.25"
-          />
-        ) : null,
-      )}
-      {nodes.map((n) => (
-        <g key={n.key}>
-          <circle
-            cx={cx(n)}
-            cy={cy(n)}
-            r={R}
-            fill={moved.has(n.key) ? 'var(--contract-bg)' : 'var(--panel)'}
-            stroke={moved.has(n.key) ? 'var(--contract)' : 'var(--rule)'}
-            strokeWidth="1.5"
-          />
-          <text
-            x={cx(n)}
-            y={cy(n) + 4}
-            textAnchor="middle"
-            fill={moved.has(n.key) ? 'var(--contract)' : 'var(--fg-2)'}
-            fontSize="11.5"
-            fontFamily="var(--mono)"
-          >
-            {n.key}
-          </text>
-        </g>
-      ))}
-    </svg>
-  )
+function Tree({ layout, moved, height }: { layout: ReturnType<typeof treeLayout>; moved: Set<number>; height: number }) {
+  const flowNodes: FlowNode[] = layout.nodes.map((n) => ({
+    id: String(n.key),
+    type: 'euclides',
+    position: n.position,
+    data: { label: String(n.key), tone: moved.has(n.key) ? 'contract' : 'neutral', direction: 'vertical' },
+  }))
+  return <FlowCanvas nodes={flowNodes} edges={flowEdges(layout.edges)} height={height} ariaLabel="árvore antes ou depois da rotação" />
 }
 
 export function RotationFigure({ figure }: { figure: Extract<Figure, { kind: 'rotation' }> }) {
@@ -70,9 +32,10 @@ export function RotationFigure({ figure }: { figure: Extract<Figure, { kind: 'ro
   const moved = new Set(placedAfter.filter((n) => depthBefore.get(n.key) !== n.y).map((n) => n.key))
 
   const panels = [
-    { label: 'antes', nodes: placedBefore, height: heightOf(before), moved: new Set<number>() },
-    { label: 'depois', nodes: placedAfter, height: heightOf(after), moved },
+    { label: 'antes', nodes: placedBefore, treeHeight: heightOf(before), layout: treeLayout(placedBefore), moved: new Set<number>() },
+    { label: 'depois', nodes: placedAfter, treeHeight: heightOf(after), layout: treeLayout(placedAfter), moved },
   ]
+  const canvasHeight = Math.max(150, Math.max(...panels.map((panel) => panel.layout.height)) + 20)
   const order = inorder(before).join(' ')
 
   return (
@@ -93,10 +56,10 @@ export function RotationFigure({ figure }: { figure: Extract<Figure, { kind: 'ro
               <div className="flex items-baseline justify-between gap-2">
                 <span className="lbl">{p.label}</span>
                 <span className={`lbl ${p.label === 'depois' ? 'text-contract' : 'text-implementation'}`}>
-                  altura {p.height}
+                  altura {p.treeHeight}
                 </span>
               </div>
-              <Tree nodes={p.nodes} moved={p.moved} />
+              <Tree layout={p.layout} moved={p.moved} height={canvasHeight} />
             </div>
           ))}
         </div>

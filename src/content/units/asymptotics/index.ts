@@ -115,6 +115,23 @@ export const asymptoticsUnit: Unit = {
         'Uma afirmação de custo verificável carrega cinco partes: o limite, o regime, se ele é amortizado, sob quais hipóteses vale, e o que n conta. Este ciclo apresenta as cinco; os próximos atacam uma de cada vez, e cada um deles começa pela frase que a omissão produz.',
         'Não é formalidade. O schema deste projeto exige as cinco partes em toda afirmação de custo que aparece na trilha, você vai encontrá-las preenchidas em todas as outras unidades. Aqui você aprende a produzi-las.',
       ],
+      figure: {
+        kind: 'concept-flow',
+        nodes: [
+          { id: 'claim', label: '"Hash é O(1)"', tone: 'implementation' },
+          { id: 'regime', label: 'regime', tone: 'contract' },
+          { id: 'amortized', label: 'amortizado', tone: 'contract' },
+          { id: 'assumptions', label: 'hipóteses', tone: 'contract' },
+          { id: 'measured-in', label: 'o que n conta', tone: 'contract' },
+        ],
+        edges: [
+          { from: 'claim', to: 'regime' },
+          { from: 'claim', to: 'amortized' },
+          { from: 'claim', to: 'assumptions' },
+          { from: 'claim', to: 'measured-in' },
+        ],
+        caption: 'Uma afirmação de custo só permite previsão quando o limite vem acompanhado do regime, das hipóteses e do que n mede.',
+      },
       workedExample: {
         problem: "\"Buscar é O(1)\" contra \"buscar é O(1) amortizado no caso médio, supondo hash uniforme, com n contando pares na tabela\". A segunda tem 5 partes; a primeira tem 1.",
         whatToNotice: "As duas frases descrevem a mesma tabela. Só a segunda deixa você prever o que acontece quando as chaves são escolhidas por quem ataca o sistema.",

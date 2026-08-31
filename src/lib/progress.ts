@@ -40,7 +40,7 @@ function migrate(raw: unknown): Progress | null {
     schemaVersion: 2,
     // Sem nome: quem já estava usando o app nunca informou um, e inventar um
     // perfil na migração seria decidir por quem não foi perguntado.
-    profile: { createdAt: new Date().toISOString(), mode: 'revisao', codeLanguage },
+    profile: { createdAt: new Date().toISOString(), codeLanguage },
     units: v1.units,
   }
 }
@@ -236,7 +236,6 @@ export function saveProfile(patch: Partial<Profile>): Progress {
     ...p,
     profile: {
       createdAt: p.profile?.createdAt ?? new Date().toISOString(),
-      mode: p.profile?.mode ?? 'revisao',
       codeLanguage: p.profile?.codeLanguage ?? 'pseudo',
       ...p.profile,
       ...patch,

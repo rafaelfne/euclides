@@ -15,8 +15,7 @@ unidade só avança quando o raciocínio aparece no exercício.
   derivado sem criar uma segunda fonte de verdade.
 - Figuras interativas com a mesma linguagem visual: execução passo a passo,
   estruturas lineares, hashing, grafos, árvores, ordenação e crescimento assintótico.
-- Modo **Guiado** para ver contexto e exemplos abertos, e modo **Conciso** para
-  revisar o núcleo do conceito.
+- Uma leitura **Guiada**, com contexto, exemplos abertos e figuras junto do exercício.
 - Busca rápida por termo, ciclo, armadilha ou tela com `⌘K` no macOS e `Ctrl+K` no
   Windows/Linux.
 - Progresso salvo apenas neste navegador, sem conta, servidor, banco ou coleta de

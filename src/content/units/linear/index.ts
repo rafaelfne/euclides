@@ -129,6 +129,23 @@ export const linearUnit: Unit = {
         'Uma lista é uma sequência de elementos em posições, e as 4 operações são todas sobre posição: obter, inserir, remover, tamanho.',
         'A lista do que ela não promete é curta e cara: onde está um valor, se um valor existe, qual é o menor, quais estão numa faixa. Nada disso sai das quatro operações sem percorrer tudo. Guarde essa ausência, a unidade seguinte existe para prometer a primeira delas.',
       ],
+      figure: {
+        kind: 'concept-flow',
+        nodes: [
+          { id: 'list', label: 'lista', tone: 'contract' },
+          { id: 'position', label: 'posição 3', tone: 'contract' },
+          { id: 'direct', label: 'acesso direto', tone: 'contract' },
+          { id: 'value', label: 'valor Ana', tone: 'cost' },
+          { id: 'scan', label: 'olhar um por um', tone: 'cost' },
+        ],
+        edges: [
+          { from: 'list', to: 'position' },
+          { from: 'position', to: 'direct' },
+          { from: 'list', to: 'value' },
+          { from: 'value', to: 'scan' },
+        ],
+        caption: 'A lista responde diretamente a uma posição. Para descobrir onde está um valor, é preciso comparar os elementos um por um.',
+      },
       workedExample: {
         problem: "Numa lista de 1000 nomes, obter a posição 500 é 1 operação. Descobrir em que posição está \"Ana\" são até 1000 comparações.",
         whatToNotice: "As duas perguntas parecem simétricas e não são. Só a primeira sai das quatro operações do contrato.",

@@ -7,6 +7,7 @@
  * parecem uma árvore. Por isso o teste confere a derivação, e não o SVG.
  */
 import { build, heightOf, inorder, place, rebalanceOnce, ROTATION_LABEL } from '../src/lib/bst'
+import { layoutTree } from '../src/lib/tree-layout'
 import { units } from '../src/content/index'
 
 let failures = 0
@@ -62,6 +63,12 @@ check('árvore vazia não quebra', rebalanceOnce(null).rotation === null)
   const nodes = place(build([5, 3, 8, 2, 4, 7, 9]))
   const posicoes = nodes.map((n) => `${n.x},${n.y}`)
   check('cada nó ocupa uma posição só', new Set(posicoes).size === posicoes.length)
+}
+
+{
+  const nodes = layoutTree(build([50, 30, 70, 20, 40, 35])).nodes
+  const x = new Map(nodes.map((node) => [node.key, node.position.x]))
+  check('Dagre mantém filho esquerdo à esquerda e direito à direita', x.get(20)! < x.get(30)! && x.get(30)! < x.get(50)! && x.get(50)! < x.get(70)!)
 }
 
 // --- todo tipo de rotação tem rótulo --------------------------------------

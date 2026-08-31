@@ -27,11 +27,6 @@ export function Stepper({
   count: number
   labelFor: (step: number) => string
   children: (step: number) => React.ReactNode
-  /**
-   * Roda uma passada ao montar. Ligado só no modo iniciante, e nunca no de
-   * revisão: quem já julgou aquele conteúdo não quer a animação entre a prosa e
-   * o exercício. Continua sendo uma passada e continua parando. ADR-0027.
-   */
   autoPlay?: boolean
   startAt?: number
   canAdvance?: (step: number) => boolean

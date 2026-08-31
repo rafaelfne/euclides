@@ -17,6 +17,8 @@ import { ExecutionTraceFigure } from './ExecutionTraceFigure'
 import { LruCompositionFigure } from './LruCompositionFigure'
 import { LinkedListRemovalFigure } from './LinkedListRemovalFigure'
 import { GraphRepresentationsFigure } from './GraphRepresentationsFigure'
+import { GraphBasicsFigure } from './GraphBasicsFigure'
+import { ConceptFlowFigure } from './ConceptFlowFigure'
 import { HashAddressFigure } from './HashAddressFigure'
 import { MergeStructureFigure, QuicksortPartitionFigure } from './SortingFigures'
 
@@ -26,6 +28,8 @@ export function CycleFigure({ figure, autoPlay = false }: { figure: Figure; auto
     case 'lru-composition': return <LruCompositionFigure figure={figure} />
     case 'linked-list-removal': return <LinkedListRemovalFigure figure={figure} />
     case 'graph-representations': return <GraphRepresentationsFigure figure={figure} />
+    case 'graph-basics': return <GraphBasicsFigure figure={figure} />
+    case 'concept-flow': return <ConceptFlowFigure figure={figure} />
     case 'hash-address': return <HashAddressFigure figure={figure} />
     case 'merge-structure': return <MergeStructureFigure figure={figure} />
     case 'quicksort-partition': return <QuicksortPartitionFigure figure={figure} />

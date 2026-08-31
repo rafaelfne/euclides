@@ -166,6 +166,8 @@
 
   /* Bloco de pseudocódigo com medianiz numerada, como um editor. */
   .pseudocode {
+    margin: 0;
+    padding: 12px 16px;
     background: #101218;
     border: 1px solid var(--rule);
     overflow-x: auto;
@@ -175,6 +177,10 @@
     white-space: pre;
     tab-size: 4;
     counter-reset: gutter;
+  }
+  .pseudocode > code {
+    display: block;
+    padding: 0;
   }
   .pseudocode .tok-convention {
     border-bottom: 1px dotted rgba(126, 166, 224, 0.5);
@@ -194,6 +200,99 @@
   mesmo. Desligar o passo seria esconder dado de quem pediu menos movimento.
 */
 @layer components {
+  .euclides-flow {
+    width: 100%;
+    min-height: 150px;
+    overflow: hidden;
+    background: var(--panel);
+  }
+  .euclides-flow .react-flow__renderer,
+  .euclides-flow .react-flow__pane {
+    background: var(--panel);
+  }
+  .euclides-flow__node {
+    box-sizing: border-box;
+    display: flex;
+    min-width: 48px;
+    min-height: 36px;
+    align-items: center;
+    max-width: 174px;
+    gap: 9px;
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    background: var(--panel-head);
+    color: var(--fg);
+    padding: 7px 10px;
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.04), 0 5px 14px rgb(0 0 0 / 0.18);
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.2;
+    text-align: left;
+  }
+  .euclides-flow__node-mark {
+    flex: 0 0 7px;
+    width: 7px;
+    height: 7px;
+    border-radius: 2px;
+    background: var(--fg-4);
+    box-shadow: 0 0 0 3px rgb(138 148 163 / 0.1);
+  }
+  .euclides-flow__node-copy {
+    min-width: 0;
+  }
+  .euclides-flow__node-label {
+    display: block;
+    overflow-wrap: anywhere;
+  }
+  .euclides-flow__node small {
+    display: block;
+    margin-top: 3px;
+    color: var(--fg-3);
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 400;
+  }
+  .euclides-flow__node--contract {
+    border-color: var(--contract-rule);
+    background: var(--contract-bg);
+  }
+  .euclides-flow__node--contract .euclides-flow__node-mark {
+    background: var(--contract);
+    box-shadow: 0 0 0 3px rgb(126 166 224 / 0.12);
+  }
+  .euclides-flow__node--implementation {
+    border-color: var(--implementation-rule);
+    background: var(--implementation-bg);
+  }
+  .euclides-flow__node--implementation .euclides-flow__node-mark {
+    background: var(--implementation);
+    box-shadow: 0 0 0 3px rgb(224 130 121 / 0.12);
+  }
+  .euclides-flow__node--cost {
+    border-color: var(--cost-rule);
+    background: var(--cost-bg);
+  }
+  .euclides-flow__node--cost .euclides-flow__node-mark {
+    background: var(--cost);
+    box-shadow: 0 0 0 3px rgb(214 164 76 / 0.12);
+  }
+  .euclides-flow__node--faded {
+    border-color: var(--rule);
+    background: var(--panel);
+    color: var(--fg-5);
+  }
+  .euclides-flow__node--faded .euclides-flow__node-mark {
+    background: var(--fg-5);
+    box-shadow: none;
+  }
+  .euclides-flow .react-flow__handle {
+    width: 1px;
+    height: 1px;
+    border: 0;
+    background: transparent;
+    opacity: 0;
+  }
   .m-tap {
     transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease;
   }

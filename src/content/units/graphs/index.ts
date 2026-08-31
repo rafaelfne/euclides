@@ -131,8 +131,15 @@ export const graphsUnit: Unit = {
         'A lista do que ele não promete é desconfortavelmente grande, e é a coisa mais importante desta unidade: se existe caminho entre dois vértices, qual o caminho mais curto, se há ciclo, quem é alcançável. **Nada disso é operação do contrato.** Tudo isso é algoritmo escrito sobre ele.',
         'A diferença entre árvore e grafo cabe numa frase: numa árvore existe exatamente um caminho entre dois nós; num grafo pode haver nenhum, um, ou muitos, e pode haver um que volte ao ponto de partida. Tudo que a unidade anterior podia assumir sem dizer deixa de valer aqui.',
       ],
+      figure: {
+        kind: 'graph-basics',
+        vertices: ['A', 'B', 'C', 'D'],
+        edges: [{ from: 'A', to: 'B' }, { from: 'A', to: 'C' }, { from: 'B', to: 'C' }, { from: 'B', to: 'D' }],
+        origin: 'A',
+        caption: 'Cada ponto representa um vértice e cada seta representa uma aresta. A liga-se diretamente a B e C; B liga-se diretamente a C e D. Não há C→D: D aparece a partir de A pelo caminho A→B→D, não por uma ligação direta de C.',
+      },
       workedExample: {
-        problem: "Com 4 vértices e as ligações A→B, B→C, C→A: perguntar os vizinhos de A devolve B em 1 operação. Perguntar \"existe caminho de A até C\" não é operação nenhuma, é um algoritmo que você escreve.",
+        problem: "Com 3 vértices e as ligações A→B, B→C, C→A: perguntar os vizinhos de A devolve B em 1 operação. Perguntar \"existe caminho de A até C\" não é operação nenhuma, é um algoritmo que você escreve.",
         whatToNotice: "Repare que o caminho A→B→C existe e o contrato não sabe disso. Tudo que a unidade ensina depois é escrito sobre essas duas operações.",
       },
       exerciseId: 'graphs.e0' },

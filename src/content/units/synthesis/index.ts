@@ -100,6 +100,23 @@ export const synthesisUnit: Unit = {
         'A operação dominante não é a mais custosa nem a mais interessante, é a que roda mais. No problema desta unidade, "essa sessão existe?" acontece a cada requisição e "as vinte mais antigas" acontece uma vez por minuto. A diferença é de ordens de grandeza, e é ela que pesa.',
         'Contar operações do contrato, e não nomes de estrutura, é a disciplina difícil aqui. Quem escreve "buscas no cache" na lista já decidiu a resposta antes de começar.',
       ],
+      figure: {
+        kind: 'concept-flow',
+        nodes: [
+          { id: 'problem', label: 'problema', tone: 'contract' },
+          { id: 'operations', label: 'operações', tone: 'contract' },
+          { id: 'counts', label: 'contagens', tone: 'implementation' },
+          { id: 'dominant', label: 'operação dominante', tone: 'cost' },
+          { id: 'choice', label: 'escolha', tone: 'contract' },
+        ],
+        edges: [
+          { from: 'problem', to: 'operations' },
+          { from: 'operations', to: 'counts' },
+          { from: 'counts', to: 'dominant' },
+          { from: 'dominant', to: 'choice' },
+        ],
+        caption: 'A estrutura só entra depois de listar as operações, contar sua frequência e identificar qual delas domina a carga.',
+      },
       workedExample: {
         problem: "No problema desta unidade: \"essa sessão existe?\" roda a cada requisição, digamos 2000 por segundo. \"As 20 mais antigas\" roda 1 vez por minuto.",
         whatToNotice: "A diferença é de 5 ordens de grandeza. Repare que a lista não tem nome de estrutura nenhum, só operações e contagens.",

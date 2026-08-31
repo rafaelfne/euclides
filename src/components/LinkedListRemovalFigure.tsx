@@ -1,4 +1,5 @@
 import type { Figure } from '@/content/schema'
+import { flowEdges, FlowCanvas, type FlowNode } from './FlowCanvas'
 import { Stepper } from './Stepper'
 
 export function LinkedListRemovalFigure({ figure }: { figure: Extract<Figure, { kind: 'linked-list-removal' }> }) {
@@ -15,24 +16,30 @@ export function LinkedListRemovalFigure({ figure }: { figure: Extract<Figure, { 
       >
         {(step) => (
           <div className="overflow-x-auto p-5">
-            <div className="flex min-w-[520px] items-center gap-2" role="img" aria-label={figure.caption}>
-              {figure.values.map((value, index) => {
+            {(() => {
+              const nodes: FlowNode[] = figure.values.map((value, index) => {
                 const removed = step === lastStep && index === figure.targetIndex
                 const visited = index <= Math.min(step, figure.targetIndex)
-                return (
-                  <div className="contents" key={`${value}-${index}`}>
-                    <div className={`flex h-14 w-20 shrink-0 items-center justify-center border font-mono text-sm ${removed ? 'border-cost text-cost line-through opacity-50' : visited ? 'border-implementation bg-implementation-bg text-implementation' : 'border-rule bg-panel-head text-fg-3'}`}>
-                      {value}
-                    </div>
-                    {index < figure.values.length - 1 && (
-                      <span className={`font-mono text-lg ${removed || (step === lastStep && index === figure.targetIndex - 1) ? 'text-implementation' : 'text-fg-5'}`}>
-                        →
-                      </span>
-                    )}
-                  </div>
-                )
-              })}
-            </div>
+                return {
+                  id: `node-${index}`,
+                  type: 'euclides',
+                  position: { x: index * 104 + 20, y: 28 },
+                  data: {
+                    label: value,
+                    tone: removed ? 'cost' : visited ? 'implementation' : 'neutral',
+                    faded: removed,
+                  },
+                }
+              })
+              const edgeSpecs = step === lastStep
+                ? figure.values.flatMap((_, index) => {
+                    if (index >= figure.values.length - 1 || index === figure.targetIndex) return []
+                    if (index === figure.targetIndex - 1) return [{ from: `node-${index}`, to: `node-${index + 2}` }]
+                    return [{ from: `node-${index}`, to: `node-${index + 1}` }]
+                  })
+                : figure.values.slice(0, -1).map((_, index) => ({ from: `node-${index}`, to: `node-${index + 1}` }))
+              return <FlowCanvas nodes={nodes} edges={flowEdges(edgeSpecs, step === lastStep ? 'implementation' : 'neutral')} height={150} ariaLabel={figure.caption} />
+            })()}
             <div className="mt-4 font-mono text-[11.5px] text-fg-3">
               {step === lastStep
                 ? `linha aplicada: anterior.próximo ← alvo.próximo`

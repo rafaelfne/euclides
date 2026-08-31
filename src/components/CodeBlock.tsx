@@ -72,7 +72,7 @@ export function CodeBlock({ source }: { source: string }) {
           traduz. ADR-0028.
         */
         <pre className="pseudocode">
-          <code className="block px-4 py-3">
+          <code>
             {tokenizeJavaScript(typescript).map((t, i) => (
               <span
                 key={i}

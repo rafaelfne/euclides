@@ -138,6 +138,21 @@ export const sortingUnit: Unit = {
         'Ordenar devolve os mesmos elementos, em ordem. Entram 3, saem 3: nenhum elemento entra, nenhum sai, nenhum vira outro, e nenhum vem antes de um menor.',
         'O que interessa aqui é a lista do que essa promessa NÃO cobre. Ela não diz o que aconteceu com os elementos que o comparador considera iguais. Não diz quanta memória foi usada. Não diz se a ordem que a entrada já trazia foi aproveitada. Guarde essa lista: cada item dela é uma garantia que alguns algoritmos oferecem e outros não, e escolher entre eles é escolher qual dessas você precisa.',
       ],
+      figure: {
+        kind: 'concept-flow',
+        nodes: [
+          { id: 'input', label: '[3, 1, 2]', tone: 'contract' },
+          { id: 'sort', label: 'ordenar', tone: 'implementation' },
+          { id: 'output', label: '[1, 2, 3]', tone: 'contract' },
+          { id: 'same', label: 'mesmos elementos', tone: 'contract' },
+        ],
+        edges: [
+          { from: 'input', to: 'sort' },
+          { from: 'sort', to: 'output' },
+          { from: 'sort', to: 'same' },
+        ],
+        caption: 'Ordenar muda a posição dos elementos para formar uma ordem, mas preserva quais elementos existem. Memória e empates continuam perguntas abertas.',
+      },
       workedExample: {
         problem: "Ordenar [3, 1, 2] produz [1, 2, 3]. Ordenar três pedidos do mesmo cliente pode produzir qualquer permutação dos três e ainda satisfazer o contrato.",
         whatToNotice: "A saída está ordenada nos dois casos. O que ficou em aberto no segundo é o que os próximos ciclos cobram.",

@@ -7,18 +7,6 @@ import { readProfile, saveProfile } from '@/lib/progress'
 import type { Profile } from '@/content/schema'
 import { cn } from '@/lib/utils'
 
-/**
- * O formulário de perfil, no FIM do /como-funciona e nunca antes.
- *
- * Pedir nome na porta cobra um compromisso de quem ainda não sabe o que o app
- * é. Aqui a pessoa já leu o que a trilha faz, o que significa cada palavra e o
- * que vai ter de escrever, e aí a pergunta tem contexto.
- *
- * As três respostas são opcionais e o app funciona idêntico sem nenhuma. As
- * duas perguntas existem para escolher o modo de leitura e para calibrar a
- * sondagem, não para segmentar ninguém: não há e-mail, idade nem empresa, e
- * nada disso sai deste navegador. Ver ADR-0021.
- */
 const EXPERIENCE: Array<[NonNullable<Profile['experience']>, string]> = [
   ['menos-de-1-ano', 'menos de 1 ano'],
   ['1-a-3-anos', '1 a 3 anos'],
@@ -43,12 +31,9 @@ export function ProfileForm() {
         name: name.trim() || undefined,
         experience,
         reviewsCode,
-        // Quem escreve código há menos de um ano abre no modo iniciante. É a
-        // única inferência que o formulário faz, e ela é reversível no perfil.
-        mode: experience === 'menos-de-1-ano' ? 'iniciante' : 'revisao',
       })
     } else if (!readProfile()) {
-      saveProfile({ mode: 'revisao' })
+      saveProfile({})
     }
     router.push(`/units/${units[0]!.id}`)
   }

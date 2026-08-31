@@ -131,6 +131,31 @@ export const figure = z.discriminatedUnion('kind', [
   }),
 
   z.object({
+    kind: z.literal('graph-basics'),
+    caption: z.string().min(1),
+    vertices: z.array(z.string().min(1)).min(3),
+    edges: z.array(z.object({
+      from: z.string().min(1),
+      to: z.string().min(1),
+    })).min(2),
+    origin: z.string().min(1),
+  }),
+
+  z.object({
+    kind: z.literal('concept-flow'),
+    caption: z.string().min(1),
+    nodes: z.array(z.object({
+      id: z.string().min(1),
+      label: z.string().min(1),
+      tone: z.enum(['contract', 'implementation', 'cost', 'neutral']).optional(),
+    })).min(2),
+    edges: z.array(z.object({
+      from: z.string().min(1),
+      to: z.string().min(1),
+    })).min(1),
+  }),
+
+  z.object({
     kind: z.literal('graph-representations'),
     caption: z.string().min(1),
     vertices: z.array(z.string().min(1)).min(3),
@@ -646,8 +671,8 @@ export const unit = z.discriminatedUnion('kind', [structureUnit, methodUnit])
  *
  * Nome é opcional e o app funciona idêntico sem ele. Não há e-mail, idade,
  * empresa nem nada que identifique a pessoa fora deste navegador: as duas
- * perguntas que existem servem para escolher o modo de leitura e para o
- * nivelamento, e as duas podem ficar em branco.
+ * perguntas que existem servem para o nivelamento, e as duas podem ficar em
+ * branco.
  *
  * `codeLanguage` mora aqui e não numa chave solta. Ela era `euclides.codeLanguage`
  * ao lado do progresso, e duas chaves para um estado só é a garantia de que
@@ -658,7 +683,6 @@ export const profile = z.object({
   createdAt: z.string(),
   experience: z.enum(['menos-de-1-ano', '1-a-3-anos', 'mais-de-3-anos']).optional(),
   reviewsCode: z.enum(['nunca', 'as-vezes', 'sempre']).optional(),
-  mode: z.enum(['iniciante', 'revisao']),
   codeLanguage: z.enum(['pseudo', 'typescript']),
   /** Desligado por padrão: quem não quiser um número não precisa ver nenhum. */
   showJudgmentIndex: z.boolean().optional(),
