@@ -13,7 +13,7 @@
  */
 import { unit as unitSchema, type MethodUnit, type Unit } from '../src/content/schema'
 import { CHECKS, checkAll } from '../src/lib/validate'
-import { units } from '../src/content/index'
+import { allUnits, units } from '../src/content/index'
 import { allTerms } from '../src/content/glossary'
 
 let failures = 0
@@ -193,7 +193,7 @@ const parsed = unitSchema.safeParse(fixture)
 check('o schema aceita uma unidade de método', parsed.success,
   parsed.success ? '' : parsed.error.issues.map((i) => `${i.path.join('.')} ${i.message}`).join(' | '))
 
-const failuresOnFixture = checkAll([...units, fixture], allTerms)
+const failuresOnFixture = checkAll([...allUnits, fixture], allTerms)
 check('a unidade de método passa nas mesmas checagens que a de estrutura',
   failuresOnFixture.length === 0,
   failuresOnFixture.map((f) => `[${f.check}] ${f.detail}`).join(' | '))
@@ -206,7 +206,7 @@ check('toda unidade registrada declara um kind conhecido',
   units.every((u) => u.kind === 'structure' || u.kind === 'method'))
 
 const wrongBand = { ...fixture, cycles: [{ ...fixture.cycles[0]!, band: 'contract' as const }, ...fixture.cycles.slice(1)] }
-const bandFailures = checkAll([...units, wrongBand], allTerms).filter((f) => f.check === 'espinha')
+const bandFailures = checkAll([...allUnits, wrongBand], allTerms).filter((f) => f.check === 'espinha')
 check('banda de estrutura numa unidade de método reprova', bandFailures.length > 0,
   'nenhuma falha de espinha')
 
@@ -214,7 +214,7 @@ const uncovered = {
   ...fixture,
   techniques: (fixture as MethodUnit).techniques.map((t) => ({ ...t, produces: ['bound'] })),
 }
-const coverFailures = checkAll([...units, uncovered], allTerms).filter((f) => f.check === 'cobertura')
+const coverFailures = checkAll([...allUnits, uncovered], allTerms).filter((f) => f.check === 'cobertura')
 check('parte do critério que nenhuma técnica produz reprova', coverFailures.length === 3,
   `${coverFailures.length} falha(s) de cobertura`)
 
@@ -223,7 +223,7 @@ const badPart = {
   criterion: { ...(fixture as MethodUnit).criterion, whenOmitted: [{ partId: 'nao-existe', reads: 'x' }] },
 }
 check('whenOmitted apontando parte inexistente reprova',
-  checkAll([...units, badPart], allTerms).some((f) => f.check === 'cobertura'))
+  checkAll([...allUnits, badPart], allTerms).some((f) => f.check === 'cobertura'))
 
 const exemploSemResolucao = {
   ...fixture,
@@ -233,7 +233,7 @@ const exemploSemResolucao = {
   ],
 }
 check('exemplo que devolve a tarefa sem resolução reprova',
-  checkAll([...units, exemploSemResolucao], allTerms).some((f) => f.check === 'exemplo'))
+  checkAll([...allUnits, exemploSemResolucao], allTerms).some((f) => f.check === 'exemplo'))
 
 /*
   As duas checagens do ADR-0026 e do ADR-0028, pelo lado negativo.
@@ -256,33 +256,33 @@ const linhaAlem = trocaExercicio(comPainel, exPainel.id, {
   lineByColumn: { ...(exPainel as { lineByColumn: Record<string, number> }).lineByColumn, __alem: totalDeLinhas + 1 },
 })
 check('linha acesa além do fim do pseudocódigo reprova',
-  checkAll([...units.filter((u) => u.id !== comPainel.id), linhaAlem], allTerms).some((f) => f.check === 'acesa'))
+  checkAll([...allUnits.filter((u) => u.id !== comPainel.id), linhaAlem], allTerms).some((f) => f.check === 'acesa'))
 
 const colunaFantasma = trocaExercicio(comPainel, exPainel.id, {
   lineByColumn: { nao_existe_essa_coluna: 1 },
 })
 check('linha acesa para coluna que o traço não tem reprova',
-  checkAll([...units.filter((u) => u.id !== comPainel.id), colunaFantasma], allTerms).some((f) => f.check === 'acesa'))
+  checkAll([...allUnits.filter((u) => u.id !== comPainel.id), colunaFantasma], allTerms).some((f) => f.check === 'acesa'))
 
 const semPseudocodigo: Unit = {
   ...comPainel,
   cycles: comPainel.cycles.map((c) => (c.id === cicloDoPainel.id ? { ...c, pseudocode: undefined } : c)),
 } as Unit
 check('lineByColumn sem pseudocódigo no ciclo reprova',
-  checkAll([...units.filter((u) => u.id !== comPainel.id), semPseudocodigo], allTerms).some((f) => f.check === 'acesa'))
+  checkAll([...allUnits.filter((u) => u.id !== comPainel.id), semPseudocodigo], allTerms).some((f) => f.check === 'acesa'))
 
 const comDefeito = units.find((u) => u.exercises.some((e) => e.kind === 'bug'))!
 const exDefeito = comDefeito.exercises.find((e) => e.kind === 'bug')!
 
 const semTokenizador = trocaExercicio(comDefeito, exDefeito.id, { language: 'python' })
 check('exercício de defeito em linguagem sem tokenizador reprova',
-  checkAll([...units.filter((u) => u.id !== comDefeito.id), semTokenizador], allTerms).some((f) => f.check === 'realce'))
+  checkAll([...allUnits.filter((u) => u.id !== comDefeito.id), semTokenizador], allTerms).some((f) => f.check === 'realce'))
 
 const linhaInexistente = trocaExercicio(comDefeito, exDefeito.id, {
   faultyLines: [(exDefeito as { code: string }).code.split('\n').length + 5],
 })
 check('exercício de defeito apontando linha além do código reprova',
-  checkAll([...units.filter((u) => u.id !== comDefeito.id), linhaInexistente], allTerms).some((f) => f.check === 'realce'))
+  checkAll([...allUnits.filter((u) => u.id !== comDefeito.id), linhaInexistente], allTerms).some((f) => f.check === 'realce'))
 
 const trocaCiclo = (u: Unit, id: string, patch: object): Unit => ({
   ...u,
@@ -296,13 +296,13 @@ const jaEquilibrada = trocaCiclo(comRotacao, cicloRotacao.id, {
   figure: { ...cicloRotacao.figure, keys: [2, 1, 3] },
 })
 check('figura de rotação sobre árvore já equilibrada reprova',
-  checkAll([...units.filter((u) => u.id !== comRotacao.id), jaEquilibrada], allTerms).some((f) => f.check === 'figura'))
+  checkAll([...allUnits.filter((u) => u.id !== comRotacao.id), jaEquilibrada], allTerms).some((f) => f.check === 'figura'))
 
 const chaveRepetida = trocaCiclo(comRotacao, cicloRotacao.id, {
   figure: { ...cicloRotacao.figure, keys: [1, 2, 2, 3] },
 })
 check('figura de rotação com chave repetida reprova',
-  checkAll([...units.filter((u) => u.id !== comRotacao.id), chaveRepetida], allTerms).some((f) => f.check === 'figura'))
+  checkAll([...allUnits.filter((u) => u.id !== comRotacao.id), chaveRepetida], allTerms).some((f) => f.check === 'figura'))
 
 const comVisitados = units.find((u) => u.cycles.some((c) => c.figure?.kind === 'visited'))!
 const cicloVisitados = comVisitados.cycles.find((c) => c.figure?.kind === 'visited')!
@@ -314,13 +314,13 @@ const semCiclo = trocaCiclo(comVisitados, cicloVisitados.id, {
   },
 })
 check('figura de visitados sobre grafo sem ciclo reprova',
-  checkAll([...units.filter((u) => u.id !== comVisitados.id), semCiclo], allTerms).some((f) => f.check === 'figura'))
+  checkAll([...allUnits.filter((u) => u.id !== comVisitados.id), semCiclo], allTerms).some((f) => f.check === 'figura'))
 
 const origemForaDoGrafo = trocaCiclo(comVisitados, cicloVisitados.id, {
   figure: { ...cicloVisitados.figure, origin: 'Z' },
 })
 check('figura de visitados com origem fora do grafo reprova',
-  checkAll([...units.filter((u) => u.id !== comVisitados.id), origemForaDoGrafo], allTerms).some((f) => f.check === 'figura'))
+  checkAll([...allUnits.filter((u) => u.id !== comVisitados.id), origemForaDoGrafo], allTerms).some((f) => f.check === 'figura'))
 
 /*
   Cinco vértices em ciclo precisam de cinco rodadas para a busca marcada
@@ -339,7 +339,7 @@ const rodadasDeMenos = trocaCiclo(comVisitados, cicloVisitados.id, {
   },
 })
 check('figura de visitados sem rodadas para a busca marcada terminar reprova',
-  checkAll([...units.filter((u) => u.id !== comVisitados.id), rodadasDeMenos], allTerms)
+  checkAll([...allUnits.filter((u) => u.id !== comVisitados.id), rodadasDeMenos], allTerms)
     .some((f) => f.check === 'figura' && f.detail.includes('não bastam')))
 
 const comInsercao = units.find((u) => u.cycles.some((c) => c.figure?.kind === 'insertion'))!
@@ -353,7 +353,7 @@ const elementosDiferentes = trocaCiclo(comInsercao, cicloInsercao.id, {
   },
 })
 check('figura de insertion com elementos diferentes nas duas entradas reprova',
-  checkAll([...units.filter((u) => u.id !== comInsercao.id), elementosDiferentes], allTerms).some((f) => f.check === 'figura'))
+  checkAll([...allUnits.filter((u) => u.id !== comInsercao.id), elementosDiferentes], allTerms).some((f) => f.check === 'figura'))
 
 const mesmoCusto = trocaCiclo(comInsercao, cicloInsercao.id, {
   figure: {
@@ -365,7 +365,7 @@ const mesmoCusto = trocaCiclo(comInsercao, cicloInsercao.id, {
   },
 })
 check('figura de insertion com as duas entradas custando igual reprova',
-  checkAll([...units.filter((u) => u.id !== comInsercao.id), mesmoCusto], allTerms).some((f) => f.check === 'figura'))
+  checkAll([...allUnits.filter((u) => u.id !== comInsercao.id), mesmoCusto], allTerms).some((f) => f.check === 'figura'))
 
 check('a lista de checagens é a mesma para os dois kinds', CHECKS.length > 0)
 

@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { units } from '@/content'
+import { allUnits } from '@/content'
 import { read, PROGRESS_EVENT } from '@/lib/progress'
 import { dueRevisits, upcomingRevisit, REVISIT_STEPS, type Due, type Upcoming } from '@/lib/traps'
 
@@ -22,8 +22,8 @@ export function RevisitQueue({ compact = false }: { compact?: boolean }) {
     const sync = () => {
       const progress = read()
       const now = Date.now()
-      setDue(dueRevisits(units, progress, now))
-      setUpcoming(upcomingRevisit(units, progress, now))
+      setDue(dueRevisits(allUnits, progress, now))
+      setUpcoming(upcomingRevisit(allUnits, progress, now))
     }
     sync()
     window.addEventListener(PROGRESS_EVENT, sync)

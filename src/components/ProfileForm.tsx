@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { units } from '@/content'
+import { allUnits } from '@/content'
 import { readProfile, saveProfile } from '@/lib/progress'
 import type { Profile } from '@/content/schema'
 import { cn } from '@/lib/utils'
@@ -35,7 +35,7 @@ export function ProfileForm() {
     } else if (!readProfile()) {
       saveProfile({})
     }
-    router.push(`/units/${units[0]!.id}`)
+    router.push(`/units/${allUnits[0]!.id}`)
   }
 
   const Choice = <T extends string>({

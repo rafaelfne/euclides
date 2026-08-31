@@ -337,13 +337,13 @@ export const linearGlossary: GlossaryTerm[] = [
     falseFriends: [
       { context: 'Python', meaning: '`list` é o array dinâmico, não o contrato: a escolha de implementação já foi feita pelo nome.' },
       { context: 'Lisp e afins', meaning: '`list` é a lista ligada. Mesmo nome, implementação oposta e custos opostos.' },
-    ], introducedIn: 'linear.c0' },
+    ], introducedIn: 'prelude.c5' },
 
   { id: 'position', canonical: 'posição', canonicalLanguage: 'pt',
     alsoKnownAs: ['índice', 'index'],
     definition: 'O número que identifica um lugar na sequência, contado a partir de zero.',
     isNot: ['não é um endereço de memória', 'não é uma identidade estável: inserir ou remover antes dela muda a posição de todos os seguintes'],
-    falseFriends: [], introducedIn: 'linear.c0' },
+    falseFriends: [], introducedIn: 'prelude.c5' },
 
   { id: 'stack', canonical: 'pilha', canonicalLanguage: 'pt', alsoKnownAs: ['stack', 'LIFO'],
     definition: 'Contrato com inserção e remoção pela mesma extremidade.',
@@ -479,6 +479,26 @@ export const asymptoticsGlossary: GlossaryTerm[] = [
     ], introducedIn: 'asymptotics.c6' },
 ]
 
+export const preludeGlossary: GlossaryTerm[] = [
+  { id: 'variable', canonical: 'variável', canonicalLanguage: 'pt',
+    alsoKnownAs: ['variable'],
+    definition: 'Um nome associado a um valor que pode mudar enquanto o procedimento avança.',
+    isNot: ['não é o valor em si, é o nome que permite encontrá-lo', 'não precisa manter o mesmo valor durante todo o procedimento'],
+    falseFriends: [], introducedIn: 'prelude.c1' },
+
+  { id: 'assignment', canonical: 'atribuição', canonicalLanguage: 'pt',
+    alsoKnownAs: ['assignment'],
+    definition: 'A operação que calcula um valor e o guarda no nome à esquerda da seta.',
+    isNot: ['não é comparação', 'não pergunta se os dois lados são iguais'],
+    falseFriends: [], introducedIn: 'prelude.c1' },
+
+  { id: 'condition', canonical: 'condição', canonicalLanguage: 'pt',
+    alsoKnownAs: ['condition', 'teste'],
+    definition: 'Uma pergunta que resulta em sim ou não e decide se uma ação acontece.',
+    isNot: ['não é a ação que vem depois', 'não muda um valor sozinha'],
+    falseFriends: [], introducedIn: 'prelude.c2' },
+]
+
 export const tracingGlossary: GlossaryTerm[] = [
   { id: 'execution-trace', canonical: 'execution trace', canonicalLanguage: 'en',
     alsoKnownAs: ['trace', 'dry run', 'teste de mesa', 'traço de execução'],
@@ -494,7 +514,7 @@ export const tracingGlossary: GlossaryTerm[] = [
     isNot: ['não é toda variável do arquivo, só as que mudam e afetam o resultado'],
     falseFriends: [
       { context: 'front-end', meaning: '“estado” de componente é o que dispara nova renderização. Ideia parecida, escopo e mecanismo diferentes.' },
-    ], introducedIn: 'tracing.c0' },
+    ], introducedIn: 'prelude.c0' },
 
   { id: 'guard', canonical: 'condição de parada', canonicalLanguage: 'pt',
     alsoKnownAs: ['guarda', 'guard', 'condição do laço'],
@@ -508,7 +528,7 @@ export const tracingGlossary: GlossaryTerm[] = [
     alsoKnownAs: ['iteração', 'iteration'],
     definition: 'Uma execução completa do corpo do laço, entre dois testes da condição.',
     isNot: ['não corresponde a um elemento da coleção, exceto quando o passo é de um em um'],
-    falseFriends: [], introducedIn: 'tracing.c0' },
+    falseFriends: [], introducedIn: 'prelude.c3' },
 
   { id: 'loop-invariant', canonical: 'invariante de laço', canonicalLanguage: 'pt',
     alsoKnownAs: ['loop invariant'],
@@ -528,7 +548,7 @@ export const tracingGlossary: GlossaryTerm[] = [
     alsoKnownAs: ['entrada vazia', 'empty case'],
     definition: 'O comportamento do código quando a coleção não tem nenhum elemento e o laço não roda nenhuma vez.',
     isNot: ['não é um erro por definição, é uma resposta que precisa ser decidida de propósito'],
-    falseFriends: [], introducedIn: 'tracing.c4' },
+    falseFriends: [], introducedIn: 'prelude.c5' },
 
   { id: 'short-circuit', canonical: 'curto-circuito', canonicalLanguage: 'pt',
     alsoKnownAs: ['short-circuit', 'avaliação preguiçosa de condição'],
@@ -754,7 +774,7 @@ export const OVERLOADED_TERMS = [
 
 export const allTerms: GlossaryTerm[] = [
   ...appGlossary,
-  ...tracingGlossary, ...asymptoticsGlossary, ...linearGlossary, ...hashGlossary,
+  ...preludeGlossary, ...tracingGlossary, ...asymptoticsGlossary, ...linearGlossary, ...hashGlossary,
   ...treesGlossary, ...graphsGlossary, ...sortingGlossary, ...synthesisGlossary,
   ...plannedGlossary,
 ]

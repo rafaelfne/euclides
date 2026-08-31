@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { units } from '@/content'
+import { allUnits } from '@/content'
 import { allTerms } from '@/content/glossary'
 import { APP } from '@/content/glossary'
 import { Panel, PanelBody, PanelHeader, PanelTitle } from './ui/panel'
@@ -14,16 +14,16 @@ import { PlatformSearchShortcut } from './CommandPalette'
  * escrita à mão envelhece na próxima unidade e ninguém percebe. ADR-0019.
  */
 export function HowItWorks() {
-  const cycles = units.flatMap((u) => u.cycles)
-  const traps = units.flatMap((u) => u.misconceptions)
-  const exercises = units.flatMap((u) => u.exercises)
+  const cycles = allUnits.flatMap((u) => u.cycles)
+  const traps = allUnits.flatMap((u) => u.misconceptions)
+  const exercises = allUnits.flatMap((u) => u.exercises)
   const vocabulary = allTerms.filter((t) => t.introducedIn === APP)
   const onboardingTerms = ['app.cycle', 'app.trap', 'app.gap', 'app.revisit']
     .map((id) => vocabulary.find((term) => term.id === id))
     .filter((term): term is NonNullable<typeof term> => Boolean(term))
 
   const numbers = [
-    { n: units.length, label: 'unidades' },
+    { n: allUnits.length, label: 'unidades publicadas' },
     { n: cycles.length, label: 'ciclos' },
     { n: exercises.length, label: 'exercícios' },
     { n: traps.length, label: 'armadilhas catalogadas' },
@@ -162,15 +162,14 @@ export function HowItWorks() {
       <div className="flex max-w-[820px] flex-col gap-2.5">
         <span className="lbl">Por onde começar</span>
         <Link
-          href={`/units/${units[0]!.id}`}
+          href={`/units/${allUnits[0]!.id}`}
           className="m-tap flex flex-col gap-1 border border-contract-rule bg-contract-bg px-4 py-3.5 text-inherit hover:bg-panel-hover"
         >
-          <span className="text-[17px] font-semibold">{units[0]!.title}</span>
-          <span className="text-[13px] leading-snug text-fg-3">{units[0]!.learningObjective}</span>
+          <span className="text-[17px] font-semibold">{allUnits[0]!.title}</span>
+          <span className="text-[13px] leading-snug text-fg-3">{allUnits[0]!.learningObjective}</span>
         </Link>
         <p className="m-0 text-[12.5px] text-fg-4">
-          Se esta é sua primeira visita, comece pelo primeiro ciclo da unidade 01. As unidades têm
-          ordem e cada uma usa o vocabulário que a anterior estabeleceu.{' '}
+          Se esta é sua primeira visita, comece pelo primeiro ciclo da pré-trilha. Depois, a unidade 01 usa o vocabulário que ela estabeleceu.{' '}
           <Link href="/sondagem" className="underline decoration-rule underline-offset-2 hover:text-fg-2">
             Se você já programa há um tempo, seis perguntas dizem por onde começar.
           </Link>

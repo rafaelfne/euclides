@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { units } from '@/content'
+import { allUnits } from '@/content'
 import { cn } from '@/lib/utils'
 import { UnitStateDot } from './UnitStateDot'
 import { Logo } from './Logo'
@@ -21,7 +21,7 @@ export function Rail({ unitId }: { unitId?: string }) {
 
       <div className="flex flex-col gap-px py-3">
         <span className="lbl px-4 pb-2">Trilha</span>
-        {units.map((u) => {
+        {allUnits.map((u) => {
           const active = u.id === unitId
           return (
             <Link

@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { units } from '@/content'
+import { allUnits } from '@/content'
 import { allTerms } from '@/content/glossary'
 import { cn } from '@/lib/utils'
 import { Search } from 'lucide-react'
@@ -69,7 +69,7 @@ const SCREENS: Item[] = [
 function buildIndex(): Item[] {
   const out: Item[] = [...SCREENS]
 
-  for (const u of units) {
+  for (const u of allUnits) {
     out.push({
       id: u.id, kind: 'unidade',
       label: `${String(u.number).padStart(2, '0')} · ${u.title}`,

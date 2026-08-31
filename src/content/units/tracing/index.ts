@@ -90,7 +90,7 @@ export const tracingUnit: Unit = {
 
   cycles: [
     { id: 'tracing.c0', title: 'O que é saber o que um código faz', layer: 'essential', band: 'criterion',
-      introducesTerms: ['execution-trace', 'state', 'iteration'],
+      introducesTerms: ['execution-trace'],
       oneLine: "Entender um código é saber dizer o valor de cada nome a cada rodada.",
       plainly:
         'Um pull request passa nos testes, mas ninguém testou a lista vazia. Dizer que o código ' +
@@ -190,7 +190,7 @@ export const tracingUnit: Unit = {
       exerciseId: 'tracing.e3' },
 
     { id: 'tracing.c4', title: 'A fronteira, e a entrada que ninguém testou', layer: 'essential', band: 'failure',
-      introducesTerms: ['off-by-one', 'empty-case'],
+      introducesTerms: ['off-by-one'],
       oneLine: "Numa coleção de 5 elementos, a última posição é 4, e o vazio é o outro caso.",
       plainly:
         'Um código parece certo com cinco itens, mas quebra quando não há item nenhum ou quando só ' +

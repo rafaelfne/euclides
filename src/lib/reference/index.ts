@@ -6,10 +6,12 @@ import { linearReferenceGenerators } from './linear'
 import { treesReferenceGenerators } from './trees'
 import { graphsReferenceGenerators } from './graphs'
 import { sortingReferenceGenerators } from './sorting'
+import { preludeReferenceGenerators } from './prelude'
 
 export type ReferenceGenerator = () => TraceStep[]
 
 const registries: Array<Record<string, ReferenceGenerator>> = [
+  preludeReferenceGenerators,
   tracingReferenceGenerators,
   asymptoticsReferenceGenerators,
   linearReferenceGenerators,

@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useEffect, useMemo, useState } from 'react'
-import { units, misconceptionById } from '@/content'
+import { allUnits, units, misconceptionById } from '@/content'
 import { probes } from '@/content/placement'
 import type { Choice } from '@/content/schema'
 import { read, recordAttempt, write } from '@/lib/progress'
@@ -117,8 +117,8 @@ function Intro({ onStart }: { onStart: () => void }) {
         >
           Começar a sondagem
         </button>
-        <Link href={`/units/${units[0]!.id}`} className="text-[13px] text-fg-4 underline decoration-rule underline-offset-2 hover:text-fg-2">
-          pular e ir para a unidade 01
+        <Link href={`/units/${allUnits[0]!.id}`} className="text-[13px] text-fg-4 underline decoration-rule underline-offset-2 hover:text-fg-2">
+          pular e ir para a pré-trilha
         </Link>
       </div>
     </div>
@@ -134,7 +134,9 @@ function Result({ answers }: { answers: Answers }) {
     () => probes.filter((p) => answers[p.unitId] && !answers[p.unitId]!.correct),
     [answers],
   )
-  const suggested = probes.find((p) => !answers[p.unitId]?.correct)?.unitId ?? 'synthesis'
+  const suggested = Object.keys(answers).length === 0
+    ? 'prelude'
+    : probes.find((p) => !answers[p.unitId]?.correct)?.unitId ?? 'synthesis'
 
   useEffect(() => {
     const p = read()
@@ -145,7 +147,7 @@ function Result({ answers }: { answers: Answers }) {
     }
   }, [cleared, suggested])
 
-  const unitOf = (id: string) => units.find((u) => u.id === id)!
+  const unitOf = (id: string) => allUnits.find((u) => u.id === id)!
   const start = unitOf(suggested)
 
   return (
@@ -154,7 +156,7 @@ function Result({ answers }: { answers: Answers }) {
 
       <p className="m-0 text-[17px] leading-relaxed text-fg">
         {cleared.length === 0
-          ? 'A melhor entrada é a primeira unidade. Ela constrói a base usada pelas demais.'
+          ? 'A melhor entrada é a pré-trilha. Ela constrói a base usada pelas demais.'
           : cleared.length === probes.length
             ? 'As seis respostas saíram de primeira. Comece pela síntese e depois revise as anteriores.'
             : `Você respondeu de primeira às perguntas de ${cleared.map((id) => unitOf(id).title.toLowerCase()).join(', ')}.`}

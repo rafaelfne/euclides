@@ -7,10 +7,10 @@
  * so an `ok` line cannot contradict a failure in the same run. See ADR-0011.
  */
 import { CHECKS, checkAll } from '../src/lib/validate'
-import { units } from '../src/content/index'
+import { allUnits } from '../src/content/index'
 import { allTerms } from '../src/content/glossary'
 
-const failures = checkAll(units, allTerms)
+const failures = checkAll(allUnits, allTerms)
 const failedIds = new Set(failures.map((f) => f.check))
 
 console.log('\n  validador pedagógico, Euclides\n')

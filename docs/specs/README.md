@@ -1,10 +1,11 @@
 # Specs do primeiro módulo
 
-O escopo está em `docs/discovery/00-problema.md`, numa linha. Aqui ele está aberto em oito
-specs, e as oito unidades estão implementadas e registradas.
+O escopo está em `docs/discovery/00-problema.md`, numa linha. Aqui ele está aberto em um
+spec de entrada e oito specs curriculares, todos implementados e registrados.
 
 | # | spec | kind | status |
 |---|---|---|---|
+| 00 | [prelude](prelude.md), Ler um procedimento | `method` | implementada |
 | 1 | [tracing](tracing.md), Lógica e execution trace | `method` | implementada |
 | 2 | [asymptotics](asymptotics.md), Análise assintótica | `method` | implementada |
 | 3 | [linear](linear.md), Estruturas lineares | `structure` | implementada |
@@ -14,7 +15,8 @@ specs, e as oito unidades estão implementadas e registradas.
 | 7 | [sorting](sorting.md), Ordenação e busca | `structure` | implementada |
 | 8 | [synthesis](synthesis.md), Síntese | `method` | implementada |
 
-Todas implementadas. As três decisões que travavam a escrita foram tomadas na
+Todos implementados. A pré-trilha é conteúdo navegável, mas não entra no conjunto curricular
+que alimenta nivelamento, faixas e contadores. As três decisões que travavam a escrita foram tomadas na
 implementação, sem validação prévia, sob autorização explícita, e estão registradas abaixo
 junto com o que cada uma custou.
 

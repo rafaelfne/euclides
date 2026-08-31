@@ -1,4 +1,4 @@
-import { units } from '@/content'
+import { allUnits } from '@/content'
 import { AppShell } from '@/components/AppShell'
 import { GapPanel } from '@/components/GapPanel'
 
@@ -19,7 +19,7 @@ export default function GapsPage() {
           com suas lacunas para você colar no seu assistente de IA, ele carrega suas tentativas e as
           armadilhas que você ativou, nunca a resposta de um exercício.
         </p>
-        <GapPanel units={units} />
+        <GapPanel units={allUnits} />
       </div>
     </AppShell>
   )

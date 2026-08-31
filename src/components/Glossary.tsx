@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { useMemo, useState } from 'react'
 import type { GlossaryTerm } from '@/content/schema'
 import { PLANNED, APP } from '@/content/glossary'
-import { units } from '@/content'
+import { allUnits } from '@/content'
 import { cn } from '@/lib/utils'
 import { Badge } from './ui/badge'
 import { Panel, PanelBody, PanelHeader, PanelMeta, PanelTitle } from './ui/panel'
@@ -23,7 +23,7 @@ export function Glossary({ terms }: { terms: GlossaryTerm[] }) {
 
   const unitOf = useMemo(() => {
     const map = new Map<string, { id: string; number: number; title: string }>()
-    for (const u of units) {
+    for (const u of allUnits) {
       for (const c of u.cycles) map.set(c.id, { id: u.id, number: u.number, title: u.title })
     }
     return map
@@ -49,8 +49,8 @@ export function Glossary({ terms }: { terms: GlossaryTerm[] }) {
   }, [shown, unitOf])
 
   const ordered = query.trim()
-    ? [APP, ...units.map((u) => u.id), PLANNED, 'outros'].filter((k) => groups.has(k))
-    : [...units.map((u) => u.id), PLANNED, 'outros'].filter((k) => groups.has(k))
+    ? [APP, ...allUnits.map((u) => u.id), PLANNED, 'outros'].filter((k) => groups.has(k))
+    : [...allUnits.map((u) => u.id), PLANNED, 'outros'].filter((k) => groups.has(k))
   const hiddenAppCount = !query.trim() && !showAppTerms ? (groups.get(APP)?.length ?? 0) : 0
 
   return (
@@ -69,7 +69,7 @@ export function Glossary({ terms }: { terms: GlossaryTerm[] }) {
 
       {ordered.map((key) => {
         const rows = groups.get(key)!
-        const unit = units.find((u) => u.id === key)
+        const unit = allUnits.find((u) => u.id === key)
         return (
           <Panel key={key} className="max-w-[900px]">
             <PanelHeader>

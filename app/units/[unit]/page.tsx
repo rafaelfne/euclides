@@ -1,11 +1,11 @@
 import { notFound } from 'next/navigation'
-import { units, unitById } from '@/content'
+import { allUnits, unitById } from '@/content'
 import { AppShell } from '@/components/AppShell'
 import { UnitTabs } from '@/components/UnitTabs'
 import { UnitMap } from '@/components/UnitMap'
 
 export function generateStaticParams() {
-  return units.map((u) => ({ unit: u.id }))
+  return allUnits.map((u) => ({ unit: u.id }))
 }
 
 export default async function UnitPage({ params }: { params: Promise<{ unit: string }> }) {

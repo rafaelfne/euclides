@@ -628,7 +628,7 @@ export const technique = z.object({
 
 const unitCore = {
   id: z.string().min(1),
-  number: z.number().int().positive(),
+  number: z.number().int().nonnegative(),
   title: z.string().min(1),
   learningObjective: z.string().min(1),
   prerequisites: z.array(z.string().min(1)).min(1),

@@ -1,4 +1,4 @@
-import { units } from '@/content'
+import { allUnits } from '@/content'
 import { AppShell } from '@/components/AppShell'
 import { TrapBook } from '@/components/TrapBook'
 
@@ -17,7 +17,7 @@ export default function TrapsPage() {
           A pergunta ao lado de cada armadilha é a que o app faz quando você a ativa. Ela não é a
           resposta, é a tarefa que produz a resposta, e ela funciona igual lida aqui.
         </p>
-        <TrapBook units={units} />
+        <TrapBook units={allUnits} />
       </div>
     </AppShell>
   )

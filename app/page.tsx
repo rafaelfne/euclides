@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { units } from '@/content'
+import { allUnits } from '@/content'
 import { AppShell } from '@/components/AppShell'
 import { Badge } from '@/components/ui/badge'
 import { Mark } from '@/components/Mark'
@@ -10,8 +10,8 @@ import { PlacementInvite } from '@/components/PlacementInvite'
 import { RevisitQueue } from '@/components/RevisitQueue'
 
 export default function Home() {
-  const first = units[0]!
-  const remaining = units.slice(1)
+  const first = allUnits[0]!
+  const remaining = allUnits.slice(1)
 
   return (
     <AppShell>
@@ -52,12 +52,12 @@ export default function Home() {
             className="flex flex-col gap-2 border border-contract-rule bg-contract-bg px-4 py-4 text-inherit hover:bg-panel-hover"
           >
             <div className="flex items-baseline gap-2.5">
-              <span className="font-mono text-[12px] text-contract">01</span>
+              <span className="font-mono text-[12px] text-contract">{String(first.number).padStart(2, '0')}</span>
               <span className="text-[18px] font-semibold">{first.title}</span>
               <span className="ml-auto"><UnitStateDot unit={first} withLabel /></span>
             </div>
             <span className="text-[13px] leading-snug text-fg-3">
-              Aprenda a acompanhar o estado de um laço e prever o que ele devolve sem executar.
+              {first.learningObjective}
             </span>
             <span className="font-mono text-[12px] text-contract">
               abrir a unidade · {first.cycles.length} ciclos · {humanMinutes(unitMinutes(first))} →
@@ -66,7 +66,7 @@ export default function Home() {
         </div>
 
         <div className="flex flex-col gap-2">
-          <span className="lbl">Depois da unidade 01</span>
+          <span className="lbl">Depois da pré-trilha</span>
           <ul className="m-0 grid list-none grid-cols-1 gap-2 p-0 lg:grid-cols-2">
             {remaining.map((u) => (
               <li key={u.id}>

@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
-import { units } from '@/content'
+import { allUnits } from '@/content'
 import type { Profile } from '@/content/schema'
 import {
   clearAll, cycleStatus, exportProfile, importProfile, read, readProfile, resetTrail, saveProfile,
@@ -37,7 +37,7 @@ export function ProfileScreen() {
     const sync = () => {
       setProfile(readProfile())
       const p = read()
-      setByUnit(units.map((u) => ({
+      setByUnit(allUnits.map((u) => ({
         id: u.id,
         title: u.title,
         total: u.cycles.length,
@@ -85,7 +85,7 @@ export function ProfileScreen() {
       <Panel>
         <PanelHeader><PanelTitle>Selos de domínio</PanelTitle></PanelHeader>
         <PanelBody className="flex flex-col gap-3">
-          <SealRow units={units} />
+          <SealRow units={allUnits} />
           <span className="text-[12.5px] leading-relaxed text-fg-4">
             Um selo acende quando os exercícios do critério saem na primeira tentativa, e
             ganha a marca em ocre quando a revisita é honrada. Não há selo de participação.
@@ -116,7 +116,7 @@ export function ProfileScreen() {
       </Panel>
 
       <Panel>
-        <PanelHeader><PanelTitle>As oito unidades</PanelTitle></PanelHeader>
+        <PanelHeader><PanelTitle>A preparação e as oito unidades</PanelTitle></PanelHeader>
         <PanelBody className="flex flex-col gap-2">
           {byUnit.map((u, i) => (
             <Link
@@ -124,11 +124,11 @@ export function ProfileScreen() {
               href={`/units/${u.id}`}
               className="m-tap flex items-baseline gap-3 border-l-2 border-rule py-1 pl-3 text-inherit hover:border-contract"
             >
-              <span className="font-mono text-[12px] text-fg-5">{String(i + 1).padStart(2, '0')}</span>
+              <span className="font-mono text-[12px] text-fg-5">{String(allUnits[i]!.number).padStart(2, '0')}</span>
               <span className="text-[14px] text-fg-2">{u.title}</span>
-              <UnitStateDot unit={units[i]!} withLabel />
+              <UnitStateDot unit={allUnits[i]!} withLabel />
               <span className="ml-auto font-mono text-[12px] text-fg-4">
-                {u.done} de {u.total} ciclos · {humanMinutes(unitMinutes(units[i]!))}
+                {u.done} de {u.total} ciclos · {humanMinutes(unitMinutes(allUnits[i]!))}
               </span>
             </Link>
           ))}

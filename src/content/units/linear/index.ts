@@ -118,7 +118,7 @@ export const linearUnit: Unit = {
 
   cycles: [
     { id: 'linear.c0', title: 'O que a lista promete, e promete por posição', layer: 'essential', band: 'contract',
-      introducesTerms: ['list', 'position'],
+      introducesTerms: [],
       oneLine: "A lista responde \"o que está na posição 3\", nunca \"onde está o valor 3\".",
       plainly:
         'Uma fila de jobs guarda o primeiro, o segundo e o terceiro pedido. Ela responde rápido ' +

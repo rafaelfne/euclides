@@ -1,11 +1,11 @@
 import { notFound } from 'next/navigation'
-import { units, unitById, cycleById, exerciseById } from '@/content'
+import { allUnits, unitById, cycleById, exerciseById } from '@/content'
 import { AppShell } from '@/components/AppShell'
 import { UnitTabs } from '@/components/UnitTabs'
 import { CycleScreen } from '@/components/CycleScreen'
 
 export function generateStaticParams() {
-  return units.flatMap((u) => u.cycles.map((c) => ({ unit: u.id, cycle: c.id })))
+  return allUnits.flatMap((u) => u.cycles.map((c) => ({ unit: u.id, cycle: c.id })))
 }
 
 export default async function CyclePage({
