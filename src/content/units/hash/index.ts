@@ -151,8 +151,8 @@ export const hashUnit: Unit = {
         caption: 'O Map responde chave → valor. A ausência de ordem também faz parte do contrato: ela não aparece como operação.',
       },
       workedExample: {
-        problem: "Guarde 3 pares em um Map: \"b\"→1, \"a\"→2, \"c\"→3. Peça o valor de \"a\": 1 operação. Peça \"a menor chave\": nenhuma das 4 operações responde.",
-        whatToNotice: "A ausência de ordem não é limitação de implementação, é o contrato. Guarde essa lista, ela é a resposta do último ciclo.",
+        problem: "Um achados e perdidos guarda 3 etiquetas de armário: \"B04\"→\"mochila\", \"A17\"→\"chaves\", \"C22\"→\"casaco\". Buscar o item de \"A17\" é 1 operação. Pedir a etiqueta mais baixa não é uma operação do Map.",
+        whatToNotice: "O Map resolve a pergunta feita com uma etiqueta. Ele não promete que as etiquetas estejam em ordem, mesmo quando parecem códigos fáceis de ordenar.",
       },
       exerciseId: 'hash.e0' },
 

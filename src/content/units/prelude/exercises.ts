@@ -41,19 +41,19 @@ export const preludeMisconceptions: Misconception[] = [
 export const preludeExercises: Exercise[] = [
   {
     kind: 'choice', id: 'prelude.e0',
-    prompt: 'Um saldo começa com R$ 10 e recebe R$ 4. Qual relato outra pessoa consegue conferir?',
+    prompt: 'Um e-mail tem um link desconhecido, vem de alguém fora dos contatos e traz uma assinatura conhecida. A regra soma 2, soma 1 e tira 1, nessa ordem. Qual relato explica a decisão?',
     choices: [
-      { correct: true, text: 'Começa em R$ 10, vai a R$ 14 e testa se atingiu R$ 12', why: 'O relato mostra o estado inicial, a transformação e a pergunta que vem depois.' },
-      { correct: false, text: 'Termina em R$ 14; não é preciso registrar o saldo inicial', misconceptionId: 'prelude.ordem-ignorada' },
-      { correct: false, text: 'Apenas compara R$ 10 com R$ 14; o saldo não muda', misconceptionId: 'prelude.igualdade-nao-atribuicao' },
+      { correct: true, text: 'Começa em 0, passa por 2 e 3, termina em 2 e vai para spam', why: 'O relato mostra o estado inicial, cada transformação e a decisão que vem depois.' },
+      { correct: false, text: 'Vai para spam ao primeiro sinal; as outras regras não importam', misconceptionId: 'prelude.ordem-ignorada' },
+      { correct: false, text: 'Termina em 3; a assinatura só descreve o e-mail', misconceptionId: 'prelude.condicao-e-acao' },
     ],
   },
   {
     kind: 'choice', id: 'prelude.e1',
-    prompt: 'Comece com total = 10. Depois leia `total ← total + 4` e `se total ≥ 12 então selo ← 1`. Qual afirmação descreve os dois passos?',
+    prompt: 'Comece com total = 0. Depois leia `total ← total + 2` e `se total ≥ 2 então selo ← 1`. Qual afirmação descreve os dois passos?',
     choices: [
-      { correct: false, text: 'A segunda linha soma 12 ao total, porque a condição também é uma conta', misconceptionId: 'prelude.condicao-e-acao' },
-      { correct: true, text: 'Muda total; depois pergunta se o novo valor chega a 12', why: 'Uma atribuição transforma o estado. Uma condição apenas escolhe se a ação será executada.' },
+      { correct: false, text: 'A segunda linha soma 2 ao total, porque a condição também é uma conta', misconceptionId: 'prelude.condicao-e-acao' },
+      { correct: true, text: 'Muda total; depois pergunta se o novo valor chega a 2', why: 'Uma atribuição transforma o estado. Uma condição apenas escolhe se a ação será executada.' },
       { correct: false, text: 'As duas linhas apenas conferem valores e nenhuma delas muda o estado', misconceptionId: 'prelude.igualdade-nao-atribuicao' },
     ],
   },

@@ -118,8 +118,8 @@ export const synthesisUnit: Unit = {
         caption: 'A estrutura só entra depois de listar as operações, contar sua frequência e identificar qual delas domina a carga.',
       },
       workedExample: {
-        problem: "No problema desta unidade: \"essa sessão existe?\" roda a cada requisição, digamos 2000 por segundo. \"As 20 mais antigas\" roda 1 vez por minuto.",
-        whatToNotice: "A diferença é de 5 ordens de grandeza. Repare que a lista não tem nome de estrutura nenhum, só operações e contagens.",
+        problem: "Numa catraca digital, verificar se uma pulseira existe acontece 2000 vezes por segundo. Expirar as 20 pulseiras mais antigas acontece 1 vez por minuto.",
+        whatToNotice: "A diferença é de 5 ordens de grandeza. A lista ainda não tem nome de estrutura: só operações, frequência e a carga que realmente domina.",
       },
       exerciseId: 'synthesis.e0' },
 

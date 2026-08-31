@@ -102,8 +102,8 @@ export const tracingUnit: Unit = {
         'Cada uma dessas quatro partes, quando falta, produz uma frase que soa certa. Sem a condição, sai "o laço roda n vezes". Sem o estado por rodada, sai "no fim, total é a soma de tudo", uma afirmação sobre o fim, derivada de nada. Guarde essas frases: elas são as armadilhas desta unidade, e você vai reencontrá-las nas outras sete unidades da trilha.',
       ],
       workedExample: {
-        problem: "Para somar [4, 7, 3], comece com i = 0 e total = 0. As rodadas produzem (i=1, total=4), (i=2, total=11) e (i=3, total=14); então i < 3 fica falso e a função devolve 14.",
-        whatToNotice: "A afirmação final nasce de estados observáveis: valores iniciais, três transformações, primeira condição falsa e saída. Remova um elo e outra pessoa já não consegue conferir a conclusão.",
+        problem: "Um cadastro precisa contar três documentos recebidos: [sim, não, sim]. Comece com i = 0 e total = 0. As rodadas produzem (i=1, total=1), (i=2, total=1) e (i=3, total=2); então i < 3 fica falso e o cadastro tem 2 documentos.",
+        whatToNotice: "A conclusão nasce de estados observáveis: documentos iniciais, três transformações, primeira condição falsa e total devolvido. Remova um elo e outra pessoa já não consegue conferir a contagem.",
       },
       figure: {
         kind: 'execution-trace',

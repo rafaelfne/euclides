@@ -139,8 +139,8 @@ export const graphsUnit: Unit = {
         caption: 'Cada ponto representa um vértice e cada seta representa uma aresta. A liga-se diretamente a B e C; B liga-se diretamente a C e D. Não há C→D: D aparece a partir de A pelo caminho A→B→D, não por uma ligação direta de C.',
       },
       workedExample: {
-        problem: "Com 3 vértices e as ligações A→B, B→C, C→A: perguntar os vizinhos de A devolve B em 1 operação. Perguntar \"existe caminho de A até C\" não é operação nenhuma, é um algoritmo que você escreve.",
-        whatToNotice: "Repare que o caminho A→B→C existe e o contrato não sabe disso. Tudo que a unidade ensina depois é escrito sobre essas duas operações.",
+        problem: "Três times têm as ligações Financeiro→Auditoria, Auditoria→Suporte e Suporte→Financeiro. Perguntar os vizinhos de Financeiro devolve Auditoria em 1 operação. Perguntar se Financeiro alcança Suporte exige percorrer um caminho.",
+        whatToNotice: "O grafo sabe quem está ligado diretamente a Financeiro, mas não entrega o caminho pronto. Alcançar Suporte é uma pergunta construída sobre o contrato.",
       },
       exerciseId: 'graphs.e0' },
 

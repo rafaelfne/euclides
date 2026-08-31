@@ -13,9 +13,8 @@ export const preludeUnit: Unit = {
     'Saber acompanhar uma conta simples em papel',
   ],
   motivatingProblem:
-    'Um saldo começa com R$ 10. Depois entram R$ 4 e é preciso responder: o saldo atual é de pelo menos R$ 12? ' +
-    'A pessoa sabe fazer a conta no papel, mas precisa registrar cada passo para que outra pessoa possa repetir a conta e conferir a resposta. ' +
-    'Como escrever essa sequência com clareza?',
+    'Um e-mail foi parar na pasta de spam, e a pessoa quer saber por quê. A regra começa com 0 sinais: soma 2 se houver um link desconhecido, soma 1 se o remetente não estiver nos contatos e tira 1 se houver uma assinatura conhecida. ' +
+    'Com 2 ou mais sinais, o e-mail vai para o spam. Como acompanhar as regras para reconstruir a decisão?',
 
   symbols: [
     { symbol: 'total', means: 'o valor acumulado até o passo atual' },
@@ -63,7 +62,7 @@ export const preludeUnit: Unit = {
       wrongWhen: [
         { scenario: 'O trecho tem várias mudanças no mesmo nome', useInstead: 'tabela de estado' },
       ],
-      everydayAnchor: 'É o que se confere numa regra de aprovação: primeiro a pergunta sobre R$ 12, depois a ação que ela libera.',
+      everydayAnchor: 'É o que se confere ao revisar por que uma mensagem foi parar no spam: primeiro a pergunta sobre a pontuação, depois a ação que ela libera.',
       invariant: 'Uma ação condicionada só acontece depois que a sua pergunta foi respondida.',
     },
   ],
@@ -74,21 +73,21 @@ export const preludeUnit: Unit = {
       oneLine: 'Um procedimento transforma um estado em outro por passos observáveis.',
       plainly: 'Você não precisa saber programar para acompanhar uma sequência de 3 mudanças.',
       body: [
-        'Estado é o retrato dos valores num momento. Com um saldo de R$ 10, mais R$ 4 e uma pergunta sobre R$ 12, há pelo menos 3 momentos que podemos conferir.',
+        'Estado é o retrato dos valores num momento. Neste caso, os sinais começam em 0, passam por 2 e 3, voltam a 2 e então são comparados com o limite 2.',
         'O resultado não é uma impressão sobre o texto. Ele vem dos valores antes e depois de cada passo, da pergunta que foi feita e do valor que sobrou no fim.',
       ],
       workedExample: {
-        problem: 'Um saldo começa com R$ 10. Entram mais R$ 4. O saldo fica em R$ 14; então a pergunta “há pelo menos R$ 12?” recebe a resposta sim.',
-        whatToNotice: 'A sequência ficou conferível porque mostra o saldo antes e depois da mudança e só então responde à pergunta sobre R$ 12.',
+        problem: 'Um e-mail tem um link desconhecido, vem de alguém fora dos contatos e traz uma assinatura conhecida. Os sinais passam por 0, 2, 3 e 2. Como 2 é pelo menos 2, ele vai para o spam.',
+        whatToNotice: 'A decisão ficou conferível porque cada regra deixou um valor visível antes da pergunta final.',
       },
       figure: {
         kind: 'concept-flow',
         caption: 'O resultado aparece depois que o estado passa por transformações e decisões.',
         nodes: [
-          { id: 'initial', label: 'saldo: R$ 10', tone: 'contract' },
-          { id: 'changed', label: 'saldo: R$ 14', tone: 'implementation' },
-          { id: 'decision', label: 'há pelo menos R$ 12?', tone: 'neutral' },
-          { id: 'result', label: 'verdadeiro', tone: 'cost' },
+          { id: 'initial', label: '0 sinais', tone: 'contract' },
+          { id: 'changed', label: '2 → 3 → 2 sinais', tone: 'implementation' },
+          { id: 'decision', label: '2 ou mais?', tone: 'neutral' },
+          { id: 'result', label: 'vai para spam', tone: 'cost' },
         ],
         edges: [
           { from: 'initial', to: 'changed' },
@@ -101,15 +100,15 @@ export const preludeUnit: Unit = {
     { id: 'prelude.c1', title: 'Nomes guardam valores', layer: 'essential', band: 'technique', elaborates: 'state-table',
       introducesTerms: ['variable', 'assignment'],
       oneLine: 'Uma atribuição troca o valor guardado por um nome.',
-      plainly: 'Um nome pode guardar 10 e depois guardar 14, em 2 passos.',
+      plainly: 'Um nome pode guardar 0 e depois guardar 2, em 2 passos.',
       body: [
-        'Uma variável é um nome que guarda um valor enquanto o procedimento avança. Se total começa em 10, o nome total aponta para esse valor naquele momento.',
-        'Uma atribuição calcula o lado direito e guarda o resultado no nome à esquerda. `total ← total + 4` não pergunta se os valores são iguais: ele produz 14 e substitui o valor guardado em total.',
+        'Uma variável é um nome que guarda um valor enquanto o procedimento avança. Se total começa em 0, o nome total aponta para esse valor naquele momento.',
+        'Uma atribuição calcula o lado direito e guarda o resultado no nome à esquerda. `total ← total + 2` não pergunta se os valores são iguais: ele produz 2 e substitui o valor guardado em total.',
       ],
-      pseudocode: `total ← 10
-total ← total + 4`,
+      pseudocode: `total ← 0
+total ← total + 2`,
       workedExample: {
-        problem: 'Comece com total guardando 10. Leia total ← total + 4. A primeira linha deixa total em 10; a segunda calcula 10 + 4 e deixa total em 14.',
+        problem: 'Comece com total guardando 0. Leia total ← total + 2. A primeira linha deixa total em 0; a segunda calcula 0 + 2 e deixa total em 2.',
         whatToNotice: 'A tabela tem duas linhas porque o nome mudou duas vezes: o valor usado pela segunda linha veio da primeira.',
       },
       exerciseId: 'prelude.e1' },
@@ -117,15 +116,15 @@ total ← total + 4`,
     { id: 'prelude.c2', title: 'Uma condição faz uma pergunta', layer: 'essential', band: 'technique', elaborates: 'condition-reading',
       introducesTerms: ['condition'],
       oneLine: 'Uma condição decide se uma ação acontece, mas não é a ação.',
-      plainly: 'A pergunta sobre 12 tem 2 respostas: sim ou não.',
+      plainly: 'A pergunta sobre 2 tem 2 respostas: sim ou não.',
       body: [
-        'Uma condição é uma pergunta que pode ser respondida com sim ou não. Em `total ≥ 12`, o número 12 não muda total e o símbolo ≥ não soma nada.',
-        'A ação vem depois da resposta. Se total vale 14, a condição é verdadeira e o passo seguinte pode acontecer; se total vale 10, a condição é falsa e esse passo é pulado.',
+        'Uma condição é uma pergunta que pode ser respondida com sim ou não. Em `total ≥ 2`, o número 2 não muda total e o símbolo ≥ não soma nada.',
+        'A ação vem depois da resposta. Se total vale 2, a condição é verdadeira e o passo seguinte pode acontecer; se total vale 0, a condição é falsa e esse passo é pulado.',
       ],
-      pseudocode: `se total ≥ 12 então
+      pseudocode: `se total ≥ 2 então
     selo ← 1`,
       workedExample: {
-        problem: 'Com total guardando 10, a pergunta total ≥ 12 é falsa e selo não muda. Com total guardando 14, a pergunta é verdadeira e selo recebe 1.',
+        problem: 'Com total guardando 0, a pergunta total ≥ 2 é falsa e selo não muda. Com total guardando 2, a pergunta é verdadeira e selo recebe 1.',
         whatToNotice: 'A mesma ação depende do valor que já estava guardado. Primeiro vem a pergunta; só depois vem a atribuição de selo.',
       },
       exerciseId: 'prelude.e2' },
@@ -201,7 +200,7 @@ total ← total + 4`,
         whatToNotice: 'O resultado 7 é confiável porque cada mudança foi ligada ao estado anterior e a condição final foi conferida.',
       },
       postmortem: {
-        incident: 'O saldo começava com R$ 10, recebia R$ 4 e precisava responder se havia pelo menos R$ 12. Sem acompanhar os passos, a pessoa via a sequência, mas não conseguia justificar a decisão.',
+        incident: 'O e-mail ia para o spam depois de passar por regras que somavam e retiravam sinais. Sem acompanhar os passos, a pessoa via a decisão, mas não conseguia justificar por que a pontuação final atingia o limite.',
         trapId: 'prelude.ordem-ignorada',
         missingClaim: 'O estado antes e depois de cada transformação, inclusive o valor testado pela condição.',
         whatWouldCatch: 'Uma tabela curta com os valores iniciais, as 2 mudanças e a pergunta respondida no estado correto.',

@@ -133,8 +133,8 @@ export const asymptoticsUnit: Unit = {
         caption: 'Uma afirmação de custo só permite previsão quando o limite vem acompanhado do regime, das hipóteses e do que n mede.',
       },
       workedExample: {
-        problem: "\"Buscar é O(1)\" contra \"buscar é O(1) amortizado no caso médio, supondo hash uniforme, com n contando pares na tabela\". A segunda tem 5 partes; a primeira tem 1.",
-        whatToNotice: "As duas frases descrevem a mesma tabela. Só a segunda deixa você prever o que acontece quando as chaves são escolhidas por quem ataca o sistema.",
+        problem: "Um sistema de check-in com 1 milhão de pulseiras digitais promete: \"buscar é O(1)\". A revisão troca por: \"buscar é O(1) amortizado no caso médio, supondo hash uniforme, com n contando pulseiras na tabela\". A segunda tem 5 partes; a primeira tem 1.",
+        whatToNotice: "Um sistema de check-in com 1 milhão de pulseiras digitais parece rápido até alguém escolher muitas pulseiras que caem juntas. A versão completa diz quando a previsão vale e o que o tamanho mede.",
       },
       exerciseId: 'asymptotics.e0' },
 

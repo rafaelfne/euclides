@@ -154,8 +154,8 @@ export const sortingUnit: Unit = {
         caption: 'Ordenar muda a posição dos elementos para formar uma ordem, mas preserva quais elementos existem. Memória e empates continuam perguntas abertas.',
       },
       workedExample: {
-        problem: "Ordenar [3, 1, 2] produz [1, 2, 3]. Ordenar três pedidos do mesmo cliente pode produzir qualquer permutação dos três e ainda satisfazer o contrato.",
-        whatToNotice: "A saída está ordenada nos dois casos. O que ficou em aberto no segundo é o que os próximos ciclos cobram.",
+        problem: "Três chamados chegam nesta ordem: (urgente, Ana), (urgente, Caio), (normal, Bia). Ordenar por prioridade precisa pôr os urgentes antes do normal, mas pode trocar Ana e Caio sem violar essa promessa.",
+        whatToNotice: "A saída continua ordenada por prioridade nos dois casos. A ordem de chegada entre Ana e Caio é uma informação diferente, que ordenar não promete preservar.",
       },
       exerciseId: 'sorting.e0' },
 

@@ -147,8 +147,8 @@ export const linearUnit: Unit = {
         caption: 'A lista responde diretamente a uma posição. Para descobrir onde está um valor, é preciso comparar os elementos um por um.',
       },
       workedExample: {
-        problem: "Numa lista de 1000 nomes, obter a posição 500 é 1 operação. Descobrir em que posição está \"Ana\" são até 1000 comparações.",
-        whatToNotice: "As duas perguntas parecem simétricas e não são. Só a primeira sai das quatro operações do contrato.",
+        problem: "Um painel guarda 1000 chamados na ordem de chegada. Abrir o chamado na posição 500 é 1 operação. Descobrir em que posição está o chamado de Ana pode exigir 1000 comparações.",
+        whatToNotice: "As duas perguntas parecem falar do mesmo painel e não são a mesma operação. A primeira já traz a posição; a segunda precisa procurar o valor.",
       },
       exerciseId: 'linear.e0' },
 

@@ -189,8 +189,8 @@ export const treesUnit: Unit = {
           'mínimo, máximo e faixa. O ganho troca o salto direto por um caminho.',
       },
       workedExample: {
-        problem: "Com 3 pares, \"b\"→1, \"a\"→2, \"c\"→3, pedir a menor chave devolve \"a\" em poucos passos. No Map da unidade anterior, a mesma pergunta obrigava a varrer os 3.",
-        whatToNotice: "Ganhou mínimo, máximo e faixa. Perdeu o acesso por conta: obter uma chave virou descer um caminho.",
+        problem: "Um relatório de entregas guarda as datas 3, 8, 12 e 20. Pedir as entregas entre 8 e 12 é uma faixa natural para uma estrutura ordenada; num Map, seria preciso conferir as 4 chaves.",
+        whatToNotice: "A ordem compra a pergunta por faixa, mas a busca deixa de ser um salto por conta: a estrutura passa a descer um caminho entre as chaves.",
       },
       exerciseId: 'trees.e0' },
 

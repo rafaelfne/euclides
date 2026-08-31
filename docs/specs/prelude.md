@@ -9,10 +9,11 @@ para acompanhar valores, decisões e repetições em pseudocódigo.
 
 ## Problema motivador
 
-Um saldo começa com R$ 10. Depois entram R$ 4 e é preciso responder: o saldo atual
-é de pelo menos R$ 12? A pessoa sabe fazer a conta no papel, mas precisa registrar
-cada passo para que outra pessoa possa repetir a conta e conferir a resposta. Como
-escrever essa sequência com clareza?
+Um e-mail foi parar na pasta de spam, e a pessoa quer saber por quê. A regra começa
+com 0 sinais: soma 2 se houver um link desconhecido, soma 1 se o remetente não
+estiver nos contatos e tira 1 se houver uma assinatura conhecida. Com 2 ou mais
+sinais, o e-mail vai para o spam. Como acompanhar as regras para reconstruir a
+decisão?
 
 ## Critério
 
