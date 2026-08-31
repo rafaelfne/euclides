@@ -22,9 +22,11 @@ export default function Home() {
             <h1 className="m-0 text-[34px] font-semibold leading-tight">Euclides</h1>
           </div>
           <p className="m-0 text-[15px] leading-relaxed text-fg-2">
-            Fundamentos para julgar código sem executá-lo. Nos <em>Elementos</em>, nada é assumido
-            que não esteja declarado, aqui também não: toda complexidade vem com regime e
-            hipóteses, todo termo vem com o que ele não é.
+            Uma resposta não se torna verdadeira porque foi escrita com confiança. Nos <em>Elementos</em>,
+            Euclides construía a confiança por meio da demonstração, não da aparência. Esta trilha
+            aplica o mesmo método ao código. Toda promessa precisa de um contrato, toda conclusão
+            precisa de um caminho e toda afirmação de custo precisa de um regime. Assim, você pode
+            julgá-lo sem executá-lo.
           </p>
         </div>
 
