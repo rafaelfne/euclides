@@ -19,7 +19,11 @@ export const units: Unit[] = [
   nivelamento, faixas nem contadores. A 09 sai daqui para `units` quando tiver
   armadilhas observadas em alunos, não só propostas (spec ai, decisão 7).
 */
-export const allUnits: Unit[] = [preludeUnit, ...units, aiUnit]
+/** A trilha que a tela chama de trilha: a pré-trilha e as curriculares, em ordem. */
+export const trailUnits: Unit[] = [preludeUnit, ...units]
+/** Navegáveis, com exercício e progresso, mas fora da trilha e do nível. */
+export const extraUnits: Unit[] = [aiUnit]
+export const allUnits: Unit[] = [...trailUnits, ...extraUnits]
 export const unitById = (id: string) => allUnits.find((u) => u.id === id)
 export const cycleById = (u: Unit, id: string) => u.cycles.find((c) => c.id === id)
 export const exerciseById = (u: Unit, id: string) => u.exercises.find((e) => e.id === id)
