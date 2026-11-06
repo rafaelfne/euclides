@@ -1,30 +1,28 @@
 /**
  * A unidade `ai`, conferida pelo lado da referência e pelo lado do exercício.
  *
- * Três perguntas:
+ * Quatro perguntas:
  *   1. o gabarito do carrinho é o que a conta dá, e a ordem respeita a
  *      invariante da passada para trás;
  *   2. as duas técnicas da unidade concordam: o gradient que a passada para
  *      trás escreve é o que se mede empurrando cada número um pouco;
  *   3. todo número que um exercício afirma sai de uma conta feita aqui, e não
- *      de quem digitou o enunciado.
+ *      de quem digitou o enunciado;
+ *   4. a unidade real cumpre o que nenhuma checagem do validador cobre.
  *
- * A unidade fica fora de `units` (spec, decisão 7) e, enquanto o `index.ts` dela
- * não existe, o validador não lê os exercícios. Por isso a última parte passa
- * o catálogo e os exercícios por `checkAll` dentro de uma unidade de andaime,
- * olhando só as checagens que dizem respeito a exercício. O andaime não é
- * conteúdo: os ciclos dele não têm prosa, e é por isso que `vazamento` aqui não
- * prova nada sobre a prosa real, que o validador confere quando ela existir.
+ * A unidade fica fora de `units` (spec, decisão 7) e dentro de `allUnits`, que
+ * é o que o validador lê.
  */
 import {
   backward, backwardOrder, backwardTrace, cartBackwardTrace, cartGraph, CART_INPUTS,
   forward, numericGradient, ptNumber, type Graph,
 } from '../src/lib/reference/ai'
 import { referenceGenerators } from '../src/lib/reference'
-import { aiExercises, aiMisconceptions } from '../src/content/units/ai/exercises'
-import { checkAll, type CheckId } from '../src/lib/validate'
-import { allTerms } from '../src/content/glossary'
-import type { Exercise, Unit } from '../src/content/schema'
+import { aiExercises } from '../src/content/units/ai/exercises'
+import { aiUnit } from '../src/content/units/ai'
+import { allUnits, units } from '../src/content/index'
+import { toTypeScriptOrNull, untranslated } from '../src/lib/transliterate'
+import type { Exercise } from '../src/content/schema'
 
 let failures = 0
 const check = (name: string, ok: boolean, detail = '') => {
@@ -206,14 +204,24 @@ check('ai.e8: subir o fator era a direção certa, o gradient do loss é negativ
   2 * (pedido * 2 - alvo) * pedido < 0)
 
 // ---------------------------------------------------------------------------
-// 4. As checagens de exercício, num andaime de unidade
+// 4. A unidade real
 // ---------------------------------------------------------------------------
 
-const authored = JSON.stringify({ aiExercises, aiMisconceptions })
-check('nenhum texto usa a palavra "derivada" nem notação de cálculo', !/derivada|∂/i.test(authored))
-check('nenhum texto usa travessão', !authored.includes('—'))
+/*
+  Até o index.ts existir, esta seção passava exercícios e catálogo por
+  `checkAll` dentro de uma unidade de andaime. Agora o validador lê a unidade
+  real em `allUnits`, e o andaime só repetiria o que `npm run validate` já
+  confere. O que fica aqui é o que o validador NÃO confere.
+*/
+const authored = JSON.stringify(aiUnit)
+check('nenhum texto da unidade usa a palavra "derivada" nem notação de cálculo', !/derivada|∂/i.test(authored))
+check('nenhum texto da unidade usa travessão', !authored.includes('—'))
 check('um exercício por ciclo: ai.e0 a ai.e8, nesta ordem',
-  aiExercises.map((e) => e.id).join(' ') === Array.from({ length: 9 }, (_, i) => `ai.e${i}`).join(' '))
+  aiExercises.map((e) => e.id).join(' ') === Array.from({ length: 9 }, (_, i) => `ai.e${i}`).join(' ')
+    && aiUnit.cycles.map((c) => c.exerciseId).join(' ') === aiExercises.map((e) => e.id).join(' '))
+
+check('a unidade está em allUnits e fora de units, como a pré-trilha (spec, decisão 7)',
+  allUnits.includes(aiUnit) && !units.includes(aiUnit))
 
 /*
   `equilíbrio` reprova a correta mais longa e não olha a mais curta. Nesta
@@ -231,48 +239,40 @@ const shortestIsCorrect = withChoices.filter((e) => {
 check('a correta não é a mais curta em mais de 2 exercícios de alternativa',
   shortestIsCorrect.length <= 2, shortestIsCorrect.map((e) => e.id).join(', '))
 
-const bands = ['criterion', 'technique', 'criterion', 'technique', 'technique', 'technique', 'technique', 'failure', 'failure'] as const
-const scaffold: Unit = {
-  kind: 'method', id: 'ai', number: 9, title: 'andaime', learningObjective: 'andaime',
-  prerequisites: ['andaime'], motivatingProblem: 'andaime',
-  symbols: [{ symbol: 'w', means: 'um peso do neurônio' }],
-  criterion: {
-    id: 'adjust', name: 'andaime', produces: 'andaime',
-    parts: [
-      { id: 'output', name: 'saída', guarantee: 'andaime' },
-      { id: 'loss', name: 'loss', guarantee: 'andaime' },
-      { id: 'gradient', name: 'gradient', guarantee: 'andaime' },
-      { id: 'step', name: 'passo', guarantee: 'andaime' },
-    ],
-    whenOmitted: [{ partId: 'loss', reads: 'andaime' }],
-  },
-  techniques: ['numeric-gradient', 'backpropagation'].map((id) => ({
-    id, name: id, derivesCriterion: 'adjust', summary: 'andaime',
-    produces: ['output', 'loss', 'gradient', 'step'],
-    wrongWhen: [{ scenario: 'andaime', useInstead: 'andaime' }],
-    everydayAnchor: 'andaime', invariant: 'andaime',
-  })),
-  cycles: bands.map((band, i) => ({
-    id: `ai.c${i}`, title: 'andaime', layer: 'essential' as const, band,
-    ...(band === 'technique' ? { elaborates: 'backpropagation' } : {}),
-    introducesTerms: [], oneLine: 'Andaime 1.', body: ['andaime 1'],
-    workedExample: { problem: 'andaime', whatToNotice: 'andaime' },
-    ...(i === 8 ? { postmortem: { incident: 'andaime', trapId: 'ai.passo-maior-converge-antes', missingClaim: 'andaime', whatWouldCatch: 'andaime' } } : {}),
-    exerciseId: `ai.e${i}`,
-  })),
-  exercises: aiExercises,
-  misconceptions: aiMisconceptions,
-  mastery: { statement: 'andaime', requiresClean: ['ai.e5'], revisitIntervalDays: 7 },
+// A tela do traço mostra o pseudocódigo do ciclo, e o enunciado o do exercício.
+const owner = aiUnit.cycles.find((c) => c.exerciseId === 'ai.e5')!
+const e5 = byId('ai.e5')
+check('c5 mostra o mesmo pseudocódigo e a mesma invariante que ai.e5',
+  e5.kind === 'trace' && owner.pseudocode === e5.pseudocode && owner.invariant === e5.invariant)
+
+/*
+  `vazamento` confere nomes de nó na ordem do traço, e não confere número solto,
+  porque número solto aparece em toda prosa. Aqui ele confere, porque nesta
+  unidade os números do gabarito são o gabarito: a prosa de c0 até c5, lida
+  antes do traço, não usa nenhum número que o gerador emite, tirando o 1, que é
+  a convenção do total e aparece em qualquer conta.
+*/
+const cells = new Set(trace.flatMap((s) => editable.map((c) => s[c]!)).filter((v) => v !== '1'))
+const beforeTrace = aiUnit.cycles.slice(0, aiUnit.cycles.indexOf(owner) + 1)
+for (const c of beforeTrace) {
+  const prose = [c.oneLine, c.plainly ?? '', ...c.body, c.workedExample.problem, c.workedExample.whatToNotice].join(' ')
+  const hits = (prose.match(/(?<![\d,.])\d+(?![\d,.]*\d)/g) ?? []).filter((n) => cells.has(n))
+  check(`${c.id}: a prosa não usa número do gabarito de ai.e5`, !hits.length, hits.join(', '))
 }
 
-const exerciseChecks: CheckId[] = [
-  'schema', 'distractor', 'equilíbrio', 'órfã', 'socrática', 'exercício', 'domínio', 'desfaz',
-  'vocabulário', 'ênfase', 'convenção', 'referência', 'formato', 'realce', 'incidente',
-]
-const found = checkAll([scaffold], allTerms).filter((f) => exerciseChecks.includes(f.check))
-for (const id of exerciseChecks) {
-  const mine = found.filter((f) => f.check === id)
-  check(`andaime: ${id}`, !mine.length, mine.map((f) => f.detail).join(' | '))
+// O custo não tem exercício: a comparação mora na prosa de c3 e de c5, e some sem aviso.
+for (const id of ['ai.c3', 'ai.c5']) {
+  const body = aiUnit.cycles.find((c) => c.id === id)!.body.join(' ')
+  check(`${id}: a prosa compara uma passada por peso, mais uma, com duas passadas`,
+    body.includes('1.000.001') && /passadas/.test(body))
+}
+
+// `test-transliterate` percorre `units`, e esta unidade está fora dele.
+for (const c of aiUnit.cycles) {
+  if (!c.pseudocode) continue
+  const ts = toTypeScriptOrNull(c.pseudocode)
+  check(`${c.id}: o pseudocódigo atravessa inteiro para TypeScript, sem identificador acentuado`,
+    ts !== null && !/[À-ÿ]/.test(ts), ts ?? untranslated(c.pseudocode).join(', '))
 }
 
 console.log(failures ? `\n  ${failures} falha(s)\n` : '\n  todas as checagens passaram\n')

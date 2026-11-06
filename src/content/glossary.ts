@@ -212,7 +212,9 @@ export const graphsGlossary: GlossaryTerm[] = [
     alsoKnownAs: ['weight', 'custo da aresta'],
     definition: 'Um número associado a uma aresta, distância, duração, custo.',
     isNot: ['não é contado pela busca em largura, que conta arestas e ignora peso'],
-    falseFriends: [], introducedIn: 'graphs.c1' },
+    falseFriends: [
+      { context: 'redes neurais, unidade 09', meaning: 'o peso do neurônio é um número que o treino ajusta e que multiplica uma entrada. O peso de aresta é dado do problema, e ninguém o ajusta. Em inglês os dois são weight.' },
+    ], introducedIn: 'graphs.c1' },
 
   { id: 'adjacency-list', canonical: 'lista de adjacência', canonicalLanguage: 'pt',
     alsoKnownAs: ['adjacency list'],
@@ -388,6 +390,7 @@ export const linearGlossary: GlossaryTerm[] = [
     falseFriends: [
       { context: 'infraestrutura', meaning: 'um nó de cluster é uma máquina. Homônimo total, e frequente na mesma conversa.' },
       { context: 'Node.js', meaning: 'nome de um runtime. Nenhuma relação.' },
+      { context: 'redes neurais, unidade 09', meaning: 'cada conta intermediária, uma soma ou um produto, é um nó da conta. Não guarda ponteiro para uma próxima caixa: guarda um valor e um gradient.' },
     ], introducedIn: 'linear.c4' },
 
   { id: 'cache-locality', canonical: 'localidade de cache', canonicalLanguage: 'pt',
@@ -657,6 +660,105 @@ export const sortingGlossary: GlossaryTerm[] = [
 ]
 
 /**
+ * A unidade 09. Fica fora do currículo, como a pré-trilha, e os termos dela
+ * ficam no glossário do mesmo jeito: quem abre a unidade precisa do verbete.
+ *
+ * Forma canônica em inglês onde é o que o aluno encontra em código e em
+ * documentação, `loss`, `gradient`, `learning rate`; em português onde a
+ * palavra é nossa. `peso do neurônio` não reivindica `peso` nem `weight`, que
+ * são do peso de aresta (`graphs.c1`); os dois se declaram falsos amigos.
+ * Nenhum verbete usa "derivada": decisão 5 do spec.
+ */
+export const aiGlossary: GlossaryTerm[] = [
+  { id: 'neuron', canonical: 'neurônio', canonicalLanguage: 'pt',
+    alsoKnownAs: ['neuron'],
+    definition: 'A conta básica de um modelo: cada entrada multiplicada pelo seu peso, os produtos somados ao bias, e a soma passada por uma activation function. Muitos deles ligados, a saída de um entrando em outro, formam uma rede.',
+    isNot: ['não é uma célula do cérebro: o nome é uma analogia antiga, e a conta é só soma e produto', 'não decide sim ou não, devolve um número'],
+    falseFriends: [], introducedIn: 'ai.c0' },
+
+  { id: 'neuron-weight', canonical: 'peso do neurônio', canonicalLanguage: 'pt',
+    alsoKnownAs: [],
+    definition: 'O número que multiplica uma entrada na conta de um neurônio: quanto aquela entrada conta na soma. É o que o treino ajusta.',
+    isNot: [
+      'não é o peso de aresta de um grafo, que é dado do problema e ninguém ajusta',
+      'não é escolhido por alguém: sai do treino, e por isso aparece num modelo pronto sem explicação',
+      'não diz sozinho quanto move o resultado: isso é o gradient dele, e depende da entrada que ele multiplica',
+    ],
+    falseFriends: [
+      { context: 'grafos, unidade 06', meaning: 'o peso de aresta é distância, duração ou custo, um dado do problema que nenhum laço ajusta. Em inglês os dois se chamam weight.' },
+    ], introducedIn: 'ai.c0' },
+
+  { id: 'bias', canonical: 'bias', canonicalLanguage: 'en',
+    alsoKnownAs: ['viés'],
+    definition: 'O número somado no fim da conta de um neurônio, em toda entrada, inclusive quando todas as entradas valem zero. Decide de onde a pontuação parte.',
+    isNot: ['não multiplica entrada nenhuma', 'não é um preconceito do modelo'],
+    falseFriends: [
+      { context: 'estatística e ética de IA', meaning: 'o viés de um modelo é erro sistemático, ou resultado que prejudica um grupo. O bias do neurônio é um número somado à pontuação, e um modelo enviesado pode ter qualquer bias.' },
+    ], introducedIn: 'ai.c0' },
+
+  { id: 'activation-function', canonical: 'activation function', canonicalLanguage: 'en',
+    alsoKnownAs: ['função de ativação'],
+    definition: 'A regra que transforma a soma de um neurônio na saída dele. A tanh, por exemplo, leva qualquer soma para um número entre −1 e 1.',
+    isNot: ['não é um if: a tanh devolve um grau, que muda quando a soma muda', 'não decide sim ou não; quem decide compara a saída com um limite, fora da conta'],
+    falseFriends: [], introducedIn: 'ai.c1' },
+
+  { id: 'loss', canonical: 'loss', canonicalLanguage: 'en',
+    alsoKnownAs: ['função de perda', 'loss function'],
+    definition: 'Um número só que mede o quanto a saída errou. A forma mais comum soma o quadrado de cada erro.',
+    isNot: [
+      'não é a soma dos erros com sinal, em que um erro para cima apaga um para baixo',
+      'não é o custo de tempo de um algoritmo, o da unidade 02',
+      'não diz o que mexer, só o quanto errou',
+    ],
+    falseFriends: [
+      { context: 'redes de computadores', meaning: 'packet loss é a fração de pacotes que não chegou. Nenhuma relação com o erro de um modelo.' },
+    ], introducedIn: 'ai.c2' },
+
+  { id: 'gradient', canonical: 'gradient', canonicalLanguage: 'en',
+    alsoKnownAs: ['gradiente', 'grad'],
+    definition: 'Quanto o resultado muda se um número subir um pouco, com os outros parados, por unidade de empurrão. Cada número da conta tem o seu.',
+    isNot: [
+      'não é o valor do número: um peso pequeno pode ter gradient grande',
+      'não é o impacto local de uma conta só: é o efeito até o resultado final',
+      'não é o tamanho do passo; o passo é learning rate vezes gradient',
+    ],
+    falseFriends: [
+      { context: 'CSS', meaning: 'linear-gradient é uma transição de cor. Mesma palavra, nenhuma conta.' },
+    ], introducedIn: 'ai.c3' },
+
+  { id: 'chain-rule', canonical: 'chain rule', canonicalLanguage: 'en',
+    alsoKnownAs: ['regra da cadeia'],
+    definition: 'Quando uma conta alimenta outra, o impacto de um número no resultado final é o produto dos impactos locais de cada conta no caminho.',
+    isNot: ['não soma os impactos do caminho, multiplica', 'não exige refazer a conta inteira: usa o gradient do nó de cima, já pronto'],
+    falseFriends: [], introducedIn: 'ai.c4' },
+
+  { id: 'backpropagation', canonical: 'backpropagation', canonicalLanguage: 'en',
+    alsoKnownAs: ['backprop', 'retropropagação'],
+    definition: 'Uma passada para frente que guarda o valor de cada nó, e uma para trás que sai do resultado e aplica a chain rule nó a nó, em ordem reversa, até as entradas. Entrega o gradient de todos os números em duas passadas.',
+    isNot: [
+      'não ajusta os pesos: ela calcula o gradient, e o passo é outra etapa',
+      'não funciona em conta com ciclo, porque não existe de trás para frente',
+      'não sai de graça: guarda todo valor intermediário da passada para frente',
+    ],
+    falseFriends: [], introducedIn: 'ai.c5' },
+
+  { id: 'learning-rate', canonical: 'learning rate', canonicalLanguage: 'en',
+    alsoKnownAs: ['taxa de aprendizado', 'lr'],
+    definition: 'O número que multiplica o gradient para dar o tamanho do passo: peso ← peso − learning rate × gradient.',
+    isNot: ['não é quanto o modelo aprende por rodada: maior não chega antes, e pode passar do ponto', 'não é calculado pelo treino, é escolhido por quem o roda'],
+    falseFriends: [], introducedIn: 'ai.c6' },
+
+  { id: 'gradient-descent', canonical: 'gradient descent', canonicalLanguage: 'en',
+    alsoKnownAs: ['descida de gradiente', 'gradiente descendente'],
+    definition: 'O laço de treino: medir o gradient onde o peso está, dar um passo para o lado oposto, e repetir.',
+    isNot: [
+      'não calcula o gradient, usa o que a backpropagation entregou',
+      'não garante chegar ao ponto em que o loss é mínimo: com passo grande ele passa do ponto e se afasta',
+    ],
+    falseFriends: [], introducedIn: 'ai.c6' },
+]
+
+/**
  * Terms whose false friends bite before their own unit exists. They carry
  * `introducedIn: PLANNED` and a `plannedIn` the validator cannot resolve yet
  *, and that fails the build as soon as the cycle it names starts to exist.
@@ -769,12 +871,13 @@ export const OVERLOADED_TERMS = [
   'hash', 'heap', 'stack', 'bucket', 'chaining', 'load-factor', 'probing', 'clustering',
   'merge', 'partition', 'pivot', 'stability',
   'list', 'node', 'capacity', 'rotation', 'balancing', 'state', 'guard',
-  'graph', 'edge', 'sparse', 'vertex',
+  'graph', 'edge', 'sparse', 'vertex', 'weight',
 ]
 
 export const allTerms: GlossaryTerm[] = [
   ...appGlossary,
   ...preludeGlossary, ...tracingGlossary, ...asymptoticsGlossary, ...linearGlossary, ...hashGlossary,
   ...treesGlossary, ...graphsGlossary, ...sortingGlossary, ...synthesisGlossary,
+  ...aiGlossary,
   ...plannedGlossary,
 ]

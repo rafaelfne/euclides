@@ -102,6 +102,15 @@ export const IDENTIFIERS: Record<string, string> = {
   filho: 'child', vazia: 'empty', vazio: 'empty', sequência: 'sequence',
   comparar: 'compare', achar: 'find', descartar: 'discard', dobrar: 'grow',
   primeiro: 'first', último: 'last', resto: 'rest', novo: 'fresh', par: 'entry',
+  // unidade 09
+  pontuar: 'score', soma: 'sum', pesos: 'weights', peso: 'weight',
+  entradas: 'inputs', entrada: 'input', saída: 'output',
+  degrau: 'threshold', ativar: 'activate', tanh: 'Math.tanh',
+  previstos: 'predicted', reais: 'actual', erro: 'error',
+  medir_gradient: 'numericGradient', conta: 'compute', nome: 'name',
+  empurrão: 'nudge', empurrada: 'pushed',
+  retropropagar: 'backpropagate', ordem_reversa: 'reverseOrder', impacto_local: 'localImpact',
+  descer: 'descend', learning_rate: 'learningRate',
 }
 
 /** Toda palavra de controle do pseudocódigo. A checagem confere esta lista. */
