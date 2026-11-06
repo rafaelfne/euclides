@@ -43,7 +43,7 @@ export function StabilityFigure({ figure }: { figure: Extract<Figure, { kind: 's
             }}
           >
             <span className="font-mono text-[15px]" style={{ color: toneOf(it.value) }}>{it.value}</span>
-            <span className="font-mono text-[10.5px] text-fg-4">{it.tag}</span>
+            <span className="font-mono text-[12px] text-fg-4">{it.tag}</span>
           </div>
         ))}
       </div>
@@ -64,7 +64,7 @@ export function StabilityFigure({ figure }: { figure: Extract<Figure, { kind: 's
         <Row items={unstable} label="Algoritmo instável" note="empate resolve como for conveniente" />
       </div>
 
-      <div className="border-t border-rule px-3.5 py-2 font-mono text-[11.5px] text-fg-3">
+      <div className="border-t border-rule px-3.5 py-2 font-mono text-[12px] text-fg-3">
         {changed
           ? 'as duas saídas estão ordenadas pelo número, e as etiquetas discordam'
           : 'sem empate na entrada, os dois devolvem a mesma coisa'}

@@ -32,7 +32,7 @@ export function TreeFigure({ figure, autoPlay }: { figure: Extract<Figure, { kin
           return (
             <div key={t.label} className="flex flex-col gap-2 border border-rule-soft bg-panel-head p-2.5">
               <div className="flex items-baseline justify-between gap-2">
-                <span className="font-mono text-[11px] text-fg-2">{t.keys.join(' ')}</span>
+                <span className="font-mono text-[12px] text-fg-2">{t.keys.join(' ')}</span>
                 <span
                   className={`lbl ${unbalanced ? 'text-implementation' : 'text-contract'}`}
                 >
@@ -40,7 +40,7 @@ export function TreeFigure({ figure, autoPlay }: { figure: Extract<Figure, { kin
                 </span>
               </div>
               <FlowCanvas nodes={nodes} edges={edges} height={canvasHeight} ariaLabel={t.label} />
-              <span className="text-[11.5px] leading-snug text-fg-4">{t.label}</span>
+              <span className="text-[12px] leading-snug text-fg-4">{t.label}</span>
             </div>
           )
         })}

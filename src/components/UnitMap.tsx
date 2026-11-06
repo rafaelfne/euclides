@@ -158,7 +158,7 @@ export function UnitMap({ unit }: { unit: Unit }) {
               <div className="grid grid-cols-1 gap-x-6 gap-y-1.5 md:grid-cols-2">
                 {spine.promises.map((p) => (
                   <div key={p.key} className="flex items-baseline gap-2.5">
-                    <span className="shrink-0 font-mono text-[11.5px] text-contract">{p.lead}</span>
+                    <span className="shrink-0 font-mono text-[12px] text-contract">{p.lead}</span>
                     <span className="text-[12.5px] text-fg-2">{p.detail}</span>
                   </div>
                 ))}

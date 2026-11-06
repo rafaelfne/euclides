@@ -78,7 +78,7 @@ export function GapPanel({ units }: { units: Unit[] }) {
         <summary className="lbl cursor-pointer px-3.5 py-2 hover:text-fg-2">
           Ver o markdown antes de copiar
         </summary>
-        <pre className="m-0 max-h-[420px] overflow-auto border-t border-rule bg-[#101218] px-4 py-3.5 font-mono text-[11.5px] leading-relaxed whitespace-pre-wrap text-fg-3">
+        <pre className="m-0 max-h-[420px] overflow-auto border-t border-rule bg-[#101218] px-4 py-3.5 font-mono text-[12px] leading-relaxed whitespace-pre-wrap text-fg-3">
           {markdown}
         </pre>
       </details>

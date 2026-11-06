@@ -62,7 +62,7 @@ export function UnitTabs({ unit, cycleId }: { unit: Unit; cycleId?: string }) {
             href={`/units/${unit.id}/cycles/${c.id}`}
             title={`${c.title}${c.layer === 'deep-dive' ? ' (aprofundamento, opcional)' : ''}`}
             className={cn(
-              'flex shrink-0 items-center gap-2 border-r border-rule-soft px-3.5 py-2.5 text-[11.5px] whitespace-nowrap',
+              'flex shrink-0 items-center gap-2 border-r border-rule-soft px-3.5 py-2.5 text-[12px] whitespace-nowrap',
               active
                 ? '-mb-px border-b border-b-shell bg-shell text-fg'
                 : 'text-fg-4 hover:bg-panel-head hover:text-fg-2',

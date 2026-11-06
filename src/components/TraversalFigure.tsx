@@ -39,7 +39,7 @@ function Panel({
     <div className="min-w-0 flex-1">
       <div className="flex items-baseline justify-between border-b border-rule px-3 py-1.5">
         <span className={`lbl text-${accent}`}>{title}</span>
-        <span className="font-mono text-[10.5px] text-fg-4">{frontier}</span>
+        <span className="font-mono text-[12px] text-fg-4">{frontier}</span>
       </div>
       <div className="overflow-x-auto px-3 py-2">
         <FlowCanvas
@@ -49,7 +49,7 @@ function Panel({
           ariaLabel={`${title}: ${visited.join(' → ') || 'nenhum vértice visitado'}`}
         />
       </div>
-      <div className={`border-t border-rule px-3 py-2 font-mono text-[11.5px] text-${accent}`}>
+      <div className={`border-t border-rule px-3 py-2 font-mono text-[12px] text-${accent}`}>
         {visited.join(' → ') || '—'}
       </div>
     </div>

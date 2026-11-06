@@ -40,7 +40,7 @@ export function LinkedListRemovalFigure({ figure }: { figure: Extract<Figure, { 
                 : figure.values.slice(0, -1).map((_, index) => ({ from: `node-${index}`, to: `node-${index + 1}` }))
               return <FlowCanvas nodes={nodes} edges={flowEdges(edgeSpecs, step === lastStep ? 'implementation' : 'neutral')} height={150} ariaLabel={figure.caption} />
             })()}
-            <div className="mt-4 font-mono text-[11.5px] text-fg-3">
+            <div className="mt-4 font-mono text-[12px] text-fg-3">
               {step === lastStep
                 ? `linha aplicada: anterior.próximo ← alvo.próximo`
                 : `linha aplicada: atual ← atual.próximo`}

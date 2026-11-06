@@ -115,7 +115,7 @@ export function TraceExercise({ unit, exercise }: { unit: Unit; exercise: TraceE
           <div className="grid grid-cols-[auto_1fr] items-baseline gap-x-3.5 gap-y-2 border-t border-rule px-3.5 py-3">
             {[...exercise.conventions, ...traceConventions].map((c) => (
               <div key={c.rule} className="contents">
-                <span className="whitespace-nowrap font-mono text-[11.5px] text-contract">{c.notation}</span>
+                <span className="whitespace-nowrap font-mono text-[12px] text-contract">{c.notation}</span>
                 <span className="flex flex-col gap-0.5 text-[12.5px] text-fg-3">
                   <span className="text-fg-2">{c.rule}</span>
                   <span>{c.why}</span>
@@ -194,13 +194,14 @@ export function TraceExercise({ unit, exercise }: { unit: Unit; exercise: TraceE
                         key={c.key}
                         className={cn(
                           'border-b border-rule-soft align-middle',
+                          !GIVEN.has(c.key) && 'p-1',
                           c.key === 'step' && 'sticky left-0 z-10 bg-panel',
                           c.key === 'key' && 'sticky left-[64px] z-10 border-r border-rule bg-panel',
                           isDivergent && GIVEN.has(c.key) && 'bg-implementation-bg',
                         )}
                       >
                         {GIVEN.has(c.key) ? (
-                          <span className="block px-2.5 py-1.5 font-mono text-[12.5px] text-fg-3">{r[c.key]}</span>
+                          <span className="block px-2.5 py-1.5 font-mono text-[13.5px] text-fg-3">{r[c.key]}</span>
                         ) : (
                           <Input
                             value={r[c.key] ?? ''}

@@ -37,10 +37,10 @@ export function BugExercise({ unit, exercise }: { unit: Unit; exercise: BugHuntE
             {isDiff && (
               <div className="flex flex-wrap items-baseline gap-3 border-b border-rule bg-panel-head px-3 py-1.5">
                 <span className="lbl">Revisão de pull request</span>
-                <span className="font-mono text-[11.5px] text-contract">
+                <span className="font-mono text-[12px] text-contract">
                   +{exercise.addedLines!.length}
                 </span>
-                <span className="font-mono text-[11.5px] text-fg-4">{exercise.language}</span>
+                <span className="font-mono text-[12px] text-fg-4">{exercise.language}</span>
               </div>
             )}
             <div className="overflow-x-auto">
