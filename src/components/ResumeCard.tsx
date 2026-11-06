@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { allUnits, units } from '@/content'
+import { allUnits, units, extraUnits } from '@/content'
 import { resumePoint, readProfile, PROGRESS_EVENT, type Resume } from '@/lib/progress'
 
 /**
@@ -18,7 +18,7 @@ export function ResumeCard() {
 
   useEffect(() => {
     const sync = () => {
-      setResume(resumePoint([...units, allUnits[0]!]))
+      setResume(resumePoint([...units, allUnits[0]!, ...extraUnits]))
       setName(readProfile()?.name)
     }
     sync()

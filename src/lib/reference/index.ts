@@ -7,6 +7,7 @@ import { treesReferenceGenerators } from './trees'
 import { graphsReferenceGenerators } from './graphs'
 import { sortingReferenceGenerators } from './sorting'
 import { preludeReferenceGenerators } from './prelude'
+import { aiReferenceGenerators } from './ai'
 
 export type ReferenceGenerator = () => TraceStep[]
 
@@ -19,6 +20,7 @@ const registries: Array<Record<string, ReferenceGenerator>> = [
   treesReferenceGenerators,
   graphsReferenceGenerators,
   sortingReferenceGenerators,
+  aiReferenceGenerators,
 ]
 
 function merge(): Record<string, ReferenceGenerator> {

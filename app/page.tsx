@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { allUnits } from '@/content'
+import { allUnits, extraUnits, trailUnits } from '@/content'
 import { AppShell } from '@/components/AppShell'
 import { Badge } from '@/components/ui/badge'
 import { Mark } from '@/components/Mark'
@@ -75,36 +75,42 @@ export default function Home() {
           </div>
         </FirstVisitOnly>
 
-        <div className="flex flex-col gap-2">
-          <span className="lbl">A trilha</span>
-          <ul className="m-0 grid list-none grid-cols-1 gap-2 p-0 lg:grid-cols-2">
-            {allUnits.map((u) => (
-              <li key={u.id}>
-                <Link
-                  href={`/units/${u.id}`}
-                  className="flex h-full flex-col gap-1.5 border border-rule bg-panel px-4 py-3.5 text-inherit hover:bg-panel-hover"
-                >
-                  <div className="flex items-baseline gap-2.5">
-                    <span className="font-mono text-[12px] text-fg-5">
-                      {String(u.number).padStart(2, '0')}
-                    </span>
-                    <span className="text-[17px] font-semibold">{u.title}</span>
-                    <span className="ml-auto"><UnitStateDot unit={u} withLabel /></span>
-                  </div>
-                  <span className="text-[12.5px] leading-snug text-fg-3">{u.learningObjective}</span>
-                  <div className="mt-auto flex gap-1.5 pt-1.5">
-                    {/* Tipo de unidade em neutro: cor é de banda, e vermelho já diz implementação. */}
-                    <Badge>
-                      {u.kind === 'structure' ? 'estrutura' : 'método'}
-                    </Badge>
-                    <Badge>{u.cycles.length} ciclos</Badge>
-                    <Badge>{humanMinutes(unitMinutes(u))}</Badge>
-                  </div>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
+        {([
+          ['A trilha', trailUnits, null],
+          ['Além da trilha', extraUnits, 'Navegável, com exercícios e progresso, mas não conta para o nível.'],
+        ] as const).map(([label, list, note]) => (
+          <div key={label} className="flex flex-col gap-2">
+            <span className="lbl">{label}</span>
+            {note && <span className="text-[13px] text-fg-4">{note}</span>}
+            <ul className="m-0 grid list-none grid-cols-1 gap-2 p-0 lg:grid-cols-2">
+              {list.map((u) => (
+                <li key={u.id}>
+                  <Link
+                    href={`/units/${u.id}`}
+                    className="flex h-full flex-col gap-1.5 border border-rule bg-panel px-4 py-3.5 text-inherit hover:bg-panel-hover"
+                  >
+                    <div className="flex items-baseline gap-2.5">
+                      <span className="font-mono text-[12px] text-fg-5">
+                        {String(u.number).padStart(2, '0')}
+                      </span>
+                      <span className="text-[17px] font-semibold">{u.title}</span>
+                      <span className="ml-auto"><UnitStateDot unit={u} withLabel /></span>
+                    </div>
+                    <span className="text-[12.5px] leading-snug text-fg-3">{u.learningObjective}</span>
+                    <div className="mt-auto flex gap-1.5 pt-1.5">
+                      {/* Tipo de unidade em neutro: cor é de banda, e vermelho já diz implementação. */}
+                      <Badge>
+                        {u.kind === 'structure' ? 'estrutura' : 'método'}
+                      </Badge>
+                      <Badge>{u.cycles.length} ciclos</Badge>
+                      <Badge>{humanMinutes(unitMinutes(u))}</Badge>
+                    </div>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
       </div>
     </AppShell>
   )

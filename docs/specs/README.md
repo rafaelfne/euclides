@@ -14,7 +14,7 @@ spec de entrada e oito specs curriculares, todos implementados e registrados.
 | 6 | [graphs](graphs.md), Grafos | `structure` | implementada |
 | 7 | [sorting](sorting.md), Ordenação e busca | `structure` | implementada |
 | 8 | [synthesis](synthesis.md), Síntese | `method` | implementada |
-| 9 | [ai](ai.md), Como uma IA decide | `method` | rascunho, perguntas em aberto |
+| extra | [ai](ai.md), Como uma IA decide | `method` | fora do currículo, em implementação |
 
 Todos implementados. A pré-trilha é conteúdo navegável, mas não entra no conjunto curricular
 que alimenta nivelamento, faixas e contadores. As três decisões que travavam a escrita foram tomadas na

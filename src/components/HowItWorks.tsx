@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { allUnits } from '@/content'
+import { allUnits, trailUnits } from '@/content'
 import { allTerms } from '@/content/glossary'
 import { APP } from '@/content/glossary'
 import { Panel, PanelBody, PanelHeader, PanelTitle } from './ui/panel'
@@ -14,16 +14,16 @@ import { PlatformSearchShortcut } from './CommandPalette'
  * escrita à mão envelhece na próxima unidade e ninguém percebe. ADR-0019.
  */
 export function HowItWorks() {
-  const cycles = allUnits.flatMap((u) => u.cycles)
-  const traps = allUnits.flatMap((u) => u.misconceptions)
-  const exercises = allUnits.flatMap((u) => u.exercises)
+  const cycles = trailUnits.flatMap((u) => u.cycles)
+  const traps = trailUnits.flatMap((u) => u.misconceptions)
+  const exercises = trailUnits.flatMap((u) => u.exercises)
   const vocabulary = allTerms.filter((t) => t.introducedIn === APP)
   const onboardingTerms = ['app.cycle', 'app.trap', 'app.gap', 'app.revisit']
     .map((id) => vocabulary.find((term) => term.id === id))
     .filter((term): term is NonNullable<typeof term> => Boolean(term))
 
   const numbers = [
-    { n: allUnits.length, label: 'unidades publicadas' },
+    { n: trailUnits.length, label: 'unidades na trilha' },
     { n: cycles.length, label: 'ciclos' },
     { n: exercises.length, label: 'exercícios' },
     { n: traps.length, label: 'armadilhas catalogadas' },
