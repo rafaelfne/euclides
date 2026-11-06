@@ -22,7 +22,7 @@ export function BucketComparisonFigure({ figure }: { figure: BucketComparison })
             <section key={item.label} className="border border-rule bg-panel-head">
               <div className="flex items-center justify-between gap-3 border-b border-rule px-3 py-2">
                 <span className="text-[13px] font-semibold text-fg">{item.label} · {item.hash === 'zero' ? 'h(k) = 0' : `h(k) = k mod ${figure.m}`}</span>
-                <span className="font-mono text-[11.5px] text-implementation">
+                <span className="font-mono text-[12px] text-implementation">
                   {comparisons} {comparisons === 1 ? 'comparação' : 'comparações'}
                 </span>
               </div>
@@ -31,14 +31,14 @@ export function BucketComparisonFigure({ figure }: { figure: BucketComparison })
                   const searched = index === targetBucket
                   return (
                     <div key={index} className="grid min-h-8 grid-cols-[5.5rem_1fr] items-center gap-2">
-                      <span className="font-mono text-[11px] text-fg-4">bucket {index}</span>
+                      <span className="font-mono text-[12px] text-fg-4">bucket {index}</span>
                       <div className={`flex min-h-8 flex-wrap items-center gap-1 border px-1.5 py-1 ${searched ? 'border-implementation bg-implementation-bg' : 'border-rule bg-panel'}`}>
                         {bucket.length === 0
-                          ? <span className="font-mono text-[11px] text-fg-5">vazio</span>
+                          ? <span className="font-mono text-[12px] text-fg-5">vazio</span>
                           : bucket.map((key) => (
                             <span
                               key={key}
-                              className={`border px-2 py-0.5 font-mono text-[11.5px] ${key === item.searchFor ? 'border-implementation text-implementation' : 'border-rule text-fg-2'}`}
+                              className={`border px-2 py-0.5 font-mono text-[12px] ${key === item.searchFor ? 'border-implementation text-implementation' : 'border-rule text-fg-2'}`}
                             >
                               {key}
                             </span>
@@ -48,7 +48,7 @@ export function BucketComparisonFigure({ figure }: { figure: BucketComparison })
                   )
                 })}
               </div>
-              <div className="border-t border-rule px-3 py-2 font-mono text-[11.5px] text-fg-3">
+              <div className="border-t border-rule px-3 py-2 font-mono text-[12px] text-fg-3">
                 buscar({item.searchFor}) → bucket {targetBucket} → {comparisons} {comparisons === 1 ? 'comparação' : 'comparações'}
               </div>
             </section>

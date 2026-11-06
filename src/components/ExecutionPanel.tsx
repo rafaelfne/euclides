@@ -97,14 +97,14 @@ export function ExecutionPanel({
                         moved && 'bg-contract-bg',
                       )}
                     >
-                      <span className="font-mono text-[11.5px] text-fg-4">{c.label}</span>
+                      <span className="font-mono text-[12px] text-fg-4">{c.label}</span>
                       <span className={cn('font-mono text-[13px]', moved ? 'text-contract' : 'text-fg-2')}>
                         {row[c.key]}
                       </span>
                     </div>
                   )
                 })}
-                <div className="px-3 py-2 text-[11.5px] leading-relaxed text-fg-4">
+                <div className="px-3 py-2 text-[12px] leading-relaxed text-fg-4">
                   A linha acesa é a que escreveu o valor destacado nesta rodada.
                 </div>
               </div>

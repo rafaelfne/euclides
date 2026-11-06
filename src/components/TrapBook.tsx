@@ -83,10 +83,10 @@ export function TrapBook({ units }: { units: Unit[] }) {
               key={id}
               onClick={() => setFilter(id)}
               className={cn(
-                'm-tap cursor-pointer border px-3 py-1 font-mono text-[12px] tracking-[0.14em] uppercase',
+                'm-tap h-9 cursor-pointer border px-3 text-[13px]',
                 filter === id
                   ? 'border-contract-rule bg-contract-bg text-fg'
-                  : 'border-rule bg-panel text-fg-3 hover:text-fg',
+                  : 'border-rule-control bg-panel text-fg-3 hover:text-fg',
               )}
             >
               {label}

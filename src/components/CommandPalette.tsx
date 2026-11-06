@@ -25,12 +25,12 @@ export function CommandPaletteButton() {
     <button
       type="button"
       onClick={() => window.dispatchEvent(new Event(COMMAND_PALETTE_EVENT))}
-      className="m-tap flex cursor-pointer items-center gap-2 border border-rule bg-panel-head px-2.5 py-1 text-[12px] text-fg-3 hover:text-fg"
+      className="m-tap flex h-9 cursor-pointer items-center gap-2 border border-rule-control bg-panel-head px-3 text-[13px] text-fg-3 hover:text-fg"
       aria-label="Buscar termo, ciclo, armadilha ou tela"
     >
       <Search size={13} />
       <span>Buscar</span>
-      <span className="hidden font-mono text-[10px] text-fg-5 sm:inline"><PlatformSearchShortcut /></span>
+      <span className="hidden font-mono text-[12px] text-fg-4 sm:inline"><PlatformSearchShortcut /></span>
     </button>
   )
 }
@@ -207,7 +207,7 @@ export function CommandPalette() {
           )}
         </div>
 
-        <div className="flex flex-wrap gap-4 border-t border-rule px-4 py-2 font-mono text-[11px] text-fg-4">
+        <div className="flex flex-wrap gap-4 border-t border-rule px-4 py-2 font-mono text-[12px] text-fg-4">
           <span>↑ ↓ navegar</span>
           <span>enter abrir</span>
           <span>esc fechar</span>

@@ -109,7 +109,7 @@ export function BucketsFigure({ figure, autoPlay }: { figure: Extract<Figure, { 
         </svg>
       </div>
       {target !== undefined && buckets[targetBucket]!.includes(target) && (
-        <div className="border-t border-rule px-3.5 py-2 font-mono text-[11.5px] text-fg-3">
+        <div className="border-t border-rule px-3.5 py-2 font-mono text-[12px] text-fg-3">
           buscar({target}): 1 endereço, e depois{' '}
           <span className="text-implementation">
             {buckets[targetBucket]!.indexOf(target) + 1} comparações de chave

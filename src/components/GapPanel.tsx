@@ -77,7 +77,7 @@ export function GapPanel({ units }: { units: Unit[] }) {
         <summary className="lbl cursor-pointer px-3.5 py-2 hover:text-fg-2">
           Ver o markdown antes de copiar
         </summary>
-        <pre className="m-0 max-h-[420px] overflow-auto border-t border-rule bg-[#101218] px-4 py-3.5 font-mono text-[11.5px] leading-relaxed whitespace-pre-wrap text-fg-3">
+        <pre className="m-0 max-h-[420px] overflow-auto border-t border-rule bg-[#101218] px-4 py-3.5 font-mono text-[12px] leading-relaxed whitespace-pre-wrap text-fg-3">
           {markdown}
         </pre>
       </details>
@@ -114,7 +114,7 @@ function UnitGapBlock({ gaps }: { gaps: UnitGaps }) {
         {lines.map((line) => (
           <div key={line.exerciseId} className="border-l-2 border-rule pl-4">
             <div className="mb-1 flex items-baseline gap-3">
-              <span className="font-mono text-[11.5px] text-fg-4">{line.exerciseId}</span>
+              <span className="font-mono text-[12px] text-fg-4">{line.exerciseId}</span>
               <span className="text-[13px] text-fg-2">{line.verdict}</span>
             </div>
             {line.misconceptions.map((m) => (

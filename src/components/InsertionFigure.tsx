@@ -48,7 +48,7 @@ export function InsertionFigure({
                 return (
                   <div key={run.label} className="flex flex-col gap-2.5 border border-rule-soft bg-panel-head p-2.5">
                     <div className="flex items-baseline justify-between gap-2">
-                      <span className="font-mono text-[11px] text-fg-2">{run.values.join(' ')}</span>
+                      <span className="font-mono text-[12px] text-fg-2">{run.values.join(' ')}</span>
                       <span className={`lbl ${caro ? 'text-implementation' : 'text-contract'}`}>
                         {parciais} {parciais === 1 ? 'deslocamento' : 'deslocamentos'}
                       </span>
@@ -76,12 +76,12 @@ export function InsertionFigure({
                       })}
                     </div>
 
-                    <span className="font-mono text-[11px] text-fg-4">
+                    <span className="font-mono text-[12px] text-fg-4">
                       encaixa {round.taken}, o laço interno rodou {round.shifts}{' '}
                       {round.shifts === 1 ? 'vez' : 'vezes'}
                     </span>
 
-                    <span className="text-[11.5px] leading-snug text-fg-4">{run.label}</span>
+                    <span className="text-[12px] leading-snug text-fg-4">{run.label}</span>
                   </div>
                 )
               })}
@@ -89,7 +89,7 @@ export function InsertionFigure({
           )}
         </Stepper>
 
-        <div className="border-t border-rule px-3.5 py-2 font-mono text-[11.5px] text-fg-3">
+        <div className="border-t border-rule px-3.5 py-2 font-mono text-[12px] text-fg-3">
           no fim:{' '}
           {runs.map((r, i) => (
             <span key={r.label}>

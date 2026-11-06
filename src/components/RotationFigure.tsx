@@ -44,7 +44,7 @@ export function RotationFigure({ figure }: { figure: Extract<Figure, { kind: 'ro
         <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-rule bg-panel-head px-3.5 py-2">
           <span className="lbl">A rotação, e o que ela não muda</span>
           {rotation && (
-            <span className="font-mono text-[11.5px] text-contract">
+            <span className="font-mono text-[12px] text-contract">
               {ROTATION_LABEL[rotation.kind]} em {rotation.at}
             </span>
           )}

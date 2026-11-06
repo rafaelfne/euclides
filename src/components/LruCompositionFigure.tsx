@@ -45,7 +45,7 @@ export function LruCompositionFigure({ figure }: { figure: LruCompositionFigureD
               <div>
                 <div className="mb-3 flex items-center justify-between">
                   <span className="lbl text-contract">Map</span>
-                  <span className="font-mono text-[11px] text-fg-4">chave → nó</span>
+                  <span className="font-mono text-[12px] text-fg-4">chave → nó</span>
                 </div>
 
                 <div className="flex flex-col gap-2">
@@ -75,7 +75,7 @@ export function LruCompositionFigure({ figure }: { figure: LruCompositionFigureD
               <div>
                 <div className="mb-3 flex items-center justify-between">
                   <span className="lbl text-implementation">Lista ligada</span>
-                  <span className="font-mono text-[11px] text-fg-4">mais recente → menos recente</span>
+                  <span className="font-mono text-[12px] text-fg-4">mais recente → menos recente</span>
                 </div>
 
                 <div className="flex min-w-max items-center overflow-x-auto pb-2">

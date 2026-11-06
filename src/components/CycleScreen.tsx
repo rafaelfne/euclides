@@ -59,7 +59,7 @@ export function CycleScreen({ unit, cycle, exercise }: { unit: Unit; cycle: Cycl
                 <Badge tone="neutral" className="cursor-help">{t.canonical}</Badge>
               </TermCard>
             ))}
-            <span className="text-[11.5px] italic text-fg-4">termos novos deste ciclo</span>
+            <span className="text-[12px] italic text-fg-4">termos novos deste ciclo</span>
           </div>
         )}
 
@@ -242,7 +242,7 @@ function TradeOffMatrix({ unit, exerciseId }: { unit: Unit; exerciseId: string }
     return (
       <div className="border border-dashed border-rule px-4 py-3.5 opacity-70">
         <div className="lbl mb-1.5">Matriz de trade-off</div>
-        <div className="text-[11.5px] leading-snug text-fg-4">
+        <div className="text-[12px] leading-snug text-fg-4">
           Travada enquanto o exercício está aberto. Consultar a resposta durante a tentativa é o
           hábito que esta trilha desfaz.
         </div>
@@ -262,7 +262,7 @@ function TradeOffMatrix({ unit, exerciseId }: { unit: Unit; exerciseId: string }
           <div key={r.id} className="flex flex-col gap-1">
             <span className="text-[12px] font-semibold text-fg-2">{r.name}</span>
             {r.wrongWhen.map((w) => (
-              <div key={w.scenario} className="text-[11.5px] leading-snug text-fg-4">
+              <div key={w.scenario} className="text-[12px] leading-snug text-fg-4">
                 <span className="text-fg-3">{w.scenario}</span> → {w.useInstead}
               </div>
             ))}
@@ -294,8 +294,8 @@ function CycleAside({ unit, cycle, exercise }: { unit: Unit; cycle: Cycle; exerc
         <div className="mb-6 flex flex-col gap-2">
           {unit.symbols.map((s) => (
             <div key={s.symbol} className="flex items-baseline gap-2.5">
-              <span className="min-w-[74px] shrink-0 font-mono text-[11.5px] text-contract">{s.symbol}</span>
-              <span className="text-[11.5px] leading-snug text-fg-3">{s.means}</span>
+              <span className="min-w-[74px] shrink-0 font-mono text-[12px] text-contract">{s.symbol}</span>
+              <span className="text-[12px] leading-snug text-fg-3">{s.means}</span>
             </div>
           ))}
         </div>
@@ -304,8 +304,8 @@ function CycleAside({ unit, cycle, exercise }: { unit: Unit; cycle: Cycle; exerc
         <div className="mb-6 flex flex-col gap-2">
           {conventions.map((c) => (
             <div key={c.rule} className="flex items-baseline gap-2.5" title={c.why}>
-              <span className="min-w-[74px] shrink-0 font-mono text-[11.5px] text-fg-2">{c.notation}</span>
-              <span className="text-[11.5px] text-fg-3">{c.rule}</span>
+              <span className="min-w-[74px] shrink-0 font-mono text-[12px] text-fg-2">{c.notation}</span>
+              <span className="text-[12px] text-fg-3">{c.rule}</span>
             </div>
           ))}
         </div>
