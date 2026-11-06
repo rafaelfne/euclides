@@ -45,6 +45,7 @@ export const CHECKS = [
   ['convenção', 'convenção: todo pseudocódigo respeita a folha de notação'],
   ['referência', 'referência: todo trace é gerado por implementação que roda'],
   ['formato', 'formato: toda coluna editável de trace declara como se escreve a resposta'],
+  ['vazamento', 'vazamento: a prosa do ciclo não repete as entradas nem as células do gabarito do seu trace'],
   ['tradução', 'tradução: o pseudocódigo ou atravessa inteiro para TypeScript, ou é declarado prosa'],
   ['glossário', 'glossário: ids únicos, introdução declarada dos dois lados'],
   ['sobrecarga', 'sobrecarga: todo termo sobrecarregado declara seus falsos amigos'],
@@ -664,6 +665,65 @@ export function checkAll(units: Unit[], terms: GlossaryTerm[]): Failure[] {
       }
       for (const step of Object.keys(ex.misconceptionByStep)) {
         if (Number(step) > steps.length) fail('referência', `${ex.id}: misconception no passo ${step}, trace tem ${steps.length}`)
+      }
+    }
+  }
+
+  /*
+    --- vazamento -----------------------------------------------------------
+
+    Nasceu de hash.c5: o exemplo trabalhado pedia "insira 3, 7, 11 e depois 4",
+    os quatro primeiros passos do trace hash.e1, e o "o que notar" dizia onde
+    cada chave terminava. O aluno lia o gabarito antes de preencher a tabela.
+
+    Duas formas mecânicas de vazar, conferidas contra o gabarito gerado, na
+    prosa dos ciclos que o aluno lê antes de resolver o exercício:
+      1. a prosa repete, em ordem, três ou mais entradas seguidas do trace;
+      2. a prosa contém, literal, uma célula composta que o aluno preenche,
+         como "3:[3,7,11]": mistura dígito e notação, então só o gabarito a
+         escreveria. Palavra solta ("esquerda", "vazia") é vocabulário, e
+         número solto aparece em toda prosa; nenhum dos dois conta.
+    A paráfrase ("separa o 7 de 3 e 11") não é mecânica e fica para o
+    /audit-unit. Esta checagem pega o que dá para pegar sem julgamento.
+  */
+  for (const u of units) {
+    for (const ex of u.exercises) {
+      if (ex.kind !== 'trace') continue
+      const gen = referenceGenerators[ex.reference]
+      const ownerAt = u.cycles.findIndex((c) => c.exerciseId === ex.id)
+      if (!gen || ownerAt < 0) continue
+      const steps = gen()
+      // Do primeiro ciclo até o dono, não só o dono: hash.c3 mostrava 3, 7 e 11
+      // no bucket 3, que são as três primeiras linhas de hash.e1, dois ciclos
+      // antes. Depois do dono o aluno já resolveu, e reusar a entrada é revisão.
+      const prose = u.cycles.slice(0, ownerAt + 1).flatMap((c) => [
+        c.oneLine, c.plainly ?? '', ...c.body,
+        c.workedExample.problem, c.workedExample.whatToNotice,
+        c.figure && 'caption' in c.figure ? String(c.figure.caption ?? '') : '',
+      ].map((text) => ({ id: c.id, text })))
+      const inputs = steps.map((s) => String(s.key ?? '')).filter(Boolean)
+      const inputSet = new Set(inputs)
+      for (const { id, text } of prose) {
+        const tokens = (text.match(/-?\d+(?:,\d+)?|[\p{L}_]+/gu) ?? []).filter((t) => inputSet.has(t))
+        const joined = `|${tokens.join('|')}|`
+        for (let i = 0; i + 3 <= inputs.length; i++) {
+          const run = inputs.slice(i, i + 3)
+          if (joined.includes(`|${run.join('|')}|`)) {
+            fail('vazamento', `${id}: a prosa repete as entradas ${run.join(', ')} de ${ex.id}, na ordem do trace: "${text.slice(0, 60)}"`)
+            break
+          }
+        }
+      }
+      const answers = new Set(
+        steps.flatMap((s) => Object.entries(s)
+          .filter(([key]) => !GIVEN_COLUMNS.has(key))
+          .map(([, v]) => String(v))
+          .filter((v) => v.length >= 4 && /\d/.test(v) && /[^\d.,\s-]/.test(v))),
+      )
+      for (const { id, text } of prose) {
+        for (const a of answers) {
+          if (text.includes(a)) fail('vazamento', `${id}: a prosa contém "${a}", uma célula do gabarito de ${ex.id}`)
+        }
       }
     }
   }

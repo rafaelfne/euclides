@@ -9,6 +9,7 @@ import { seededShuffle } from '@/lib/shuffle'
 import { cn } from '@/lib/utils'
 import { Panel, PanelBody, PanelHeader, PanelMeta, PanelTitle } from './ui/panel'
 import { TrapNote } from './TrapNote'
+import { cycleNumber } from '@/lib/cycle-label'
 
 export function ChoiceExercise({
   unit, exerciseId, prompt, choices,
@@ -64,7 +65,7 @@ export function ChoiceExercise({
             : misconception
               ? `tentativa ${attempts} · ${
                   exhausted
-                    ? 'escada esgotada'
+                    ? 'acabaram as pistas'
                     : escalationIndex < 0
                       ? 'pergunta socrática'
                       : `tarefa ${escalationIndex + 1} de ${escalation.length}`
@@ -114,7 +115,7 @@ export function ChoiceExercise({
           <div className="m-rise border-l-2 border-rule pl-4">
             <div className="mb-1.5 text-[14.5px] font-semibold text-fg">Vamos parar aqui.</div>
             <div className="text-[13.5px] leading-relaxed text-fg-3">
-              Releia o ciclo {misconception.reviewCycle.split('.')[1]} e volte a este exercício amanhã.
+              Releia o ciclo {cycleNumber(unit, misconception.reviewCycle)} e volte a este exercício amanhã.
               Insistir agora treina a tentativa, não o raciocínio.
             </div>
             <div className="mt-2">

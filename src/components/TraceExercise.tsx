@@ -99,7 +99,7 @@ export function TraceExercise({ unit, exercise }: { unit: Unit; exercise: TraceE
   return (
     <Panel>
       <PanelHeader>
-        <PanelTitle>Exercício · execution trace</PanelTitle>
+        <PanelTitle>Exercício · trace</PanelTitle>
         <PanelMeta>{attempts === 0 ? 'sem tentativa' : `tentativa ${attempts}`}</PanelMeta>
       </PanelHeader>
       <PanelBody className="flex flex-col gap-4">
@@ -116,8 +116,9 @@ export function TraceExercise({ unit, exercise }: { unit: Unit; exercise: TraceE
             {[...exercise.conventions, ...traceConventions].map((c) => (
               <div key={c.rule} className="contents">
                 <span className="whitespace-nowrap font-mono text-[11.5px] text-contract">{c.notation}</span>
-                <span className="text-[12px] text-fg-3">
-                  <span className="text-fg-2">{c.rule}</span>, {c.why}
+                <span className="flex flex-col gap-0.5 text-[12.5px] text-fg-3">
+                  <span className="text-fg-2">{c.rule}</span>
+                  <span>{c.why}</span>
                 </span>
               </div>
             ))}
@@ -246,7 +247,7 @@ export function TraceExercise({ unit, exercise }: { unit: Unit; exercise: TraceE
                 {feedback.head}
               </div>
               <span className="lbl whitespace-nowrap">
-                {feedback.exhausted ? 'escada esgotada' : `degrau ${feedback.rung} de 3`}
+                {feedback.exhausted ? 'acabaram as pistas deste exercício' : `pista ${feedback.rung} de 3`}
               </span>
             </div>
             <div className="mt-1.5 text-[13.5px] leading-relaxed text-fg-2">{feedback.body}</div>
@@ -317,7 +318,7 @@ export function TraceExercise({ unit, exercise }: { unit: Unit; exercise: TraceE
         <div className="flex flex-wrap items-center gap-3.5">
           <Button data-verify onClick={check}>Verificar</Button>
           <span className="lbl hidden min-[1100px]:inline min-[1400px]:hidden">a tabela rola para o lado →</span>
-          <span className="text-[12px] italic text-fg-4">errar não bloqueia, mas marca o ciclo</span>
+          <span className="text-[12.5px] text-fg-4">Errar não trava o avanço. A primeira tentativa fica registrada em Lacunas.</span>
         </div>
       </PanelBody>
     </Panel>

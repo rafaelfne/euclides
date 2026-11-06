@@ -48,14 +48,13 @@ export const hashExercises: Exercise[] = [
     columns: [
       { key: 'step', label: 'passo' }, { key: 'key', label: 'chave' },
       { key: 'rehash', label: 'rehash?', placeholder: 'sim ou não' },
-      { key: 'm', label: 'posições (m)', placeholder: '0' },
-      { key: 'content', label: 'onde cada chave está', placeholder: '0:[12,20] 5:[45]' },
+      { key: 'm', label: 'posições (m)', placeholder: 'número' },
+      { key: 'content', label: 'onde cada chave está', placeholder: 'posição:[chaves]' },
     ],
     conventions: [
       { notation: '0:[12,20]', rule: 'uma posição ocupada', why: 'O número da posição, dois-pontos, e as chaves que estão nela. Só as chaves, o valor guardado não entra no trace.' },
       { notation: '0:[12,20] 5:[45]', rule: 'a tabela inteira', why: 'Só as posições que têm alguma chave, da menor para a maior, separadas por espaço.' },
-      { notation: '—', rule: 'tabela vazia', why: 'Nenhuma posição ocupada ainda.' },
-      { notation: 'sim / não', rule: 'houve rehash', why: 'Responda as seis linhas. Deixar em branco não é dizer não.' },
+      { notation: 'sim / não', rule: 'houve rehash', why: 'Responda em todas as linhas. Deixar em branco não é dizer não.' },
     ],
     reference: 'hash.chaining-insert-trace',
     misconceptionByStep: { '4': 'hash.rehash-copia-buckets' },

@@ -12,7 +12,7 @@ import { recursionTreeTrace } from '../src/lib/reference/asymptotics'
 import { removeFirstTrace } from '../src/lib/reference/linear'
 import { bstInsertTrace } from '../src/lib/reference/trees'
 import { bfsTrace, dfsTrace } from '../src/lib/reference/graphs'
-import { chainingInsertTrace } from '../src/lib/reference/hash-table'
+import { chainingInsert } from '../src/lib/reference/hash-table'
 import { bfsOrder, dfsOrder, bfsRounds, reachesCycle } from '../src/lib/traversal'
 import { edgePath, positions, type Dims } from '../src/lib/graph-layout'
 import { units } from '../src/content/index'
@@ -156,9 +156,14 @@ for (const u of units) {
       .map((b, i) => (b.length ? `${i}:[${b.join(',')}]` : null))
       .filter(Boolean)
       .join(' ')
-    const reached = chainingInsertTrace().find((s) => s.content === drawn)
-    check(`${c.id}: a tabela desenhada é um estado que o gabarito de fato atinge`,
-      Boolean(reached), `figura ${drawn}`)
+    // A figura é conferida contra a mesma implementação de referência, com as
+    // chaves dela. Antes ela era conferida contra o trace de hash.e1, o que
+    // obrigava a desenhar um estado do gabarito, e a checagem `vazamento`
+    // reprova exatamente isso.
+    const steps = chainingInsert(figure.keys, figure.m)
+    const reached = steps[steps.length - 1]?.content === drawn
+    check(`${c.id}: a tabela desenhada é o estado que a implementação de referência atinge`,
+      reached, `figura ${drawn}`)
   }
 }
 

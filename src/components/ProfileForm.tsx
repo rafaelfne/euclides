@@ -96,7 +96,7 @@ export function ProfileForm() {
           onClick={() => start(true)}
           className="m-tap cursor-pointer border border-contract-rule bg-contract-bg px-4 py-2 text-[14px] font-semibold text-fg hover:bg-panel-hover"
         >
-          Começar pela unidade 01
+          Começar pela unidade {String(allUnits[0]!.number).padStart(2, '0')}
         </button>
         <button
           type="button"

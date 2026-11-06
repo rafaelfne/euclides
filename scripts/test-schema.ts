@@ -236,6 +236,24 @@ check('exemplo que devolve a tarefa sem resolução reprova',
   checkAll([...allUnits, exemploSemResolucao], allTerms).some((f) => f.check === 'exemplo'))
 
 /*
+  `vazamento`, pelo lado negativo, sobre a unidade real: o ciclo que fecha
+  hash.e1 volta a carregar o que carregava antes da revisão.
+*/
+const comVazamento = (patch: (c: Unit['cycles'][number]) => Unit['cycles'][number]) =>
+  allUnits.map((u) => (u.id !== 'hash' ? u : {
+    ...u,
+    cycles: u.cycles.map((c) => (c.exerciseId === 'hash.e1' ? patch(c) : c)),
+  }))
+check('exemplo que repete três entradas seguidas do trace reprova',
+  checkAll(comVazamento((c) => ({ ...c, workedExample: { ...c.workedExample, problem: 'Com m = 4, insira 3, 7, 11 e depois 4.' } })), allTerms)
+    .some((f) => f.check === 'vazamento'))
+check('prosa que contém uma célula composta do gabarito reprova',
+  checkAll(comVazamento((c) => ({ ...c, workedExample: { ...c.workedExample, whatToNotice: 'A tabela fica 3:[3,7,11].' } })), allTerms)
+    .some((f) => f.check === 'vazamento'))
+check('as entradas do trace reaparecem depois do ciclo que o fecha sem reprovar',
+  !checkAll(allUnits, allTerms).some((f) => f.check === 'vazamento'))
+
+/*
   As duas checagens do ADR-0026 e do ADR-0028, pelo lado negativo.
 
   Elas nasceram para pegar erro que o conteúdo correto não mostra: uma linha

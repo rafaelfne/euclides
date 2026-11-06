@@ -221,12 +221,12 @@ export const hashUnit: Unit = {
       figure: {
         kind: 'buckets',
         m: 4,
-        keys: [3, 7, 11],
-        searchFor: 11,
-        caption: 'Três chaves, um endereço só: 3, 7 e 11 deixam resto 3 na divisão por 4, e por isso ocupam o mesmo bucket. Nada aí está errado, o endereço leva ao bucket em uma operação, e é dentro dele que a busca compara chave por chave. Repare que os outros três buckets estão vazios: a colisão não é a tabela cheia, é a função levando chaves diferentes ao mesmo lugar.',
+        keys: [1, 5, 9],
+        searchFor: 9,
+        caption: 'Três chaves, um endereço só: 1, 5 e 9 deixam resto 1 na divisão por 4, e por isso ocupam o mesmo bucket. Nada aí está errado, o endereço leva ao bucket em uma operação, e é dentro dele que a busca compara chave por chave. Repare que os outros três buckets estão vazios: a colisão não é a tabela cheia, é a função levando chaves diferentes ao mesmo lugar.',
       },
       workedExample: {
-        problem: 'Busca por 11 com m = 4 e o bucket 3 contendo [3, 7, 11].',
+        problem: 'Busca por 9 com m = 4 e o bucket 1 contendo [1, 5, 9].',
         whatToNotice: 'O endereço custa uma operação; as comparações de chave são três. Repare no que o endereço resolve e no que ele não resolve.',
       },
       exerciseId: 'hash.e1c' },
@@ -251,13 +251,13 @@ export const hashUnit: Unit = {
 
     { id: 'hash.c5', title: 'Rehash e o custo amortizado', layer: 'essential', band: 'implementation', elaborates: 'chaining',
       introducesTerms: ['rehash'],
-      oneLine: "Ao inserir o 4, a tabela passa de 4 para 8 buckets e recalcula os endereços.",
+      oneLine: "Quando a tabela enche demais, ela dobra de tamanho e recalcula o endereço de cada chave.",
       plainly:
-        'Uma tabela passou de 4 para 8 buckets. Não basta manter cada par no mesmo bucket: ' +
-        'o endereço anterior dependia do número 4. Com 8 buckets, cada chave precisa ter o endereço ' +
+        'Uma tabela passou de 8 para 16 buckets. Não basta manter cada par no mesmo bucket: ' +
+        'o endereço anterior dependia do número 8. Com 16 buckets, cada chave precisa ter o endereço ' +
         'calculado novamente. É caro naquele momento, mas não acontece a cada inserção.',
       body: [
-        'Quando a próxima inserção passaria do limite, a tabela dobra, por exemplo de 4 para 8 buckets. Como o endereço usa m, mudar m exige calcular novamente o endereço de cada chave. Esse trabalho recebe o nome de rehash.',
+        'Quando a próxima inserção passaria do limite, a tabela dobra, por exemplo de 8 para 16 buckets. Como o endereço usa m, mudar m exige calcular novamente o endereço de cada chave. Esse trabalho recebe o nome de rehash.',
         'Uma inserção com rehash é cara, mas as inserções anteriores foram baratas. Espalhar esse custo pela sequência é a análise amortizada vista na unidade anterior.',
       ],
       pseudocode: `função inserir(T, chave, valor)
@@ -272,8 +272,8 @@ export const hashUnit: Unit = {
     T.n ← T.n + 1`,
       invariant: 'Após qualquer redimensionamento, toda chave inserida continua encontrável.',
       workedExample: {
-        problem: 'Com m = 4 e LIMITE = 0,75, insira 3, 7, 11 e depois 4.',
-        whatToNotice: 'O rehash separa o 7 de 3 e 11, mas mantém 3 e 11 juntos, ambos permanecem congruentes módulo 8. Redistribuir não é eliminar colisão.',
+        problem: 'Com m = 4, as chaves 2, 6 e 10 estão todas no bucket 2. A tabela dobra para m = 8, e cada chave tem o endereço recalculado.',
+        whatToNotice: 'O rehash separa o 6 de 2 e 10, mas mantém 2 e 10 juntos, ambos permanecem congruentes módulo 8. Redistribuir não é eliminar colisão.',
       },
       exerciseId: 'hash.e1' },
 

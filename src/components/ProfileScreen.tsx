@@ -154,7 +154,7 @@ export function ProfileScreen() {
                   onClick={() => {
                     resetTrail()
                     setConfirmingReset(false)
-                    setMessage('Trilha reiniciada. Você voltou a code reader.')
+                    setMessage('Trilha reiniciada. Você voltou ao nível code reader.')
                   }}
                   className="m-tap cursor-pointer border border-implementation bg-implementation-bg px-3 py-1.5 text-[13px] text-fg"
                 >

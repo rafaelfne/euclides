@@ -137,7 +137,7 @@ export function buildFeedback(
       rung: 0,
       exhausted: false,
       head: `A coluna “${labelOf(divergence.divergentField ?? '')}” está em branco no passo ${step}.`,
-      body: 'Em branco não é uma resposta, e o motor não sabe distinguir “não sei” de “é vazio”. Preencha e verifique de novo; isto não conta como tentativa.',
+      body: 'Em branco não é uma resposta, e o app não distingue “não sei” de “é vazio”. Preencha e verifique de novo; isto não conta como tentativa.',
       misconceptionId: null,
     }
   }
