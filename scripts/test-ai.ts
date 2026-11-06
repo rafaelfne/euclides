@@ -37,7 +37,7 @@ const close = (a: number, b: number, tol = 1e-4) => Math.abs(a - b) < tol
 
 const trace = cartBackwardTrace()
 console.log('\n  carrinho: total = (preço × quantidade + frete) × fator, com 4, 5, 6 e 3\n')
-console.log('  ' + ['passo', 'nó', 'valor', 'impacto local', 'gradient'].join('\t'))
+console.log('  ' + ['ordem', 'nó', 'valor', 'impacto local', 'gradient'].join('\t'))
 for (const s of trace) console.log('  ' + [s.step, s.key, s.value, s.local, s.grad].join('\t'))
 console.log('')
 
@@ -45,12 +45,12 @@ check('o gerador está registrado com id prefixado pela unidade',
   referenceGenerators['ai.cart-backward-trace'] === cartBackwardTrace)
 
 const row = (key: string) => trace.find((s) => s.key === key)!
-check('a passada para frente dá subtotal 20, soma 26 e total 78',
-  row('subtotal').value === '20' && row('soma').value === '26' && row('total').value === '78')
+check('a passada para frente dá subtotal 20, base 26 e total 78',
+  row('subtotal').value === '20' && row('base').value === '26' && row('total').value === '78')
 check('o total começa com gradient 1 e impacto local 1, a convenção declarada',
   row('total').grad === '1' && row('total').local === '1')
-check('fator vale 3 e tem gradient 26; soma vale 26 e tem gradient 3',
-  row('fator').value === '3' && row('fator').grad === '26' && row('soma').value === '26' && row('soma').grad === '3')
+check('fator vale 3 e tem gradient 26; base vale 26 e tem gradient 3',
+  row('fator').value === '3' && row('fator').grad === '26' && row('base').value === '26' && row('base').grad === '3')
 check('frete e subtotal: impacto local 1, gradient 3',
   ['frete', 'subtotal'].every((k) => row(k).local === '1' && row(k).grad === '3'))
 check('preço: impacto local 5 (a quantidade), gradient 15',
@@ -59,7 +59,7 @@ check('quantidade: impacto local 4 (o preço), gradient 12',
   row('quantidade').local === '4' && row('quantidade').grad === '12')
 
 check('a ordem é a topológica invertida, total primeiro',
-  trace.map((s) => s.key).join(' ') === 'total fator soma frete subtotal quantidade preço',
+  trace.map((s) => s.key).join(' ') === 'total fator base frete subtotal quantidade preço',
   trace.map((s) => s.key).join(' '))
 
 const order = backwardOrder(cartGraph, 'total')
@@ -110,10 +110,65 @@ let refused = false
 try { backwardTrace(square, { a: 3 }, 'y') } catch { refused = true }
 check('o gerador de linhas recusa nó usado duas vezes, em vez de escolher um nó de cima', refused)
 
-// Sem zerar entre rodadas: a segunda passada parte do que a primeira deixou.
+// O mecanismo de c7: sem zerar, a segunda passada parte do que a primeira deixou.
 const round2 = backward(cartGraph, values, 'total', { carry: grad }).grad
-check('sem zerar, a segunda passada dobra o gradient de toda entrada (ai.e7)',
+check('sem zerar, a segunda passada dobra o gradient de toda entrada (o mecanismo de ai.c7)',
   Object.keys(CART_INPUTS).every((k) => round2[k] === 2 * grad[k]!))
+
+/*
+  O laço de treino, em três ordens, sobre o loss de c6 e c7: (w − 10)², com o
+  peso em 14 e learning rate 0,1. O loss é um grafo de verdade, d × d com d
+  usado duas vezes, para o gradient sair da mesma passada para trás que gera o
+  gabarito, e não de uma fórmula escrita aqui.
+
+    zerar, backward, passo   o laço certo
+    backward, zerar, passo   ai.e7: o passo lê o gradient já zerado
+    backward, passo          ai.c7: nada zera, e as rodadas se somam
+*/
+const lossGraph: Graph = [
+  { name: 'w', op: 'input', inputs: [] },
+  { name: 'menosDez', op: 'input', inputs: [] },
+  { name: 'd', op: 'add', inputs: ['w', 'menosDez'] },
+  { name: 'loss', op: 'mul', inputs: ['d', 'd'] },
+]
+type LoopOrder = 'zero-backward-step' | 'backward-zero-step' | 'never-zero'
+const train = (order: LoopOrder, rounds: number, w0 = 14, lr = 0.1) => {
+  let w = w0, acc = 0
+  const weights: number[] = [], losses: number[] = [], computed: number[] = []
+  for (let r = 0; r < rounds; r++) {
+    if (order === 'zero-backward-step') acc = 0
+    const v = forward(lossGraph, { w, menosDez: -10 })
+    computed.push(backward(lossGraph, v, 'loss').grad.w!)
+    acc = backward(lossGraph, v, 'loss', { carry: { w: acc } }).grad.w!
+    if (order === 'backward-zero-step') acc = 0
+    w -= lr * acc
+    weights.push(w)
+    losses.push(forward(lossGraph, { w, menosDez: -10 }).loss!)
+  }
+  return { weights, losses, computed }
+}
+
+const lossAt = (w: number) => forward(lossGraph, { w, menosDez: -10 }).loss!
+check('o grafo do loss confere: em 14 vale 16, e o gradient do peso no loss é 8 (c6)',
+  lossAt(14) === 16 && backward(lossGraph, forward(lossGraph, { w: 14, menosDez: -10 }), 'loss').grad.w === 8)
+
+const right = train('zero-backward-step', 10)
+check('zerando antes de backward, o loss cai a cada rodada',
+  right.losses.every((l, i) => l < (i ? right.losses[i - 1]! : 16)), right.losses.map(ptNumber).join(' '))
+
+const e7Loop = train('backward-zero-step', 10)
+check('ai.e7: com zeroGrad entre backward e o passo, o peso fica em 14 e o loss em 16 por dez rodadas',
+  e7Loop.weights.every((w) => w === 14) && e7Loop.losses.every((l) => l === 16),
+  e7Loop.weights.join(' '))
+
+const c7Loop = train('never-zero', 5)
+check('ai.c7: sem zerar, os pesos são 13,2, 11,76, 9,968 e 8,18, e os acumulados 8, 14,4, 17,92, 17,856',
+  [13.2, 11.76, 9.968, 8.1824].every((w, i) => close(c7Loop.weights[i]!, w))
+    && [8, 6.4, 3.52, -0.064].every((g, i) => close(c7Loop.computed[i]!, g)),
+  c7Loop.weights.map(ptNumber).join(' '))
+check('ai.c7: depois do passo da rodada 5 o loss é 10,5, acima dos 10,24 da rodada 1',
+  ptNumber(Number(c7Loop.losses[4]!.toFixed(1))) === '10,5' && close(c7Loop.losses[0]!, 10.24)
+    && c7Loop.losses[4]! > c7Loop.losses[0]!, ptNumber(c7Loop.losses[4]!))
 
 // ---------------------------------------------------------------------------
 // 3. Os números dos exercícios
@@ -188,20 +243,68 @@ check('ai.e6: com 1,5, w vai a −1 e o loss a 16, o que a correta afirma',
 check('ai.e6: com o sinal trocado, w iria a 11 e o loss a 64', 5 + 1.5 * 4 === 11 && loss6(11) === 64)
 check('ai.e6: com 0,5, w para em 3, e por isso esse distrator existe', step(5, 0.5) === 3)
 
-// e8: o problema motivador, 3 itens de 10 com frete 5
+// e7: o código e o enunciado
+const e7 = byId('ai.e7')
+if (e7.kind === 'bug') {
+  const lines = e7.code.split('\n')
+  const at = (needle: string) => lines.findIndex((l) => l.includes(needle)) + 1
+  check('ai.e7: a linha defeituosa é zeroGrad, entre backward e a linha que muda o peso',
+    e7.faultyLines.length === 1 && lines[e7.faultyLines[0]! - 1]!.includes('zeroGrad')
+      && at('backward') < e7.faultyLines[0]! && e7.faultyLines[0]! < at('p.data'))
+  check('ai.e7: o diff marca a função inteira, e não aponta a linha defeituosa',
+    (e7.addedLines ?? []).length === lines.length)
+  check('ai.e7: o enunciado não descreve o defeito',
+    !/zer|antes|depois|fora|backward/i.test(e7.prompt), e7.prompt)
+  check('ai.e7: a correta afirma o que o laço simulado mostra, peso parado e loss igual',
+    /Nenhum peso muda/.test(correctText(e7)) && /loss fica igual/.test(correctText(e7)))
+}
+
+/*
+  e8: o problema motivador, 3 itens de 10 com frete 5. O postmortem de c8 diz
+  que o passo passou do ponto e não diz qual era o ponto; o exercício cobra o
+  ponto. O total é um grafo base × fator, e o loss outro, para o gradient sair
+  da passada para trás.
+*/
 const pedido = 3 * 10 + 5
 const alvo = 77
+const nightGraph: Graph = [
+  { name: 'base', op: 'input', inputs: [] },
+  { name: 'fator', op: 'input', inputs: [] },
+  { name: 'menosAlvo', op: 'input', inputs: [] },
+  { name: 'total', op: 'mul', inputs: ['base', 'fator'] },
+  { name: 'd', op: 'add', inputs: ['total', 'menosAlvo'] },
+  { name: 'loss', op: 'mul', inputs: ['d', 'd'] },
+]
+const night = (base: number, fator: number, target: number) => {
+  const v = forward(nightGraph, { base, fator, menosAlvo: -target })
+  const g = backward(nightGraph, v, 'loss').grad
+  return { total: v.total!, loss: v.loss!, gradInLoss: g.fator! }
+}
+const lossOf = (fator: number) => night(pedido, fator, alvo).loss
 check(`ai.e8: o pedido soma ${pedido}; com fator 2 dá ${pedido * 2}, com 2,6 dá ${ptNumber(pedido * 2.6)}`,
-  pedido === 35 && pedido * 2 === 70 && close(pedido * 2.6, 91))
-check('ai.e8: o fator que dá 77 é 2,2, e o loss vai de 49 para 196',
-  close(alvo / pedido, 2.2) && (70 - alvo) ** 2 === 49 && close((pedido * 2.6 - alvo) ** 2, 196)
-    && says(byId('ai.e8'), 2.2) && says(byId('ai.e8'), 49) && says(byId('ai.e8'), 196))
-check('ai.e8: o gradient do total em relação ao fator é a soma, 35, e 0,1 no fator move 3,5',
-  close(numericGradient(
-    [{ name: 's', op: 'input', inputs: [] }, { name: 'f', op: 'input', inputs: [] }, { name: 't', op: 'mul', inputs: ['s', 'f'] }],
-    { s: 35, f: 2 }, 't', 'f'), 35) && says(byId('ai.e8'), 3.5))
-check('ai.e8: subir o fator era a direção certa, o gradient do loss é negativo em 2',
-  2 * (pedido * 2 - alvo) * pedido < 0)
+  pedido === 35 && night(pedido, 2, alvo).total === 70 && close(night(pedido, 2.6, alvo).total, 91)
+    && says(byId('ai.e8'), 35) && says(byId('ai.e8'), 77))
+check('ai.e8: o fator que zera o loss é 2,2, e é o que a correta afirma',
+  close(alvo / pedido, 2.2) && close(lossOf(2.2), 0) && correctText(byId('ai.e8')).startsWith('2,2'))
+check('ai.e8: o loss é 49 em 2, 196 em 2,6 e 196 em 1,8; em 9 passa de 50 mil',
+  close(lossOf(2), 49) && close(lossOf(2.6), 196) && close(lossOf(1.8), 196) && lossOf(9) > 50000
+    && says(byId('ai.e8'), 49) && says(byId('ai.e8'), 196))
+check('ai.e8: no total o gradient do fator é 35, e 0,1 no fator move o total em 3,5',
+  close(numericGradient(nightGraph, { base: pedido, fator: 2, menosAlvo: -alvo }, 'total', 'fator'), 35)
+    && says(byId('ai.e8'), 3.5))
+check('ai.e8: no loss o gradient do fator é 35 × 2 × (70 − 77) = −490, negativo, e subir era o lado certo',
+  close(night(pedido, 2, alvo).gradInLoss, -490)
+    && close(numericGradient(nightGraph, { base: pedido, fator: 2, menosAlvo: -alvo }, 'loss', 'fator'), -490, 1e-2))
+check('ai.e8: nenhum texto de c8 diz o fator que zera o loss',
+  !JSON.stringify(aiUnit.cycles.find((c) => c.id === 'ai.c8')).includes('2,2'))
+
+// c8: o exemplo trabalhado, pedido 50, alvo 120
+const c8 = aiUnit.cycles.find((c) => c.id === 'ai.c8')!
+const ex8 = night(50, 2, 120)
+check('ai.c8: pedido 50, alvo 120: no loss o gradient do fator é −2.000; 2,3 deixa o loss em 25, 3 em 900',
+  ex8.total === 100 && ex8.loss === 400 && close(ex8.gradInLoss, -2000)
+    && close(night(50, 2.3, 120).loss, 25) && night(50, 3, 120).loss === 900
+    && c8.workedExample.problem.includes('−2.000'))
 
 // ---------------------------------------------------------------------------
 // 4. A unidade real
@@ -261,10 +364,11 @@ for (const c of beforeTrace) {
 }
 
 // O custo não tem exercício: a comparação mora na prosa de c3 e de c5, e some sem aviso.
-for (const id of ['ai.c3', 'ai.c5']) {
+// c3 fala em execuções da conta inteira, porque "passada" só estreia em c5.
+for (const [id, word] of [['ai.c3', /execuções/], ['ai.c5', /2 passadas/]] as const) {
   const body = aiUnit.cycles.find((c) => c.id === id)!.body.join(' ')
-  check(`${id}: a prosa compara uma passada por peso, mais uma, com duas passadas`,
-    body.includes('1.000.001') && /passadas/.test(body))
+  check(`${id}: a prosa compara uma execução por peso, mais uma, com duas passadas`,
+    body.includes('1.000.001') && word.test(body))
 }
 
 // `test-transliterate` percorre `units`, e esta unidade está fora dele.

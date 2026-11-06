@@ -719,24 +719,52 @@ export const aiGlossary: GlossaryTerm[] = [
     definition: 'Quanto o resultado muda se um número subir um pouco, com os outros parados, por unidade de empurrão. Cada número da conta tem o seu.',
     isNot: [
       'não é o valor do número: um peso pequeno pode ter gradient grande',
-      'não é o impacto local de uma conta só: é o efeito até o resultado final',
+      'não é o efeito de uma conta só: é o efeito até o resultado final',
       'não é o tamanho do passo; o passo é learning rate vezes gradient',
     ],
     falseFriends: [
       { context: 'CSS', meaning: 'linear-gradient é uma transição de cor. Mesma palavra, nenhuma conta.' },
     ], introducedIn: 'ai.c3' },
 
-  { id: 'chain-rule', canonical: 'chain rule', canonicalLanguage: 'en',
-    alsoKnownAs: ['regra da cadeia'],
+  { id: 'local-impact', canonical: 'impacto local', canonicalLanguage: 'pt',
+    alsoKnownAs: ['local gradient'],
+    definition: 'Quanto uma conta só muda se um dos números que ela usa subir 1, com os outros parados. Numa soma, cada parcela tem impacto local 1; num produto, o impacto local de um fator é o valor do outro fator.',
+    isNot: [
+      'não é o gradient: diz quanto muda a conta seguinte, e o gradient diz quanto muda o resultado final, o produto dos impactos locais do caminho',
+      'não é o valor do próprio número: num produto, é o valor do outro fator',
+    ],
+    falseFriends: [], introducedIn: 'ai.c4' },
+
+  { id: 'chain-rule', canonical: 'regra da cadeia', canonicalLanguage: 'pt',
+    alsoKnownAs: ['chain rule'],
     definition: 'Quando uma conta alimenta outra, o impacto de um número no resultado final é o produto dos impactos locais de cada conta no caminho.',
     isNot: ['não soma os impactos do caminho, multiplica', 'não exige refazer a conta inteira: usa o gradient do nó de cima, já pronto'],
     falseFriends: [], introducedIn: 'ai.c4' },
 
+  { id: 'forward-pass', canonical: 'passada para frente', canonicalLanguage: 'pt',
+    alsoKnownAs: ['forward pass'],
+    definition: 'A execução da conta do começo ao fim que guarda o valor de cada nó. É a primeira das duas passadas da backpropagation.',
+    isNot: [
+      'não calcula gradient nenhum, só valores',
+      'não é a conta refeita do gradient numérico: acontece uma vez, e o que importa nela é guardar os valores do meio',
+    ],
+    falseFriends: [], introducedIn: 'ai.c5' },
+
+  { id: 'backward-pass', canonical: 'passada para trás', canonicalLanguage: 'pt',
+    alsoKnownAs: ['backward pass'],
+    definition: 'A volta do resultado até as entradas, em ordem reversa, que soma em cada nó o impacto local dele vezes o gradient do nó de cima. É a segunda das duas passadas da backpropagation.',
+    isNot: [
+      'não refaz a conta: usa os valores que a passada para frente guardou',
+      'não escreve o gradient do zero: soma ao que já estava no nó',
+      'não ajusta pesos: o passo é que consome o gradient que ela deixa',
+    ],
+    falseFriends: [], introducedIn: 'ai.c5' },
+
   { id: 'backpropagation', canonical: 'backpropagation', canonicalLanguage: 'en',
     alsoKnownAs: ['backprop', 'retropropagação'],
-    definition: 'Uma passada para frente que guarda o valor de cada nó, e uma para trás que sai do resultado e aplica a chain rule nó a nó, em ordem reversa, até as entradas. Entrega o gradient de todos os números em duas passadas.',
+    definition: 'Uma passada para frente que guarda o valor de cada nó, e uma para trás que sai do resultado e aplica a regra da cadeia nó a nó, em ordem reversa, até as entradas. Entrega o gradient de todos os números em duas passadas.',
     isNot: [
-      'não ajusta os pesos: ela calcula o gradient, e o passo é outra etapa',
+      'não ajusta os pesos: entrega o gradient, e é o passo da gradient descent que consome esse gradient para decidir a direção e o tamanho do ajuste',
       'não funciona em conta com ciclo, porque não existe de trás para frente',
       'não sai de graça: guarda todo valor intermediário da passada para frente',
     ],
@@ -750,7 +778,7 @@ export const aiGlossary: GlossaryTerm[] = [
 
   { id: 'gradient-descent', canonical: 'gradient descent', canonicalLanguage: 'en',
     alsoKnownAs: ['descida de gradiente', 'gradiente descendente'],
-    definition: 'O laço de treino: medir o gradient onde o peso está, dar um passo para o lado oposto, e repetir.',
+    definition: 'O laço de treino: usar o gradient onde o peso está, dar um passo para o lado oposto, e repetir.',
     isNot: [
       'não calcula o gradient, usa o que a backpropagation entregou',
       'não garante chegar ao ponto em que o loss é mínimo: com passo grande ele passa do ponto e se afasta',

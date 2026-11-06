@@ -107,9 +107,10 @@ export const IDENTIFIERS: Record<string, string> = {
   entradas: 'inputs', entrada: 'input', saída: 'output',
   degrau: 'threshold', ativar: 'activate', tanh: 'Math.tanh',
   previstos: 'predicted', reais: 'actual', erro: 'error',
-  medir_gradient: 'numericGradient', conta: 'compute', nome: 'name',
-  empurrão: 'nudge', empurrada: 'pushed',
+  medir_gradient: 'numericGradient', conta: 'compute', nome: 'name', números: 'numbers',
+  referência: 'reference', empurrão: 'nudge', empurrada: 'pushed',
   retropropagar: 'backpropagate', ordem_reversa: 'reverseOrder', impacto_local: 'localImpact',
+  operandos: 'operands', operando: 'operand',
   descer: 'descend', learning_rate: 'learningRate',
 }
 

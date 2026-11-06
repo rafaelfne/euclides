@@ -92,7 +92,8 @@ export function localImpact(graph: Graph, values: Values, node: string, position
 export interface BackwardOptions {
   /**
    * Gradient que já estava nos pesos antes desta passada. É o laço de treino de
-   * `ai.e7` sem `zeroGrad()` entre as rodadas: a passada soma ao que encontra.
+   * `ai.c7`, em que nada zera o gradient entre as rodadas: a passada soma ao que
+   * encontra.
    * Só as entradas carregam, porque num treino a conta é refeita a cada rodada
    * e os nós do meio nascem de novo, com gradient zero; os pesos são os mesmos.
    */
@@ -132,9 +133,9 @@ export function backward(
 export function numericGradient(
   graph: Graph, inputs: Values, output: string, name: string, nudge = 1e-6,
 ): number {
-  const base = forward(graph, inputs)[output]!
+  const reference = forward(graph, inputs)[output]!
   const pushed = forward(graph, { ...inputs, [name]: inputs[name]! + nudge })[output]!
-  return (pushed - base) / nudge
+  return (pushed - reference) / nudge
 }
 
 /** Número em pt-BR, sem ruído de ponto flutuante: 0,1 × 3 é 0,3 e não 0,30000000000000004. */
@@ -151,8 +152,8 @@ export const cartGraph: Graph = [
   { name: 'frete', op: 'input', inputs: [] },
   { name: 'fator', op: 'input', inputs: [] },
   { name: 'subtotal', op: 'mul', inputs: ['preço', 'quantidade'] },
-  { name: 'soma', op: 'add', inputs: ['subtotal', 'frete'] },
-  { name: 'total', op: 'mul', inputs: ['soma', 'fator'] },
+  { name: 'base', op: 'add', inputs: ['subtotal', 'frete'] },
+  { name: 'total', op: 'mul', inputs: ['base', 'fator'] },
 ]
 
 /**

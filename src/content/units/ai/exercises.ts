@@ -6,15 +6,18 @@ import type { Exercise, Misconception } from '../../schema'
   Seis vêm da lista proposta no spec. Duas nascem do `whenOmitted` do critério,
   que o spec já escreve: sem o loss, "o modelo errou" vira opinião, e o jeito
   concreto de isso acontecer é somar erros com sinal; sem a direção do passo, o
-  gradient "é usado com o sinal trocado", palavra do próprio spec. Nenhuma das
-  oito foi observada em aluno do público da trilha; o spec diz isso, e é a
-  condição para a unidade sair de `allUnits` e entrar em `units`.
+  gradient "é usado com o sinal trocado", palavra do próprio spec. A nona,
+  `ai.zerar-em-qualquer-ponto`, nasce de ai.e7: o ciclo c7 ensina que o
+  gradient acumula, e o exercício cobra o passo seguinte, que é ler em que ponto
+  da rodada a chamada de zerar está. Nenhuma das nove foi observada em aluno do
+  público da trilha; o spec diz isso, e é a condição para a unidade sair de
+  `allUnits` e entrar em `units`.
 */
 export const aiMisconceptions: Misconception[] = [
   { id: 'ai.decisao-binaria', label: 'Procurar o if dentro da conta, em vez de ler a saída como pontuação',
     socraticQuestion: 'Pegue duas saídas que um sim ou não trataria igual e escreva o número de cada uma. O que a diferença entre os dois números informa, que o sim ou não apagava?',
     escalation: [
-      'Escreva a conta linha por linha, da entrada até a saída. Em qual dessas linhas aparece um se, e quem escreveu essa linha?',
+      'Escreva a conta linha por linha, da entrada até a saída. Em qual dessas linhas aparece um if, e quem escreveu essa linha?',
       'Procure no sistema onde a pontuação vira bloqueio ou liberação. Essa comparação faz parte da conta, ou é uma regra de quem lê o número?',
     ],
     reviewCycle: 'ai.c0' },
@@ -35,7 +38,7 @@ export const aiMisconceptions: Misconception[] = [
     ],
     reviewCycle: 'ai.c3' },
 
-  { id: 'ai.impacto-local-como-gradient', label: 'Parar no impacto local e não multiplicar pelo gradient de quem vem depois',
+  { id: 'ai.impacto-local-como-gradient', label: 'Parar no impacto local e não multiplicar pelo gradient do nó de cima',
     socraticQuestion: 'Suba este número em 1 e acompanhe a mudança conta por conta até o total. Ela chega ao total do mesmo tamanho com que saiu da primeira conta?',
     escalation: [
       'Escreva o caminho deste número até o total como uma lista de contas, com o impacto local de cada uma ao lado. O que você faz com esses impactos para saber o efeito no total?',
@@ -47,7 +50,7 @@ export const aiMisconceptions: Misconception[] = [
     socraticQuestion: 'Faça a passada para trás de y = a × a com a = 3, escrevendo o gradient com = em vez de somar. Que gradient a recebe, e quanto y muda de verdade quando a sobe de 3 para 3,01?',
     escalation: [
       'O nó a entra na multiplicação duas vezes, uma como cada fator. Escreva as duas contribuições, uma por linha: o que o = faz com a primeira quando a segunda chega?',
-      'Procure um peso que entra em duas contas, duas saídas da rede, por exemplo. Com =, de qual das duas ele deixaria de receber gradient?',
+      'Procure um número que entra em duas contas, a saída de um neurônio que alimenta dois neurônios ligados a ele, por exemplo. Com =, de qual dos dois ele deixaria de receber gradient?',
     ],
     reviewCycle: 'ai.c5' },
 
@@ -66,11 +69,19 @@ export const aiMisconceptions: Misconception[] = [
     ],
     reviewCycle: 'ai.c6' },
 
-  { id: 'ai.grad-acumula-entre-rodadas', label: 'Zerar o gradient uma vez só, antes do laço, e deixar as rodadas se somarem',
+  { id: 'ai.grad-acumula-entre-rodadas', label: 'Supor que a passada para trás escreve o gradient do zero, e não soma ao que sobrou da rodada anterior',
     socraticQuestion: 'Rode de cabeça duas rodadas de treino com o mesmo exemplo, sem zerar entre elas. Que valor o gradient de um peso tem depois da segunda passada para trás, comparado com o da primeira?',
     escalation: [
       'Abra a linha da passada para trás que escreve o gradient. Ela soma ao que já estava lá, ou substitui? Com isso, a segunda rodada começa de qual valor?',
       'Na rodada 10, quantas passadas para trás estão somadas dentro do gradient que o passo usa, e o que isso faz com o tamanho do passo?',
+    ],
+    reviewCycle: 'ai.c7' },
+
+  { id: 'ai.zerar-em-qualquer-ponto', label: 'Supor que zerar o gradient em qualquer ponto da rodada dá o mesmo resultado',
+    socraticQuestion: 'Siga uma rodada do laço linha por linha e anote o valor de p.grad logo depois de cada chamada. Que valor ele tem quando chega à linha que muda o peso?',
+    escalation: [
+      'Com o valor que você anotou, calcule o peso depois de três rodadas. Quanto ele andou, e o que isso faz com o loss?',
+      'Coloque a chamada de zerar em cada uma das outras posições possíveis da rodada e repita a primeira tarefa. Em qual delas a linha que muda o peso lê o gradient desta rodada, e só ele?',
     ],
     reviewCycle: 'ai.c7' },
 ]
@@ -150,16 +161,16 @@ export const aiExercises: Exercise[] = [
     prompt:
       'O carrinho calcula total = (preço × quantidade + frete) × fator, com preço 4, quantidade 5, ' +
       'frete 6 e fator 3. A conta tem dois nós no meio: subtotal = preço × quantidade e ' +
-      'soma = subtotal + frete. Faça a passada para frente e depois a passada para trás, na ordem ' +
+      'base = subtotal + frete. Faça a passada para frente e depois a passada para trás, na ordem ' +
       'das linhas: para cada nó, o valor, o impacto local e o gradient.',
     pseudocode: `função retropropagar(saída)
     saída.grad ← 1
     para cada nó em ordem_reversa(saída) faça
-        para cada entrada em nó.entradas faça
-            entrada.grad ← entrada.grad + impacto_local(nó, entrada) × nó.grad`,
+        para cada operando em nó.operandos faça
+            operando.grad ← operando.grad + impacto_local(nó, operando) × nó.grad`,
     invariant: 'Quando chega a vez de um nó, o gradient dele já está completo, porque todo nó que usa o valor dele já passou.',
     columns: [
-      { key: 'step', label: 'passo' },
+      { key: 'step', label: 'ordem' },
       { key: 'key', label: 'nó' },
       { key: 'value', label: 'valor', placeholder: 'número' },
       { key: 'local', label: 'impacto local', placeholder: 'número' },
@@ -173,11 +184,11 @@ export const aiExercises: Exercise[] = [
     ],
     reference: 'ai.cart-backward-trace',
     /*
-      Passos 2 e 3, fator e soma: os dois fatores da última conta. O erro que
+      Linhas 2 e 3, fator e base: os dois fatores da última conta. O erro que
       aparece primeiro ali é escrever o próprio valor como impacto local, e o
-      impacto de um fator é o OUTRO. Passos 4 e 5, frete e subtotal: os
+      impacto de um fator é o OUTRO. Linhas 4 e 5, frete e subtotal: os
       primeiros nós em que impacto local e gradient diferem, e quem esquece de
-      multiplicar diverge ali e não antes. Passos 6 e 7, quantidade e preço:
+      multiplicar diverge ali e não antes. Linhas 6 e 7, quantidade e preço:
       outra vez fatores de um produto, e quem chegou até aqui multiplicando
       erra pelo valor trocado, não pela multiplicação esquecida.
     */
@@ -207,42 +218,48 @@ export const aiExercises: Exercise[] = [
   {
     kind: 'bug', id: 'ai.e7',
     prompt:
-      'Este laço de treino chegou num pull request com a descrição "zera os gradients uma vez só, ' +
-      'fora do laço, para economizar chamadas". Os testes passam. Marque a linha defeituosa e ' +
-      'escolha a consequência.',
+      'Este laço de treino chegou num pull request que reorganiza o que acontece dentro de cada ' +
+      'rodada. Ele roda sem erro. Marque a linha defeituosa e escolha a consequência.',
     language: 'javascript',
-    code: `function train(model, examples, steps, learningRate) {
-  model.zeroGrad()
-  for (let step = 0; step < steps; step++) {
+    code: `function train(model, examples, rounds, learningRate) {
+  for (let round = 0; round < rounds; round++) {
     const loss = model.loss(examples)
     loss.backward()
+    model.zeroGrad()
     for (const p of model.parameters()) {
       p.data -= learningRate * p.grad
     }
   }
 }`,
-    faultyLines: [2],
-    // O pull request move a chamada para fora do laço: a linha 2 é a que ele acrescenta.
-    addedLines: [2],
+    faultyLines: [5],
+    /*
+      O pull request traz a função inteira, e o diff marca todas as linhas como
+      novas. Marcar só a linha 5 apontaria a resposta: a versão anterior marcava
+      exatamente a linha defeituosa, e a metade "marque a linha" do exercício
+      não media nada.
+    */
+    addedLines: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
     consequences: [
-      { correct: true, text: 'Cada passo usa o gradient somado de todos os passos anteriores',
-        why: 'backward soma ao que já está em p.grad, porque é assim que um peso usado em duas contas recebe as duas contribuições. Sem zerar a cada passo, o gradient do passo 10 carrega as dez passadas para trás, e o passo cresce mesmo com o loss já perto do mínimo.' },
-      { correct: false, text: 'Nenhuma: backward recalcula o gradient do zero a cada chamada', misconceptionId: 'ai.grad-acumula-entre-rodadas' },
-      { correct: false, text: 'O certo é backward escrever o gradient com = em vez de somar, e aí zerar uma vez basta', misconceptionId: 'ai.grad-sobrescrito' },
+      { correct: true, text: 'Nenhum peso muda, e o loss fica igual em toda rodada',
+        why: 'zeroGrad roda depois de backward e antes da linha que muda o peso: quando o passo lê p.grad, ele já é 0, e p.data − learningRate × 0 é o próprio p.data. Nenhum erro aparece, porque subtrair zero é uma conta válida. A chamada de zerar limpa o que sobrou da rodada anterior só quando vem antes de backward; depois dele, apaga o gradient desta rodada antes de alguém usá-lo.' },
+      { correct: false, text: 'O passo usa o gradient da rodada atual, e só ele', misconceptionId: 'ai.zerar-em-qualquer-ponto' },
+      { correct: false, text: 'Nenhuma: backward escreve o gradient do zero, e zerar só sobra', misconceptionId: 'ai.grad-acumula-entre-rodadas' },
+      { correct: false, text: 'O passo sai certo se backward escrever com = em vez de somar', misconceptionId: 'ai.grad-sobrescrito' },
     ],
   },
   {
     kind: 'choice', id: 'ai.e8',
     prompt:
-      'No chamado, o pedido de 3 itens de 10 reais com frete de 5 custava 70 com fator 2 e passou a ' +
-      '91 com fator 2,6. O financeiro tinha fechado 77 para esse pedido, e o ajuste noturno desce o ' +
-      'loss (total − 77)². O que esses números dizem sobre o ajuste daquela noite?',
+      'No chamado, o pedido de 3 itens de 10 reais com frete de 5 soma 35 antes do fator. Com fator ' +
+      '2 ele custava 70, e o ajuste noturno levou o fator a 2,6 e o total a 91. O financeiro tinha ' +
+      'fechado 77 para esse pedido, e o ajuste desce o loss (total − 77)². Com que fator o loss ' +
+      'daquela noite seria zero?',
     choices: [
-      { correct: true, text: 'A direção estava certa e o passo foi grande demais',
-        why: 'Para o total dar 77 o fator precisa ir a 2,2, porque 77 ÷ 35 = 2,2. Subir era o lado certo; subir 0,6 passou do ponto, e o loss foi de 49 para 196. Cada 0,1 no fator move o total em 3,5 reais, porque o fator multiplica o pedido inteiro.' },
-      { correct: false, text: 'O ajuste funcionou: um passo grande chega antes, e a noite seguinte corrige', misconceptionId: 'ai.passo-maior-converge-antes' },
-      { correct: false, text: 'O sinal estava trocado: para bater com o financeiro, o fator devia ter descido', misconceptionId: 'ai.passo-com-sinal-trocado' },
-      { correct: false, text: 'Foi um passo pequeno, de 0,6 num fator 2', misconceptionId: 'ai.valor-como-gradient' },
+      { correct: true, text: '2,2, o fator em que o total dá 77',
+        why: '77 ÷ 35 = 2,2. No total, o gradient do fator é 35, o tamanho do pedido, então cada 0,1 no fator move o total em 3,5 reais. Com fator 2 o loss era 49; com 2,2 ele é zero; com o 2,6 que o ajuste escolheu, 196. O ajuste foi para o lado certo e passou do ponto.' },
+      { correct: false, text: '2,6, onde o ajuste daquela noite parou', misconceptionId: 'ai.passo-maior-converge-antes' },
+      { correct: false, text: '1,8: o fator tinha de descer', misconceptionId: 'ai.passo-com-sinal-trocado' },
+      { correct: false, text: '9, somando ao fator os 7 reais que faltavam', misconceptionId: 'ai.valor-como-gradient' },
     ],
   },
 ]

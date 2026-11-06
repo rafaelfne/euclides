@@ -55,7 +55,7 @@ export const aiUnit: Unit = {
       'número pesa no erro, e para que lado e quanto cada peso mexe',
     parts: [
       { id: 'output', name: 'saída',
-        guarantee: 'o valor que a conta devolve para uma entrada, nó por nó' },
+        guarantee: 'o valor que a conta devolve para uma entrada, conta por conta' },
       { id: 'loss', name: 'loss',
         guarantee: 'um número só que mede o quanto a saída errou' },
       { id: 'gradient', name: 'gradient por nó',
@@ -67,7 +67,7 @@ export const aiUnit: Unit = {
       { partId: 'output', reads: 'o modelo decidiu que é fraude' },
       { partId: 'loss', reads: 'o modelo errou um pouco' },
       { partId: 'gradient', reads: 'vamos mexer no fator e ver se melhora' },
-      { partId: 'step', reads: 'o gradient do fator é positivo, então o fator sobe' },
+      { partId: 'step', reads: 'o gradient do fator no loss é positivo, então o fator sobe' },
     ],
   },
 
@@ -78,8 +78,9 @@ export const aiUnit: Unit = {
       derivesCriterion: 'weight-adjustment',
       summary:
         'Empurrar um número um pouco, refazer a conta inteira e dividir a diferença do ' +
-        'resultado pelo tamanho do empurrão. Uma conta de referência, mais uma por número medido.',
-      produces: ['output', 'loss', 'gradient'],
+        'resultado pelo tamanho do empurrão. Uma conta de referência, mais uma por número medido. ' +
+        'Ela não ajusta peso nenhum: o passo consome o gradient que ela mede.',
+      produces: ['output', 'loss', 'gradient', 'step'],
       wrongWhen: [
         { scenario: 'A conta tem mais de um punhado de pesos: com 1 milhão deles, um único ajuste custa 1 milhão e uma execuções da conta inteira',
           useInstead: 'backpropagation, que entrega o gradient de todos os números em duas passadas' },
@@ -98,8 +99,8 @@ export const aiUnit: Unit = {
       derivesCriterion: 'weight-adjustment',
       summary:
         'Uma passada para frente guardando o valor de cada nó, e uma para trás que sai do ' +
-        'resultado e multiplica os impactos locais pela chain rule, até as entradas. É o ' +
-        'gradient dela que o passo de ajuste consome.',
+        'resultado e multiplica os impactos locais pela regra da cadeia, até as entradas. Ela ' +
+        'não ajusta peso nenhum: o passo consome o gradient que ela entrega.',
       produces: ['output', 'loss', 'gradient', 'step'],
       wrongWhen: [
         { scenario: 'A conta tem um ciclo, um valor que depende de si mesmo: não existe ordem em que todo nó venha depois dos que usam o valor dele',
@@ -126,7 +127,7 @@ export const aiUnit: Unit = {
         'regra separada, que compara a pontuação com um limite.',
       body: [
         'A pergunta que vem primeiro é onde fica o if. Num filtro de fraude, num classificador de chamados ou num modelo de 1 bilhão de números, a parte que aprende é a mesma conta repetida: cada entrada multiplicada por um número, os produtos somados, mais um número somado no fim. Essa conta é o **neurônio**, e muitos deles ligados, a saída de um entrando em outro, formam uma rede.',
-        'O número que multiplica uma entrada é o **peso do neurônio**: quanto aquela entrada conta na soma. O número somado no fim é o **bias**: entra em toda conta, inclusive quando todas as entradas valem 0, e decide de onde a pontuação parte. Nenhum dos dois foi escolhido por alguém. O treino, o laço que ajusta esses números até a saída acertar, é quem os produz, e é por isso que um modelo pronto mostra pesos como 1,0 e 2,0 sem dizer de onde vieram.',
+        'O número que multiplica uma entrada é o **peso do neurônio**: quanto aquela entrada conta na soma. O número somado no fim é o **bias**: entra em toda conta, inclusive quando todas as entradas valem 0, e decide de onde a pontuação parte. Nenhum dos dois foi escolhido por alguém. Quem os produz é um laço que ajusta esses números até a saída acertar, e é por isso que um modelo pronto mostra pesos como 1,0 e 2,0 sem dizer de onde vieram.',
         'A conta devolve uma pontuação, não um veredito. O if existe, mas mora fora dela: outra regra compara a pontuação com um limite. Ler a saída como sim ou não joga fora a única coisa que ela informa a mais, o quanto.',
       ],
       pseudocode: `função pontuar(entradas, pesos, bias)
@@ -236,15 +237,15 @@ função ativar(soma)
         'medir. Com poucos números, tudo bem. Com um milhão, não.',
       body: [
         'Volte ao alerta que pontuou 8, com pesos 0,01 e 2 e bias −1. Suba o peso da latência de 0,01 para 0,011, deixe o resto parado e refaça a conta: a pontuação vai de 8 para 8,7. Faça o mesmo com o peso de produção, de 2 para 2,001: a pontuação vai a 8,001.',
-        'Dividindo a mudança pelo empurrão de 0,001, sai o **gradient** de cada número: quanto o resultado muda se ele subir um pouco, com os outros parados. O do peso da latência é 700; o do peso de produção é 1. O peso menor move a pontuação 700 vezes mais, porque o que ele multiplica é a latência, 700. O tamanho do próprio peso não entra na conta.',
-        'É o que um dev faz por instinto, muda esse valor e vê o que acontece, e cobra uma conta inteira refeita por número medido, mais a conta de referência. Para os três números do alerta, quatro passadas. Para um modelo de 1 milhão de pesos, 1.000.001 passadas para um único ajuste. A técnica continua útil para conferir: se outra técnica entregar um gradient diferente deste, uma das duas está errada.',
+        'Dividindo a mudança pelo empurrão de 0,001, sai o **gradient** de cada número na pontuação: quanto o resultado muda se ele subir um pouco, com os outros parados. O do peso da latência é 700; o do peso de produção é 1. O peso menor move a pontuação 700 vezes mais, porque o que ele multiplica é a latência, 700. O tamanho do próprio peso não entra na conta.',
+        'É o que um dev faz por instinto, muda esse valor e vê o que acontece, e cobra uma conta inteira refeita por número medido, mais a conta de referência. Para os três números do alerta, quatro execuções da conta inteira. Para um modelo de 1 milhão de pesos, 1.000.001 execuções para um único ajuste. A técnica continua útil para conferir: se outra técnica entregar um gradient diferente deste, uma das duas está errada.',
       ],
-      pseudocode: `função medir_gradient(conta, entradas, nome, empurrão)
-    base ← conta(entradas)
-    entradas[nome] ← entradas[nome] + empurrão
-    empurrada ← conta(entradas)
-    entradas[nome] ← entradas[nome] − empurrão
-    retorne (empurrada − base) / empurrão`,
+      pseudocode: `função medir_gradient(conta, números, nome, empurrão)
+    referência ← conta(números)
+    números[nome] ← números[nome] + empurrão
+    empurrada ← conta(números)
+    números[nome] ← números[nome] − empurrão
+    retorne (empurrada − referência) / empurrão`,
       invariant: 'O empurrão é pequeno o bastante para a conta se comportar como reta naquele trecho.',
       workedExample: {
         problem:
@@ -257,8 +258,8 @@ função ativar(soma)
       },
       exerciseId: 'ai.e3' },
 
-    { id: 'ai.c4', title: 'Chain rule: o impacto atravessa as contas', layer: 'essential', band: 'technique', elaborates: 'backpropagation',
-      introducesTerms: ['chain-rule'],
+    { id: 'ai.c4', title: 'Regra da cadeia: o impacto atravessa as contas', layer: 'essential', band: 'technique', elaborates: 'backpropagation',
+      introducesTerms: ['chain-rule', 'local-impact'],
       oneLine: 'Quando uma conta alimenta outra, o efeito de um número atravessa as duas, multiplicado.',
       plainly:
         'Num sistema, uma conta costuma alimentar outra. Se cada requisição gera várias consultas ' +
@@ -266,43 +267,43 @@ função ativar(soma)
         'Para saber quanto, multiplique quanto cada conta muda por unidade da anterior. Não é ' +
         'preciso refazer tudo: basta saber o efeito de cada conta no caminho.',
       body: [
-        'Uma requisição faz 8 consultas ao banco, e cada consulta leva 2 ms. Com 10 requisições são 80 consultas e 160 ms. Uma requisição a mais acrescenta 8 consultas, e cada uma delas acrescenta 2 ms: o tempo sobe 16 ms, 8 × 2.',
-        'Cada conta tem o seu impacto local: quanto ela muda se a entrada dela subir 1, com o resto parado. O impacto local de requisições em consultas é 8; o de consultas em tempo é 2. A **chain rule**, regra da cadeia em português, diz que o impacto de um número no resultado final é o produto dos impactos locais do caminho.',
-        'Numa conta feita só de somas e produtos, o impacto local sai de duas regras. Numa soma, cada parcela tem impacto local 1. Num produto, o impacto local de um fator é o valor do outro fator, não o dele.',
-        'Cada conta da cadeia é um nó, e o nó que usa o resultado de outro é o nó de cima. Parar no impacto local da primeira conta é o erro desta parte: ele diz quanto as consultas sobem, não quanto o tempo sobe. E o gradient de um nó do meio já carrega o caminho inteiro até o fim, então quem vem antes não refaz o caminho: multiplica o próprio impacto local pelo gradient do nó de cima.',
+        'Uma requisição faz 8 consultas ao banco, de 2 ms cada: 10 requisições dão 80 consultas e 160 ms. Uma requisição a mais traz 8 consultas e sobe o tempo em 16 ms, 8 × 2.',
+        'O **impacto local** de uma conta é quanto ela muda se um número que ela usa subir 1, com o resto parado: 8 de requisições em consultas, 2 de consultas em tempo. A **regra da cadeia** diz que o impacto de um número no resultado final é o produto dos impactos locais do caminho.',
+        'Numa soma, cada parcela tem impacto local 1. Num produto, o de um fator é o valor do outro fator, não o dele.',
+        'Cada conta é um nó, e o nó que usa o resultado de outro é o nó de cima. Parar no impacto local da primeira conta diz quanto as consultas sobem, não o tempo. E nenhum nó refaz o caminho: multiplica o próprio impacto local pelo gradient do nó de cima, que já o carrega até o fim.',
       ],
       workedExample: {
         problem:
-          'Com 10 requisições, 8 consultas por requisição e 2 ms por consulta, o tempo é 160 ms. O ' +
-          'gradient do tempo é 1, por convenção. O de consultas é o impacto local 2 vezes esse 1: 2. ' +
-          'O de requisições é o impacto local 8 vezes o gradient de consultas: 16. Conferindo pela ' +
-          'conta inteira, 11 requisições dão 88 consultas e 176 ms, 16 a mais.',
+          'Com 10 requisições, 8 consultas por requisição e 2 ms por consulta, o tempo é 160 ms. Todo ' +
+          'gradient aqui é no tempo. O do próprio tempo é 1, por convenção. O de consultas é o impacto ' +
+          'local 2 vezes esse 1: 2. O de requisições é o impacto local 8 vezes o gradient de consultas: ' +
+          '16. Conferindo pela conta inteira, 11 requisições dão 88 consultas e 176 ms, 16 a mais.',
         whatToNotice:
           'O 16 de requisições não foi recalculado do zero. Saiu do gradient de consultas, que já ' +
           'estava pronto, multiplicado pelo impacto local de uma conta só.',
       },
       exerciseId: 'ai.e4' },
 
-    { id: 'ai.c5', title: 'Backprop em ordem', layer: 'essential', band: 'technique', elaborates: 'backpropagation',
-      introducesTerms: ['backpropagation'],
+    { id: 'ai.c5', title: 'Backpropagation em ordem', layer: 'essential', band: 'technique', elaborates: 'backpropagation',
+      introducesTerms: ['backpropagation', 'forward-pass', 'backward-pass'],
       oneLine: 'Faça a conta para frente guardando cada valor, e volte do resultado até as entradas, uma vez só.',
       plainly:
         'Medir número por número custa rodar a conta inteira para cada um. Existe um jeito de ' +
         'obter o efeito de todos de uma vez: fazer a conta uma vez guardando cada resultado ' +
         'intermediário, e depois voltar do fim para o começo, passando para cada número o efeito ' +
-        'que já foi calculado para quem vem depois dele. Duas passadas, qualquer que seja a ' +
+        'que já foi calculado para o nó de cima dele. Duas passadas, qualquer que seja a ' +
         'quantidade de números.',
       body: [
-        'O gradient numérico refaz a conta inteira para cada número. A **backpropagation** faz duas passadas e para. A primeira vai para frente, calcula o valor de cada nó e guarda. A segunda sai do resultado com gradient 1 e volta até as entradas, aplicando a chain rule nó a nó. Num modelo de 1 milhão de pesos, são 2 passadas no lugar de 1.000.001.',
-        'A ordem é o que faz isso funcionar. Um nó só pode passar o gradient adiante depois de recebê-lo inteiro, e ele está inteiro quando todo nó que usa o valor dele já passou. A ordem reversa garante isso: o resultado primeiro, cada nó depois de todos os que dependem dele, as entradas por último. Numa conta com ciclo essa ordem não existe, e as contas desta unidade não têm ciclo.',
-        'A última linha do pseudocódigo soma em vez de escrever, e o motivo aparece quando um número é usado duas vezes. Em y = a × a, o a entra como os dois fatores, e cada uso manda a sua contribuição. Escrevendo com =, a segunda apaga a primeira.',
-        'O preço é memória. O impacto local de um produto é o valor do outro fator, e esse valor foi calculado na passada para frente: ela precisa guardar todo valor intermediário até a volta terminar. Duas passadas de tempo, e um valor guardado por nó.',
+        'O gradient numérico refaz a conta para cada número; a **backpropagation** faz duas passadas. A **passada para frente** calcula e guarda o valor de cada nó. A **passada para trás** sai do resultado com gradient 1 e aplica a regra da cadeia nó a nó, até as entradas. Com 1 milhão de pesos, 2 passadas no lugar de 1.000.001.',
+        'Um nó só passa o gradient adiante depois de recebê-lo inteiro, de todo nó que usa o valor dele, e a ordem reversa garante isso. Numa conta com ciclo essa ordem não existe; as desta unidade não têm.',
+        'A última linha soma em vez de escrever por causa do número usado duas vezes. Em y = a × a, o a é os dois fatores, e cada uso manda a sua contribuição; com =, a segunda apagaria a primeira.',
+        'O preço é memória: o impacto local de um produto é o valor do outro fator, calculado na ida e guardado até a volta terminar. Duas passadas de tempo, um valor guardado por nó.',
       ],
       pseudocode: `função retropropagar(saída)
     saída.grad ← 1
     para cada nó em ordem_reversa(saída) faça
-        para cada entrada em nó.entradas faça
-            entrada.grad ← entrada.grad + impacto_local(nó, entrada) × nó.grad`,
+        para cada operando em nó.operandos faça
+            operando.grad ← operando.grad + impacto_local(nó, operando) × nó.grad`,
       invariant: 'Quando chega a vez de um nó, o gradient dele já está completo, porque todo nó que usa o valor dele já passou.',
       workedExample: {
         problem:
@@ -326,20 +327,20 @@ função ativar(soma)
         'grande pode passar do ponto e parar mais longe do que começou. O tamanho do passo é um ' +
         'número que alguém escolhe, e escolher maior não garante chegar antes.',
       body: [
-        'Um peso vale 14, e o loss é o quadrado da distância entre o peso e 10: (w − 10)², com w sendo o peso, vale 16. Subindo o peso de 14 para 14,001, o loss vai a 16,008: o gradient é 8, positivo, e diz que subir o peso aumenta o erro. O passo vai para o lado oposto, e o que falta decidir é quanto.',
-        'O **learning rate** é o número que multiplica o gradient para dar o tamanho do passo: w ← w − learning rate × gradient. Repetir isso, medir o gradient onde o peso parou e dar outro passo, é a **gradient descent**, o laço de todo treino. Com learning rate 0,1 o passo é 0,8, o peso vai a 13,2 e o loss cai para 10,24.',
-        'Learning rate maior não chega antes. O gradient descreve o trecho perto de onde foi medido, e um passo longo sai desse trecho. Com 1,2 o passo é 9,6: o peso cai para 4,4, do outro lado do 10, e o loss vai a 31,36, quase o dobro de onde começou. O peso atravessou o ponto que procurava.',
-        'O sinal também faz parte do passo. Somar o gradient em vez de subtrair anda para o lado em que o loss sobe, e cada passo piora o anterior, com o código rodando sem erro nenhum.',
+        'Um peso vale 14, e o loss, o quadrado da distância entre o peso e 10, vale 16. Com o peso em 14,001 o loss vai a 16,008: o gradient do peso no loss é 8, o dobro da distância. Positivo: subir o peso aumenta o erro, e o passo vai para o lado oposto. Falta decidir quanto.',
+        'O **learning rate** multiplica o gradient para dar o tamanho do passo: w ← w − learning rate × gradient. Repetir isso, usando o gradient onde o peso parou, é a **gradient descent**, o laço de todo treino. Com 0,1 o passo é 0,8, o peso vai a 13,2 e o loss a 10,24.',
+        'Maior não chega antes: o gradient só descreve o trecho perto de onde foi calculado. Com 1,2 o passo é 9,6, o peso cai para 4,4, do outro lado do 10, e o loss vai a 31,36, quase o dobro.',
+        'Somar o gradient em vez de subtrair anda para o lado em que o loss sobe, e o código roda sem erro.',
       ],
       pseudocode: `procedimento descer(pesos, learning_rate)
     para cada peso em pesos faça
         peso.valor ← peso.valor − learning_rate × peso.grad`,
-      invariant: 'O passo vai sempre contra o sinal do gradient, e o tamanho dele, learning rate vezes gradient, só é confiável perto de onde o gradient foi medido.',
+      invariant: 'O passo vai sempre contra o sinal do gradient, e o tamanho dele, learning rate vezes gradient, só é confiável perto de onde o gradient foi calculado.',
       workedExample: {
         problem:
-          'Com loss (w − 10)² e o peso em 14, o gradient é 8. Learning rate 0,1: 14 − 0,1 × 8 = 13,2, ' +
-          'e o loss cai de 16 para 10,24. Learning rate 1,2: 14 − 1,2 × 8 = 4,4, e o loss sobe de 16 ' +
-          'para 31,36.',
+          'Com loss (w − 10)² e o peso em 14, o gradient do peso no loss é 8. Learning rate 0,1: ' +
+          '14 − 0,1 × 8 = 13,2, e o loss cai de 16 para 10,24. Learning rate 1,2: 14 − 1,2 × 8 = 4,4, ' +
+          'e o loss sobe de 16 para 31,36.',
         whatToNotice:
           'Os dois passos foram para o lado certo, para baixo. O que mudou foi o tamanho: o de 1,2 ' +
           'passou do 10 e terminou mais longe dele do que começou. Para saber qual dos dois serviu, ' +
@@ -352,24 +353,24 @@ função ativar(soma)
       oneLine: 'Quem soma sem zerar carrega a conta de ontem para hoje, e o passo cresce sem motivo.',
       plainly:
         'Um contador que ninguém zera continua somando de onde parou. No treino acontece o mesmo: ' +
-        'a conta que calcula a direção do ajuste soma ao valor que já estava lá. Se ninguém zera ' +
-        'entre uma rodada e outra, cada ajuste carrega os anteriores, e o passo cresce mesmo quando ' +
-        'já devia estar diminuindo.',
+        'a conta que calcula a direção do ajuste soma ao valor que já estava lá. Se nada zera esse ' +
+        'valor de uma rodada para outra, cada ajuste carrega os anteriores, e o passo cresce mesmo ' +
+        'quando já devia estar diminuindo.',
       body: [
-        'A última linha da passada para trás soma, e precisa somar: é o que deixa um peso usado em duas contas receber as duas contribuições. O efeito colateral é que ela soma também ao que sobrou da rodada anterior. No laço de treino, o gradient tem de voltar a 0 antes de cada passada para trás, e não uma vez só antes do laço.',
-        'Com o loss do ciclo anterior, (w − 10)², o peso em 14 e learning rate 0,1, a primeira rodada mede gradient 8 e leva o peso a 13,2. Ali o gradient verdadeiro é 6,4, mas sem zerar o peso carrega 8 + 6,4 = 14,4, e o passo sai quase do dobro do tamanho.',
-        'O defeito engana porque as primeiras rodadas parecem melhores: na terceira o peso chega a 9,968, quase em cima do 10. Na quarta, o gradient medido já pede para subir, e o acumulado ainda manda descer, porque as rodadas antigas continuam somadas dentro dele. Os testes passam, porque o código roda e o loss cai no começo.',
+        'A última linha da passada para trás soma, e precisa somar: é o que deixa um peso usado em duas contas receber as duas contribuições. O efeito colateral é que ela soma também ao que sobrou da rodada anterior, porque nada nela distingue a contribuição desta rodada da que ficou de antes.',
+        'Com o loss do ciclo anterior, (w − 10)², o peso em 14 e learning rate 0,1, a primeira rodada calcula gradient 8, e o passo leva o peso a 13,2. Ali o gradient do peso no loss é 6,4, mas o acumulado chega a 8 + 6,4 = 14,4, e o passo sai quase do dobro do tamanho.',
+        'O defeito engana porque as primeiras rodadas parecem melhores: na terceira o peso chega a 9,968, quase em cima do 10. Na quarta, o gradient calculado já pede para subir, e o acumulado ainda manda descer, porque as rodadas antigas continuam somadas dentro dele. O código roda, e o loss cai no começo.',
       ],
       workedExample: {
         problem:
-          'O peso em 14, learning rate 0,1, sem zerar. Rodada 1: medido 8, acumulado 8, peso 13,2. ' +
-          'Rodada 2: medido 6,4, acumulado 14,4, peso 11,76. Rodada 3: medido 3,52, acumulado 17,92, ' +
-          'peso 9,968. Rodada 4: medido −0,064, acumulado 17,856, peso 8,18. Na rodada 5 o loss já é ' +
-          '10,5, mais que os 10,24 que a primeira rodada tinha deixado.',
+          'O peso em 14, learning rate 0,1, sem zerar. Rodada 1: calculado 8, acumulado 8, peso 13,2. ' +
+          'Rodada 2: calculado 6,4, acumulado 14,4, peso 11,76. Rodada 3: calculado 3,52, acumulado ' +
+          '17,92, peso 9,968. Rodada 4: calculado −0,064, acumulado 17,856, peso 8,18. Depois do passo ' +
+          'da rodada 5, o loss é 10,5, mais que os 10,24 que a primeira rodada tinha deixado.',
         whatToNotice:
-          'Na rodada 4 o gradient medido é negativo e pede para o peso subir. O acumulado ainda é ' +
-          '17,856 e manda descer, para longe do 10. Zerando a cada rodada, cada passo usaria só o ' +
-          'gradient do ponto onde o peso está.',
+          'Na rodada 4 o gradient calculado é negativo e pede para o peso subir. O acumulado ainda é ' +
+          '17,856 e manda descer, para longe do 10. Sem o acumulado, cada passo usaria só o gradient ' +
+          'do ponto onde o peso está.',
       },
       exerciseId: 'ai.e7' },
 
@@ -382,16 +383,17 @@ função ativar(soma)
         'e dizer se ele foi para o lado certo e se andou demais. Nenhum código mudou; quem errou ' +
         'foi um número que o laço produziu.',
       body: [
-        'Volte ao carrinho do chamado: 3 itens de 10 reais, frete de 5, fator 2, total 70. O ajuste noturno é gradient descent sobre um peso só, o fator, e o loss é o quadrado da distância entre o total e o número que o financeiro fechou para o pedido.',
-        'As quatro partes do critério viram quatro perguntas sobre aquela noite. A saída: o total antes e depois, 70 e 91. O loss: a distância ao número do financeiro, ao quadrado. O gradient do fator: o pedido inteiro, porque o fator multiplica tudo, e por isso um décimo no fator move reais, não centavos. O passo: 0,6 de uma vez, num fator que valia 2.',
-        'Nenhuma linha de código mudou, e nenhum teste quebrou. O que mudou foi um número que o laço produziu, e o único jeito de julgá-lo é refazer a conta dele: para que lado o loss mandava ir, e se o passo parou antes ou depois do ponto em que o loss é zero.',
+        'Volte ao carrinho do chamado: 3 itens de 10 reais, frete de 5, fator 2, total 70. O ajuste noturno é gradient descent sobre um peso só, o fator, e o loss é o quadrado da distância entre o total e o alvo, o número que o financeiro fechou para o pedido.',
+        'As quatro partes do critério viram quatro perguntas sobre aquela noite. A saída: o total antes e depois, 70 e 91. O loss: a distância ao alvo, ao quadrado. O gradient do fator: no total, é o tamanho do pedido antes do fator, porque o fator multiplica tudo, e por isso um décimo no fator move reais, não centavos; no loss, é isso vezes 2 × (total − alvo). O passo: 0,6 de uma vez, num fator que valia 2.',
+        'Nenhuma linha de código mudou e nenhum teste quebrou. Para julgar um número que o laço produziu, refaça a conta dele: para que lado o loss mandava ir, e se o passo parou antes ou depois do ponto em que o loss é zero.',
       ],
       workedExample: {
         problem:
           'Outro pedido do mesmo e-commerce: 2 itens de 20 reais e frete de 10, que somam 50. Com ' +
-          'fator 2 o total é 100, e o financeiro fechou 120, o que pede fator 2,4. Um ajuste que leva ' +
-          'o fator a 2,3 deixa o total em 115, e o loss cai de 400 para 25. Um que leva a 3 deixa o ' +
-          'total em 150, e o loss sobe de 400 para 900.',
+          'fator 2 o total é 100, e o financeiro fechou 120, o que pede fator 2,4. No total, o gradient ' +
+          'do fator é 50; no loss, 50 × 2 × (100 − 120) = −2.000, negativo, então o fator sobe. Um ' +
+          'ajuste que leva o fator a 2,3 deixa o total em 115, e o loss cai de 400 para 25. Um que leva ' +
+          'a 3 deixa o total em 150, e o loss sobe de 400 para 900.',
         whatToNotice:
           'Os dois ajustes subiram o fator, e subir era o lado certo. O primeiro parou antes do ponto; ' +
           'o segundo passou dele e terminou mais longe do 120 do que o total de partida. Direção certa ' +
