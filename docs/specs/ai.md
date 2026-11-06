@@ -1,6 +1,6 @@
 # Spec, Unidade 9: Como uma IA decide
 
-**Status:** rascunho; três das quatro decisões que travavam o conteúdo foram tomadas em 2026-11-06, falta o escopo
+**Status:** pronto para implementar; as quatro decisões que travavam o conteúdo foram tomadas em 2026-11-06
 **Kind:** `method` (ADR-0012). O assunto não é uma estrutura, é o julgamento que o aluno
 produz diante de uma conta com pesos: o que ela devolve, quanto errou e para que lado mexer.
 
@@ -123,18 +123,10 @@ O exercício de trace de c5 entra em `requiresClean`.
 
 ## Perguntas em aberto
 
-1. **Escopo, ainda em aberto.** A definição de sucesso do projeto é julgar código gerado por
-   IA, não entender como a IA funciona. As duas saídas:
-   - fora do currículo, como a pré-trilha: navegável, sem mexer em nivelamento, faixas e na
-     regra de `design-reviewer` ("as oito unidades dominadas");
-   - unidade curricular: entra nas faixas, a regra de `design-reviewer` muda e a unidade
-     precisa de sonda no nivelamento.
-   A escolha custa uma linha em `src/content/index.ts` (entrar em `units` ou só em
-   `allUnits`), então dá para começar fora e promover depois.
-2. **Referência ao Python.** O desenho sugere um quadro "na sua implementação" que manda
+1. **Referência ao Python.** O desenho sugere um quadro "na sua implementação" que manda
    conferir o código do aluno contra a tabela. Decidir se ele existe; se existir, não nomeia
    linguagem nem repositório (princípio 1).
-3. **Ordem na trilha.** A unidade usa trace (unidade 01) e custo (unidade 02). Ela pode vir
+2. **Ordem na trilha.** A unidade usa trace (unidade 01) e custo (unidade 02). Ela pode vir
    depois da 02 ou só depois da síntese.
 
 ## Decisões tomadas
@@ -155,3 +147,7 @@ O exercício de trace de c5 entra em `requiresClean`.
    trace se chama "impacto local", não "derivada local".
 6. **Problema motivador** (2026-11-06): o carrinho, com o fator ajustado automaticamente,
    descrito acima.
+7. **Escopo** (2026-11-06): a unidade fica **fora do conjunto curricular**, como a pré-trilha.
+   Ela entra em `allUnits` e não em `units`, então não altera nivelamento, faixas, contadores
+   nem a regra de `design-reviewer`. Promover depois custa uma linha em `src/content/index.ts`,
+   e a condição para isso é ter armadilhas observadas em alunos, não só propostas.
