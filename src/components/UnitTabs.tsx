@@ -52,9 +52,11 @@ export function UnitTabs({ unit, cycleId }: { unit: Unit; cycleId?: string }) {
       >
         mapa
       </Link>
-      {unit.cycles.map((c) => {
+      {unit.cycles.map((c, i) => {
         const active = c.id === cycleId
-        const short = c.id.split('.')[1]!
+        // O mesmo número da lista de ciclos, 01 a NN. O id (`hash.c5`) é código
+        // e começava em zero, então a aba c5 era o ciclo 06 da lista.
+        const short = String(i + 1).padStart(2, '0')
         const st = statuses[c.id] ?? 'pending'
         return (
           <Link
