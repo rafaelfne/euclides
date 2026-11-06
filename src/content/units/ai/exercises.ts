@@ -166,7 +166,7 @@ export const aiExercises: Exercise[] = [
       { key: 'grad', label: 'gradient', placeholder: 'número' },
     ],
     conventions: [
-      { notation: '0', rule: 'toda célula', why: 'Todas as contas deste carrinho dão número inteiro. Escreva só o número, sem R$ e sem unidade.' },
+      { notation: 'número inteiro', rule: 'toda célula', why: 'Todas as contas deste carrinho dão número inteiro. Escreva só o número, sem R$ e sem unidade.' },
       { notation: 'valor', rule: 'a passada para frente', why: 'O que o nó vale com as entradas do enunciado. Um nó de cima depende dos de baixo, então faça estas contas antes de começar a passada para trás.' },
       { notation: 'impacto local', rule: 'só a conta que usa este nó', why: 'Quanto o nó de cima muda se este subir 1, com os outros números daquela conta parados. O total não tem nó de cima, e por convenção o impacto local dele é 1.' },
       { notation: 'gradient', rule: 'até o total', why: 'Quanto o total muda se este nó subir 1, com as outras entradas paradas. É o que a última linha do pseudocódigo escreve.' },
