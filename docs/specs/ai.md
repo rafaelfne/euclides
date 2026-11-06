@@ -1,6 +1,6 @@
 # Spec, Unidade 9: Como uma IA decide
 
-**Status:** rascunho, não implementar antes de resolver as perguntas em aberto
+**Status:** rascunho; três das quatro decisões que travavam o conteúdo foram tomadas em 2026-11-06, falta o escopo
 **Kind:** `method` (ADR-0012). O assunto não é uma estrutura, é o julgamento que o aluno
 produz diante de uma conta com pesos: o que ela devolve, quanto errou e para que lado mexer.
 
@@ -10,13 +10,18 @@ sobre o mecanismo que ele implementa, em pseudocódigo, como todo o resto da tri
 
 ## Problema motivador
 
-**A DEFINIR, com um caso real.** O desenho de tela usou um exemplo inventado: um modelo de
-triagem de chamados que soma três sinais com pesos e, depois de um retreino, passa a marcar
-quase tudo como urgente, sem que ninguém saiba dizer qual peso mudou. A forma serve, os
-números não: a regra `número` exige um número real, e um número inventado no chamado é o
-tipo de afirmação que o projeto existe para não fazer.
+Decidido em 2026-11-06: o chamado usa o carrinho, com números que a própria unidade verifica.
 
-A pergunta que abre a unidade: **quando um modelo erra, como se descobre qual número mexer,
+Um e-commerce calcula o total do pedido como `(preço × quantidade + frete) × fator`, e o
+`fator` é ajustado automaticamente toda noite para o total bater com o que o financeiro
+fechou. Numa noite, o ajuste levou o fator de 2 para 2,6, e um pedido de 3 itens de 10 reais
+com frete de 5 passou de 70 para 91 reais. Ninguém mexeu no código.
+
+A pergunta do chamado: **qual número o ajuste mexeu, por que aquele, e por que tanto de uma
+vez?** O ajuste automático é descida de gradient sobre um peso só, e o salto de 2 para 2,6
+numa noite é um passo grande demais. O postmortem (c8) volta a isso.
+
+A pergunta que abre a unidade: **quando um resultado erra, como se descobre qual número mexer,
 e para que lado, sem tentar um por um?**
 
 ## Critério, o julgamento que a unidade ensina a produzir
@@ -60,7 +65,7 @@ A comparação de custo entre as duas é a afirmação de complexidade da unidad
 
 | # | banda | título | termos novos |
 |---|---|---|---|
-| c0 | critério | Uma decisão é uma soma com pesos | bias, A DEFINIR o termo de peso |
+| c0 | critério | Uma decisão é uma soma com pesos | peso do neurônio, bias |
 | c1 | técnica | tanh, o if que não é seco | activation function |
 | c2 | critério | Loss: um número para o quanto errou | loss |
 | c3 | técnica | Mexer um pouco e medir | gradient |
@@ -68,12 +73,12 @@ A comparação de custo entre as duas é a afirmação de complexidade da unidad
 | c5 | técnica | Backprop em ordem | backpropagation |
 | c6 | técnica | O passo: learning rate | learning rate, gradient descent |
 | c7 | falha | O gradient que acumula sem zerar | nenhum |
-| c8 | falha | Postmortem: o retreino do chamado | nenhum |
+| c8 | falha | Postmortem: o fator que saltou numa noite | nenhum |
 
 Exercícios previstos, a confirmar na implementação:
 
 - **c5, trace:** a passada para trás do carrinho, `total = (preço × quantidade + frete) × fator`,
-  com 10, 3, 5 e 2. Colunas: nó, valor (dado), derivada local, gradient. O gabarito sai de um
+  com 10, 3, 5 e 2. Colunas: nó, valor (dado), impacto local, gradient. O gabarito sai de um
   gerador novo em `src/lib/reference/`, nunca digitado. O exemplo trabalhado do ciclo usa outra
   conta, `y = a × b + c`, e a checagem `vazamento` confere isso.
 - **c7, defeito:** um laço de treino com `zeroGrad()` fora do laço. A alternativa correta não
@@ -96,7 +101,7 @@ Serve como sinal, não como catálogo.
 
 Propostas, cada uma precisando da sua leitura antes de virar catálogo:
 
-- `derivada-local-como-gradient`, escrever no nó o impacto da última conta e esquecer de
+- `impacto-local-como-gradient`, escrever no nó o impacto local da última conta e esquecer de
   multiplicar pelo gradient de quem vem depois
 - `grad-sobrescrito`, um nó usado duas vezes recebe `=` em vez de `+=`, e a segunda
   contribuição apaga a primeira
@@ -118,22 +123,18 @@ O exercício de trace de c5 entra em `requiresClean`.
 
 ## Perguntas em aberto
 
-1. **Escopo.** A definição de sucesso do projeto é julgar código gerado por IA, não entender
-   como a IA funciona. Esta unidade é tangente a esse objetivo. Proposta: ela entra como a
-   pré-trilha, navegável mas fora do conjunto curricular, para não mudar nivelamento, faixas
-   e a regra da faixa `design-reviewer` ("as oito unidades dominadas").
-2. **Colisão de termo.** `peso` / `weight` já é do glossário, como peso de aresta em
-   `graphs.c1`. A checagem `ambiguidade` reprova um segundo dono. Opções: registrar `weight`
-   em `OVERLOADED_TERMS` com o peso de aresta como falso amigo, ou usar outra forma canônica.
-3. **Matemática.** O público não é matemático. Proposta: nenhuma notação de cálculo na tela,
-   derivada apresentada como "impacto de mexer um pouco", e o gradient numérico (c3) antes da
-   regra da cadeia (c4). Falta decidir se "derivada" entra no glossário ou fica só na prosa.
-4. **Problema motivador real**, com número que se sustente.
-5. **Referência ao Python.** O desenho sugere um quadro "no seu micrograd" que manda conferir
-   o código do aluno contra a tabela. Isso conversa com o princípio 1 (a implementação é
-   exercício), mas cita um projeto externo. Decidir se o quadro fala de "a sua implementação",
-   sem nomear linguagem nem repositório.
-6. **Ordem na trilha.** A unidade usa trace (unidade 01) e custo (unidade 02). Ela pode vir
+1. **Escopo, ainda em aberto.** A definição de sucesso do projeto é julgar código gerado por
+   IA, não entender como a IA funciona. As duas saídas:
+   - fora do currículo, como a pré-trilha: navegável, sem mexer em nivelamento, faixas e na
+     regra de `design-reviewer` ("as oito unidades dominadas");
+   - unidade curricular: entra nas faixas, a regra de `design-reviewer` muda e a unidade
+     precisa de sonda no nivelamento.
+   A escolha custa uma linha em `src/content/index.ts` (entrar em `units` ou só em
+   `allUnits`), então dá para começar fora e promover depois.
+2. **Referência ao Python.** O desenho sugere um quadro "na sua implementação" que manda
+   conferir o código do aluno contra a tabela. Decidir se ele existe; se existir, não nomeia
+   linguagem nem repositório (princípio 1).
+3. **Ordem na trilha.** A unidade usa trace (unidade 01) e custo (unidade 02). Ela pode vir
    depois da 02 ou só depois da síntese.
 
 ## Decisões tomadas
@@ -144,3 +145,13 @@ O exercício de trace de c5 entra em `requiresClean`.
 3. O primeiro exemplo concreto é o carrinho (preço, quantidade, frete, fator), porque soma e
    produto são as duas únicas contas de que a regra da cadeia precisa, e um dev já tem
    referente para elas.
+4. **Termo de peso** (2026-11-06): `weight` entra em `OVERLOADED_TERMS`. O peso de aresta
+   (`graphs.c1`) continua dono de `peso` e `weight`, e declara como falso amigo o termo novo
+   `peso do neurônio`, que estreia em c0. Assim a checagem `ambiguidade` passa e o aluno é
+   avisado nos dois lugares.
+5. **Notação** (2026-11-06): nenhuma notação de cálculo na tela, nem `∂` nem a palavra
+   "derivada" como termo do glossário. O gradient é "quanto o resultado muda se este número
+   subir um pouco", e o gradient numérico (c3) vem antes da regra da cadeia (c4). A coluna do
+   trace se chama "impacto local", não "derivada local".
+6. **Problema motivador** (2026-11-06): o carrinho, com o fator ajustado automaticamente,
+   descrito acima.
