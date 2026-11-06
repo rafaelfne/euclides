@@ -26,13 +26,16 @@ export const aiUnit: Unit = {
     'Somar e multiplicar números com vírgula',
   ],
   motivatingProblem:
-    'Um e-commerce calcula o total do pedido como (preço × quantidade + frete) × fator, e o ' +
-    'fator é ajustado automaticamente toda noite para o total bater com o que o financeiro ' +
-    'fechou. Numa noite, o ajuste levou o fator de 2 para 2,6, e um pedido de 3 itens de 10 ' +
-    'reais com frete de 5 passou de 70 para 91 reais. Ninguém mexeu no código. O chamado ' +
-    'pergunta qual número o ajuste mexeu, por que aquele, e por que tanto de uma vez. E a ' +
-    'pergunta por trás dele: quando um resultado erra, como se descobre qual número mexer, e ' +
-    'para que lado, sem tentar um por um?',
+    'Uma transportadora mostra ao cliente um prazo previsto de entrega, em dias: distância × ' +
+    'peso da distância + base. A distância vai em centenas de km, e a base, 1 dia de ' +
+    'separação, é fixa. O peso é o número que antes um dev chutava na mão; agora um ajuste ' +
+    'automático o mexe toda noite, a partir das entregas reais. Numa rota de 500 km, distância ' +
+    '5, o peso era 0,4: 5 × 0,4 + 1 = 3 dias. A entrega real levou 4. Numa noite, o ajuste ' +
+    'levou o peso a 1,0, e a mesma rota passou a prever 5 × 1,0 + 1 = 6 dias. Toda rota de ' +
+    '500 km ou mais passou a prever pelo menos o dobro. Ninguém mexeu no código, e nenhuma ' +
+    'entrega mudou: mudou a conta da estimativa. O chamado pergunta qual número o ajuste ' +
+    'mexeu, por que aquele, e por que tanto de uma vez. E a pergunta por trás dele: quando uma ' +
+    'estimativa erra, como se descobre qual número mexer, e para que lado, sem tentar um por um?',
 
   symbols: [
     { symbol: 'i', means: 'a posição da entrada que o laço está somando' },
@@ -66,8 +69,8 @@ export const aiUnit: Unit = {
     whenOmitted: [
       { partId: 'output', reads: 'o modelo decidiu que é fraude' },
       { partId: 'loss', reads: 'o modelo errou um pouco' },
-      { partId: 'gradient', reads: 'vamos mexer no fator e ver se melhora' },
-      { partId: 'step', reads: 'o gradient do fator no loss é positivo, então o fator sobe' },
+      { partId: 'gradient', reads: 'vamos mexer no peso da distância e ver se melhora' },
+      { partId: 'step', reads: 'o gradient do peso no loss é positivo, então o peso sobe' },
     ],
   },
 
@@ -374,36 +377,38 @@ função ativar(soma)
       },
       exerciseId: 'ai.e7' },
 
-    { id: 'ai.c8', title: 'Postmortem: o fator que saltou numa noite', layer: 'essential', band: 'failure',
+    { id: 'ai.c8', title: 'Postmortem: o peso que saltou numa noite', layer: 'essential', band: 'failure',
       introducesTerms: [],
       oneLine: 'Ninguém mexeu no código: um número ajustado sozinho mudou numa noite, e a conta dele explica o que houve.',
       plainly:
-        'Voltando ao chamado do começo: um número ajustado sozinho toda noite fez um pedido de 70 ' +
-        'reais virar 91. Com o que a unidade mostrou, dá para refazer a conta daquele ajuste à mão ' +
-        'e dizer se ele foi para o lado certo e se andou demais. Nenhum código mudou; quem errou ' +
-        'foi um número que o laço produziu.',
+        'Voltando ao chamado do começo: um número ajustado sozinho toda noite fez uma rota que ' +
+        'previa 3 dias passar a prever 6, quando a entrega real tinha levado 4. Com o que a ' +
+        'unidade mostrou, dá para refazer a conta daquele ajuste à mão e dizer se ele foi para o ' +
+        'lado certo e se andou demais. Nenhum código mudou; quem errou foi um número que o laço ' +
+        'produziu.',
       body: [
-        'Volte ao carrinho do chamado: 3 itens de 10 reais, frete de 5, fator 2, total 70. O ajuste noturno é gradient descent sobre um peso só, o fator, e o loss é o quadrado da distância entre o total e o alvo, o número que o financeiro fechou para o pedido.',
-        'As quatro partes do critério viram quatro perguntas sobre aquela noite. A saída: o total antes e depois, 70 e 91. O loss: a distância ao alvo, ao quadrado. O gradient do fator: no total, é o tamanho do pedido antes do fator, porque o fator multiplica tudo, e por isso um décimo no fator move reais, não centavos; no loss, é isso vezes 2 × (total − alvo). O passo: 0,6 de uma vez, num fator que valia 2.',
-        'Nenhuma linha de código mudou e nenhum teste quebrou. Para julgar um número que o laço produziu, refaça a conta dele: para que lado o loss mandava ir, e se o passo parou antes ou depois do ponto em que o loss é zero.',
+        'Volte à rota do chamado: distância 5, base 1, peso da distância 0,4, previsão 5 × 0,4 + 1 = 3 dias, e a entrega real em 4. O peso faz o papel do número que, numa versão escrita à mão, alguém chutaria, como o 300 de prazo = km / 300 + 1. O ajuste noturno é gradient descent sobre um peso só, e o loss é o quadrado da diferença entre o previsto e o real: (3 − 4)² = 1.',
+        'As quatro partes do critério viram quatro perguntas sobre aquela noite. A saída: 3 dias antes do ajuste, 6 depois. O loss: 1 antes, (6 − 4)² = 4 depois. O gradient do peso: na previsão é 5, a distância, porque o peso multiplica a distância, e por isso cada 0,1 no peso soma meio dia; no loss, é 5 × 2 × (3 − 4) = −10, negativo, então o peso tinha de subir. O passo: learning rate 0,06 vezes esse 10, de 0,4 direto para 1,0.',
+        'O ajuste mexeu no peso porque é o único número que ele pode mexer: a base é fixa. Foi para o lado certo, e a previsão, que estava 1 dia abaixo do real, terminou 2 acima; em toda rota de 500 km ou mais, a previsão pelo menos dobrou. Nenhuma linha de código mudou e nenhum teste quebrou. Para julgar um número que o laço produziu, refaça a conta dele: para que lado o loss mandava ir, e se o passo parou antes ou depois do ponto em que o loss é zero.',
       ],
       workedExample: {
         problem:
-          'Outro pedido do mesmo e-commerce: 2 itens de 20 reais e frete de 10, que somam 50. Com ' +
-          'fator 2 o total é 100, e o financeiro fechou 120, o que pede fator 2,4. No total, o gradient ' +
-          'do fator é 50; no loss, 50 × 2 × (100 − 120) = −2.000, negativo, então o fator sobe. Um ' +
-          'ajuste que leva o fator a 2,3 deixa o total em 115, e o loss cai de 400 para 25. Um que leva ' +
-          'a 3 deixa o total em 150, e o loss sobe de 400 para 900.',
+          'Outro centro de distribuição da mesma transportadora separa em 2 dias, e uma rota dele tem ' +
+          '1.000 km, distância 10. Com peso 0,5 a previsão é 10 × 0,5 + 2 = 7 dias, a entrega real ' +
+          'levou 11, e o loss é (7 − 11)² = 16. Na previsão, o gradient do peso é 10; no loss, ' +
+          '10 × 2 × (7 − 11) = −80, negativo, então o peso sobe. Um ajuste que leva o peso a 0,85 ' +
+          'prevê 10,5 dias, e o loss cai de 16 para 0,25. Um que leva a 1,5 prevê 17 dias, e o loss ' +
+          'sobe de 16 para 36.',
         whatToNotice:
-          'Os dois ajustes subiram o fator, e subir era o lado certo. O primeiro parou antes do ponto; ' +
-          'o segundo passou dele e terminou mais longe do 120 do que o total de partida. Direção certa ' +
-          'não basta: o tamanho do passo também é parte do julgamento.',
+          'Os dois ajustes subiram o peso, e subir era o lado certo. O primeiro parou antes do ponto; ' +
+          'o segundo passou dele e terminou mais longe dos 11 dias do que a previsão de partida. ' +
+          'Direção certa não basta: o tamanho do passo também é parte do julgamento.',
       },
       postmortem: {
-        incident: 'Volte ao fator que o ajuste noturno levou de 2 para 2,6, e ao pedido de 70 reais que amanheceu custando 91, sem ninguém mexer no código.',
+        incident: 'Volte ao peso da distância que o ajuste noturno levou de 0,4 para 1,0, e à rota de 500 km que previa 3 dias, levou 4 e amanheceu prevendo 6, sem ninguém mexer no código.',
         trapId: 'ai.passo-maior-converge-antes',
-        missingClaim: 'nenhuma de custo de tempo: o ajuste roda em duas passadas qualquer que seja o carrinho. O que faltava era a frase "depois do passo, o loss caiu", e ela era falsa.',
-        whatWouldCatch: 'Registrar o loss antes e depois de cada ajuste noturno e recusar o passo que o fez subir. É uma conta de uma linha, feita na hora, sem esperar o próximo pedido para descobrir.',
+        missingClaim: 'nenhuma de custo de tempo: o ajuste mexe num peso só, e o gradient dele sai em duas passadas. O que faltava era a frase "depois do passo, o loss caiu", e ela era falsa: foi de 1 para 4.',
+        whatWouldCatch: 'Registrar o loss antes e depois de cada ajuste noturno e recusar o passo que o fez subir. É uma conta de uma linha, feita na hora, sem esperar a próxima entrega para descobrir.',
       },
       exerciseId: 'ai.e8' },
   ],

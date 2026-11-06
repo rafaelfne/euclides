@@ -10,21 +10,42 @@ sobre o mecanismo que ele implementa, em pseudocódigo, como todo o resto da tri
 
 ## Problema motivador
 
-Decidido em 2026-11-06: o chamado usa o carrinho, com números que a própria unidade verifica.
+Decidido em 2026-11-06, segunda versão: o chamado é uma estimativa de prazo de entrega, com
+números que a própria unidade verifica em `scripts/test-ai.ts`.
 
-Um e-commerce calcula o total do pedido como `(preço × quantidade + frete) × fator`, e o
-`fator` é ajustado automaticamente toda noite para o total bater com o que o financeiro
-fechou. Numa noite, o ajuste levou o fator de 2 para 2,6, e um pedido de 3 itens de 10 reais
-com frete de 5 passou de 70 para 91 reais. Ninguém mexeu no código. O financeiro tinha fechado
-77 para esse pedido, então o fator que zerava o loss era 2,2: o ajuste foi para o lado certo e
-passou do ponto.
+Uma transportadora mostra ao cliente um prazo previsto, em dias:
+
+    prazo previsto = distância × peso da distância + base
+
+A distância vai em centenas de km, e a base, 1 dia de separação, é fixa. Um ajuste automático
+roda toda noite e mexe só no peso da distância, a partir das entregas reais. O peso é o número
+que antes um dev chutava na mão (o 300 de `prazo = km / 300 + 1`); o treino o acha pelos dados.
+O sistema não muda a entrega, muda a conta da estimativa.
+
+A conta, passo a passo, é o que o chamado mostra antes da pergunta:
+
+- rota de 500 km, distância 5, peso 0,4: 5 × 0,4 + 1 = 3 dias
+- a entrega real levou 4 dias; loss (previsto − real)² = 1
+- numa noite, o ajuste levou o peso de 0,4 para 1,0: a rota passou a prever 5 × 1,0 + 1 = 6
+  dias, loss 4, e toda rota de 500 km ou mais passou a prever pelo menos o dobro
+- ninguém mexeu no código
+
+Por trás disso: o gradient do peso na previsão é 5, a distância, e cada 0,1 no peso soma meio
+dia. O gradient do peso no loss, em 0,4, é 5 × 2 × (3 − 4) = −10, negativo, então subir era o
+lado certo. O passo foi learning rate 0,06 vezes 10; com 0,02, o peso pararia no ponto. A
+previsão estava 1 dia abaixo do real e terminou 2 acima: passo grande demais.
+
+O peso que zera o loss nessa rota é 0,6 (5 × 0,6 + 1 = 4). Esse número não aparece em nada que o
+aluno lê antes de e8, inclusive o postmortem de c8, que a tela mostra antes do exercício. Como o
+passo daquela noite também mede 0,6, a prosa escreve "de 0,4 para 1,0" e nunca o tamanho do
+passo. `scripts/test-ai.ts` confere.
 
 A pergunta do chamado: **qual número o ajuste mexeu, por que aquele, e por que tanto de uma
-vez?** O ajuste automático é descida de gradient sobre um peso só, e o salto de 2 para 2,6
+vez?** O ajuste automático é descida de gradient sobre um peso só, e o salto de 0,4 para 1,0
 numa noite é um passo grande demais. O postmortem (c8) volta a isso.
 
-A pergunta que abre a unidade: **quando um resultado erra, como se descobre qual número mexer,
-e para que lado, sem tentar um por um?**
+A pergunta que abre a unidade: **quando uma estimativa erra, como se descobre qual número
+mexer, e para que lado, sem tentar um por um?**
 
 ## Critério, o julgamento que a unidade ensina a produzir
 
@@ -81,14 +102,19 @@ gradient numérico não serve para dar o passo, e serve, só custa mais.
 | c5 | técnica | Backpropagation em ordem | backpropagation, passada para frente, passada para trás |
 | c6 | técnica | O passo: learning rate | learning rate, gradient descent |
 | c7 | falha | O gradient que acumula sem zerar | nenhum |
-| c8 | falha | Postmortem: o fator que saltou numa noite | nenhum |
+| c8 | falha | Postmortem: o peso que saltou numa noite | nenhum |
 
 c1 mora na banda critério, e não na técnica como a primeira versão deste spec dizia: ele não
 elabora nenhuma das duas técnicas, e a tanh é parte da saída do critério.
 
-O gradient sempre diz de quê é: "o gradient do fator no total", "o gradient do peso no loss".
-No carrinho, o gradient do fator no total é o tamanho do pedido antes do fator; no loss, é
-isso vezes 2 × (total − alvo).
+O gradient sempre diz de quê é: "o gradient do peso na previsão", "o gradient do peso no loss".
+No chamado, o gradient do peso na previsão é a distância; no loss, é isso vezes
+2 × (previsto − real).
+
+O exemplo trabalhado de c8 é outra rota, com números próprios: outro centro de distribuição,
+base 2, rota de 1.000 km (distância 10), peso 0,5, previsão 7 dias, real 11, loss 16, gradient
+no loss −80. Um ajuste para 0,85 prevê 10,5 dias e leva o loss a 0,25; um para 1,5 prevê 17 e o
+leva a 36.
 
 Exercícios, um por ciclo:
 
@@ -102,10 +128,10 @@ Exercícios, um por ciclo:
 - **e5, trace:** a passada para frente e a passada para trás do carrinho,
   `total = (preço × quantidade + frete) × fator`, com preço 4, quantidade 5, frete 6 e fator 3,
   e os dois nós do meio nomeados `subtotal = preço × quantidade` e `base = subtotal + frete`.
-  Nem os números do chamado (10, 3, 5, 2), nem os do exemplo trabalhado de c5, que usa
-  `y = w × x + b` e `y = a × a`. Linhas na ordem da passada para trás: total, fator, base,
-  frete, subtotal, quantidade, preço. Colunas: ordem, nó, valor, impacto local, gradient. O
-  gabarito sai de `src/lib/reference/ai.ts`, nunca digitado, e a checagem `vazamento` confere a
+  O carrinho é só uma conta de treino, não o caso do chamado. Os números não são os do
+  exemplo trabalhado de c5, que usa `y = w × x + b` e `y = a × a`. Linhas na ordem da
+  passada para trás: total, fator, base, frete, subtotal, quantidade, preço. Colunas: ordem,
+  nó, valor, impacto local, gradient. O gabarito sai de `src/lib/reference/ai.ts`, nunca digitado, e a checagem `vazamento` confere a
   prosa de c0 a c5 contra ele.
 - **e6, escolha:** `loss = (w − 3)²` em 5, learning rate 1,5 contra 0,1; o passo maior passa do
   ponto e o loss vai a 16.
@@ -115,8 +141,12 @@ Exercícios, um por ciclo:
   não diz onde a chamada de zerar deve ficar; o exercício cobra essa leitura. O enunciado não
   descreve o defeito, e o diff marca a função inteira, para não apontar a linha. A correta não
   é a mais longa nem a mais curta.
-- **e8, escolha:** com o pedido de 35, o alvo 77 e o loss `(total − 77)²`, qual fator zera o
-  loss: 2,2. O postmortem de c8 diz que o passo passou do ponto e não diz qual era o ponto.
+- **e8, escolha:** com que peso a previsão da rota do chamado acerta os 4 dias. O enunciado
+  traz distância 5, base 1 e real 4. Correta: 0,6. Distratores: 1,0, o valor depois do ajuste
+  (`passo-maior-converge-antes`); 0,2, o passo certo com o sinal trocado
+  (`passo-com-sinal-trocado`); 5, a distância (`valor-como-gradient`). A correta não é a mais
+  longa nem a mais curta. O postmortem de c8 diz que o passo passou do ponto e não diz qual era
+  o ponto.
 
 "Rodada" é cada volta do laço de treino; "passo" é só o ajuste do peso.
 
@@ -177,9 +207,10 @@ O exercício de trace de c5 entra em `requiresClean`.
 1. `kind: method`. As quatro partes do critério couberam sem campo opcional.
 2. Pseudocódigo em pt-BR, como toda a trilha. A versão TypeScript é derivada, nunca escrita
    ao lado.
-3. O primeiro exemplo concreto é o carrinho (preço, quantidade, frete, fator), porque soma e
-   produto são as duas únicas contas de que a regra da cadeia precisa, e um dev já tem
-   referente para elas.
+3. O carrinho (preço, quantidade, frete, fator) é a conta de treino do backpropagation (c5 e
+   ai.e5), porque soma e produto são as duas únicas contas de que a regra da cadeia precisa, e
+   um dev já tem referente para elas. Ele não é um cenário de sistema: o chamado é a
+   estimativa de prazo (decisão 6), e c0 abre por outro caso do trabalho.
 4. **Termo de peso** (2026-11-06): `weight` entra em `OVERLOADED_TERMS`. O peso de aresta
    (`graphs.c1`) continua dono de `peso` e `weight`, e declara como falso amigo o termo novo
    `peso do neurônio`, que estreia em c0. Assim a checagem `ambiguidade` passa e o aluno é
@@ -189,8 +220,13 @@ O exercício de trace de c5 entra em `requiresClean`.
    subir um pouco", e o gradient numérico (c3) vem antes da regra da cadeia (c4). A coluna do
    trace se chama "impacto local", não "derivada local", e "impacto local" é verbete do
    glossário, estreando em c4.
-6. **Problema motivador** (2026-11-06): o carrinho, com o fator ajustado automaticamente,
-   descrito acima.
+6. **Problema motivador** (2026-11-06, revisto no mesmo dia): a estimativa de prazo de entrega,
+   com o peso da distância ajustado toda noite, descrita acima. A primeira versão usava o
+   carrinho de um e-commerce com o fator do total ajustado automaticamente, e foi trocada porque
+   o cenário era irreal: ninguém ajusta sozinho o valor que o cliente paga, e estimativas de
+   prazo são ajustadas a partir do histórico em sistemas reais. A versão anterior também
+   comprimia a conta numa frase só; a nova mostra a conta passo a passo antes da pergunta. O
+   carrinho continua em e5, como conta de treino.
 7. **Escopo** (2026-11-06): a unidade fica **fora do conjunto curricular**, como a pré-trilha.
    Ela entra em `allUnits` e não em `units`, então não altera nivelamento, faixas, contadores
    nem a regra de `design-reviewer`. Promover depois custa uma linha em `src/content/index.ts`,
