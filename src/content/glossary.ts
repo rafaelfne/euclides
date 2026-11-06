@@ -708,7 +708,7 @@ export const appGlossary: GlossaryTerm[] = [
     falseFriends: [], introducedIn: APP },
 
   { id: 'app.gap', canonical: 'lacuna', canonicalLanguage: 'pt', alsoKnownAs: ['gap'],
-    definition: 'Uma armadilha que você ativou e ainda não desativou voltando ao exercício depois do intervalo e resolvendo-o sem ativá-la de novo.',
+    definition: 'Uma armadilha que você ativou e ainda não desarmou: falta resolver o exercício limpo numa revisita, depois do intervalo.',
     isNot: ['não é o mesmo que errar uma vez', 'não é uma nota baixa, é um item para revisitar'],
     falseFriends: [], introducedIn: APP },
 

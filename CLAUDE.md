@@ -129,6 +129,15 @@ armadilha, e o autor não escreve nenhum; **escalation** é do conteúdo, de uma
 tarefas dentro do degrau 3, uma por tentativa. Esgotada a escalation, o motor encerra o
 exercício. Ajuda ilimitada é resposta entregue devagar.
 
+Os dois nomes são do código e da autoria, não da tela. O aluno lê **pista 1 de 3** e
+**acabaram as pistas deste exercício**: "degrau" e "motor" descrevem a máquina, e o aluno
+não precisa saber que ela existe para usar a ajuda.
+
+**Nenhum ciclo entrega o gabarito antes do exercício.** A checagem `vazamento` reprova a
+prosa que repete, em ordem, três entradas seguidas de um trace, ou que contém uma célula
+composta do gabarito, em qualquer ciclo lido antes do exercício. Paráfrase do resultado
+não é mecânica e fica no `/audit-unit`.
+
 ## Como o conteúdo nasce
 
 Fluxo híbrido, decidido em ADR-0010:

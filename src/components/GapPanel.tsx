@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import type { Progress, Unit } from '@/content/schema'
 import { read } from '@/lib/progress'
+import { cycleNumber, cycleOfExercise } from '@/lib/cycle-label'
 import { buildSessionExport, collectGaps, type UnitGaps } from '@/lib/session-export'
 import { Button } from './ui/button'
 import { CountersRow } from './Counters'
@@ -85,6 +86,29 @@ export function GapPanel({ units }: { units: Unit[] }) {
   )
 }
 
+/** Exercícios pelo ciclo que os fecha, nunca pelo id. */
+function ExerciseLinks({ unit, ids }: { unit: Unit; ids: string[] }) {
+  return (
+    <>
+      {ids.map((id, i) => {
+        const cycle = cycleOfExercise(unit, id)
+        return (
+          <span key={id}>
+            {i > 0 && '; '}
+            {cycle ? (
+              <Link href={`/units/${unit.id}/cycles/${cycle.id}`} className="underline decoration-current/40 underline-offset-2">
+                ciclo {cycle.number}, {cycle.title}
+              </Link>
+            ) : (
+              'um exercício sem ciclo'
+            )}
+          </span>
+        )
+      })}
+    </>
+  )
+}
+
 function UnitGapBlock({ gaps }: { gaps: UnitGaps }) {
   const { unit, lines, masteryBlockers, dueForReview } = gaps
   return (
@@ -99,7 +123,7 @@ function UnitGapBlock({ gaps }: { gaps: UnitGaps }) {
         <div className="flex flex-wrap gap-x-4 gap-y-1 text-[13px]">
           {masteryBlockers.length ? (
             <span className="text-implementation">
-              Falta resolver na primeira tentativa: {masteryBlockers.join(', ')}.
+              Falta resolver na primeira tentativa: <ExerciseLinks unit={unit} ids={masteryBlockers} />.
             </span>
           ) : (
             <span className="text-contract">
@@ -107,21 +131,26 @@ function UnitGapBlock({ gaps }: { gaps: UnitGaps }) {
             </span>
           )}
           {dueForReview.length > 0 && (
-            <span className="text-cost">Venceu a revisita: {dueForReview.join(', ')}.</span>
+            <span className="text-cost">Hora de revisitar: <ExerciseLinks unit={unit} ids={dueForReview} />.</span>
           )}
         </div>
 
         {lines.map((line) => (
           <div key={line.exerciseId} className="border-l-2 border-rule pl-4">
             <div className="mb-1 flex items-baseline gap-3">
-              <span className="font-mono text-[11.5px] text-fg-4">{line.exerciseId}</span>
+              <span className="text-[13px] text-fg-4">
+                {(() => {
+                  const cycle = cycleOfExercise(unit, line.exerciseId)
+                  return cycle ? `ciclo ${cycle.number}, ${cycle.title}` : 'exercício sem ciclo'
+                })()}
+              </span>
               <span className="text-[13px] text-fg-2">{line.verdict}</span>
             </div>
             {line.misconceptions.map((m) => (
               <div key={m.id} className="mt-1.5 text-[13px] leading-relaxed text-fg-3">
                 <span className="font-semibold text-fg-2">{m.label}</span>, “{m.socraticQuestion}”{' '}
                 <Link href={`/units/${unit.id}/cycles/${m.reviewCycle}`} className="text-contract">
-                  rever {m.reviewCycle.split('.')[1]}
+                  rever o ciclo {cycleNumber(unit, m.reviewCycle)}
                 </Link>
               </div>
             ))}

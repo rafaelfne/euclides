@@ -115,8 +115,10 @@ export function HowItWorks() {
         <PanelBody className="flex flex-col gap-3.5 text-[13.5px] leading-relaxed text-fg-2">
           <p className="m-0">
             <strong className="font-semibold text-fg">O código está em pseudocódigo, em português.</strong>{' '}
-            De propósito: a trilha é sobre a ideia, não sobre a linguagem. `inserir(tabela, chave, valor)`
-            é a mesma coisa que o `insert` que você escreve no trabalho, sem a sintaxe no caminho.
+            De propósito: a trilha é sobre a ideia, não sobre a linguagem.{' '}
+            <code className="font-mono text-[12.5px] text-fg">inserir(tabela, chave, valor)</code> é a mesma
+            coisa que o <code className="font-mono text-[12.5px] text-fg">insert</code> que você escreve no
+            trabalho, sem a sintaxe no caminho.
           </p>
           <p className="m-0">
             <strong className="font-semibold text-fg">Você não precisa escolher uma resposta errada de propósito.</strong>{' '}

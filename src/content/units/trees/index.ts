@@ -217,7 +217,7 @@ export const treesUnit: Unit = {
     retorne T`,
       invariant: 'Para todo nó, toda chave da subárvore esquerda é menor que a dele, e toda da direita é maior.',
       workedExample: {
-        problem: 'Na árvore criada por 50, 30, 70, 20 e 40, buscar 40 compara com 50, desce à esquerda; compara com 30, desce à direita; compara com 40 e encontra.',
+        problem: 'Na árvore criada por 40, 20, 60, 10 e 30, buscar 30 compara com 40, desce à esquerda; compara com 20, desce à direita; compara com 30 e encontra.',
         whatToNotice: 'Foram três comparações e em cada uma um lado inteiro deixou de importar. A divisão está guardada nos ponteiros.',
       },
       exerciseId: 'trees.e1' },

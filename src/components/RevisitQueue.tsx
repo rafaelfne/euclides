@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { allUnits } from '@/content'
 import { read, PROGRESS_EVENT } from '@/lib/progress'
+import { cycleNumber } from '@/lib/cycle-label'
 import { dueRevisits, upcomingRevisit, REVISIT_STEPS, type Due, type Upcoming } from '@/lib/traps'
 
 /**
@@ -48,9 +49,9 @@ export function RevisitQueue({ compact = false }: { compact?: boolean }) {
       >
         <span className="lbl text-cost">Hoje</span>
         <span className="text-[14.5px] font-semibold text-fg">
-          {due.length} {due.length === 1 ? 'revisita' : 'revisitas'}
+          {due.length} {due.length === 1 ? 'revisita vencida' : 'revisitas vencidas'}
         </span>
-        <span className="text-[13px] text-fg-3">vencidas, e revisitar não é recomeçar</span>
+        <span className="text-[13px] text-fg-3">revisitar não é recomeçar</span>
         <span className="ml-auto font-mono text-[12px] text-cost">→</span>
       </Link>
     )
@@ -64,11 +65,11 @@ export function RevisitQueue({ compact = false }: { compact?: boolean }) {
           href={`/units/${d.unit.id}/cycles/${d.cycleId}`}
           className="m-tap flex flex-wrap items-baseline gap-3 border border-rule bg-panel px-4 py-3 text-inherit hover:bg-panel-hover"
         >
-          <span className="font-mono text-[12px] text-fg-5">{d.cycleId}</span>
+          <span className="font-mono text-[12px] text-fg-5">{cycleNumber(d.unit, d.cycleId)}</span>
           <span className="text-[14.5px] text-fg">{d.cycleTitle}</span>
           <span className="text-[12.5px] text-fg-4">{d.unit.title}</span>
           <span className="ml-auto font-mono text-[12px] text-cost">
-            degrau {d.step + 1} de {REVISIT_STEPS.length}
+            intervalo {d.step + 1} de {REVISIT_STEPS.length}
             {d.daysOverdue > 0 && ` · ${d.daysOverdue} d atrasada`}
           </span>
         </Link>

@@ -27,11 +27,15 @@ const render = (buckets: Bucket[]) =>
     .filter(Boolean)
     .join(' ') || '—'
 
-/** The trace for exercise `hash.e1`: m=4, h(k)=k, insert 3,7,11,4,8. */
-export function chainingInsertTrace(): TraceStep[] {
-  const table = { m: 4, n: 0, buckets: Array.from({ length: 4 }, (): Bucket => []) }
+/**
+ * Chaining insertion, one step per key. Parameterised so a figure can be
+ * checked against the same implementation without reusing the exercise's
+ * keys: a figure that draws a state of `hash.e1` hands the student its answer.
+ */
+export function chainingInsert(keys: number[], m: number): TraceStep[] {
+  const table = { m, n: 0, buckets: Array.from({ length: m }, (): Bucket => []) }
   const steps: TraceStep[] = []
-  for (const key of [3, 7, 11, 4, 8]) {
+  for (const key of keys) {
     let resized = false
     if ((table.n + 1) / table.m > LOAD_LIMIT) { resize(table, table.m * 2); resized = true }
     const i = h(key) % table.m
@@ -49,6 +53,9 @@ export function chainingInsertTrace(): TraceStep[] {
   }
   return steps
 }
+
+/** The trace for exercise `hash.e1`: m=4, h(k)=k, insert 3,7,11,4,8. */
+export const chainingInsertTrace = (): TraceStep[] => chainingInsert([3, 7, 11, 4, 8], 4)
 
 /** Registry the content references by name, so content stays data. Ids are
  * prefixed by unit so two units cannot silently claim the same generator. */
