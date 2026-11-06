@@ -1,9 +1,10 @@
 'use client'
 
+import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { units } from '@/content'
 import { read, PROGRESS_EVENT } from '@/lib/progress'
-import { level, type Level } from '@/lib/level'
+import { BANDS, level, type Level } from '@/lib/level'
 import { BAND_PILL } from './level-tokens'
 import { cn } from '@/lib/utils'
 
@@ -46,7 +47,19 @@ export function BandBadge({ compact = false }: { compact?: boolean }) {
     </span>
   )
 
-  if (compact) return pill
+  // No cabeçalho a faixa é um link para o perfil, onde estão a regra e o que
+  // falta. Uma pill com borda parecia botão e não fazia nada.
+  if (compact) {
+    return (
+      <Link
+        href="/perfil"
+        title={`${lv.band.rule}. Exige ${lv.band.requires}.`}
+        className="m-tap inline-flex items-center gap-1.5 text-[13px] whitespace-nowrap text-fg-3 hover:text-fg"
+      >
+        Nível: <span className="text-contract underline decoration-contract/40 underline-offset-[3px]">{lv.band.name}</span>
+      </Link>
+    )
+  }
 
   return (
     <div className="flex flex-col gap-1">
@@ -60,6 +73,24 @@ export function BandBadge({ compact = false }: { compact?: boolean }) {
           falta para {lv.next.band.name}: {missing!.join(', ')}
         </span>
       )}
+      <ol className="m-0 mt-3 flex list-none flex-col border border-rule p-0" aria-label="As cinco faixas">
+        {BANDS.map((b, i) => (
+          <li
+            key={b.id}
+            aria-current={b.id === lv.band.id ? 'step' : undefined}
+            className={cn(
+              'grid grid-cols-[28px_minmax(0,180px)_1fr] items-baseline gap-3 border-b border-rule-soft px-3 py-2 last:border-b-0',
+              b.id === lv.band.id && 'bg-panel-head',
+            )}
+          >
+            <span className="font-mono text-[12px] text-fg-4">{i + 1}</span>
+            <span className={cn('font-mono text-[13px]', b.id === lv.band.id ? 'text-fg' : 'text-fg-3')}>
+              {b.name}{b.id === lv.band.id && <span className="font-sans text-[12px] text-fg-4"> · você</span>}
+            </span>
+            <span className="text-[12.5px] text-fg-3">{b.requires}</span>
+          </li>
+        ))}
+      </ol>
     </div>
   )
 }
