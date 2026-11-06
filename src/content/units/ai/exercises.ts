@@ -250,16 +250,15 @@ export const aiExercises: Exercise[] = [
   {
     kind: 'choice', id: 'ai.e8',
     prompt:
-      'No chamado, o pedido de 3 itens de 10 reais com frete de 5 soma 35 antes do fator. Com fator ' +
-      '2 ele custava 70, e o ajuste noturno levou o fator a 2,6 e o total a 91. O financeiro tinha ' +
-      'fechado 77 para esse pedido, e o ajuste desce o loss (total − 77)². Com que fator o loss ' +
-      'daquela noite seria zero?',
+      'No chamado, o prazo previsto é distância × peso + base. A rota tem distância 5, a base é ' +
+      '1 dia, e a entrega real levou 4 dias. Com peso 0,4 a previsão era 3 dias, e o ajuste ' +
+      'noturno levou o peso a 1,0. Com que peso a previsão dessa rota acerta os 4 dias?',
     choices: [
-      { correct: true, text: '2,2, o fator em que o total dá 77',
-        why: '77 ÷ 35 = 2,2. No total, o gradient do fator é 35, o tamanho do pedido, então cada 0,1 no fator move o total em 3,5 reais. Com fator 2 o loss era 49; com 2,2 ele é zero; com o 2,6 que o ajuste escolheu, 196. O ajuste foi para o lado certo e passou do ponto.' },
-      { correct: false, text: '2,6, onde o ajuste daquela noite parou', misconceptionId: 'ai.passo-maior-converge-antes' },
-      { correct: false, text: '1,8: o fator tinha de descer', misconceptionId: 'ai.passo-com-sinal-trocado' },
-      { correct: false, text: '9, somando ao fator os 7 reais que faltavam', misconceptionId: 'ai.valor-como-gradient' },
+      { correct: true, text: '0,6, que leva a previsão a 4 dias',
+        why: '(4 − 1) ÷ 5 = 0,6. Na previsão, o gradient do peso é 5, a distância, então cada 0,1 no peso soma meio dia: faltava 1 dia, e o peso precisava subir 0,2. Com peso 0,4 o loss era 1; com 0,6 ele é zero; com o 1,0 que o ajuste escolheu, 4. O passo de 0,2 sairia de learning rate 0,02 vezes o gradient de 10 no loss; o ajuste usou 0,06, o triplo, foi para o lado certo e passou do ponto.' },
+      { correct: false, text: '1,0, onde o ajuste daquela noite parou', misconceptionId: 'ai.passo-maior-converge-antes' },
+      { correct: false, text: '0,2: o peso tinha de descer', misconceptionId: 'ai.passo-com-sinal-trocado' },
+      { correct: false, text: '5, a distância que o peso multiplica', misconceptionId: 'ai.valor-como-gradient' },
     ],
   },
 ]

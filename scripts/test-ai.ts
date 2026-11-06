@@ -260,51 +260,102 @@ if (e7.kind === 'bug') {
 }
 
 /*
-  e8: o problema motivador, 3 itens de 10 com frete 5. O postmortem de c8 diz
-  que o passo passou do ponto e não diz qual era o ponto; o exercício cobra o
-  ponto. O total é um grafo base × fator, e o loss outro, para o gradient sair
-  da passada para trás.
+  e8: o problema motivador, a estimativa de prazo. A rota tem distância 5 (500
+  km em centenas), a base é 1 dia e fica fixa, e o ajuste noturno mexe só no
+  peso da distância. O postmortem de c8 diz que o passo passou do ponto e não
+  diz qual era o ponto; o exercício cobra o ponto. A previsão é um grafo
+  distância × peso + base, e o loss outro, para o gradient sair da passada
+  para trás.
 */
-const pedido = 3 * 10 + 5
-const alvo = 77
-const nightGraph: Graph = [
+const distancia = 5, baseDias = 1, real8 = 4
+const routeGraph: Graph = [
+  { name: 'distancia', op: 'input', inputs: [] },
+  { name: 'peso', op: 'input', inputs: [] },
   { name: 'base', op: 'input', inputs: [] },
-  { name: 'fator', op: 'input', inputs: [] },
-  { name: 'menosAlvo', op: 'input', inputs: [] },
-  { name: 'total', op: 'mul', inputs: ['base', 'fator'] },
-  { name: 'd', op: 'add', inputs: ['total', 'menosAlvo'] },
+  { name: 'menosReal', op: 'input', inputs: [] },
+  { name: 'produto', op: 'mul', inputs: ['distancia', 'peso'] },
+  { name: 'prazo', op: 'add', inputs: ['produto', 'base'] },
+  { name: 'd', op: 'add', inputs: ['prazo', 'menosReal'] },
   { name: 'loss', op: 'mul', inputs: ['d', 'd'] },
 ]
-const night = (base: number, fator: number, target: number) => {
-  const v = forward(nightGraph, { base, fator, menosAlvo: -target })
-  const g = backward(nightGraph, v, 'loss').grad
-  return { total: v.total!, loss: v.loss!, gradInLoss: g.fator! }
+const routeIn = (dist: number, peso: number, base: number, realDias: number) =>
+  ({ distancia: dist, peso, base, menosReal: -realDias })
+const route = (dist: number, peso: number, base: number, realDias: number) => {
+  const v = forward(routeGraph, routeIn(dist, peso, base, realDias))
+  const g = backward(routeGraph, v, 'loss').grad
+  return { prazo: v.prazo!, loss: v.loss!, gradInLoss: g.peso! }
 }
-const lossOf = (fator: number) => night(pedido, fator, alvo).loss
-check(`ai.e8: o pedido soma ${pedido}; com fator 2 dá ${pedido * 2}, com 2,6 dá ${ptNumber(pedido * 2.6)}`,
-  pedido === 35 && night(pedido, 2, alvo).total === 70 && close(night(pedido, 2.6, alvo).total, 91)
-    && says(byId('ai.e8'), 35) && says(byId('ai.e8'), 77))
-check('ai.e8: o fator que zera o loss é 2,2, e é o que a correta afirma',
-  close(alvo / pedido, 2.2) && close(lossOf(2.2), 0) && correctText(byId('ai.e8')).startsWith('2,2'))
-check('ai.e8: o loss é 49 em 2, 196 em 2,6 e 196 em 1,8; em 9 passa de 50 mil',
-  close(lossOf(2), 49) && close(lossOf(2.6), 196) && close(lossOf(1.8), 196) && lossOf(9) > 50000
-    && says(byId('ai.e8'), 49) && says(byId('ai.e8'), 196))
-check('ai.e8: no total o gradient do fator é 35, e 0,1 no fator move o total em 3,5',
-  close(numericGradient(nightGraph, { base: pedido, fator: 2, menosAlvo: -alvo }, 'total', 'fator'), 35)
-    && says(byId('ai.e8'), 3.5))
-check('ai.e8: no loss o gradient do fator é 35 × 2 × (70 − 77) = −490, negativo, e subir era o lado certo',
-  close(night(pedido, 2, alvo).gradInLoss, -490)
-    && close(numericGradient(nightGraph, { base: pedido, fator: 2, menosAlvo: -alvo }, 'loss', 'fator'), -490, 1e-2))
-check('ai.e8: nenhum texto de c8 diz o fator que zera o loss',
-  !JSON.stringify(aiUnit.cycles.find((c) => c.id === 'ai.c8')).includes('2,2'))
+const night = (peso: number) => route(distancia, peso, baseDias, real8)
+const e8 = byId('ai.e8')
 
-// c8: o exemplo trabalhado, pedido 50, alvo 120
+check('ai.e8: com peso 0,4 a rota prevê 3 dias e o loss é 1; com 1,0 prevê 6 e o loss é 4',
+  close(night(0.4).prazo, 3) && close(night(0.4).loss, 1) && close(night(1).prazo, 6) && close(night(1).loss, 4))
+check('ai.e8: o enunciado traz distância 5, base 1 e real 4',
+  /distância 5/.test(e8.prompt) && /base é 1 dia/.test(e8.prompt) && /levou 4 dias/.test(e8.prompt))
+check('ai.e8: o peso que zera o loss é 0,6, e é o que a correta afirma',
+  close((real8 - baseDias) / distancia, 0.6) && close(night(0.6).loss, 0) && correctText(e8).startsWith('0,6'))
+check('ai.e8: na previsão o gradient do peso é 5, a distância, e 0,1 no peso soma meio dia',
+  close(numericGradient(routeGraph, routeIn(distancia, 0.4, baseDias, real8), 'prazo', 'peso'), 5)
+    && close(night(0.5).prazo - night(0.4).prazo, 0.5))
+check('ai.e8: no loss o gradient do peso em 0,4 é 5 × 2 × (3 − 4) = −10, negativo, e subir era o lado certo',
+  close(night(0.4).gradInLoss, -10)
+    && close(numericGradient(routeGraph, routeIn(distancia, 0.4, baseDias, real8), 'loss', 'peso'), -10, 1e-3))
+check('ai.e8: learning rate 0,06 leva o peso a 1,0; learning rate 0,02 o levaria a 0,6',
+  close(0.4 - 0.06 * night(0.4).gradInLoss, 1) && close(0.4 - 0.02 * night(0.4).gradInLoss, 0.6))
+check('ai.e8: os distratores conferem: 1,0 é onde o ajuste parou, 0,2 é o passo certo com sinal trocado, 5 é a distância',
+  close(0.4 + 0.02 * night(0.4).gradInLoss, 0.2) && close(night(0.2).loss, 4) && close(night(5).loss, 484)
+    && ['1,0', '0,2', '5'].every((n) => e8.kind === 'choice' && e8.choices.some((c) => !c.correct && c.text.startsWith(n))))
+check('o chamado: com peso 1,0, toda rota de 500 km ou mais prevê pelo menos o dobro de com 0,4',
+  [5, 6, 8, 10, 20, 50].every((dist) => route(dist, 1, baseDias, 0).prazo >= 2 * route(dist, 0.4, baseDias, 0).prazo - 1e-9))
+check('o chamado: o problema motivador mostra a conta antes da pergunta',
+  aiUnit.motivatingProblem.indexOf('5 × 0,4 + 1 = 3') >= 0
+    && aiUnit.motivatingProblem.indexOf('5 × 1,0 + 1 = 6') > aiUnit.motivatingProblem.indexOf('5 × 0,4 + 1 = 3')
+    && aiUnit.motivatingProblem.indexOf('5 × 1,0 + 1 = 6') < aiUnit.motivatingProblem.indexOf('?'))
+
+/*
+  O peso que zera o loss, 0,6, não aparece em nada que o aluno lê antes de
+  ai.e8: o problema motivador, todo ciclo (o postmortem de c8 a tela mostra
+  antes do exercício) e todo exercício anterior, inclusive o `why` revelado.
+  O passo daquela noite também mede 0,6, e por isso a prosa escreve "de 0,4
+  para 1,0" e nunca o tamanho do passo.
+*/
+const answer8 = /(?<![\d,])0,6(?!\d)/
+const before8 = [
+  aiUnit.motivatingProblem,
+  JSON.stringify(aiUnit.cycles),
+  ...aiExercises.slice(0, aiExercises.indexOf(e8)).map(allText),
+]
+check('ai.e8: nenhum texto lido antes do exercício diz o peso que zera o loss, 0,6',
+  before8.every((t) => !answer8.test(t)), before8.filter((t) => answer8.test(t)).map((t) => t.slice(0, 60)).join(' | '))
+
+const e8Lengths = e8.kind === 'choice' ? e8.choices.map((c) => ({ correct: !!c.correct, n: c.text.length })) : []
+const e8Right = e8Lengths.find((c) => c.correct)!.n
+check('ai.e8: a correta não é a mais longa nem a mais curta',
+  e8Lengths.some((c) => !c.correct && c.n > e8Right) && e8Lengths.some((c) => !c.correct && c.n < e8Right),
+  e8Lengths.map((c) => `${c.correct ? '*' : ''}${c.n}`).join(' '))
+
+/*
+  c8: o exemplo trabalhado, outra rota com números próprios. Outro centro de
+  distribuição, base 2; rota de 1.000 km, distância 10; peso 0,5; real 11.
+  Nenhum dos números de partida é do chamado (5, 0,4, 1, 4, 0,6).
+*/
 const c8 = aiUnit.cycles.find((c) => c.id === 'ai.c8')!
-const ex8 = night(50, 2, 120)
-check('ai.c8: pedido 50, alvo 120: no loss o gradient do fator é −2.000; 2,3 deixa o loss em 25, 3 em 900',
-  ex8.total === 100 && ex8.loss === 400 && close(ex8.gradInLoss, -2000)
-    && close(night(50, 2.3, 120).loss, 25) && night(50, 3, 120).loss === 900
-    && c8.workedExample.problem.includes('−2.000'))
+const ex8 = route(10, 0.5, 2, 11)
+check('ai.c8: rota de distância 10, base 2, peso 0,5, real 11: prevê 7, loss 16, gradient no loss −80',
+  close(ex8.prazo, 7) && close(ex8.loss, 16) && close(ex8.gradInLoss, -80)
+    && close(numericGradient(routeGraph, routeIn(10, 0.5, 2, 11), 'prazo', 'peso'), 10)
+    && c8.workedExample.problem.includes('−80') && c8.workedExample.problem.includes('= 16'))
+check('ai.c8: 0,85 prevê 10,5 e deixa o loss em 0,25; 1,5 prevê 17 e o leva a 36, mais longe do real que 7',
+  close(route(10, 0.85, 2, 11).prazo, 10.5) && close(route(10, 0.85, 2, 11).loss, 0.25)
+    && close(route(10, 1.5, 2, 11).prazo, 17) && close(route(10, 1.5, 2, 11).loss, 36)
+    && Math.abs(17 - 11) > Math.abs(7 - 11)
+    && ['10,5', '0,25', '17 dias', '36'].every((n) => c8.workedExample.problem.includes(n)))
+check('ai.c8: o exemplo não reusa os números de partida do chamado',
+  ![10, 0.5, 2, 11].some((n) => [distancia, 0.4, baseDias, real8, 0.6].includes(n)))
+check('ai.c8: o corpo refaz a conta do chamado: loss 1 antes, 4 depois, gradient −10 no loss',
+  ['(3 − 4)² = 1', '(6 − 4)² = 4', '5 × 2 × (3 − 4) = −10'].every((t) => c8.body.join(' ').includes(t)))
+check('ai.c8: o título fala do peso, não do fator',
+  /peso que saltou/.test(c8.title) && !/fator/.test(c8.title))
 
 // ---------------------------------------------------------------------------
 // 4. A unidade real
