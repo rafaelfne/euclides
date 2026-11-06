@@ -81,7 +81,7 @@ export function UnitMap({ unit }: { unit: Unit }) {
     <div className="flex gap-2.5">
       {inBand(band, elaborates).map((c) => (
         <Link key={c.id} href={`/units/${unit.id}/cycles/${c.id}`} className="text-inherit hover:opacity-80">
-          <CycleNode band={band} status={statuses[c.id] ?? 'pending'} label={c.id.split('.')[1]!} />
+          <CycleNode band={band} status={statuses[c.id] ?? 'pending'} label={String(unit.cycles.indexOf(c) + 1).padStart(2, '0')} />
         </Link>
       ))}
     </div>
