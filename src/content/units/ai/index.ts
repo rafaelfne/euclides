@@ -26,16 +26,19 @@ export const aiUnit: Unit = {
     'Somar e multiplicar números com vírgula',
   ],
   motivatingProblem:
-    'Uma transportadora mostra ao cliente um prazo previsto de entrega, em dias: distância × ' +
-    'peso da distância + base. A distância vai em centenas de km, e a base, 1 dia de ' +
-    'separação, é fixa. O peso é o número que antes um dev chutava na mão; agora um ajuste ' +
-    'automático o mexe toda noite, a partir das entregas reais. Numa rota de 500 km, distância ' +
-    '5, o peso era 0,4: 5 × 0,4 + 1 = 3 dias. A entrega real levou 4. Numa noite, o ajuste ' +
-    'levou o peso a 1,0, e a mesma rota passou a prever 5 × 1,0 + 1 = 6 dias. Toda rota de ' +
-    '500 km ou mais passou a prever pelo menos o dobro. Ninguém mexeu no código, e nenhuma ' +
-    'entrega mudou: mudou a conta da estimativa. O chamado pergunta qual número o ajuste ' +
-    'mexeu, por que aquele, e por que tanto de uma vez. E a pergunta por trás dele: quando uma ' +
-    'estimativa erra, como se descobre qual número mexer, e para que lado, sem tentar um por um?',
+    'Uma transportadora mostra ao cliente quantos dias a entrega vai levar, com uma conta ' +
+    'simples: prazo = distância × peso + base. A distância vai em centenas de km, e a base é ' +
+    '1 dia fixo de separação. Por anos, o peso foi uma constante no código: alguém olhou as ' +
+    'entregas de um trimestre, viu que cada 100 km somavam em média 0,4 dia e escreveu 0,4. ' +
+    'Quando o prazo começava a errar, abria-se um chamado e alguém refazia essa conta à mão. ' +
+    'Agora um job mexe no peso toda noite: compara as previsões com as entregas do dia e ' +
+    'empurra o peso para o lado que diminui o erro. Numa rota de 500 km, distância 5, a ' +
+    'previsão era 5 × 0,4 + 1 = 3 dias, e a entrega real levou 4. Numa noite, o job levou o ' +
+    'peso a 1,0, e a mesma rota passou a prever 5 × 1,0 + 1 = 6 dias. Toda rota de 500 km ou ' +
+    'mais passou a prever pelo menos o dobro. Ninguém mexeu no código, e nenhuma entrega mudou: ' +
+    'mudou o número dentro da conta. O chamado pergunta qual número o job mexeu, por que ' +
+    'aquele, e por que tanto de uma vez. E a pergunta por trás dele: quando uma estimativa ' +
+    'erra, como se descobre qual número mexer, e para que lado, sem tentar um por um?',
 
   symbols: [
     { symbol: 'i', means: 'a posição da entrada que o laço está somando' },
