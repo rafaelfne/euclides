@@ -25,6 +25,13 @@
   --rule-soft: #262B33;
 
   /*
+    A borda de quem recebe clique ou digitação. `--rule` é régua decorativa e
+    fica em 1,3:1 de propósito; um campo cujo limite some não é campo, e o
+    WCAG 1.4.11 pede 3:1. Este passa contra as cinco superfícies. ADR-0031.
+  */
+  --rule-control: #6B7585;
+
+  /*
     A rampa inteira passa em 4,5:1 contra as quatro superfícies do app. Os três
     tons de baixo eram 2,68, 2,05 e 2,54 — e caíam justamente em navegação,
     rótulo e estado, que é o texto de quem ainda não sabe o que procurar.
@@ -34,7 +41,7 @@
   --fg-2: #A7AEBA;
   --fg-3: #939DAC;
   --fg-4: #8A94A3;
-  --fg-5: #808996;
+  --fg-5: #868F9C;  /* era #808996: 4,19:1 sobre panel-hover. ADR-0031 */
 
   --contract: #7EA6E0;
   --contract-bg: #171E2A;
@@ -87,6 +94,7 @@
 
   --color-rule: var(--rule);
   --color-rule-soft: var(--rule-soft);
+  --color-rule-control: var(--rule-control);
 
   --color-fg: var(--fg);
   --color-fg-2: var(--fg-2);
@@ -138,12 +146,17 @@
 }
 
 @layer components {
-  /* Rótulo de seção. O tracking largo é o que separa cromo de conteúdo. */
+  /*
+    Rótulo de seção. Era mono 11px em versal com tracking largo, e a versal
+    reescrevia a notação: "posições (m)" chegava ao aluno como "POSIÇÕES (M)",
+    num app em que m e M podem ser coisas diferentes. O que separa cromo de
+    conteúdo passa a ser peso e cor, não a caixa. ADR-0031.
+  */
   .lbl {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
+    font-family: var(--sans);
+    font-size: 12.5px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
     color: var(--fg-4);
   }
 
@@ -158,10 +171,8 @@
   */
   nav .lbl,
   header .lbl {
-    font-family: var(--sans);
     font-size: 13px;
-    letter-spacing: 0.01em;
-    text-transform: none;
+    font-weight: 400;
   }
 
   /* Bloco de pseudocódigo com medianiz numerada, como um editor. */
@@ -250,7 +261,7 @@
     margin-top: 3px;
     color: var(--fg-3);
     font-family: var(--mono);
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 400;
   }
   .euclides-flow__node--contract {

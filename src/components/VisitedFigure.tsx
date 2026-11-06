@@ -84,7 +84,7 @@ export function VisitedFigure({
                   <div key={c.titulo} className="flex flex-col gap-2 border border-rule-soft bg-panel-head p-2.5">
                     <div className="flex items-baseline justify-between gap-2">
                       <span className={`lbl text-${c.accent}`}>{c.titulo}</span>
-                      <span className="font-mono text-[11px] text-fg-4">
+                      <span className="font-mono text-[12px] text-fg-4">
                         {acabou && c.run.drained
                           ? 'terminou'
                           : round
@@ -99,7 +99,7 @@ export function VisitedFigure({
                       accent={c.accent}
                     />
                     <Queue round={round} accent={`var(--${c.accent})`} />
-                    <span className="text-[11.5px] leading-snug text-fg-4">
+                    <span className="text-[12px] leading-snug text-fg-4">
                       {c.run.drained
                         ? `esvaziou em ${c.run.rounds.length} rodadas`
                         : `${figure.rounds} rodadas e a fila tem ${c.run.rounds[figure.rounds - 1]?.queue.length ?? 0}, e continua`}

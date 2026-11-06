@@ -22,12 +22,12 @@ export function GraphRepresentationsFigure({ figure }: { figure: Extract<Figure,
               </div>
             ))}
           </div>
-          <div className="mt-3 text-[11.5px] text-fg-3">guarda {figure.vertices.length + figure.edges.length} entradas</div>
+          <div className="mt-3 text-[12px] text-fg-3">guarda {figure.vertices.length + figure.edges.length} entradas</div>
         </section>
         <section className={`border p-3 ${figure.focus === 'matrix' ? 'border-implementation bg-implementation-bg' : 'border-rule'}`}>
           <div className="lbl mb-3">Matriz de adjacência</div>
-          <div className="mb-2 text-[11px] text-fg-4">linha = origem · coluna = destino</div>
-          <div className="grid gap-1 font-mono text-[11px]" style={{ gridTemplateColumns: `repeat(${figure.vertices.length + 1}, minmax(24px, 1fr))` }}>
+          <div className="mb-2 text-[12px] text-fg-4">linha = origem · coluna = destino</div>
+          <div className="grid gap-1 font-mono text-[12px]" style={{ gridTemplateColumns: `repeat(${figure.vertices.length + 1}, minmax(24px, 1fr))` }}>
             <span />
             {figure.vertices.map((vertex) => <span className="text-center text-fg-4" key={`h-${vertex}`}>{vertex}</span>)}
             {figure.vertices.flatMap((from) => [
@@ -38,7 +38,7 @@ export function GraphRepresentationsFigure({ figure }: { figure: Extract<Figure,
               }),
             ])}
           </div>
-          <div className="mt-3 text-[11.5px] text-fg-3">reserva {figure.vertices.length}² = {figure.vertices.length ** 2} células</div>
+          <div className="mt-3 text-[12px] text-fg-3">reserva {figure.vertices.length}² = {figure.vertices.length ** 2} células</div>
         </section>
       </div>
       <figcaption className="border-t border-rule px-3.5 py-2.5 text-[12.5px] leading-relaxed text-fg-3">

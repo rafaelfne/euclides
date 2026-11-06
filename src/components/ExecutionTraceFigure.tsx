@@ -69,7 +69,7 @@ export function ExecutionTraceFigure({ figure }: { figure: ExecutionTraceFigureD
           return (
             <div className="grid gap-5 p-4 md:grid-cols-[minmax(0,1fr)_240px] md:p-5">
               <div className="min-w-0">
-                <div className="mb-2 flex items-center gap-2 font-mono text-[11px] text-fg-4">
+                <div className="mb-2 flex items-center gap-2 font-mono text-[12px] text-fg-4">
                   <span>A</span>
                   <span className="text-fg-5">índices de 0 a {figure.values.length - 1}</span>
                 </div>
@@ -82,7 +82,7 @@ export function ExecutionTraceFigure({ figure }: { figure: ExecutionTraceFigureD
 
                       return (
                         <div key={index} className="flex w-14 flex-col items-center gap-1">
-                          <span className="font-mono text-[10px] text-fg-5">{index}</span>
+                          <span className="font-mono text-[12px] text-fg-5">{index}</span>
                           <div className={cn(
                             'flex h-12 w-14 items-center justify-center border font-mono text-[15px]',
                             current && 'border-contract bg-contract-bg text-contract',
@@ -92,7 +92,7 @@ export function ExecutionTraceFigure({ figure }: { figure: ExecutionTraceFigureD
                             {value}
                           </div>
                           <span className={cn(
-                            'h-4 font-mono text-[10px]',
+                            'h-4 font-mono text-[12px]',
                             current ? 'text-contract' : 'text-transparent',
                           )}>
                             i = {index}
@@ -147,7 +147,7 @@ export function ExecutionTraceFigure({ figure }: { figure: ExecutionTraceFigureD
                   </span>
 
                   <span className="text-fg-4">linha aplicada</span>
-                  <span className="max-w-[130px] text-right font-mono text-[10px] leading-relaxed text-fg-2">
+                  <span className="max-w-[130px] text-right font-mono text-[12px] leading-relaxed text-fg-2">
                     {running
                       ? figure.operation === 'sum'
                         ? 'total ← total + A[i]'
@@ -160,7 +160,7 @@ export function ExecutionTraceFigure({ figure }: { figure: ExecutionTraceFigureD
 
                 {running && (
                   <div className="border-t border-rule px-3 py-3">
-                    <span className="block text-[11px] leading-relaxed text-fg-4">
+                    <span className="block text-[12px] leading-relaxed text-fg-4">
                       Antes de avançar: qual será o próximo valor de i?
                     </span>
                     <div className="mt-2 flex gap-1.5">

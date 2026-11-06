@@ -176,7 +176,7 @@ export function GrowthFigure({ figure }: { figure: Extract<Figure, { kind: 'grow
           />
           <span className="w-16 shrink-0 text-right font-mono text-[12px] text-fg-2">{probe}</span>
         </label>
-        <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1 font-mono text-[11.5px]">
+        <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1 font-mono text-[12px]">
           {lidos.map((l, i) => (
             <span key={l.label} style={{ color: STROKE[i % STROKE.length] }}>
               {l.label} = {fmt(l.value)}

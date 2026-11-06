@@ -26,7 +26,7 @@ export function TermCard({
             <div className="flex items-baseline gap-2">
               <span className="font-mono text-[13px] font-semibold text-contract">{term.canonical}</span>
               {term.alsoKnownAs.length > 0 && (
-                <span className="text-[11.5px] text-fg-4">também: {term.alsoKnownAs.join(', ')}</span>
+                <span className="text-[12px] text-fg-4">também: {term.alsoKnownAs.join(', ')}</span>
               )}
             </div>
 
@@ -49,7 +49,7 @@ export function TermCard({
               </div>
             )}
 
-            <Link href={`/glossary#${term.id}`} className="font-mono text-[11.5px] text-fg-4 hover:text-contract">
+            <Link href={`/glossary#${term.id}`} className="font-mono text-[12px] text-fg-4 hover:text-contract">
               ver no glossário →
             </Link>
           </div>

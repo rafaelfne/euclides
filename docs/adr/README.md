@@ -32,6 +32,7 @@
 | [0028](0028-realce-semantico-real.md) | O realce do JavaScript é a folha de notação atravessada | A linguagem que o aluno vai revisar não pode ser a apagada |
 | [0029](0029-uma-palavra-uma-coisa.md) | Uma palavra pertence a uma coisa só, e isso vale para o nome das checagens | "FALHA síntese" lia como se a unidade 08 tivesse falhado |
 | [0030](0030-react-flow-figuras.md) | React Flow para figuras relacionais | Uma base visual comum para grafos, árvores e estruturas ligadas |
+| [0031](0031-contraste-de-controle-e-piso-de-texto.md) | Contraste de controle, foco visível e piso de texto | Borda de controle em 3:1, foco por contorno, nada abaixo de 12px, rótulo sem versal |
 
 ## Como escrever o próximo
 

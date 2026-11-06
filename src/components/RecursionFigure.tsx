@@ -122,7 +122,7 @@ export function RecursionFigure({
         )}
       </Stepper>
 
-      <div className="border-t border-rule px-3.5 py-2 font-mono text-[11.5px] text-fg-3">
+      <div className="border-t border-rule px-3.5 py-2 font-mono text-[12px] text-fg-3">
         {levels.length} níveis × {levels[0]!.cost} por nível ={' '}
         <span className="text-contract">{levels.length * levels[0]!.cost}</span>, e é daí que
         n log n sai
