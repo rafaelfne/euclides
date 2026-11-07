@@ -42,7 +42,9 @@ export function UnitTabs({ unit, cycleId }: { unit: Unit; cycleId?: string }) {
   }, [unit])
 
   return (
-    <div className="hidden min-w-0 items-stretch overflow-x-auto md:flex">
+    // overflow-y-hidden: o -mb-px da aba ativa vazava 1px para baixo, e com
+    // overflow-x-auto o navegador abria uma barra vertical inteira por isso.
+    <div className="no-scrollbar hidden min-w-0 items-stretch overflow-x-auto overflow-y-hidden md:flex">
       <Link
         href={`/units/${unit.id}`}
         className={cn(

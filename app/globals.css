@@ -143,6 +143,31 @@
   a { color: var(--contract); text-decoration: none; }
   a:hover { color: #9CBCEB; }
   ::selection { background: var(--contract-rule); color: var(--fg); }
+
+  /*
+    Barra de rolagem com a cara do resto: fina, reta, na cor da régua, sem
+    trilho. A barra nativa do sistema chegava branca e larga num tema escuro e
+    era o elemento mais claro da tela. `scrollbar-color` cobre Firefox e Chrome
+    121+; as regras -webkit- ficam para Safari.
+  */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--rule-control) transparent;
+  }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--rule-control); border: 2px solid transparent; background-clip: padding-box; }
+  ::-webkit-scrollbar-thumb:hover { background-color: var(--fg-4); }
+  ::-webkit-scrollbar-corner { background: transparent; }
+}
+
+/*
+  Para faixas que rolam por gesto e não precisam anunciar que rolam, como a
+  barra de abas de ciclo: a rolagem continua, a barra some.
+*/
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
 }
 
 @layer components {
