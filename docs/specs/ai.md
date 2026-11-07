@@ -145,7 +145,7 @@ Exercícios, um por ciclo:
   prosa de c0 a c5 contra ele.
 - **e6, escolha:** `loss = (w − 3)²` em 5, learning rate 1,5 contra 0,1; o passo maior passa do
   ponto e o loss vai a 16.
-- **e7, defeito:** um laço de treino em que `zeroGrad()` fica entre `backward()` e a linha que
+- **e7, defeito:** um laço de treino em que `zero_grad()` fica entre `backward()` e a linha que
   muda o peso. O passo lê o gradient já zerado: nenhum peso muda e o loss fica igual em toda
   rodada. c7 ensina o mecanismo (a passada para trás soma ao que sobrou da rodada anterior) e
   não diz onde a chamada de zerar deve ficar; o exercício cobra essa leitura. O enunciado não
@@ -215,8 +215,9 @@ O exercício de trace de c5 entra em `requiresClean`.
 ## Decisões tomadas
 
 1. `kind: method`. As quatro partes do critério couberam sem campo opcional.
-2. Pseudocódigo em pt-BR, como toda a trilha. A versão TypeScript é derivada, nunca escrita
-   ao lado.
+2. Pseudocódigo em pt-BR, como toda a trilha. A versão executável é derivada, nunca escrita
+   ao lado, e nesta unidade é Python, não TypeScript (ADR-0032): é Python que o aluno encontra
+   em código de rede neural. O exercício de defeito (e7) também é Python.
 3. O carrinho (preço, quantidade, frete, fator) é a conta de treino do backpropagation (c5 e
    ai.e5), porque soma e produto são as duas únicas contas de que a regra da cadeia precisa, e
    um dev já tem referente para elas. Ele não é um cenário de sistema: o chamado é a

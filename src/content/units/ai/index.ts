@@ -13,6 +13,7 @@ import { aiExercises, aiMisconceptions } from './exercises'
 */
 export const aiUnit: Unit = {
   kind: 'method',
+  runnable: 'python',
   id: 'ai',
   number: 9,
   title: 'Como uma IA decide',

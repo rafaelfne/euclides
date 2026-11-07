@@ -3,6 +3,7 @@ import { hashExercises, hashMisconceptions } from './exercises'
 
 export const hashUnit: Unit = {
   kind: 'structure',
+  runnable: 'typescript',
   id: 'hash',
   number: 4,
   title: 'Tabelas Hash',

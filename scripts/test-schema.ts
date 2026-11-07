@@ -24,6 +24,7 @@ const check = (name: string, ok: boolean, detail = '') => {
 
 const fixture: Unit = {
   kind: 'method',
+  runnable: 'typescript',
   id: 'fixture',
   number: 99,
   title: 'Fixture, unidade de método',
@@ -292,7 +293,7 @@ check('lineByColumn sem pseudocódigo no ciclo reprova',
 const comDefeito = units.find((u) => u.exercises.some((e) => e.kind === 'bug'))!
 const exDefeito = comDefeito.exercises.find((e) => e.kind === 'bug')!
 
-const semTokenizador = trocaExercicio(comDefeito, exDefeito.id, { language: 'python' })
+const semTokenizador = trocaExercicio(comDefeito, exDefeito.id, { language: 'cobol' })
 check('exercício de defeito em linguagem sem tokenizador reprova',
   checkAll([...allUnits.filter((u) => u.id !== comDefeito.id), semTokenizador], allTerms).some((f) => f.check === 'realce'))
 

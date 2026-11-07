@@ -3,6 +3,7 @@ import { sortingExercises, sortingMisconceptions } from './exercises'
 
 export const sortingUnit: Unit = {
   kind: 'structure',
+  runnable: 'typescript',
   id: 'sorting',
   number: 7,
   title: 'Ordenação e busca',

@@ -634,6 +634,13 @@ const unitCore = {
   prerequisites: z.array(z.string().min(1)).min(1),
   /** Principle 5: the problem comes before the structure. */
   motivatingProblem: z.string().min(1),
+  /**
+   * A linguagem em que o pseudocódigo é derivado para código executável, e a
+   * dos exercícios de defeito. TypeScript na trilha; Python onde o código que o
+   * aluno encontra fora daqui é Python. Obrigatório, para que nenhuma unidade
+   * herde a escolha de outra por omissão. ADR-0032.
+   */
+  runnable: z.enum(['typescript', 'python']),
   /** Legenda das letras usadas no pseudocódigo desta unidade. ADR-0013. */
   symbols: z.array(notationSymbol).min(1),
   cycles: z.array(cycle).min(1),

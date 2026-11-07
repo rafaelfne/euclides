@@ -3,6 +3,7 @@ import { treesExercises, treesMisconceptions } from './exercises'
 
 export const treesUnit: Unit = {
   kind: 'structure',
+  runnable: 'typescript',
   id: 'trees',
   number: 5,
   title: 'Árvores de busca',

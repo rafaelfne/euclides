@@ -3,6 +3,7 @@ import { tracingExercises, tracingMisconceptions } from './exercises'
 
 export const tracingUnit: Unit = {
   kind: 'method',
+  runnable: 'typescript',
   id: 'tracing',
   number: 1,
   title: 'Lógica e execution trace',

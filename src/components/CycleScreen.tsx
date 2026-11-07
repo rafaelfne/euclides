@@ -95,7 +95,7 @@ export function CycleScreen({ unit, cycle, exercise }: { unit: Unit; cycle: Cycl
 
         {cycle.pseudocode && (
           <div className="mt-6 max-w-[820px]">
-            <CodeBlock source={cycle.pseudocode} />
+            <CodeBlock source={cycle.pseudocode} runnable={unit.runnable} />
           </div>
         )}
 

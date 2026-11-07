@@ -33,6 +33,7 @@
 | [0029](0029-uma-palavra-uma-coisa.md) | Uma palavra pertence a uma coisa só, e isso vale para o nome das checagens | "FALHA síntese" lia como se a unidade 08 tivesse falhado |
 | [0030](0030-react-flow-figuras.md) | React Flow para figuras relacionais | Uma base visual comum para grafos, árvores e estruturas ligadas |
 | [0031](0031-contraste-de-controle-e-piso-de-texto.md) | Contraste de controle, foco visível e piso de texto | Borda de controle em 3:1, foco por contorno, nada abaixo de 12px, rótulo sem versal |
+| [0032](0032-linguagem-executavel-por-unidade.md) | A linguagem executável é da unidade | Campo `runnable`; a unidade 09 deriva Python, não TypeScript |
 
 ## Como escrever o próximo
 

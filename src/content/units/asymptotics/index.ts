@@ -3,6 +3,7 @@ import { asymptoticsExercises, asymptoticsMisconceptions } from './exercises'
 
 export const asymptoticsUnit: Unit = {
   kind: 'method',
+  runnable: 'typescript',
   id: 'asymptotics',
   number: 2,
   title: 'Análise assintótica',
