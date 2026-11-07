@@ -3,6 +3,7 @@ import { linearExercises, linearMisconceptions } from './exercises'
 
 export const linearUnit: Unit = {
   kind: 'structure',
+  runnable: 'typescript',
   id: 'linear',
   number: 3,
   title: 'Estruturas lineares',

@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import { toTypeScriptOrNull } from '@/lib/transliterate'
+import { toPythonOrNull } from '@/lib/transliterate-python'
+import { tokenizePython } from '@/lib/python'
 import { tokenizeJavaScript } from '@/lib/javascript'
 import { TOKEN_COLORS, TOKEN_WEIGHT } from '@/lib/pseudocode'
 import { readProfile, saveProfile, PROGRESS_EVENT } from '@/lib/progress'
@@ -22,8 +24,14 @@ type Lang = 'pseudo' | 'typescript'
  * A escolha é persistida porque ela é sobre o leitor, não sobre o ciclo: quem
  * lê TypeScript no trabalho quer TypeScript nos 62 ciclos, não neste. ADR-0019.
  */
-export function CodeBlock({ source }: { source: string }) {
-  const typescript = toTypeScriptOrNull(source)
+export function CodeBlock({ source, runnable = 'typescript' }: { source: string; runnable?: 'typescript' | 'python' }) {
+  // A linguagem executável é da unidade, não do leitor: a unidade 09 deriva
+  // Python porque é Python que o aluno encontra em código de rede neural. O
+  // perfil guarda só "pseudocódigo ou executável"; o valor 'typescript' do
+  // perfil quer dizer executável, e o nome ficou por compatibilidade. ADR-0032.
+  const typescript = runnable === 'python' ? toPythonOrNull(source) : toTypeScriptOrNull(source)
+  const runnableLabel = runnable === 'python' ? 'Python' : 'TypeScript'
+  const tokenize = runnable === 'python' ? tokenizePython : tokenizeJavaScript
   const [lang, setLang] = useState<Lang>('pseudo')
 
   // A escolha vive no perfil, não numa chave solta: duas chaves para um estado
@@ -40,7 +48,7 @@ export function CodeBlock({ source }: { source: string }) {
     saveProfile({ codeLanguage: next })
   }
 
-  const tabs: Array<[Lang, string]> = [['pseudo', 'pseudocódigo'], ['typescript', 'TypeScript']]
+  const tabs: Array<[Lang, string]> = [['pseudo', 'pseudocódigo'], ['typescript', runnableLabel]]
 
   return (
     <div className="flex flex-col">
@@ -73,7 +81,7 @@ export function CodeBlock({ source }: { source: string }) {
         */
         <pre className="pseudocode">
           <code>
-            {tokenizeJavaScript(typescript).map((t, i) => (
+            {tokenize(typescript).map((t, i) => (
               <span
                 key={i}
                 className={t.kind === 'convention' ? 'tok-convention' : undefined}
