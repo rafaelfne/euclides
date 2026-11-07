@@ -17,15 +17,20 @@ Uma transportadora mostra ao cliente um prazo previsto, em dias:
 
     prazo previsto = distância × peso da distância + base
 
-A distância vai em centenas de km, e a base, 1 dia de separação, é fixa. Por anos o peso foi
-uma constante no código, calculada à mão a partir da média de um trimestre de entregas (cada
-100 km somavam 0,4 dia) e recalculada só quando alguém abria um chamado. Agora um job roda toda
-noite, compara as previsões com as entregas do dia e empurra o peso para o lado que diminui o
-erro. O sistema não muda a entrega, muda o número dentro da conta da estimativa.
+A distância vai em centenas de km, e a base, 1 dia de separação, é fixa. Por anos o prazo saiu
+de uma tabela da transportadora, com operações somando dias na mão quando as entregas
+atrasavam. O time trocou a tabela pela conta, com o peso começando na média de um trimestre
+(cada 100 km somavam 0,4 dia), e um job passou a ajustá-lo toda noite: compara as previsões com
+as entregas do dia e empurra o peso para o lado que diminui o erro. O sistema não muda a
+entrega, muda o número dentro da conta da estimativa.
 
-O texto anterior dizia que o peso era "o número que um dev chutava na mão", e o autor tropeçou
-nisso: chutar não diz como o número nascia. A versão atual conta de onde veio o 0,4 e o que o job
-faz no lugar da pessoa.
+Duas versões anteriores foram trocadas. "O número que um dev chutava na mão" não dizia como o
+número nascia. "Abria-se um chamado e alguém refazia a conta à mão" descrevia mal o antes: o
+prazo costumava vir de tabela da transportadora, ajustada por operações, não de um peso
+recalculado por dev. E o job não é "a IA" contra "o antes": empurrar um peso na direção que
+reduz o erro é regressão linear treinada com descida de gradient, a forma mais simples do
+mecanismo que uma rede neural repete com milhões de pesos. A unidade não deve sugerir um salto
+que não existe.
 
 A conta, passo a passo, é o que o chamado mostra antes da pergunta:
 

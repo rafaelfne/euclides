@@ -28,11 +28,12 @@ export const aiUnit: Unit = {
   motivatingProblem:
     'Uma transportadora mostra ao cliente quantos dias a entrega vai levar, com uma conta ' +
     'simples: prazo = distância × peso + base. A distância vai em centenas de km, e a base é ' +
-    '1 dia fixo de separação. Por anos, o peso foi uma constante no código: alguém olhou as ' +
-    'entregas de um trimestre, viu que cada 100 km somavam em média 0,4 dia e escreveu 0,4. ' +
-    'Quando o prazo começava a errar, abria-se um chamado e alguém refazia essa conta à mão. ' +
-    'Agora um job mexe no peso toda noite: compara as previsões com as entregas do dia e ' +
-    'empurra o peso para o lado que diminui o erro. Numa rota de 500 km, distância 5, a ' +
+    '1 dia fixo de separação. Por anos, o prazo saiu de uma tabela da transportadora, e quando ' +
+    'as entregas começavam a atrasar alguém de operações somava um dia a mais na mão. O time ' +
+    'trocou a tabela por essa conta, e o peso, que começou em 0,4 (a média de um trimestre: ' +
+    'cada 100 km somavam 0,4 dia), agora é ajustado por um job toda noite: ele compara as ' +
+    'previsões com as entregas do dia e empurra o peso para o lado que diminui o erro. Numa ' +
+    'rota de 500 km, distância 5, a ' +
     'previsão era 5 × 0,4 + 1 = 3 dias, e a entrega real levou 4. Numa noite, o job levou o ' +
     'peso a 1,0, e a mesma rota passou a prever 5 × 1,0 + 1 = 6 dias. Toda rota de 500 km ou ' +
     'mais passou a prever pelo menos o dobro. Ninguém mexeu no código, e nenhuma entrega mudou: ' +
