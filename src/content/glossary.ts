@@ -684,7 +684,7 @@ export const sortingGlossary: GlossaryTerm[] = [
 export const aiGlossary: GlossaryTerm[] = [
   { id: 'neuron', canonical: 'neurônio', canonicalLanguage: 'pt',
     alsoKnownAs: ['neuron'],
-    definition: 'A conta básica de um modelo: cada entrada multiplicada pelo seu peso, os produtos somados ao bias, e a soma passada por uma activation function. Muitos deles ligados, a saída de um entrando em outro, formam uma rede.',
+    definition: 'A conta básica de um modelo: cada entrada multiplicada pelo seu peso, e os produtos somados ao bias. Muitos deles ligados, a saída de um entrando em outro, formam uma rede, e ali a soma de cada um ainda passa por uma regra que a entorta antes de seguir para o próximo.',
     isNot: ['não é uma célula do cérebro: o nome é uma analogia antiga, e a conta é só soma e produto', 'não decide sim ou não, devolve um número'],
     falseFriends: [], introducedIn: 'ai.c0' },
 
@@ -702,7 +702,7 @@ export const aiGlossary: GlossaryTerm[] = [
 
   { id: 'bias', canonical: 'bias', canonicalLanguage: 'en',
     alsoKnownAs: ['viés'],
-    definition: 'O número somado no fim da conta de um neurônio, em toda entrada, inclusive quando todas as entradas valem zero. Decide de onde a pontuação parte.',
+    definition: 'Um número somado sempre na conta de um neurônio, sem multiplicar entrada nenhuma, inclusive quando todas as entradas valem zero. Decide de onde a pontuação parte.',
     isNot: ['não multiplica entrada nenhuma', 'não é um preconceito do modelo'],
     falseFriends: [
       { context: 'estatística e ética de IA', meaning: 'o viés de um modelo é erro sistemático, ou resultado que prejudica um grupo. O bias do neurônio é um número somado à pontuação, e um modelo enviesado pode ter qualquer bias.' },
@@ -710,8 +710,12 @@ export const aiGlossary: GlossaryTerm[] = [
 
   { id: 'activation-function', canonical: 'activation function', canonicalLanguage: 'en',
     alsoKnownAs: ['função de ativação'],
-    definition: 'A regra que transforma a soma de um neurônio na saída dele. A tanh, por exemplo, leva qualquer soma para um número entre −1 e 1.',
-    isNot: ['não é um if: a tanh devolve um grau, que muda quando a soma muda', 'não decide sim ou não; quem decide compara a saída com um limite, fora da conta'],
+    definition: 'A regra que transforma a soma de um neurônio na saída dele, antes de ela seguir para o próximo. A tanh, por exemplo, leva qualquer soma para um número entre −1 e 1. Sem ela, neurônios em sequência colapsam numa conta de multiplicar e somar só, a mesma que um neurônio sozinho já faz.',
+    isNot: [
+      'não é enfeite: sem ela, dez neurônios em sequência fazem o que um faz, com outro peso e outro bias',
+      'não é um if seco: perto de zero a tanh acompanha a soma, e só longe de zero trava perto de −1 ou de 1',
+      'não decide sim ou não; quem decide compara a saída com um limite, fora da conta',
+    ],
     falseFriends: [], introducedIn: 'ai.c1' },
 
   { id: 'loss', canonical: 'loss', canonicalLanguage: 'en',
