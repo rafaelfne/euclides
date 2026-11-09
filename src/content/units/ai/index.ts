@@ -127,11 +127,12 @@ export const aiUnit: Unit = {
   cycles: [
     { id: 'ai.c0', title: 'Uma decisão é uma soma com pesos', layer: 'essential', band: 'criterion',
       introducesTerms: ['neuron', 'neuron-weight', 'bias'],
-      oneLine: 'Uma IA não escolhe sim ou não: ela soma números, cada um multiplicado pelo quanto conta.',
+      oneLine: 'Uma IA não escolhe sim ou não: ela soma informações, cada uma multiplicada pelo seu peso.',
       plainly:
         'Quando um sistema decide se um alerta acorda o plantão, a parte que aprende não tem if. ' +
-        'Ela pega cada informação do alerta, multiplica por um número que diz quanto aquela ' +
-        'informação conta, soma tudo e devolve uma pontuação. Quem decide acordar ou não é uma ' +
+        'Ela pega cada informação do alerta, multiplica pelo peso dela, soma tudo e devolve uma ' +
+        'pontuação. O peso é um número: 0,01 para cada ms de latência, 2 para estar em produção. ' +
+        'Quem decide acordar ou não é uma ' +
         'regra separada, que compara a pontuação com um limite.',
       body: [
         'A pergunta que vem primeiro é onde fica o if. Num filtro de fraude, num classificador de chamados ou num modelo de 1 bilhão de números, a parte que aprende é a mesma conta repetida: cada entrada multiplicada por um número, os produtos somados, mais um número somado no fim. Essa conta é o **neurônio**, e muitos deles ligados, a saída de um entrando em outro, formam uma rede.',
