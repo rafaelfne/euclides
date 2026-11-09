@@ -213,23 +213,52 @@ check('ai.c1: 9 × (2 × x + 1) + 1 é 18 × x + 10, e com x = 0, 1 e 2 dá 10, 
 check('ai.c1: com a tanh no meio, z vale −5,854, 7,854, 9,955 e 9,999 em x de −1 a 2, como o exemplo diz',
   ['−5,854', '7,854', '9,955', '9,999'].every((t, i) => r3(stackedTanh(i - 1)).replace('-', '−') === t && c1.workedExample.problem.includes(t)),
   [-1, 0, 1, 2].map((x) => r3(stackedTanh(x))).join(' '))
-check('ai.c1: os aumentos com a tanh são 13,71, 2,10 e 0,04, e sem ela 18 em todo passo',
+/*
+  O terceiro aumento se escreve 0,044, e não 0,04: 0,04 é a resposta de ai.e8,
+  e a seção 3 proíbe esse número em todo texto lido antes do exercício.
+*/
+check('ai.c1: os aumentos com a tanh são 13,71, 2,10 e 0,044, e sem ela 18 a cada 1 a mais em x',
   ptNumber(Number((stackedTanh(0) - stackedTanh(-1)).toFixed(2))) === '13,71'
     && (stackedTanh(1) - stackedTanh(0)).toFixed(2) === '2.10'
-    && (stackedTanh(2) - stackedTanh(1)).toFixed(2) === '0.04'
-    && ['13,71', '2,10', '0,04'].every((t) => c1.workedExample.whatToNotice.includes(t)))
+    && (stackedTanh(2) - stackedTanh(1)).toFixed(3) === '0.044'
+    && ['13,71', '2,10', '0,044'].every((t) => c1.workedExample.whatToNotice.includes(t)))
 check('ai.c1: tanh(1) ≈ 0,762, tanh(2) ≈ 0,964, tanh(2 × 1 + 1) ≈ 0,995, tanh(0,1) ≈ 0,1',
   r3(Math.tanh(1)) === '0,762' && r3(Math.tanh(2)) === '0,964' && r3(Math.tanh(3)) === '0,995'
     && ptNumber(Number(Math.tanh(0.1).toFixed(2))) === '0,1'
     && ['0,762', '0,964', '0,995', 'tanh(0,1) ≈ 0,1'].every((t) => c1Text.includes(t)))
 check('ai.c1: o ciclo não promete que a curva serve para medir o efeito de um peso adiante',
   !/permite medir|quanto cada peso move|para que lado o peso/.test(c1Text))
+/*
+  Auditoria de 2026-11-09: o título antigo, "sem ela, dois neurônios valem um",
+  respondia ai.e1, e "passo" no sentido de "1 a mais em x" disputava a palavra
+  com o ajuste do peso, o único sentido que ela tem na unidade. Também não há
+  gráfico na tela para "no gráfico, uma reta" apontar.
+*/
+check('ai.c1: o título nomeia o termo e não afirma o resultado de ai.e1',
+  /^Activation function/.test(c1.title) && !/sem ela/.test(c1.title))
+check('ai.c1: "passo" não aparece no sentido de 1 a mais em x, e não há gráfico citado',
+  !/\bpasso\b|gráfico/.test(c1Text), c1Text.match(/.{30}(\bpasso\b|gráfico).{30}/)?.[0] ?? '')
 
 // e1: y = 4 × x − 2; z = 0,5 × y + 3; x = 0, 1 e 2
 const e1z = (x: number) => 0.5 * (4 * x - 2) + 3
 check('ai.e1: z vale 2, 4 e 6 para x = 0, 1 e 2, e é 2 × x + 2 para toda entrada',
   [0, 1, 2].map(e1z).join(' ') === '2 4 6' && [-3, 0.5, 10].every((x) => e1z(x) === 2 * x + 2)
     && correctText(byId('ai.e1')).includes('z = 2 × x + 2'))
+/*
+  ai.e1 só se acerta calculando: a correta e um distrator dizem 2, 4 e 6 e
+  concluem o oposto, e o outro distrator erra o terceiro valor (8 no lugar de 6)
+  e conclui que o colega acertou. As três abrem de jeitos diferentes.
+*/
+if (byId('ai.e1').kind === 'choice') {
+  const cs = (byId('ai.e1') as Extract<Exercise, { kind: 'choice' }>).choices
+  check('ai.e1: a correta diz 2, 4 e 6; um distrator diz 2, 4 e 8, e 8 não é o z de x = 2',
+    correctText(byId('ai.e1')).includes('2, 4 e 6') && e1z(2) !== 8
+      && cs.some((c) => !c.correct && c.text.includes('2, 4 e 8') && /acertou/.test(c.text)))
+  check('ai.e1: as alternativas abrem de jeitos diferentes',
+    new Set(cs.map((c) => c.text.split(/\s+/)[0])).size === cs.length, cs.map((c) => c.text.split(/\s+/)[0]).join(' / '))
+  check('ai.e1: nenhuma alternativa usa "passo" no sentido de 1 a mais em x',
+    cs.every((c) => !/\bpasso\b/.test(c.text + (c.correct ? c.why : ''))))
+}
 check('ai.e1: o enunciado traz as duas contas e nenhum valor de z',
   byId('ai.e1').prompt.includes('y = 4 × x − 2') && byId('ai.e1').prompt.includes('z = 0,5 × y + 3')
     && !/z vale|2, 4 e 6/.test(byId('ai.e1').prompt))
@@ -288,30 +317,46 @@ if (e7.kind === 'bug') {
       && at('backward') < e7.faultyLines[0]! && e7.faultyLines[0]! < at('p.data'))
   check('ai.e7: o diff marca a função inteira, e não aponta a linha defeituosa',
     (e7.addedLines ?? []).length === lines.length)
+  /*
+    O enunciado diz o que a chamada de zerar escreve, e nunca onde ela está:
+    nenhuma palavra de posição nem o nome do passo que vem antes dela.
+  */
   check('ai.e7: o enunciado não descreve o defeito',
-    !/zer|antes|depois|fora|backward/i.test(e7.prompt), e7.prompt)
+    !/antes|depois|fora|backward|ordem|em que linha|ponto/i.test(e7.prompt), e7.prompt)
+  check('ai.e7: o enunciado diz "peso", não "parâmetro", e "zera", não "limpa"',
+    !/parâmetro|limpa/i.test(e7.prompt) && /zera os gradients/.test(e7.prompt) && /model\.parameters\(\)/.test(e7.prompt))
   /*
     No PyTorch 2.x, zero_grad põe p.grad em None, e a linha do passo lança
     TypeError: "roda sem erro" só vale no estilo micrograd, em que limpar
     escreve 0. O enunciado diz isso, sem nomear a chamada.
   */
-  check('ai.e7: o enunciado declara o estilo micrograd, em que limpar o gradient escreve 0',
-    /micrograd/.test(e7.prompt) && /escreve 0/.test(e7.prompt))
-  const c7Prep = aiUnit.cycles.find((c) => c.id === 'ai.c7')!.body.find((p) => /ponto errado/.test(p)) ?? ''
-  check('ai.c7: prepara e7 dizendo que zerar no ponto errado é outro defeito, sem dizer onde zerar',
-    /Nunca zerar é um defeito/.test(c7Prep) && /Zerar no ponto errado da rodada é outro/.test(c7Prep)
-      && !/antes|depois|backward|passada|passo/i.test(c7Prep), c7Prep)
+  check('ai.e7: o enunciado ancora o micrograd numa frase e diz que zerar escreve 0',
+    /micrograd, uma biblioteca pequena e didática de backpropagation/.test(e7.prompt) && /escreve 0/.test(e7.prompt))
+  /*
+    A versão anterior de c7 dizia que zerar no ponto errado tinha "outro
+    sintoma" e que a revisão pergunta "em que linha da rodada" a chamada está:
+    apontava a linha e refutava o distrator de ai.e7. Agora c7 só diz que nunca
+    zerar não é o único jeito de errar.
+  */
+  const c7Prep = aiUnit.cycles.find((c) => c.id === 'ai.c7')!.body.find((p) => /Nunca zerar/.test(p)) ?? ''
+  check('ai.c7: prepara e7 dizendo que há outros jeitos de errar o zerar, sem dizer onde nem o sintoma',
+    /Nunca zerar é um defeito/.test(c7Prep) && /não é o único jeito de errar o zerar/.test(c7Prep)
+      && !/antes|depois|backward|passada|passo|linha|ponto|sintoma/i.test(c7Prep), c7Prep)
   check('ai.e7: a correta afirma o que o laço simulado mostra, peso parado e loss igual',
     /Nenhum peso muda/.test(correctText(e7)) && /loss fica igual/.test(correctText(e7)))
 }
 
 /*
-  e8: o problema motivador, a estimativa de prazo. A rota tem distância 5 (500
-  km em centenas), a base é 1 dia e fica fixa, e o ajuste noturno mexe só no
-  peso da distância. O postmortem de c8 diz que o passo passou do ponto e não
-  diz qual era o ponto; o exercício cobra o ponto. A previsão é um grafo
-  distância × peso + base, e o loss outro, para o gradient sair da passada
-  para trás.
+  O chamado e ai.e8, a estimativa de prazo. A rota tem distância 5 (500 km em
+  centenas), a base é 1 dia e fica fixa, e o ajuste mexe só no peso da
+  distância. A previsão é um grafo distância × peso + base, e o loss outro,
+  para o gradient sair da passada para trás.
+
+  Até a auditoria de 2026-11-09, ai.e8 perguntava o peso que zera o loss, 0,6.
+  O c8, lido antes, trazia as premissas dessa conta em frases vizinhas e
+  refutava os distratores: o exercício deixou de medir. Agora ele cobra a lição
+  que o c8 ensina sem resolver para este caso: acima de que learning rate o
+  passo da rota de 500 km deixa o erro maior do que estava.
 */
 const distancia = 5, baseDias = 1, real8 = 4
 const routeGraph: Graph = [
@@ -334,29 +379,79 @@ const route = (dist: number, peso: number, base: number, realDias: number) => {
 const night = (peso: number) => route(distancia, peso, baseDias, real8)
 const e8 = byId('ai.e8')
 
-check('ai.e8: com peso 0,4 a rota prevê 3 dias e o loss é 1; com 1,0 prevê 6 e o loss é 4',
+check('o chamado: com peso 0,4 a rota prevê 3 dias e o loss é 1; com 1,0 prevê 6 e o loss é 4',
   close(night(0.4).prazo, 3) && close(night(0.4).loss, 1) && close(night(1).prazo, 6) && close(night(1).loss, 4))
-check('ai.e8: o enunciado traz distância 5, base 1 e real 4',
-  /distância 5/.test(e8.prompt) && /base é 1 dia/.test(e8.prompt) && /levou 4 dias/.test(e8.prompt))
-check('ai.e8: o peso que zera o loss é 0,6, e é o que a correta afirma',
-  close((real8 - baseDias) / distancia, 0.6) && close(night(0.6).loss, 0) && correctText(e8).startsWith('0,6'))
-check('ai.e8: na previsão o gradient do peso é 5, a distância, e 0,1 no peso soma meio dia',
+check('o chamado: na previsão o gradient do peso é 5, a distância, e 0,1 no peso soma meio dia',
   close(numericGradient(routeGraph, routeIn(distancia, 0.4, baseDias, real8), 'prazo', 'peso'), 5)
     && close(night(0.5).prazo - night(0.4).prazo, 0.5))
-check('ai.e8: no loss o gradient do peso em 0,4 é 5 × 2 × (3 − 4) = −10, negativo, e subir era o lado certo',
+check('o chamado: no loss o gradient do peso em 0,4 é 5 × 2 × (3 − 4) = −10, negativo, e subir era o lado certo',
   close(night(0.4).gradInLoss, -10)
     && close(numericGradient(routeGraph, routeIn(distancia, 0.4, baseDias, real8), 'loss', 'peso'), -10, 1e-3))
-check('ai.e8: learning rate 0,06 leva o peso a 1,0; learning rate 0,02 o levaria a 0,6',
-  close(0.4 - 0.06 * night(0.4).gradInLoss, 1) && close(0.4 - 0.02 * night(0.4).gradInLoss, 0.6))
-check('ai.e8: os distratores conferem: 1,0 é onde o ajuste parou, 0,2 é o passo certo com sinal trocado, 5 é a distância',
-  close(0.4 + 0.02 * night(0.4).gradInLoss, 0.2) && close(night(0.2).loss, 4) && close(night(5).loss, 484)
-    && ['1,0', '0,2', '5'].every((n) => e8.kind === 'choice' && e8.choices.some((c) => !c.correct && c.text.startsWith(n))))
+check('o chamado: learning rate 0,06 leva o peso a 1,0; learning rate 0,02 o levaria a 0,6, onde o loss é zero',
+  close(0.4 - 0.06 * night(0.4).gradInLoss, 1) && close(0.4 - 0.02 * night(0.4).gradInLoss, 0.6) && close(night(0.6).loss, 0))
+
+/*
+  ai.e8. O erro depois de um passo, dividido pelo erro antes, sai da passada
+  para trás, nunca da fórmula: é o fator 1 − learning rate × 2 × 25.
+*/
+const errorAfter = (lr: number, dist = distancia, peso = 0.4) => {
+  const before = route(dist, peso, baseDias, real8)
+  const next = peso - lr * before.gradInLoss
+  return { before: before.prazo - real8, after: route(dist, next, baseDias, real8).prazo - real8 }
+}
+const ratio8 = (lr: number) => { const e = errorAfter(lr); return e.after / e.before }
+check('ai.e8: o enunciado traz distância 5, base 1, real 4, o passo com learning rate e o erro de −1 para +2 com 0,06',
+  /distância 5/.test(e8.prompt) && /base é 1 dia/.test(e8.prompt) && /levou 4 dias/.test(e8.prompt)
+    && /learning rate × gradient do peso no loss/.test(e8.prompt) && /de 1 dia abaixo para 2 acima/.test(e8.prompt)
+    && close(errorAfter(0.06).before, -1) && close(errorAfter(0.06).after, 2))
+check('ai.e8: o fator do erro é 1 − learning rate × 2 × 25, conferido em cinco learning rates',
+  [0.01, 0.02, 0.03, 0.05, 0.06].every((lr) => close(ratio8(lr), 1 - lr * 2 * 25)))
+check('ai.e8: em 0,04 o fator é −1, o erro só troca de sinal; um pouco abaixo encolhe, um pouco acima cresce',
+  close(ratio8(0.04), -1) && close(errorAfter(0.04).after, 1)
+    && Math.abs(ratio8(0.0399)) < 1 && Math.abs(ratio8(0.0401)) > 1
+    && close(2 / (2 * distancia ** 2), 0.04) && correctText(e8).startsWith('0,04'))
+check('ai.e8: entre 0,02 e 0,04 o peso passa do ponto e o erro ainda encolhe (o que desfaz o distrator 0,02)',
+  close(errorAfter(0.02).after, 0) && errorAfter(0.03).after > 0 && Math.abs(errorAfter(0.03).after) < 1)
+check('ai.e8: 0,2 é 2 ÷ (2 × 5), a distância contada uma vez, e com ele o erro vai a +9',
+  close(2 / (2 * distancia), 0.2) && close(errorAfter(0.2).after, 9))
+if (e8.kind === 'choice') {
+  const trapOf = (n: string) => {
+    const c = e8.choices.find((x) => x.text.startsWith(`${n},`))
+    return c && !c.correct ? c.misconceptionId : undefined
+  }
+  check('ai.e8: cada distrator traz o número e a armadilha do spec',
+    trapOf('0,06') === 'ai.passo-maior-converge-antes'
+      && trapOf('0,02') === 'ai.passar-do-ponto-e-crescer'
+      && trapOf('0,2') === 'ai.distancia-uma-vez'
+      && e8.choices.length === 4)
+}
+
+/*
+  A resposta de ai.e8, 0,04, não aparece em nada que o aluno lê antes do
+  exercício: o problema motivador, todo ciclo (o postmortem de c8 a tela mostra
+  antes do exercício), o glossário que os cards dos ciclos mostram, e todo
+  exercício anterior, inclusive o `why` revelado. Por isso o terceiro aumento
+  de c1 se escreve 0,044. O 0,02, o learning rate que acertaria num passo,
+  também fica fora de c8: ele é um distrator.
+*/
+const answer8 = /(?<![\d,])0,04(?!\d)/
+const before8 = [
+  aiUnit.motivatingProblem,
+  JSON.stringify(aiUnit.cycles),
+  JSON.stringify(aiGlossary),
+  ...aiExercises.slice(0, aiExercises.indexOf(e8)).map(allText),
+]
+check('ai.e8: nenhum texto lido antes do exercício diz o learning rate limite, 0,04',
+  before8.every((t) => !answer8.test(t)), before8.filter((t) => answer8.test(t)).map((t) => t.slice(0, 60)).join(' | '))
+check('ai.c8: o ciclo não diz o learning rate que acertaria num passo, 0,02',
+  !/(?<![\d,])0,02(?!\d)/.test(JSON.stringify(aiUnit.cycles.find((c) => c.id === 'ai.c8'))))
+
 check('o chamado: com peso 1,0, toda rota de 500 km ou mais prevê pelo menos o dobro de com 0,4',
   [5, 6, 8, 10, 20, 50].every((dist) => route(dist, 1, baseDias, 0).prazo >= 2 * route(dist, 0.4, baseDias, 0).prazo - 1e-9))
-check('o chamado: o job ajusta o peso a cada entrega concluída, e a noite do chamado foi a entrega de 500 km',
+check('o chamado: o job ajusta o peso a cada entrega concluída, e a última entrega processada na noite do chamado foi a de 500 km',
   /a cada entrega concluída/.test(aiUnit.motivatingProblem)
-    && /a entrega concluída foi a de uma rota de 500 km/.test(aiUnit.motivatingProblem)
-    && !/toda noite|entregas do dia/.test(aiUnit.motivatingProblem))
+    && /A última entrega processada numa noite foi a de uma rota de 500 km/.test(aiUnit.motivatingProblem)
+    && !/toda noite|entregas do dia|a entrega concluída foi/.test(aiUnit.motivatingProblem))
 check('o chamado: a tabela e o peso de partida 0,4 pela média do trimestre continuam',
   /tabela da transportadora/.test(aiUnit.motivatingProblem) && /0,4 \(a média de um trimestre/.test(aiUnit.motivatingProblem))
 check('o chamado: diz por que a base é fixa, um prazo da operação que o job não estima',
@@ -365,22 +460,6 @@ check('o chamado: o problema motivador mostra a conta antes da pergunta',
   aiUnit.motivatingProblem.indexOf('5 × 0,4 + 1 = 3') >= 0
     && aiUnit.motivatingProblem.indexOf('5 × 1,0 + 1 = 6') > aiUnit.motivatingProblem.indexOf('5 × 0,4 + 1 = 3')
     && aiUnit.motivatingProblem.indexOf('5 × 1,0 + 1 = 6') < aiUnit.motivatingProblem.indexOf('?'))
-
-/*
-  O peso que zera o loss, 0,6, não aparece em nada que o aluno lê antes de
-  ai.e8: o problema motivador, todo ciclo (o postmortem de c8 a tela mostra
-  antes do exercício) e todo exercício anterior, inclusive o `why` revelado.
-  O passo daquela noite também mede 0,6, e por isso a prosa escreve "de 0,4
-  para 1,0" e nunca o tamanho do passo.
-*/
-const answer8 = /(?<![\d,])0,6(?!\d)/
-const before8 = [
-  aiUnit.motivatingProblem,
-  JSON.stringify(aiUnit.cycles),
-  ...aiExercises.slice(0, aiExercises.indexOf(e8)).map(allText),
-]
-check('ai.e8: nenhum texto lido antes do exercício diz o peso que zera o loss, 0,6',
-  before8.every((t) => !answer8.test(t)), before8.filter((t) => answer8.test(t)).map((t) => t.slice(0, 60)).join(' | '))
 
 const e8Lengths = e8.kind === 'choice' ? e8.choices.map((c) => ({ correct: !!c.correct, n: c.text.length })) : []
 const e8Right = e8Lengths.find((c) => c.correct)!.n
@@ -427,6 +506,7 @@ const walk = (dist: number, peso: number, base: number, realDias: number, steps:
 }
 const c8Text = [c8.plainly ?? '', ...c8.body].join(' ')
 const pm = c8.postmortem!
+const pmText = [pm.incident, pm.missingClaim, pm.whatWouldCatch].join(' ')
 
 check('ai.c8: com distância 5, cada dia de erro vira 0,06 × 2 × 5² = 3 dias de correção',
   close(LR * 2 * distancia ** 2, 3) && close(night(0.4).prazo - route(distancia, stepOnce(distancia, 0.4, baseDias, real8), baseDias, real8).prazo, -3)
@@ -442,27 +522,51 @@ check('ai.c8: a figura mostra a mesma sequência, um passo por nó',
   c8.figure?.kind === 'concept-flow'
     && c8.figure.nodes.map((n) => n.label).join(' | ')
       === 'peso 0,4 · prevê 3 · erro −1 | peso 1,0 · prevê 6 · erro +2 | peso −0,2 · prevê 0 · erro −4 | peso 2,2 · prevê 12 · erro +8')
-check('ai.c8: o fator do erro é 1 − 0,06 × 2 × distância²: −2 na rota de 500 km',
-  close(diverge.erros[1]! / diverge.erros[0]!, 1 - LR * 2 * 25) && close(1 - LR * 2 * 25, -2) && c8Text.includes('1 − 3 = −2'))
+/*
+  Auditoria de 2026-11-09: a derivação do limiar saiu do corpo de c8 e foi para
+  o postmortem. O corpo fica com a conta do passo, a divergência e a lição; os
+  números do limiar continuam conferidos, agora no postmortem.
+*/
+check('ai.c8: o corpo não deriva o limiar; a derivação mora no postmortem',
+  !/16,7|4,08|0,52|entre −1 e 1/.test(c8Text) && /entre −1 e 1/.test(pm.missingClaim))
+check('ai.c8: o fator do erro é (1 − 0,06 × 2 × distância²), com parênteses: −2 na rota de 500 km',
+  close(diverge.erros[1]! / diverge.erros[0]!, 1 - LR * 2 * 25) && close(1 - LR * 2 * 25, -2)
+    && pmText.includes('1 − 3 = −2') && pmText.includes('vezes (1 − 0,06 × 2 × distância²)')
+    && !/vezes 1 − /.test(c8Text + pmText))
 const limit2 = 2 / (LR * 2)
 check('ai.c8: o erro só encolhe com distância² abaixo de 16,7, distância abaixo de 4,08, uns 410 km',
   ptNumber(Number(limit2.toFixed(1))) === '16,7' && ptNumber(Number(Math.sqrt(limit2).toFixed(2))) === '4,08'
     && Math.round(Math.sqrt(limit2) * 10) * 10 === 410
-    && ['16,7', '4,08', '410 km'].every((t) => c8Text.includes(t)))
+    && ['16,7', '4,08', '410 km'].every((t) => pmText.includes(t)) && c8Text.includes('410 km'))
 const short = walk(2, 0.4, baseDias, real8, 5)
 check('ai.c8: numa rota de 200 km o fator é 0,52 e o erro encolhe a cada passo',
   close(1 - LR * 2 * 4, 0.52) && short.erros.slice(1).every((e, i) => close(e / short.erros[i]!, 0.52))
-    && c8Text.includes('1 − 0,06 × 2 × 4 = 0,52'))
+    && pmText.includes('1 − 0,06 × 2 × 4 = 0,52'))
 check('ai.c8: na fronteira, distância 4 ainda encolhe e 4,1 já cresce',
   Math.abs(1 - LR * 2 * 16) < 1 && Math.abs(1 - LR * 2 * 4.1 ** 2) > 1)
-check('ai.c8: o postmortem afirma o passo seguro para a escala, com a conta, e não abre com "nenhuma"',
-  /^O passo é seguro para a escala desta entrada/.test(pm.missingClaim) && !/^nenhuma/i.test(pm.missingClaim)
+/*
+  Auditoria de 2026-11-09: "learning rate fixo para entradas de escalas
+  diferentes" nomeava mal a causa. Com todas as rotas de 500 km, 0,06 também
+  diverge, e a correção mantém o learning rate fixo. A causa é um learning rate
+  escolhido sem conferir a rota mais longa, e "escala" vira a operação
+  concreta: o tamanho da distância, em milhares de km ou dividida pela maior
+  rota.
+*/
+const allRoutes500 = walk(5, 0.4, baseDias, real8, 3)
+const thousands = walk(0.5, 4, baseDias, real8, 30)
+check('ai.c8: com todas as rotas de 500 km o mesmo 0,06 diverge; com a distância em milhares de km o mesmo 0,06 converge',
+  Math.abs(allRoutes500.erros[3]!) > Math.abs(allRoutes500.erros[0]!)
+    && Math.abs(thousands.erros[30]!) < Math.abs(thousands.erros[0]!) && Math.abs(1 - LR * 2 * 0.5 ** 2) < 1)
+check('ai.c8: o postmortem afirma o passo seguro na rota mais longa, com a conta, e não abre com "nenhuma"',
+  /^O passo é seguro na rota mais longa que o job recebe/.test(pm.missingClaim) && !/^nenhuma/i.test(pm.missingClaim)
     && pm.missingClaim.includes('0,06 × 2 × distância²') && pm.missingClaim.includes('410 km'))
-check('ai.c8: o que teria pego é escolher o passo pela escala e conferir o loss em várias rodadas; recusar o passo é só alarme',
-  /pela escala da entrada/.test(pm.whatWouldCatch) && /várias rodadas/.test(pm.whatWouldCatch)
-    && /alarme, não de correção/.test(pm.whatWouldCatch))
-check('ai.c8: a lição nomeia a causa, learning rate fixo para entradas de escalas diferentes',
-  /learning rate fixo para entradas de escalas diferentes/.test(c8Text))
+check('ai.c8: o que teria pego é conferir a rota mais longa, mudar o tamanho da distância e o loss em várias rodadas; recusar o passo é só alarme',
+  /contra a rota mais longa/.test(pm.whatWouldCatch) && /em milhares de km ou dividida pela maior rota/.test(pm.whatWouldCatch)
+    && /várias rodadas/.test(pm.whatWouldCatch) && /alarme, não de correção/.test(pm.whatWouldCatch))
+check('ai.c8: a lição nomeia a causa, um learning rate escolhido sem conferir a rota mais longa',
+  /learning rate escolhido sem conferir a rota mais longa: 0,06 encolhe o erro abaixo de uns 410 km e o multiplica acima disso/.test(c8Text))
+check('ai.c8: nenhum texto do ciclo nem do postmortem fala em "escala"',
+  !/escala/i.test(JSON.stringify(c8)))
 
 // O bias não depende da ordem da soma: o pseudocódigo de c0 começa por ele.
 check('nenhum texto da unidade nem do glossário diz que o bias é "somado no fim"',

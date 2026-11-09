@@ -35,7 +35,7 @@ export const aiUnit: Unit = {
     'cada 100 km somavam 0,4 dia), agora é ajustado por um job a cada entrega concluída: ele ' +
     'compara a previsão daquela entrega com o prazo real e empurra o peso para o lado que ' +
     'diminui o erro. O job só mexe no peso: a base é um prazo que a operação define, não um ' +
-    'número estimado, e fica fixa. Numa noite, a entrega concluída foi a de uma rota de 500 km, ' +
+    'número estimado, e fica fixa. A última entrega processada numa noite foi a de uma rota de 500 km, ' +
     'distância 5. A previsão era 5 × 0,4 + 1 = 3 dias, e a entrega real levou 4. O job levou o ' +
     'peso a 1,0, e a mesma rota passou a prever 5 × 1,0 + 1 = 6 dias. Toda rota de 500 km ou ' +
     'mais passou a prever pelo menos o dobro. Ninguém mexeu no código, e nenhuma entrega mudou: ' +
@@ -100,7 +100,7 @@ export const aiUnit: Unit = {
       everydayAnchor:
         'É o que um dev faz por instinto diante de um número de configuração que ninguém ' +
         'documentou: muda esse valor, roda de novo e vê o que acontece. Serve para um timeout; ' +
-        'não serve para cem parâmetros de uma vez.',
+        'não serve para cem pesos de uma vez.',
       invariant: 'O empurrão é pequeno o bastante para a conta se comportar como reta naquele trecho.',
     },
     {
@@ -183,20 +183,20 @@ export const aiUnit: Unit = {
       Por isso o segundo neurônio multiplica por 9, e não por 3, e o exemplo
       escreve tanh(2 × 1 + 1) em vez da soma já feita.
     */
-    { id: 'ai.c1', title: 'tanh: sem ela, dois neurônios valem um', layer: 'essential', band: 'criterion',
+    { id: 'ai.c1', title: 'Activation function: o que impede dois neurônios de valerem um', layer: 'essential', band: 'criterion',
       introducesTerms: ['activation-function'],
       oneLine: 'Contas de multiplicar e somar, uma alimentando a outra, viram uma conta só; uma curva entre elas impede.',
       plainly:
         'Uma conta que dobra o número e soma 1, seguida de outra que multiplica por 9 e soma 1, ' +
         'dá o mesmo que multiplicar por 18 e somar 10. A segunda etapa não acrescentou nada que ' +
-        'uma só não fizesse. Para empilhar etapas valer a pena, algo entre elas precisa entortar ' +
+        'uma só não fizesse. Para que empilhar etapas valha a pena, algo entre elas precisa entortar ' +
         'a conta. A tanh faz isso: perto de zero ela acompanha o número que recebe, e longe de ' +
         'zero trava perto de −1 ou de 1, como um if que não é seco.',
       body: [
-        'Um neurônio sem nada depois da soma faz y = 2 × x + 1. Ponha outro em sequência, que recebe y e faz z = 9 × y + 1. Trocando y pela conta do primeiro, z = 9 × (2 × x + 1) + 1 = 18 × x + 10. Com x valendo 0, 1 e 2, o z vale 10, 28 e 46. Sobe 18 a cada passo: no gráfico, uma reta.',
+        'Um neurônio sem nada depois da soma faz y = 2 × x + 1. Ponha outro em sequência, que recebe y e faz z = 9 × y + 1. Trocando y pela conta do primeiro, z = 9 × (2 × x + 1) + 1 = 18 × x + 10. Com x valendo 0, 1 e 2, o z vale 10, 28 e 46. Sobe 18 a cada 1 a mais em x: os valores sobem sempre o mesmo tanto.',
         'E 18 × x + 10 é um neurônio só, com peso 18 e bias 10. Dez neurônios em sequência, sem nada entre eles, colapsam do mesmo jeito numa conta de multiplicar e somar, com outro peso e outro bias. Empilhar sem nada entre as etapas deixa a conta mais longa e não muda o que ela consegue descrever.',
         'A **activation function** é a regra que transforma a soma na saída do neurônio, antes de ela seguir para o próximo. A tanh é a mais usada para explicar o mecanismo, e devolve sempre um número entre −1 e 1. Longe de zero ela se comporta como um if: tanh(2) ≈ 0,964, tanh(−2) ≈ −0,964, e daí para fora quase não muda. Perto de zero ela acompanha a soma: tanh(0,1) ≈ 0,1. É um if que não é seco.',
-        'Com a tanh entre os dois neurônios, z deixa de ser uma reta. Perto de onde a soma do primeiro passa por zero, z acompanha x; longe dali, trava. Nenhum peso e nenhum bias de um neurônio só fazem esse desenho, e é por isso que empilhar passa a valer. A tanh não decide nada: quem precisa de sim ou não continua comparando a saída com um limite, fora da conta, como no ciclo anterior.',
+        'Com a tanh entre os dois neurônios, z deixa de subir sempre o mesmo tanto. Perto de onde a soma do primeiro passa por zero, z muda junto com x; longe dali, trava. Nenhum peso e nenhum bias de um neurônio só fazem esse desenho, e é por isso que empilhar passa a valer. A tanh não decide nada: quem precisa de sim ou não continua comparando a saída com um limite, fora da conta, como no ciclo anterior.',
       ],
       pseudocode: `função empilhado(x)
     y ← 2 × x + 1
@@ -215,9 +215,9 @@ função empilhado_com_tanh(x)
           'tanh(2 × 2 + 1) ≈ 0,9999, e z ≈ 9,999.',
         whatToNotice:
           'Sem a tanh, cada 1 a mais em x sobe z em 18, de −1 até 2 e daí em diante. Com ela, z sobe ' +
-          '13,71, depois 2,10, depois 0,04: perto de onde a soma passa por zero ele acompanha x, e ' +
-          'longe dali quase não se mexe. Uma reta sobe sempre o mesmo tanto, com qualquer peso e ' +
-          'qualquer bias.',
+          '13,71, depois 2,10, depois 0,044: perto de onde a soma passa por zero ele muda junto com x, e ' +
+          'longe dali quase não se mexe. Um neurônio só, sem tanh, sobe sempre o mesmo tanto, com ' +
+          'qualquer peso e qualquer bias.',
       },
       exerciseId: 'ai.e1' },
 
@@ -384,7 +384,7 @@ função empilhado_com_tanh(x)
         'A última linha da passada para trás soma, e precisa somar: é o que deixa um peso usado em duas contas receber as duas contribuições. O efeito colateral é que ela soma também ao que sobrou da rodada anterior, porque nada nela distingue a contribuição desta rodada da que ficou de antes.',
         'Com o loss do ciclo anterior, (w − 10)², o peso em 14 e learning rate 0,1, a primeira rodada calcula gradient 8, e o passo leva o peso a 13,2. Ali o gradient do peso no loss é 6,4, mas o acumulado chega a 8 + 6,4 = 14,4, e o passo sai quase do dobro do tamanho.',
         'O defeito engana porque as primeiras rodadas parecem melhores: na terceira o peso chega a 9,968, quase em cima do 10. Na quarta, o gradient calculado já pede para subir, e o acumulado ainda manda descer, porque as rodadas antigas continuam somadas dentro dele. O código roda, e o loss cai no começo.',
-        'Nunca zerar é um defeito. Zerar no ponto errado da rodada é outro, com outro sintoma. Por isso a revisão de um laço de treino não pergunta só se a chamada de zerar existe: pergunta também em que linha da rodada ela está.',
+        'Nunca zerar é um defeito, e não é o único jeito de errar o zerar.',
       ],
       workedExample: {
         problem:
@@ -413,8 +413,7 @@ função empilhado_com_tanh(x)
         'As quatro partes do critério viram quatro perguntas sobre aquela entrega. A saída: 3 dias antes do ajuste, 6 depois. O loss: 1 antes, (6 − 4)² = 4 depois. O gradient do peso: na previsão é 5, a distância; no loss, é 5 × 2 × (3 − 4) = −10, negativo, então o peso tinha de subir. O passo: learning rate 0,06 vezes esse 10, de 0,4 direto para 1,0. A direção estava certa.',
         'O tamanho do passo é que saiu errado, e a distância explica por quê: ela entra duas vezes. Uma no gradient do loss, 2 × erro × 5. Outra no quanto o peso move a previsão, 5 dias por unidade de peso. Juntas, cada dia de erro vira 0,06 × 2 × 5² = 3 dias de correção. A previsão estava 1 dia abaixo do real, foi corrigida em 3, e terminou 2 acima.',
         'Se o job recebesse outra entrega da mesma rota, de novo em 4 dias, o passo faria o mesmo. O erro troca de sinal e dobra a cada passo: −1, +2, −4, +8. As previsões vão a 3, 6, 0 e 12 dias. O peso vai a 0,4, 1,0, −0,2 e 2,2. O loss sobe a cada passo, e nada no job o faz parar.',
-        'O erro depois do passo é o erro antes vezes 1 − 0,06 × 2 × distância². Para o erro encolher, esse fator tem de ficar entre −1 e 1. Isso pede 0,06 × 2 × distância² abaixo de 2, ou seja, distância² abaixo de 16,7 e distância abaixo de 4,08, uns 410 km. Numa rota de 200 km, distância 2, o fator é 1 − 0,06 × 2 × 4 = 0,52: o erro encolhe a cada passo. Numa de 500 km, o fator é 1 − 3 = −2. Com o mesmo learning rate, uma entrega de rota curta encolhe o erro, e uma de 500 km o multiplica.',
-        'Nenhuma linha de código mudou e nenhum teste quebrou. O defeito é um learning rate fixo para entradas de escalas diferentes. Para julgar um número que o laço produziu, refaça a conta dele: para que lado o loss mandava ir, e se o passo, na escala daquela entrada, encolhe o erro ou o multiplica.',
+        'Nenhuma linha de código mudou e nenhum teste quebrou. O defeito é um learning rate escolhido sem conferir a rota mais longa: 0,06 encolhe o erro abaixo de uns 410 km e o multiplica acima disso. Para julgar um número que o laço produziu, refaça a conta dele: para que lado o loss mandava ir, e se o passo, com o tamanho da distância daquela entrega, encolhe o erro ou o multiplica.',
       ],
       figure: {
         kind: 'concept-flow',
@@ -447,8 +446,8 @@ função empilhado_com_tanh(x)
       postmortem: {
         incident: 'Volte ao peso da distância que o job levou de 0,4 para 1,0 depois de uma entrega de 500 km. A rota previa 3 dias, a entrega levou 4, e a rota amanheceu prevendo 6, sem ninguém mexer no código.',
         trapId: 'ai.passo-maior-converge-antes',
-        missingClaim: 'O passo é seguro para a escala desta entrada. Cada dia de erro vira 0,06 × 2 × distância² dias de correção. Com distância 5, isso dá 3, acima do teto de 2. Por isso o erro de 1 dia para baixo virou 2 para cima. A afirmação só valia para rotas abaixo de uns 410 km, e ninguém a escreveu.',
-        whatWouldCatch: 'Escolher o passo pela escala da entrada. Na rota mais longa, 0,06 × 2 × distância² precisa ficar abaixo de 2; ou a distância vai numa escala em que toda rota fique pequena. Antes de publicar, rodar o ajuste várias rodadas seguidas numa rota longa e conferir que o loss cai em todas. Recusar o passo que fez o loss subir serve de alarme, não de correção: a próxima entrega longa repete o salto.',
+        missingClaim: 'O passo é seguro na rota mais longa que o job recebe. Cada dia de erro vira 0,06 × 2 × distância² dias de correção, e o erro depois do passo é o erro antes vezes (1 − 0,06 × 2 × distância²). Ele só encolhe com esse fator entre −1 e 1, o que pede 0,06 × 2 × distância² abaixo de 2: distância² abaixo de 16,7, distância abaixo de 4,08, uns 410 km. Numa rota de 200 km o fator é 1 − 0,06 × 2 × 4 = 0,52, e o erro encolhe; na de 500 km é 1 − 3 = −2. Ninguém escreveu essa afirmação, e a rota do chamado estava fora dela.',
+        whatWouldCatch: 'Conferir o learning rate contra a rota mais longa antes de publicar: ali, 0,06 × 2 × distância² precisa ficar abaixo de 2. Ou mudar o tamanho da distância que entra na conta, em milhares de km ou dividida pela maior rota, para que toda distância fique abaixo de 1 e o mesmo learning rate sirva para todas. E rodar o ajuste várias rodadas seguidas numa rota longa, conferindo que o loss cai em todas. Recusar o passo que fez o loss subir serve de alarme, não de correção: a próxima entrega longa repete o salto.',
       },
       exerciseId: 'ai.e8' },
   ],

@@ -672,7 +672,7 @@ export const sortingGlossary: GlossaryTerm[] = [
 export const aiGlossary: GlossaryTerm[] = [
   { id: 'neuron', canonical: 'neurônio', canonicalLanguage: 'pt',
     alsoKnownAs: ['neuron'],
-    definition: 'A conta básica de um modelo: cada entrada multiplicada pelo seu peso, os produtos somados ao bias, e a soma passada por uma activation function. Muitos deles ligados, a saída de um entrando em outro, formam uma rede.',
+    definition: 'A conta básica de um modelo: cada entrada multiplicada pelo seu peso, e os produtos somados ao bias. Muitos deles ligados, a saída de um entrando em outro, formam uma rede, e ali a soma de cada um ainda passa por uma regra que a entorta antes de seguir para o próximo.',
     isNot: ['não é uma célula do cérebro: o nome é uma analogia antiga, e a conta é só soma e produto', 'não decide sim ou não, devolve um número'],
     falseFriends: [], introducedIn: 'ai.c0' },
 

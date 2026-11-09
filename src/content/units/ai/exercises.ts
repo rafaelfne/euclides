@@ -12,9 +12,13 @@ import type { Exercise, Misconception } from '../../schema'
   da rodada a chamada de zerar está. A décima, `ai.empilhar-sem-ativacao`, nasce
   de ai.e1 depois da revisão externa de 2026-11-09: c1 deixou de ensinar o if
   contra a curva e passou a ensinar que neurônios em sequência, sem activation
-  function, colapsam numa conta de multiplicar e somar só. Nenhuma das dez foi
-  observada em aluno do público da trilha; o spec diz isso, e é a condição para
-  a unidade sair de `allUnits` e entrar em `units`.
+  function, colapsam numa conta de multiplicar e somar só. A décima primeira e a
+  décima segunda, `ai.passar-do-ponto-e-crescer` e `ai.distancia-uma-vez`, nascem
+  de ai.e8 depois da auditoria de 2026-11-09: o exercício passou a perguntar
+  acima de que learning rate o passo da rota de 500 km faz o erro crescer, e as
+  duas leituras erradas que levam a 0,02 e a 0,2 não cabiam em nenhuma das
+  outras. Nenhuma das doze foi observada em aluno do público da trilha; o spec
+  diz isso, e é a condição para a unidade sair de `allUnits` e entrar em `units`.
 */
 export const aiMisconceptions: Misconception[] = [
   { id: 'ai.decisao-binaria', label: 'Procurar o if dentro da conta, em vez de ler a saída como pontuação',
@@ -28,7 +32,7 @@ export const aiMisconceptions: Misconception[] = [
   { id: 'ai.empilhar-sem-ativacao', label: 'Supor que neurônios em sequência, sem activation function entre eles, fazem uma conta que um neurônio só não faz',
     socraticQuestion: 'Escreva a conta do segundo neurônio trocando y pela conta do primeiro, e simplifique. O que sobra tem a forma de um peso vezes x mais um bias, ou outra forma?',
     escalation: [
-      'Calcule z para três entradas seguidas e anote quanto ele sobe de uma para a outra. O aumento muda de um passo para o outro, ou é sempre o mesmo?',
+      'Calcule z para três entradas seguidas e anote quanto ele sobe de uma para a outra. O aumento muda de uma entrada para a seguinte, ou é sempre o mesmo?',
       'Escreva um neurônio só com o peso e o bias que você encontrou e calcule a saída dele para as mesmas três entradas. Em qual delas ele discorda dos dois neurônios em sequência?',
     ],
     reviewCycle: 'ai.c1' },
@@ -72,6 +76,21 @@ export const aiMisconceptions: Misconception[] = [
       'Dê mais um passo a partir de onde você parou, com o mesmo learning rate, medindo o gradient ali. O peso se aproxima do ponto em que o loss é zero, ou se afasta mais?',
     ],
     reviewCycle: 'ai.c6' },
+
+  { id: 'ai.passar-do-ponto-e-crescer', label: 'Supor que todo passo que passa do ponto em que o loss é zero deixa o erro maior',
+    socraticQuestion: 'Escolha um learning rate um pouco acima do que zera o erro num passo, dê o passo e calcule o erro depois dele. O peso passou do ponto? E o erro ficou maior ou menor, em tamanho, do que o de antes?',
+    escalation: [
+      'Escreva o erro depois do passo como o erro antes vezes um número. Para que valores desse número o erro troca de sinal, e para quais ele fica maior em tamanho?',
+      'Aumente o learning rate aos poucos, refazendo a primeira tarefa a cada vez. Em qual valor o erro depois do passo fica exatamente do tamanho do erro de antes?',
+    ],
+    reviewCycle: 'ai.c8' },
+
+  { id: 'ai.distancia-uma-vez', label: 'Contar a distância uma vez só no passo, e esquecer que ela também decide quanto o peso move a previsão',
+    socraticQuestion: 'Suba o peso em 0,1 e refaça a previsão: quantos dias ela andou? Agora escreva quantos dias a previsão anda num passo inteiro, learning rate vezes o gradient do peso no loss: em quantos lugares dessa conta a distância aparece?',
+    escalation: [
+      'Com o learning rate que você escolheu, dê um passo a partir do peso 0,4 e calcule a previsão e o erro depois dele. O erro ficou menor, em tamanho, do que 1 dia?',
+    ],
+    reviewCycle: 'ai.c8' },
 
   { id: 'ai.passo-com-sinal-trocado', label: 'Somar o gradient ao peso, e andar para o lado em que o loss sobe',
     socraticQuestion: 'Suba o peso um pouco e recalcule o loss. Ele subiu ou desceu, e o passo que você propôs vai para esse lado ou para o oposto?',
@@ -121,10 +140,10 @@ export const aiExercises: Exercise[] = [
       'diz que, com dois neurônios, o modelo faz uma conta que um neurônio só não faz. Calcule z ' +
       'para x = 0, 1 e 2. O que os três valores mostram sobre o que o colega disse?',
     choices: [
-      { correct: true, text: 'Que ele está errado: um neurônio só, z = 2 × x + 2, dá os mesmos três',
-        why: 'Com x = 0, 1 e 2, y vale −2, 2 e 6, e z vale 2, 4 e 6: sobe 2 a cada passo, como uma reta. Trocando y pela conta do primeiro, z = 0,5 × (4 × x − 2) + 3 = 2 × x + 2, um neurônio com peso 2 e bias 2. Sem activation function entre os dois, empilhar só alonga a conta. Com a tanh no meio, z deixaria de ser uma reta, e nenhum neurônio só o reproduziria.' },
-      { correct: false, text: 'Que ele está certo: z sobe cada vez mais, porque a segunda conta multiplica a primeira', misconceptionId: 'ai.empilhar-sem-ativacao' },
-      { correct: false, text: 'Que ele está certo: o segundo neurônio só vê y, nunca x', misconceptionId: 'ai.empilhar-sem-ativacao' },
+      { correct: true, text: 'Valem 2, 4 e 6, como em z = 2 × x + 2, e o colega errou',
+        why: 'Com x = 0, 1 e 2, y vale −2, 2 e 6, e z vale 2, 4 e 6: sobe 2 a cada 1 a mais em x, sempre o mesmo tanto. Trocando y pela conta do primeiro, z = 0,5 × (4 × x − 2) + 3 = 2 × x + 2, um neurônio com peso 2 e bias 2. Sem activation function entre os dois, empilhar só alonga a conta. Com a tanh no meio, z deixaria de subir sempre o mesmo tanto, e nenhum neurônio só o reproduziria.' },
+      { correct: false, text: 'z dá 2, 4 e 8: dobra, e o colega acertou', misconceptionId: 'ai.empilhar-sem-ativacao' },
+      { correct: false, text: 'O colega acertou: z sobe 2 por vez, mas o segundo neurônio nunca vê x, só y', misconceptionId: 'ai.empilhar-sem-ativacao' },
     ],
   },
   {
@@ -230,9 +249,10 @@ export const aiExercises: Exercise[] = [
     kind: 'bug', id: 'ai.e7',
     prompt:
       'Este laço de treino chegou num pull request que reorganiza o que acontece dentro de cada ' +
-      'rodada. O modelo segue o estilo do micrograd: cada parâmetro guarda o gradient num número, ' +
-      'p.grad, e a chamada que limpa os gradients escreve 0 em cada um. Nesse estilo, o laço roda ' +
-      'sem erro. Marque a linha defeituosa e escolha a consequência.',
+      'rodada. O modelo segue o micrograd, uma biblioteca pequena e didática de backpropagation: ' +
+      'cada peso e cada bias (o que model.parameters() devolve) guarda o gradient num número, ' +
+      'p.grad, e a chamada que zera os gradients escreve 0 em cada um. Assim, o laço roda sem ' +
+      'erro. Marque a linha defeituosa e escolha a consequência.',
     language: 'python',
     code: `def train(model, examples, rounds, learning_rate):
     for _ in range(rounds):
@@ -251,7 +271,7 @@ export const aiExercises: Exercise[] = [
     addedLines: [1, 2, 3, 4, 5, 6, 7],
     consequences: [
       { correct: true, text: 'Nenhum peso muda, e o loss fica igual em toda rodada',
-        why: 'zero_grad roda depois de backward e antes da linha que muda o peso: quando o passo lê p.grad, ele já é 0, e p.data − learning_rate × 0 é o próprio p.data. Nenhum erro aparece, porque subtrair zero é uma conta válida. A chamada de zerar limpa o que sobrou da rodada anterior só quando vem antes de backward; depois dele, apaga o gradient desta rodada antes de alguém usá-lo.' },
+        why: 'zero_grad roda depois de backward e antes da linha que muda o peso: quando o passo lê p.grad, ele já é 0, e p.data − learning_rate × 0 é o próprio p.data. Nenhum erro aparece, porque subtrair zero é uma conta válida. A chamada de zerar apaga o que sobrou da rodada anterior só quando vem antes de backward; depois dele, apaga o gradient desta rodada antes de alguém usá-lo.' },
       { correct: false, text: 'O passo usa o gradient da rodada atual, e só ele', misconceptionId: 'ai.zerar-em-qualquer-ponto' },
       { correct: false, text: 'Nenhuma: backward escreve o gradient do zero, e zerar só sobra', misconceptionId: 'ai.grad-acumula-entre-rodadas' },
       { correct: false, text: 'O passo sai certo se backward escrever com = em vez de somar', misconceptionId: 'ai.grad-sobrescrito' },
@@ -260,15 +280,17 @@ export const aiExercises: Exercise[] = [
   {
     kind: 'choice', id: 'ai.e8',
     prompt:
-      'No chamado, o prazo previsto é distância × peso + base. A rota tem distância 5, a base é ' +
-      '1 dia, e a entrega real levou 4 dias. Com peso 0,4 a previsão era 3 dias, e o ajuste ' +
-      'daquela entrega levou o peso a 1,0. Com que peso a previsão dessa rota acerta os 4 dias?',
+      'No chamado, o prazo previsto é distância × peso + base, e o job dá o passo ' +
+      'peso ← peso − learning rate × gradient do peso no loss. A rota tem distância 5, a base é ' +
+      '1 dia, a entrega real levou 4 dias, e com peso 0,4 a previsão era 3. Com learning rate 0,06, ' +
+      'o ajuste daquela entrega levou o erro de 1 dia abaixo para 2 acima. Acima de que learning ' +
+      'rate esse ajuste deixa o erro maior, em tamanho, do que estava antes do passo?',
     choices: [
-      { correct: true, text: '0,6, que leva a previsão a 4 dias',
-        why: '(4 − 1) ÷ 5 = 0,6. Na previsão, o gradient do peso é 5, a distância, então cada 0,1 no peso soma meio dia: faltava 1 dia, e o peso precisava subir 0,2. Com peso 0,4 o loss era 1; com 0,6 ele é zero; com o 1,0 que o ajuste escolheu, 4. O passo de 0,2 sairia de learning rate 0,02 vezes o gradient de 10 no loss; o ajuste usou 0,06, o triplo, foi para o lado certo e passou do ponto.' },
-      { correct: false, text: '1,0, onde o ajuste daquela noite parou', misconceptionId: 'ai.passo-maior-converge-antes' },
-      { correct: false, text: '0,2: o peso tinha de descer', misconceptionId: 'ai.passo-com-sinal-trocado' },
-      { correct: false, text: '5, a distância que o peso multiplica', misconceptionId: 'ai.valor-como-gradient' },
+      { correct: true, text: '0,04, dois terços do que o job usava',
+        why: 'O erro depois do passo é o erro antes vezes (1 − learning rate × 2 × 25). A distância entra duas vezes: uma no gradient do loss, 2 × erro × 5, e outra no quanto o peso move a previsão, 5 dias por unidade de peso. Em 0,04, 2 ÷ 50, o fator vale −1 e o erro só troca de sinal, de 1 dia abaixo para 1 acima. Acima disso o fator fica abaixo de −1 e o erro cresce em tamanho a cada passo; com 0,06 ele é −2. Entre 0,02 e 0,04 o peso passa do ponto e o erro ainda encolhe.' },
+      { correct: false, text: '0,06, o que o job usava', misconceptionId: 'ai.passo-maior-converge-antes' },
+      { correct: false, text: '0,02, o que leva o erro a zero num passo', misconceptionId: 'ai.passar-do-ponto-e-crescer' },
+      { correct: false, text: '0,2, que é 2 ÷ (2 × 5)', misconceptionId: 'ai.distancia-uma-vez' },
     ],
   },
 ]
