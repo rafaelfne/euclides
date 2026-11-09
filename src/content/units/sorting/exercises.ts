@@ -125,7 +125,7 @@ export const sortingExercises: Exercise[] = [
   },
   {
     kind: 'choice', id: 'sorting.e5',
-    prompt: 'Um quicksort recursivo não aloca array nenhum além da entrada. Quanto espaço extra ele usa no pior caso?',
+    prompt: 'Um quicksort recursivo, que chama a si mesmo nas duas partes na ordem em que elas aparecem, não aloca array nenhum além da entrada. Quanto espaço extra ele usa no pior caso?',
     choices: [
       { correct: true, text: 'O(n), na pilha de chamadas',
         why: 'Nenhum array é alocado, e cada chamada aberta ocupa um quadro. Com o pivô no extremo são n chamadas abertas ao mesmo tempo.' },
