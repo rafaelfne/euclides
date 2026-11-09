@@ -33,7 +33,7 @@ export const asymptoticsMisconceptions: Misconception[] = [
   { id: 'asymptotics.pior-caso-e-raro', label: 'Supor que o pior caso é raro por definição',
     socraticQuestion: 'Qual entrada leva um quicksort com pivô no primeiro elemento ao pior caso? Quantas vezes por dia você recebe uma entrada assim?',
     escalation: [
-      'A entrada já ordenada é o pior caso, e é a mais comum de todas. O que "pior caso" está qualificando: a frequência da entrada, ou o custo dela?',
+      'A entrada já ordenada é o pior caso, e é o que sai de qualquer consulta com ORDER BY. O que "pior caso" está qualificando: a frequência da entrada, ou o custo dela?',
     ],
     reviewCycle: 'asymptotics.c5' },
 
@@ -150,12 +150,12 @@ push(value) {
   },
   {
     kind: 'choice', id: 'asymptotics.e6',
-    prompt: 'Você precisa afirmar o custo de um laço simples sobre uma coleção. Qual técnica responde, e o que ela não decide sozinha?',
+    prompt: 'Um laço percorre n pedidos e, a cada rodada, insere um no fim de um array que dobra de capacidade quando enche. Contar as rodadas é a técnica do laço. O que essa contagem não decide sozinha?',
     choices: [
-      { correct: true, text: 'Contar as operações do laço responde limite, regime e unidade de medida',
-        why: 'E cala sobre amortização, que só aparece quando alguma operação redistribui custo ao longo da sequência' },
-      { correct: false, text: 'Só a recorrência responde com rigor; a contagem direta é uma aproximação informal', misconceptionId: 'asymptotics.recorrencia-sem-base' },
-      { correct: false, text: 'A contagem responde as quatro partes: um laço simples não tem nada de amortizado a declarar', misconceptionId: 'asymptotics.amortizado-e-caso-medio' },
+      { correct: true, text: 'O custo de cada inserção, que pede agregar a sequência',
+        why: 'A contagem só vale se toda operação somada custar o mesmo, e aqui algumas inserções copiam o array inteiro. Somar a sequência e dividir pelas n inserções é o que dá o custo de cada uma, e é a única técnica das três que produz a parte da amortização.' },
+      { correct: false, text: 'Nada: toda inserção custa o mesmo, então basta multiplicar pelas n rodadas', misconceptionId: 'asymptotics.amortizado-e-caso-medio' },
+      { correct: false, text: 'O caso médio da inserção, que pede sortear entradas e tirar a média', misconceptionId: 'asymptotics.amortizado-e-caso-medio' },
     ],
   },
 ]

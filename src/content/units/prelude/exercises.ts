@@ -4,13 +4,13 @@ export const preludeMisconceptions: Misconception[] = [
   { id: 'prelude.igualdade-nao-atribuicao', label: 'Ler atribuição como igualdade matemática',
     socraticQuestion: 'Depois de `total ← total + 4`, qual valor fica guardado em total e qual valor antigo foi usado na conta?',
     escalation: [
-      'Comece com total = 10 e faça a conta no papel. O resultado ocupa o mesmo nome ou cria uma comparação entre dois valores?',
+      'Comece com total guardando 10 e faça a conta no papel. O resultado ocupa o mesmo nome ou cria uma comparação entre dois valores?',
       'Escreva os dois estados, antes e depois da seta. O que mudou e o que permaneceu igual?',
     ],
     reviewCycle: 'prelude.c1' },
 
   { id: 'prelude.condicao-e-acao', label: 'Confundir a pergunta com a ação que vem depois',
-    socraticQuestion: 'Na frase “se total ≥ 12, acrescente um selo”, qual parte decide e qual parte só acontece depois?',
+    socraticQuestion: 'Na frase "se total ≥ 12, acrescente um selo", qual parte decide e qual parte só acontece depois?',
     escalation: [
       'Substitua total por 10 e depois por 14. Em qual dos dois casos a ação acontece, e qual símbolo permitiu decidir?',
     ],
@@ -41,29 +41,29 @@ export const preludeMisconceptions: Misconception[] = [
 export const preludeExercises: Exercise[] = [
   {
     kind: 'choice', id: 'prelude.e0',
-    prompt: 'Um e-mail tem um link desconhecido, vem de alguém fora dos contatos e traz uma assinatura conhecida. A regra soma 2, soma 1 e tira 1, nessa ordem. Qual relato explica a decisão?',
+    prompt: 'Outro e-mail tem um link desconhecido e o assunto todo em maiúsculas, sem assinatura. O filtro soma 2 por link desconhecido, tira 1 por assinatura conhecida e dobra por assunto em maiúsculas, nessa ordem. Qual relato explica a decisão?',
     choices: [
-      { correct: true, text: 'Começa em 0, passa por 2 e 3, termina em 2 e vai para spam', why: 'O relato mostra o estado inicial, cada transformação e a decisão que vem depois.' },
-      { correct: false, text: 'Vai para spam ao primeiro sinal; as outras regras não importam', misconceptionId: 'prelude.ordem-ignorada' },
-      { correct: false, text: 'Termina em 3; a assinatura só descreve o e-mail', misconceptionId: 'prelude.condicao-e-acao' },
+      { correct: true, text: 'Começa em 0, vai a 2, dobra para 4 e vai para spam', why: 'O relato mostra o estado inicial, cada transformação na ordem do filtro e a decisão que vem depois. Sem assinatura, a regra que tira 1 não muda nada.' },
+      { correct: false, text: 'Dobra antes de somar: o 0 continua 0, vai a 2 e para no limite do spam', misconceptionId: 'prelude.ordem-ignorada' },
+      { correct: false, text: 'Termina em 2; o assunto em maiúsculas só descreve o e-mail', misconceptionId: 'prelude.condicao-e-acao' },
     ],
   },
   {
     kind: 'choice', id: 'prelude.e1',
-    prompt: 'Comece com total = 0. Depois leia `total ← total + 2` e `se total ≥ 2 então selo ← 1`. Qual afirmação descreve os dois passos?',
+    prompt: 'O procedimento faz `total ← 6` e depois `total ← total + 3`. Qual valor fica guardado em total?',
     choices: [
-      { correct: false, text: 'A segunda linha soma 2 ao total, porque a condição também é uma conta', misconceptionId: 'prelude.condicao-e-acao' },
-      { correct: true, text: 'Muda total; depois pergunta se o novo valor chega a 2', why: 'Uma atribuição transforma o estado. Uma condição apenas escolhe se a ação será executada.' },
-      { correct: false, text: 'As duas linhas apenas conferem valores e nenhuma delas muda o estado', misconceptionId: 'prelude.igualdade-nao-atribuicao' },
+      { correct: false, text: '6: total não pode ser igual a total + 3, então nada muda', misconceptionId: 'prelude.igualdade-nao-atribuicao' },
+      { correct: true, text: '9: a conta usa o 6 guardado, e o resultado fica no lugar dele', why: 'A atribuição calcula o lado direito com o valor que já estava guardado e substitui esse valor pelo resultado.' },
+      { correct: false, text: '3: o nome passa a guardar só o número que aparece na segunda linha', misconceptionId: 'prelude.ordem-ignorada' },
     ],
   },
   {
     kind: 'choice', id: 'prelude.e2',
-    prompt: 'Um procedimento lê pontos enquanto `i < 3`. O que a condição decide?',
+    prompt: 'Comece com `total ← 0`. Depois leia `total ← total + 2` e `se total ≥ 2 então selo ← 1`. Qual afirmação descreve os dois passos?',
     choices: [
-      { correct: false, text: 'Que o corpo deve acontecer exatamente 3 vezes, sem novo teste', misconceptionId: 'prelude.repeticao-automatica' },
-      { correct: false, text: 'Que i recebe o valor 3 antes de ler qualquer ponto', misconceptionId: 'prelude.condicao-e-acao' },
-      { correct: true, text: 'Se existe mais uma rodada para ler um ponto', why: 'A condição é testada antes de cada rodada; o corpo e o avanço de i determinam quando ela fica falsa.' },
+      { correct: false, text: 'A segunda linha soma 2 ao total, porque a condição também é uma conta', misconceptionId: 'prelude.condicao-e-acao' },
+      { correct: true, text: 'Muda total; depois pergunta se o novo valor chega a 2', why: 'Uma atribuição transforma o estado. Uma condição apenas escolhe se a ação será executada.' },
+      { correct: false, text: 'As duas linhas apenas conferem valores e nenhuma delas muda o estado', misconceptionId: 'prelude.igualdade-nao-atribuicao' },
     ],
   },
   {
@@ -95,7 +95,7 @@ export const preludeExercises: Exercise[] = [
   },
   {
     kind: 'choice', id: 'prelude.e4',
-    prompt: 'Comece com total = 0. O procedimento faz `total ← 5` e depois `total ← total + 2`. Qual é o resultado?',
+    prompt: 'Comece com `total ← 0`. O procedimento faz `total ← 5` e depois `total ← total + 2`. Qual é o resultado?',
     choices: [
       { correct: false, text: '2, porque a primeira atribuição deixa de importar quando a segunda começa', misconceptionId: 'prelude.ordem-ignorada' },
       { correct: true, text: '7, porque a segunda conta usa o 5 produzido pela primeira', why: 'A segunda transformação recebe o estado deixado pela primeira; os passos não são independentes.' },

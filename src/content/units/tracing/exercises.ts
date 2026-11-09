@@ -2,7 +2,7 @@ import type { Exercise, Misconception } from '../../schema'
 
 export const tracingMisconceptions: Misconception[] = [
   { id: 'tracing.laco-roda-n-vezes', label: 'Contar rodadas pelo tamanho da coleção em vez de pela condição',
-    socraticQuestion: 'A frase “o laço roda o tamanho da coleção” informa a condição de parada e o passo do índice? Quais evidências ainda faltam para conferir a contagem?',
+    socraticQuestion: 'A frase "o laço roda o tamanho da coleção" informa a condição de parada e o passo do índice? Quais evidências ainda faltam para conferir a contagem?',
     escalation: [
       'Monte dois laços hipotéticos sobre dez elementos: um avança de um em um e outro de dois em dois. A frase sobre o tamanho permite distinguir quantas rodadas cada um faz?',
       'Quando houver código, anote a condição de parada e o passo antes de contar. Qual dessas duas linhas impede que o tamanho sozinho determine as rodadas?',
@@ -126,7 +126,7 @@ export const tracingExercises: Exercise[] = [
   {
     kind: 'trace', id: 'tracing.e5',
     prompt:
-      'Os dois laços continuam enquanto o índice é menor que 10. Escreva, para cada passo, os valores ' +
+      'Os dois laços continuam enquanto o índice é menor que 10; i começa em 0 e j começa em 1. Escreva, para cada passo, os valores ' +
       'que entram no corpo e o primeiro valor recusado pela condição.',
     pseudocode: `i ← 0
 enquanto i < 10 faça

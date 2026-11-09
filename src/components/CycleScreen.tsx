@@ -30,7 +30,8 @@ export function CycleScreen({ unit, cycle, exercise }: { unit: Unit; cycle: Cycl
     .map((id) => allTerms.find((t) => t.id === id))
     .filter((t): t is NonNullable<typeof t> => Boolean(t))
   const tone = BAND_TONE[cycle.band]
-  const firstCycles = unit.number === 1 && unit.cycles.findIndex((c) => c.id === cycle.id) < 3
+  // Uma vez só, no primeiro ciclo: repetido em três ciclos seguidos, virava ruído.
+  const firstCycle = unit.number === 1 && unit.cycles.findIndex((c) => c.id === cycle.id) === 0
 
   const linkable = [...cycle.introducesTerms, ...allTerms.filter((t) => t.id.startsWith('app.')).map((t) => t.id)]
   const remaining = new Set(linkable)
@@ -73,7 +74,7 @@ export function CycleScreen({ unit, cycle, exercise }: { unit: Unit; cycle: Cycl
           </p>
         )}
 
-        {firstCycles && (
+        {firstCycle && (
           <p className="m-0 mb-5 max-w-[820px] text-[13px] leading-relaxed text-fg-4">
             Errar aqui é o esperado: esta unidade tem {unit.misconceptions.length} armadilhas
             catalogadas, escritas antes de você chegar. O app não dá a resposta, dá a tarefa

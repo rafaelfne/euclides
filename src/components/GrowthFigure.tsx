@@ -184,7 +184,7 @@ export function GrowthFigure({ figure }: { figure: Extract<Figure, { kind: 'grow
           ))}
           {razao > 1 && (
             <span className="text-fg-3">
-              {barato.label} custa {razao >= 10 ? Math.round(razao) : razao.toFixed(1)}× menos aqui
+              {barato.label} custa {razao >= 10 ? Math.round(razao) : razao.toFixed(1).replace('.', ',')}× menos aqui
             </span>
           )}
           {razao === 1 && <span className="text-fg-3">empatam aqui</span>}
