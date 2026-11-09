@@ -25,7 +25,7 @@ const render = (buckets: Bucket[]) =>
   buckets
     .map((b, i) => (b.length ? `${i}:[${b.map((p) => p[0]).join(',')}]` : null))
     .filter(Boolean)
-    .join(' ') || '—'
+    .join(' ') || 'vazia'
 
 /**
  * Chaining insertion, one step per key. Parameterised so a figure can be

@@ -23,15 +23,23 @@ export function bstInsertTrace(): TraceStep[] {
   for (const key of SEQUENCE) {
     let comparisons = 0
     let parent: Node | null = null
-    let side = '—'
+    let side = ''
 
     let current = root
+    let existing: Node | null = null
     while (current) {
       comparisons += 1
       parent = current
       if (key < current.key) { side = 'esquerda'; current = current.left }
-      else { side = 'direita'; current = current.right }
+      else if (key > current.key) { side = 'direita'; current = current.right }
+      else { existing = current; break }
     }
+
+    // Chave igual não desce para lado nenhum: o contrato substitui o valor, e a
+    // invariante "toda da direita é maior" continua estrita. Este traço não tem
+    // chave repetida nem coluna para valor, então o ramo existe para o gerador
+    // obedecer ao mesmo pseudocódigo, não para produzir linha.
+    if (existing) throw new Error(`trees.e1: chave ${key} repetida, o traço não tem como mostrar a substituição`)
 
     const node: Node = { key, left: null, right: null }
     if (!parent) root = node

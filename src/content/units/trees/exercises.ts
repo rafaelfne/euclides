@@ -5,7 +5,7 @@ export const treesMisconceptions: Misconception[] = [
     socraticQuestion: 'Insira 1, 2, 3, 4 e 5 numa árvore de busca vazia, nessa ordem. Que altura sobrou?',
     escalation: [
       'Cada nó ficou à direita do anterior. Quantos nós a busca por 5 precisa visitar, e isso se parece com log n ou com n?',
-      'Agora repare de onde veio essa entrada: uma coleção já ordenada. Ela é rara no seu sistema, ou é a mais comum de todas?',
+      'Agora repare de onde veio essa entrada: uma coleção já ordenada. Quantas tabelas do seu sistema têm uma chave que só cresce, como um id sequencial ou uma data de criação?',
     ],
     reviewCycle: 'trees.c2' },
 
@@ -37,10 +37,11 @@ export const treesMisconceptions: Misconception[] = [
     ],
     reviewCycle: 'trees.c1' },
 
-  { id: 'trees.arvore-substitui-hash', label: 'Trocar tabela hash por árvore sem contar o que se perde',
-    socraticQuestion: 'Numa carga em que a única operação é obter por chave exata, milhões de vezes por minuto, o que a árvore cobra a mais que a tabela hash?',
+  { id: 'trees.arvore-substitui-hash', label: 'Escolher entre tabela hash e árvore sem listar as consultas',
+    socraticQuestion: 'Escreva, uma por linha, as consultas que esta carga faz. Alguma delas pede mínimo, faixa ou ordem de chave?',
     escalation: [
-      'Uma responde em uma conta, a outra em log n comparações. Se nenhuma consulta pede ordem, o que a ordem está comprando?',
+      'Se alguma pede: escreva essa consulta usando só as quatro operações do Map. Quantas chaves você precisou olhar?',
+      'Se nenhuma pede: a árvore responde obter em log n comparações e a tabela hash em uma conta. O que a ordem está comprando nessa carga?',
     ],
     reviewCycle: 'trees.c6' },
 ]
@@ -50,8 +51,8 @@ export const treesExercises: Exercise[] = [
     kind: 'choice', id: 'trees.e0',
     prompt: 'O contrato SortedMap acrescenta ordem ao que o Map já respondia. O que exatamente ele passa a responder, e sobre o quê?',
     choices: [
-      { correct: true, text: 'Mínimo, máximo e faixa',
-        why: 'Sobre as chaves, que são o que a estrutura compara. Sobre os valores ele não afirma nada' },
+      { correct: true, text: 'Mínimo, máximo e faixa, sobre as chaves',
+        why: 'As chaves são o que a estrutura compara. Sobre os valores ele não afirma nada.' },
       { correct: false, text: 'Mínimo, máximo e faixa sobre chaves e valores: percorrer em ordem devolve os dois ordenados', misconceptionId: 'trees.arvore-ordena-valores' },
       { correct: false, text: 'As mesmas perguntas do Map, respondidas em O(log n) em vez de O(1)', misconceptionId: 'trees.arvore-substitui-hash' },
     ],
@@ -59,16 +60,19 @@ export const treesExercises: Exercise[] = [
   {
     kind: 'trace', id: 'trees.e1',
     prompt:
-      'Insira 50, 30, 70, 20, 40 e 35 numa árvore de busca vazia, nessa ordem e sem balanceamento. ' +
+      'Insira as chaves 50, 30, 70, 20, 40 e 35 numa árvore de busca vazia, nessa ordem e sem ' +
+      'balanceamento; o valor de cada par não entra no traço. ' +
       'Para cada inserção: quantas comparações foram feitas, de quem o novo nó virou filho, de que ' +
       'lado, e qual a altura da árvore depois.',
-    pseudocode: `função inserir(T, chave)
+    pseudocode: `função inserir(T, chave, valor)
     se T é vazia então
-        retorne novo nó com chave
+        retorne novo nó com chave, valor
     se chave < T.chave então
-        T.esquerda ← inserir(T.esquerda, chave)
+        T.esquerda ← inserir(T.esquerda, chave, valor)
+    senão se chave > T.chave então
+        T.direita ← inserir(T.direita, chave, valor)
     senão
-        T.direita ← inserir(T.direita, chave)
+        T.valor ← valor
     retorne T`,
     invariant: 'Para todo nó, toda chave da subárvore esquerda é menor que a dele, e toda da direita é maior.',
     columns: [

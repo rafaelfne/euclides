@@ -54,7 +54,13 @@ export const hashGlossary: GlossaryTerm[] = [
   { id: 'pigeonhole', canonical: 'princípio da casa dos pombos', canonicalLanguage: 'pt',
     alsoKnownAs: ['pigeonhole principle'],
     definition: 'Se há mais itens que compartimentos, algum compartimento recebe mais de um item.',
-    isNot: ['não é uma heurística, é uma demonstração'],
+    isNot: ['não é uma heurística, é uma demonstração', 'não explica as colisões de uma tabela que cresce antes de encher: ali elas vêm do paradoxo do aniversário'],
+    falseFriends: [], introducedIn: 'hash.c2' },
+
+  { id: 'birthday-paradox', canonical: 'paradoxo do aniversário', canonicalLanguage: 'pt',
+    alsoKnownAs: ['problema do aniversário', 'birthday paradox', 'birthday problem'],
+    definition: 'Com itens espalhados ao acaso entre muitos compartimentos, a primeira repetição aparece por volta da raiz quadrada do número de compartimentos, muito antes de eles acabarem.',
+    isNot: ['não é paradoxo de lógica, é uma conta de probabilidade que contraria a intuição', 'não precisa de mais itens que compartimentos, que é a casa dos pombos'],
     falseFriends: [], introducedIn: 'hash.c2' },
 
   { id: 'bucket', canonical: 'bucket', canonicalLanguage: 'en',
@@ -386,12 +392,18 @@ export const linearGlossary: GlossaryTerm[] = [
   { id: 'node', canonical: 'nó', canonicalLanguage: 'pt',
     alsoKnownAs: ['node'],
     definition: 'A caixa que guarda um elemento e o ponteiro para a próxima caixa.',
-    isNot: ['não é o elemento, é o que o embrulha, e é ele que precisa estar em mãos para a religação ser barata'],
+    isNot: ['não é o elemento, é o que o embrulha', 'não basta ter o nó em mãos para removê-lo de uma lista ligada simples: quem precisa estar em mãos é o anterior'],
     falseFriends: [
       { context: 'infraestrutura', meaning: 'um nó de cluster é uma máquina. Homônimo total, e frequente na mesma conversa.' },
       { context: 'Node.js', meaning: 'nome de um runtime. Nenhuma relação.' },
       { context: 'redes neurais, unidade 09', meaning: 'cada conta intermediária, uma soma ou um produto, é um nó da conta. Não guarda ponteiro para uma próxima caixa: guarda um valor e um gradient.' },
     ], introducedIn: 'linear.c4' },
+
+  { id: 'doubly-linked-list', canonical: 'lista duplamente ligada', canonicalLanguage: 'pt',
+    alsoKnownAs: ['lista duplamente encadeada', 'doubly linked list'],
+    definition: 'Lista ligada em que cada nó aponta para o próximo e também para o anterior.',
+    isNot: ['não é a lista ligada simples, em que ter o nó em mãos não dá o anterior', 'não é de graça: paga um ponteiro a mais por nó, e toda religação mexe nos dois sentidos'],
+    falseFriends: [], introducedIn: 'linear.c4' },
 
   { id: 'cache-locality', canonical: 'localidade de cache', canonicalLanguage: 'pt',
     alsoKnownAs: ['cache locality', 'localidade de referência'],

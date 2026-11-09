@@ -50,7 +50,7 @@ chaining.
 |---|---|---|---|
 | c0 | contrato | O contrato, antes da estrutura | tipo abstrato de dados, Map |
 | c1 | implementação | A aposta: transformar chave em endereço | função de hash |
-| c2 | implementação | Colisão é matemática, não defeito | colisão, casa dos pombos |
+| c2 | implementação | Colisão é matemática, não defeito | colisão, casa dos pombos, paradoxo do aniversário |
 | c3 | implementação | Chaining e a invariante de posição | bucket, chaining, invariante de posição |
 | c4 | custo | Load factor: pares por bucket | load factor |
 | c5 | implementação | Rehash e o custo amortizado | rehash, amortizado |

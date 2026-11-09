@@ -1,13 +1,16 @@
 import type { Exercise, Misconception } from '../../schema'
 
 export const hashMisconceptions: Misconception[] = [
-  { id: 'hash.o1-sem-qualificar', label: '“Hash é O(1)” sem qualificar',
+  { id: 'hash.o1-sem-qualificar', label: '"Hash é O(1)" sem qualificar',
     socraticQuestion: 'Construa uma sequência de cinco chaves que caem no mesmo bucket. Qual o custo da busca depois disso?',
     escalation: ['Você acabou de construir o pior caso. Ele contradiz a afirmação, ou ela estava incompleta desde o começo?'],
     reviewCycle: 'hash.c6' },
   { id: 'hash.colisao-e-bug', label: 'Colisão tratada como defeito da função',
     socraticQuestion: 'Quantas strings existem? Quantos buckets você tem?',
-    escalation: ['Uma função de um conjunto infinito para um conjunto finito pode ser injetiva?'],
+    escalation: [
+      'Uma função de um conjunto infinito para um conjunto finito pode dar um endereço diferente para cada elemento?',
+      'Agora uma tabela que nunca enche: 1000 buckets e 38 chaves espalhadas ao acaso. Multiplique 999/1000 por 998/1000 e siga até 963/1000. O resultado é a chance de nenhuma colisão; ela passa de metade?',
+    ],
     reviewCycle: 'hash.c2' },
   { id: 'hash.rehash-copia-buckets', label: 'Rehash copia buckets em vez de reinserir',
     socraticQuestion: 'Reescreva a invariante de posição trocando m por 2m. Ela continua valendo para os pares que você copiou?',
@@ -29,7 +32,7 @@ export const hashMisconceptions: Misconception[] = [
     escalation: ['O que precisaria ficar na posição 5 para a sondagem não parar ali?'],
     reviewCycle: 'hash.c7' },
   { id: 'hash.ordem', label: 'Tabela hash usada onde a consulta precisa de ordem',
-    socraticQuestion: 'Escreva “os vinte mais antigos” usando apenas as quatro operações do contrato Map. Qual o custo?',
+    socraticQuestion: 'Escreva "os vinte mais antigos" usando apenas as quatro operações do contrato Map. Qual o custo?',
     escalation: ['Se a única saída é varrer tudo, o contrato cobre essa pergunta ou você está pedindo algo que ele nunca prometeu?'],
     reviewCycle: 'hash.c8' },
 ]
@@ -63,8 +66,8 @@ export const hashExercises: Exercise[] = [
     kind: 'choice', id: 'hash.e1b',
     prompt: 'Duas chaves diferentes produziram o mesmo endereço. O que isso indica?',
     choices: [
-      { correct: true, text: 'Que o domínio das chaves é maior que o número de endereços',
-        why: 'Nenhuma função de hash escapa disso' },
+      { correct: true, text: 'Nada de anormal: toda função de hash produz colisões',
+        why: 'As chaves possíveis são infinitas e os endereços são finitos, então nenhuma função dá um endereço só para cada chave. E elas chegam cedo: com 1000 buckets, 38 chaves espalhadas ao acaso já colidem em mais da metade das vezes, com a tabela quase vazia.' },
       { correct: false, text: 'Que a função de hash está mal escolhida e deveria ser trocada', misconceptionId: 'hash.colisao-e-bug' },
       { correct: false, text: 'Que a tabela precisa ser redimensionada imediatamente', misconceptionId: 'hash.load-factor-memoria' },
     ],
@@ -121,10 +124,10 @@ export const hashExercises: Exercise[] = [
     kind: 'choice', id: 'hash.e2a',
     prompt: 'As duas tabelas guardam as chaves 0 a 7. Em A, h(k) = k mod 8; em B, h(k) = 0. O que muda ao buscar 7?',
     choices: [
-      { correct: true, text: 'Na entrada B, a busca compara até 8 chaves',
+      { correct: true, text: 'Na tabela B, a busca compara até 8 chaves',
         why: 'O endereço leva ao bucket em um passo, mas a busca ainda percorre o conteúdo daquele bucket.' },
       { correct: false, text: 'Nada: as duas buscas custam uma operação', misconceptionId: 'hash.o1-sem-qualificar' },
-      { correct: false, text: 'A entrada B não pode existir numa tabela hash', misconceptionId: 'hash.colisao-e-bug' },
+      { correct: false, text: 'A função de B não pode existir numa tabela hash', misconceptionId: 'hash.colisao-e-bug' },
     ],
   },
   {

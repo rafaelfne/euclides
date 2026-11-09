@@ -111,8 +111,9 @@ export const linearUnit: Unit = {
           useInstead: 'array dinâmico, onde o percurso não sai do bloco' },
       ],
       everydayAnchor:
-        'É a outra metade de uma LRU cache: a tabela hash acha o item em O(1) e entrega o nó, e ' +
-        'com o nó em mãos a lista ligada o move para a frente sem varrer nada.',
+        'É a outra metade de uma LRU cache: a tabela hash acha o item em O(1) no caso médio e ' +
+        'entrega o nó, e a lista, duplamente ligada para que o nó conheça o anterior, o move para ' +
+        'a frente sem varrer nada.',
       invariant: 'Seguindo o ponteiro do próximo a partir da cabeça, chega-se a todos os nós exatamente uma vez.',
     },
   ],
@@ -123,9 +124,9 @@ export const linearUnit: Unit = {
       oneLine: "A lista responde \"o que está na posição 3\", nunca \"onde está o valor 3\".",
       plainly:
         'Uma fila de jobs guarda o primeiro, o segundo e o terceiro pedido. Ela responde rápido ' +
-        'ao pedido “o que está na posição três?”. Mas, se a pergunta virar “onde está o job da ' +
-        'cliente Ana?”, ela precisa olhar um por um. A forma de guardar dados responde bem a certas ' +
-        'perguntas, mas não promete responder a outras.',
+        'quando a pergunta é o que está na posição três. Se a pergunta virar onde está o job da ' +
+        'cliente Ana, ela precisa olhar um por um. A forma de guardar responde bem a certas ' +
+        'perguntas e não promete responder a outras.',
       body: [
         'Uma lista é uma sequência de elementos em posições, e as 4 operações são todas sobre posição: obter, inserir, remover, tamanho.',
         'A lista do que ela não promete é curta e cara: onde está um valor, se um valor existe, qual é o menor, quais estão numa faixa. Nada disso sai das quatro operações sem percorrer tudo. Guarde essa ausência, a unidade seguinte existe para prometer a primeira delas.',
@@ -155,20 +156,20 @@ export const linearUnit: Unit = {
 
     { id: 'linear.c1', title: 'Pilha: o que sobra quando só uma ponta é acessível', layer: 'essential', band: 'contract',
       introducesTerms: ['stack'],
-      oneLine: "Numa pilha só a última ponta é acessível, e as duas operações custam 1.",
+      oneLine: "Numa pilha só a última ponta é acessível, e nenhuma operação desloca elemento.",
       plainly:
         'Uma tela abre outra tela, que abre outra. Ao apertar voltar, a última tela aberta precisa ' +
         'sair primeiro. Esse é o comportamento de uma pilha: só a ponta mais recente está ' +
         'disponível. É ótimo para desfazer uma sequência; é ruim quando você precisa tirar algo que ' +
         'ficou no meio.',
       body: [
-        'Uma pilha é a lista com uma restrição: só a última ponta é acessível. Empilhar põe no fim, desempilhar tira do fim, e as 2 custam 1 operação, obter por posição não existe.',
-        'A restrição não é uma perda, é o que torna as duas operações constantes em qualquer implementação, e é o que permite a quem lê o código saber, sem verificar, que ninguém vai varrer a coleção.',
+        'Uma pilha é a lista com uma restrição: só a última ponta é acessível. Empilhar põe no fim, desempilhar tira do fim, e obter por posição não existe. Nenhuma das 2 operações desloca elemento algum.',
+        'A restrição não é uma perda. Ela tira das duas operações qualquer dependência do tamanho. Se cada elemento guarda onde está o de baixo, as duas custam 1 passo no pior caso. Num bloco que dobra quando enche, desempilhar custa 1 passo e empilhar custa O(1) amortizado: quase sempre 1 escrita e, de vez em quando, a cópia do bloco inteiro, como a unidade 2 mostrou. E a restrição deixa quem lê o código saber, sem verificar, que ninguém vai varrer a coleção.',
         'Ela é o contrato que a execução de todo programa usa: a call stack empilha um quadro por chamada aberta, e é por isso que uma recursão profunda demais estoura, a pilha tem fundo.',
       ],
       workedExample: {
         problem: "Empilhe 3 quadros de chamada e desempilhe: sai o terceiro, o segundo, o primeiro. Uma recursão de 100 mil níveis empilha 100 mil quadros e estoura.",
-        whatToNotice: "Nenhuma das operações percorreu nada. É a restrição que garante isso, com acesso ao meio, não haveria como prometer custo 1.",
+        whatToNotice: "Nenhuma das operações percorreu nada. É a restrição que garante isso: com acesso ao meio, não haveria como prometer que nenhuma operação depende do tamanho.",
       },
       exerciseId: 'linear.e1' },
 
@@ -176,12 +177,13 @@ export const linearUnit: Unit = {
       introducesTerms: ['queue'],
       oneLine: "A fila devolve A, B, C onde a pilha devolve B, C, A.",
       plainly:
-        'Chegam pedidos A, B e C para um worker. Se ele atende quem chegou primeiro, a ordem é A, ' +
-        'depois B, depois C. Se ele atende o mais recente, a ordem muda por completo. As duas ' +
-        'formas guardam os mesmos pedidos; a diferença está em qual extremidade entrega o próximo.',
+        'Um worker atende pedidos um de cada vez enquanto outros continuam chegando. Atender ' +
+        'sempre quem chegou primeiro ou sempre o mais recente não muda quais pedidos estão ' +
+        'guardados, e muda a ordem em que eles saem. A diferença está em qual ponta entrega o ' +
+        'próximo.',
       body: [
         'Uma fila restringe a outra ponta: entra no fim, sai do começo. Parece a pilha invertida, e com 3 elementos já dá para ver que não é.',
-        'A diferença aparece assim que as operações são intercaladas. Empilhe A, empilhe B, tire um, empilhe C, tire tudo: a pilha devolve B, C, A. A fila, com as mesmas operações, devolve A, B, C. Uma não é o inverso da outra; elas respondem a perguntas diferentes.',
+        'Se tudo entra antes de qualquer saída, a fila devolve a ordem de chegada e a pilha devolve a mesma ordem de trás para frente, e a confusão nasce aí. Basta intercalar entradas e saídas para as duas saídas deixarem de ser uma o inverso da outra, como o exemplo abaixo mostra. Elas respondem a perguntas diferentes.',
         'E é aqui que o problema motivador desta unidade mora: a fila é o contrato que o worker de jobs quer, e implementá-la com remoção da posição 0 de um array é escolher a implementação errada para o contrato certo.',
       ],
       workedExample: {
@@ -224,26 +226,28 @@ export const linearUnit: Unit = {
       exerciseId: 'linear.e3' },
 
     { id: 'linear.c4', title: 'Lista ligada e o nó em mãos', layer: 'essential', band: 'implementation', elaborates: 'linked-list',
-      introducesTerms: ['linked-list', 'node'],
-      oneLine: "Religar dois ponteiros custa 1; chegar até o nó certo pode custar 500.",
+      introducesTerms: ['linked-list', 'node', 'doubly-linked-list'],
+      oneLine: "Religar um ponteiro custa 1; chegar até o nó anterior pode custar 500.",
       plainly:
-        'Você já está parado no item certo de uma fila encadeada e quer retirar esse item. Basta ' +
-        'ligar o anterior ao próximo. Mas chegar até ele pode exigir atravessar quinhentos itens, ' +
-        'um por um. Mudar o trecho local é barato; descobrir onde mexer pode ser a parte cara.',
+        'Numa corrente de itens em que cada um só conhece o seguinte, retirar um item é ligar o ' +
+        'anterior dele ao seguinte. Parado no anterior, é um passo. Mas chegar até ele pode exigir ' +
+        'atravessar quinhentos itens, um por um. Mudar o trecho local é barato; descobrir onde ' +
+        'mexer é a parte cara.',
       body: [
         'A segunda implementação abre mão do bloco: cada elemento mora num nó que aponta para o próximo. Nada precisa andar uma casa, porque nada é vizinho de nada por endereço.',
-        'Isso troca um custo por outro. Religar dois ponteiros é constante, mas chegar até o nó certo é percorrer. "Remoção é O(1) numa lista ligada" é verdade **depois** que alguém pagou para achar o nó, e a operação que se pede na prática é "remova o valor X", que inclui a busca.',
+        'Isso troca um custo por outro. Religar um ponteiro é constante, mas chegar até o nó certo é percorrer, e o nó certo para remover é o **anterior**: é o ponteiro dele que muda. "Remoção é O(1) numa lista ligada" é verdade **depois** que alguém pagou para chegar ao anterior, e a operação que se pede na prática é "remova o valor X", que inclui a busca.',
+        'Ter em mãos o próprio nó de X não basta quando cada nó só aponta para o próximo: o anterior continua a uma busca de distância. Na lista duplamente ligada, em que cada nó aponta também para o anterior, o nó em mãos basta, e a remoção é O(1) a partir dele. Ela paga por isso um ponteiro a mais por nó.',
         'A operação que a lista ligada realmente perde é obter por posição. Não há conta que dê o endereço da posição 500: só existe seguir quinhentos ponteiros.',
       ],
       figure: {
         kind: 'linked-list-removal',
         values: ['A', 'B', 'C', 'X', 'D'],
         targetIndex: 3,
-        caption: 'Para remover X, quatro nós são visitados antes de uma única religação. Numa lista de mil nós, a figura repete o mesmo salto até mil vezes; a parte local continua sendo uma operação.',
+        caption: 'Para remover X, quatro nós são visitados antes de uma única religação, e ela muda o ponteiro do anterior, C. Numa lista de mil nós, a figura repete o mesmo salto até mil vezes; a parte local continua sendo uma operação.',
       },
       workedExample: {
-        problem: 'Para remover o valor X de mil nós, percorra até mil e religue dois ponteiros. Com o nó de X já em mãos, resta apenas a religação.',
-        whatToNotice: 'A mudança local é a mesma nos dois casos. O custo linear pertence à busca pelo nó, não à religação.',
+        problem: 'Para remover o valor X de mil nós, percorra até mil, parando no nó cujo próximo é X, e religue um ponteiro: o próximo desse anterior passa a ser o nó depois de X. Com o anterior já em mãos, resta apenas a religação.',
+        whatToNotice: 'A mudança local é a mesma nos dois casos. O custo linear pertence à busca pelo anterior, não à religação.',
       },
       exerciseId: 'linear.e4' },
 
@@ -251,10 +255,10 @@ export const linearUnit: Unit = {
       introducesTerms: ['cache-locality'],
       oneLine: "Ler um endereço traz os vizinhos junto, e a tabela de custos não conta isso.",
       plainly:
-        'Duas formas de guardar uma lista podem ter a mesma tabela de custos no papel. Na máquina, ' +
-        'uma delas mantém dados vizinhos juntos e a outra espalha cada item em um lugar diferente. ' +
-        'Ler um item pode trazer vários vizinhos úteis de uma vez, ou exigir buscar outra região da ' +
-        'memória a cada salto.',
+        'Percorrer a lista inteira custa, no papel, um passo por item, esteja ela guardada em bloco ' +
+        'ou em nós ligados. Na máquina, o bloco mantém vizinhos juntos e os nós espalham cada item ' +
+        'num lugar diferente. Ler um item pode trazer vários vizinhos úteis de uma vez, ou exigir ' +
+        'buscar outra região da memória a cada salto.',
       body: [
         'Pela tabela, a lista ligada ganha em inserção e a escolha parece decidida. Na prática, somar 1 milhão de inteiros num bloco contíguo costuma terminar em uma fração do tempo de percorrer os mesmos 1 milhão em nós ligados, e o motivo não aparece em notação O.',
         'Ler um endereço traz os vizinhos junto. Percorrer um bloco contíguo aproveita isso a cada passo; percorrer uma lista ligada salta para endereços quaisquer, e cada salto pode não aproveitar nada.',
@@ -270,8 +274,8 @@ export const linearUnit: Unit = {
       introducesTerms: [],
       oneLine: "A lista é a escolha errada quando a pergunta é por valor, não por posição.",
       plainly:
-        'Você guarda pedidos numa sequência e depois precisa responder “existe um pedido com este ' +
-        'código?”. A sequência sabe responder por posição, não por valor. Ela pode procurar, mas ' +
+        'Você guarda pedidos numa sequência e depois precisa saber se existe um pedido com este ' +
+        'código. A sequência sabe responder por posição, não por valor. Ela pode procurar, mas ' +
         'terá de olhar até encontrar ou acabar. Quando a pergunta principal é por valor, a estrutura ' +
         'certa começa na próxima unidade.',
       body: [

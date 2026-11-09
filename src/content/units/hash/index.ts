@@ -17,8 +17,8 @@ export const hashUnit: Unit = {
     'Lista ligada e o custo de percorrê-la',
   ],
   motivatingProblem:
-    'Dez milhões de e-mails cadastrados. A cada signup é preciso responder “esse e-mail já ' +
-    'existe?” em tempo que não cresça com o cadastro. Array não ordenado responde em O(n); ' +
+    'Dez milhões de e-mails cadastrados. A cada signup é preciso responder "esse e-mail já ' +
+    'existe?" em tempo que não cresça com o cadastro. Array não ordenado responde em O(n); ' +
     'array ordenado responde em O(log n) mas insere em O(n). Nenhum dá O(1). ' +
     'Por que não dá, e o que teria que ser verdade para dar?',
 
@@ -84,7 +84,7 @@ export const hashUnit: Unit = {
       ],
       everydayAnchor:
         'É por isso que o índice padrão do PostgreSQL é B-tree e não hash: índice hash ' +
-        'responde “=” e nada mais. Quem já viu uma consulta com ORDER BY ignorar um índice ' +
+        'responde "=" e nada mais. Quem já viu uma consulta com ORDER BY ignorar um índice ' +
         'viu esta limitação na prática.',
       invariant: 'Todo par (k, v) armazenado em bucket[i] satisfaz h(k) mod m = i.',
     },
@@ -134,7 +134,7 @@ export const hashUnit: Unit = {
         'responder e quais perguntas ele pode recusar.',
       body: [
         'Antes de qualquer estrutura, o contrato. Um Map associa chave a valor e oferece 4 operações, e é tudo o que ele oferece.',
-        'O que interessa aqui não é a lista de operações; é a lista do que o contrato NÃO cobre. Ordem não está lá. Nem mínimo, nem faixa, nem “os vinte primeiros”. Guarde essa ausência: no último ciclo ela volta como a resposta inteira.',
+        'O que interessa aqui não é a lista de operações; é a lista do que o contrato NÃO cobre. Ordem não está lá. Nem mínimo, nem faixa, nem "os vinte primeiros". Guarde essa ausência: no último ciclo ela volta como a resposta inteira.',
       ],
       figure: {
         kind: 'concept-flow',
@@ -182,33 +182,31 @@ export const hashUnit: Unit = {
       exerciseId: 'hash.e1a' },
 
     { id: 'hash.c2', title: 'Colisão é matemática, não defeito', layer: 'essential', band: 'implementation', elaborates: 'chaining',
-      introducesTerms: ['collision', 'pigeonhole'],
-      oneLine: "Com 4 buckets e 5 chaves, duas colidem. Não há h que evite isso.",
+      introducesTerms: ['collision', 'pigeonhole', 'birthday-paradox'],
+      oneLine: "Com 1000 buckets e só 38 chaves, a chance de alguma colisão já passa de 50%.",
       plainly:
-        'Você tem quatro gavetas e precisa guardar cinco documentos. Mesmo que escolha os números ' +
-        'das gavetas com cuidado, dois documentos terão de dividir uma delas. Isso não é falha do ' +
-        'cálculo nem azar dos documentos: há mais coisas para guardar do que destinos possíveis. O ' +
-        'sistema precisa decidir o que fazer quando isso acontece.',
+        'Há mais e-mails possíveis do que lugares em qualquer tabela, então dois deles vão acabar ' +
+        'no mesmo lugar, escolha a conta como quiser. E isso não espera a tabela encher: acontece ' +
+        'com ela quase vazia. O sistema precisa decidir o que fazer quando dois caem juntos.',
       body: [
-        'Quantas strings existem? Quantos buckets você tem? Com 1000 buckets e 1001 chaves distintas, pelo menos 2 caem no mesmo lugar, e isso vale para qualquer h que se escreva.',
-        'Isso muda o problema: não se trata de evitar colisão, e sim de decidir o que fazer quando ela ocorre.',
+        'Quantas strings existem? Quantos buckets você tem? As chaves possíveis são infinitas e os buckets são finitos, então nenhuma h consegue mandar cada chave para um lugar só dela: com 1000 buckets e 1001 chaves distintas, pelo menos 2 caem no mesmo lugar, para qualquer h que se escreva. É o princípio da casa dos pombos, e ele explica por que colisão é inevitável em princípio.',
+        'Só que uma tabela de verdade cresce antes de encher, e por isso quase nunca guarda mais chaves que buckets. Ela colide mesmo assim, e cedo. Com 1000 buckets e chaves espalhadas ao acaso, a chance de as 38 primeiras caírem em 38 buckets diferentes já é menor que 50%. É a conta do paradoxo do aniversário: numa sala com 23 pessoas, é mais provável que duas façam aniversário no mesmo dia do que nenhuma, com 365 dias para escolher.',
+        'Isso muda o problema: não se trata de evitar colisão, e sim de decidir o que fazer quando ela ocorre, desde as primeiras chaves.',
       ],
       workedExample: {
-        problem: "Existem infinitas strings possíveis e uma tabela tem, digamos, 1000 buckets. Guardando 1001 chaves distintas, pelo menos duas caem no mesmo bucket, para qualquer h que se escreva.",
-        whatToNotice: "Repare que o argumento não olha para a função h. Colisão é consequência de contar, não de escolher mal.",
+        problem: "Com 1000 buckets e chaves espalhadas ao acaso, a chance de 38 chaves ocuparem 38 buckets diferentes é o produto da chance de cada uma achar um lugar livre: 999/1000 para a segunda, 998/1000 para a terceira, e assim até 963/1000 para a 38ª. O produto dá 0,49, então a chance de alguma colisão é 0,51.",
+        whatToNotice: "Com 38 chaves, menos de 4% dos buckets estão ocupados, e uma colisão já é mais provável que nenhuma. O argumento não olha para a função h: colisão é consequência de contar, não de escolher mal.",
       },
       exerciseId: 'hash.e1b' },
 
     { id: 'hash.c3', title: 'Chaining e a invariante de posição', layer: 'essential', band: 'implementation', elaborates: 'chaining',
       introducesTerms: ['bucket', 'chaining', 'position-invariant'],
-      oneLine: "Todo par no bucket i satisfaz h(k) mod m = i, e é isso que o rehash quebra.",
+      oneLine: "Todo par no bucket i satisfaz h(k) mod m = i; mudar m quebra isso, e o rehash restaura.",
       plainly:
-        'Você tem os e-mails já cadastrados e precisa responder "esse e-mail já existe?" sem ' +
-        'percorrer todos. A saída é calcular, a partir do próprio e-mail, um número que diz ' +
-        'onde procurar. Dois e-mails diferentes podem dar o mesmo número; quando isso ' +
-        'acontece, aquele lugar guarda os dois e a busca compara um por um só ali dentro. A ' +
-        'conta que escolhe o lugar é sempre uma; o que varia é quantos vizinhos caíram no ' +
-        'mesmo lugar.',
+        'Quando dois e-mails caem no mesmo lugar, aquele lugar guarda os dois, e a busca compara ' +
+        'um por um só ali dentro. A conta que escolhe o lugar é sempre uma; o que varia é quantos ' +
+        'vizinhos caíram junto. E a conta só acha o e-mail se ele continuar morando no lugar que ' +
+        'ela aponta.',
       body: [
         'Cada bucket guarda a lista dos pares que colidiram ali. A busca calcula o endereço 1 vez e depois compara chaves dentro do bucket, 3 chaves no bucket são 3 comparações.',
         'Há uma regra simples: uma chave precisa continuar no bucket indicado pela conta. A escrita h(k) mod m = i apenas registra essa regra; ela recebe o nome de invariante de posição.',
@@ -236,10 +234,10 @@ export const hashUnit: Unit = {
       introducesTerms: ['load-factor'],
       oneLine: "Com m = 1000 e n = 750, α é 0,75 e centenas de buckets ainda estão vazios.",
       plainly:
-        'Uma tabela pode ter mil lugares e setecentos e cinquenta pares guardados. Em média, ela ' +
-        'ainda está folgada, embora muitas posições estejam vazias e algumas já tenham mais de um ' +
-        'par. O número útil não é só quantos pares existem nem só quantos lugares existem: é quanto ' +
-        'um está ocupando do outro.',
+        'Uma tabela tem mil lugares e setecentos e cinquenta pares guardados. Isso não quer dizer ' +
+        'setecentos e cinquenta lugares ocupados: centenas continuam vazios, e outros guardam dois ' +
+        'pares ou mais. O número útil não é quantos lugares estão ocupados; é a razão entre pares ' +
+        'e lugares.',
       body: [
         'O load factor é a razão α = n/m entre pares armazenados e posições disponíveis. Com chaining ele pode passar de 1 sem que nada quebre.',
         'Ele não diz quantos buckets estão ocupados. Se dois pares caem juntos, um bucket continua vazio. O número serve para decidir quando a tabela precisa crescer.',
@@ -286,7 +284,7 @@ export const hashUnit: Unit = {
         'Quando as chaves ficam bem espalhadas, essa lista costuma ser curta. Quando muitas caem ' +
         'juntas, a lista cresce e a busca cresce com ela.',
       body: [
-        'Por isso a afirmação útil é: buscar custa O(1) no caso médio quando as chaves ficam bem distribuídas. A hipótese “chaves bem distribuídas” recebe o nome de hashing uniforme.',
+        'Por isso a afirmação útil é: buscar custa O(1) no caso médio quando as chaves ficam bem distribuídas. A hipótese "chaves bem distribuídas" recebe o nome de hashing uniforme.',
         'No pior caso, as n chaves caem no mesmo bucket e a busca custa O(n). Primeiro escolha o caso que precisa garantir; depois escreva o custo.',
       ],
       workedExample: {
@@ -308,11 +306,10 @@ export const hashUnit: Unit = {
       introducesTerms: ['open-addressing', 'probing', 'clustering', 'tombstone'],
       oneLine: "Se 3 chaves querem a posição 0, elas ocupam 0, 1 e 2.",
       plainly:
-        'Três chaves querem a posição 0. A primeira ocupa 0; as seguintes procuram 1 e 2 no próprio ' +
-        'array. Quando o lugar calculado já está ocupado, a tabela ' +
-        'procura o próximo disponível. Isso evita listas separadas, mas deixa marcas no caminho. Se ' +
-        'apagar um item simplesmente esvaziando a posição, uma busca pode parar cedo e concluir que ' +
-        'um item posterior não existe.',
+        'Quando o lugar calculado já está ocupado, a tabela procura o próximo lugar livre no ' +
+        'próprio array. Isso evita listas separadas, mas deixa marcas no caminho: apagar um item ' +
+        'esvaziando a posição pode fazer uma busca parar cedo e concluir que um item posterior não ' +
+        'existe.',
       body: [
         'Open addressing resolve a colisão procurando outra posição no próprio array: depois da posição 0, tenta 1 e então 2. Essa sequência recebe o nome de probing.',
         'Uma remoção não pode apenas deixar um buraco. A busca interpretaria o vazio como fim do caminho. Um tombstone marca que a busca deve continuar; muitos trechos ocupados juntos formam clustering e alongam o caminho.',
@@ -337,12 +334,12 @@ export const hashUnit: Unit = {
       ],
       workedExample: {
         problem: "Para obter os 20 usuários mais recentes de um Map com 50 mil pares, é preciso percorrer os 50 mil e ordenar os candidatos.",
-        whatToNotice: "A estrutura não está lenta, ela está respondendo uma pergunta que o contrato dela nunca prometeu. Compare com a lista de ausências do ciclo 0.",
+        whatToNotice: "A estrutura não está lenta, ela está respondendo uma pergunta que o contrato dela nunca prometeu. Compare com a lista de ausências do primeiro ciclo.",
       },
       postmortem: {
         incident: "Volte aos dez milhões de e-mails e à pergunta \"esse e-mail já existe?\" a cada signup.",
         trapId: "hash.o1-sem-qualificar",
-        missingClaim: "os quatro qualificadores. \"O(1)\" sozinho não diz que é amortizado, nem que supõe hashing uniforme, nem que ignora o custo de hashear a chave.",
+        missingClaim: "os qualificadores de \"O(1)\". A pergunta \"esse e-mail já existe?\" é contém(chave), e custa O(1) no caso médio, supondo hashing uniforme, contando pares guardados e ignorando o tamanho do e-mail. Não é amortizado: amortizado é o inserir que vem depois dela, por causa do rehash.",
         whatWouldCatch: "Perguntar quem escolhe as chaves. Vindo de fora, o caso médio deixa de descrever o que vai acontecer.",
       },
       exerciseId: 'hash.e5' },
