@@ -42,6 +42,8 @@ export function RecursionFigure({
   autoPlay?: boolean
 }) {
   const levels = levelsOf(figure)
+  const total = levels.reduce((sum, l) => sum + l.cost, 0)
+  const flat = levels.every((l) => l.cost === levels[0]!.cost)
   const widest = Math.max(...levels.map((l) => drawnAt(l.calls)))
   const width = rowWidth(widest) + PAD * 2
   const height = levels.length * LEVEL_H
@@ -123,9 +125,19 @@ export function RecursionFigure({
       </Stepper>
 
       <div className="border-t border-rule px-3.5 py-2 font-mono text-[12px] text-fg-3">
-        {levels.length} níveis × {levels[0]!.cost} por nível ={' '}
-        <span className="text-contract">{levels.length * levels[0]!.cost}</span>, e é daí que
-        n log n sai
+        {/* O último nível é o caso base, e a soma exata é n log n + n. Dizer que
+            o total inteiro "é" n log n contradizia a própria tabela acima. */}
+        {flat ? (
+          <>
+            {levels.length} níveis × {levels[0]!.cost} por nível ={' '}
+            <span className="text-contract">{total}</span>: os {levels.length - 1} níveis de
+            divisão somam n log n, e o nível do caso base soma mais n
+          </>
+        ) : (
+          <>
+            {levels.length} níveis, <span className="text-contract">{total}</span> no total
+          </>
+        )}
       </div>
 
       <p className="m-0 border-t border-rule px-3.5 py-2.5 text-[12.5px] leading-relaxed text-fg-3">

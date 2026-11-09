@@ -10,8 +10,8 @@
 
 ## Problema motivador
 
-Uma consulta que respondia em 40 ms com dez mil registros passou a responder em 4 s com um
-milhão. Ninguém mudou o código. A pergunta na retrospectiva é "por que ninguém viu isso
+Uma consulta que respondia em 40 ms com mil registros passou a responder em 4 s com dez
+mil. Ninguém mudou o código. A pergunta na retrospectiva é "por que ninguém viu isso
 vindo?", e a resposta é que o custo estava escrito no código o tempo todo, em forma que
 ninguém leu.
 
@@ -129,3 +129,30 @@ O `c4` desenha a árvore numa tabela que o aluno preenche: quantas chamadas por 
 tamanho, quanto custa o nível. As duas colunas carregam a derivação inteira, o custo por
 nível não cresce, e o número de níveis é log n e não n. É a diferença entre ler o resultado
 e produzi-lo.
+
+## Decidido na revisão externa
+
+**O chamado e o postmortem fecham pela conta.** A primeira versão ia de 40 ms com dez mil
+registros para 4 s com um milhão: cem vezes os dados e cem vezes o tempo, que é
+crescimento linear, e o postmortem diagnosticava O(n²). Agora são mil e dez mil: dez vezes
+os dados e cem vezes o tempo, que é o que n² faz. Com o diagnóstico quadrático, um milhão de
+registros levaria 400 s.
+
+**Amortizado não qualifica busca.** O exemplo-modelo das cinco partes, em c0, dizia
+"buscar é O(1) amortizado no caso médio". Busca em tabela hash não redistribui custo; quem
+redistribui é a inserção, por causa da reconstrução da tabela. O exemplo passou a
+"cadastrar é O(1) amortizado no caso médio", que é a mesma frase que a unidade 04 declara
+para `inserir`.
+
+**A figura de c4 usa n = 16, e o exercício usa n = 8.** A figura desenhava a mesma árvore
+que o trace `asymptotics.e7` pede, com a soma no rodapé, antes de o aluno resolver. O rodapé
+também dizia que o total "é" n log n, e a tabela somava n log n + n. Agora ele separa os
+log n níveis de divisão do nível do caso base.
+
+**O exemplo do pior caso mostra n².** Com n = 5 a diferença era 4 níveis contra 3. Com
+n = 1.000 são cerca de mil níveis contra cerca de 10, e 499.500 comparações contra cerca de
+10 mil.
+
+**O exercício de c7 tem segunda metade que se responde.** O laço simples não tinha
+amortização a declarar, e a alternativa que dizia isso era defensável. O laço agora insere
+num array que dobra, e a pergunta é o que a contagem das rodadas não decide sozinha.
