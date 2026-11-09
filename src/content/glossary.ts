@@ -255,7 +255,7 @@ export const graphsGlossary: GlossaryTerm[] = [
   { id: 'dfs', canonical: 'busca em profundidade', canonicalLanguage: 'pt',
     alsoKnownAs: ['DFS', 'depth-first search'],
     definition: 'Percurso que desce um ramo até o fim antes de voltar, usando uma pilha.',
-    isNot: ['não garante caminho com menos arestas, essa garantia é da busca em largura'],
+    isNot: ['não garante caminho com menos arestas, essa garantia é da busca em largura', 'não gasta menos memória que a busca em largura na versão com pilha que marca na entrada: a pilha pode guardar quase todos os vértices, como a fila'],
     falseFriends: [], introducedIn: 'graphs.c5' },
 
   { id: 'sparse', canonical: 'esparso', canonicalLanguage: 'pt',

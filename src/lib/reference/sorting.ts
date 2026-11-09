@@ -34,7 +34,7 @@ export function mergeStepTrace(): TraceStep[] {
   const steps: TraceStep[] = []
 
   while (left.length || right.length) {
-    const head = (items: Item[]) => (items.length ? show(items[0]!) : '—')
+    const head = (items: Item[]) => (items.length ? show(items[0]!) : 'vazia')
     const candidates = `esq ${head(left)} · dir ${head(right)}`
 
     // Empate vai para a esquerda: é a linha que decide a estabilidade.

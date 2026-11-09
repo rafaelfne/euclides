@@ -45,7 +45,10 @@ duas sozinha", é o movimento que esta unidade generaliza.
 
 ## Técnicas comparadas
 
-**Perfil de carga primeiro**, contar as operações do enunciado antes de olhar estrutura.
+**Perfil de carga primeiro**, contar as operações do enunciado antes de olhar estrutura, e
+levar a conta até o número em que a outra candidata passa a ganhar. A contagem aparece no
+`c0`, que é banda critério e não pode elaborar técnica; o ciclo que elabora esta técnica é o
+da condição que inverte, e ele cita o `c0` como a primeira metade da conta.
 Invariante: a contagem tem de ser de operações do contrato, não de nomes de estrutura.
 Errada quando: a carga não é conhecida ou muda, sistema novo, uso não medido. Aí a escolha
 é pela ausência que menos dói, não pelo custo.
