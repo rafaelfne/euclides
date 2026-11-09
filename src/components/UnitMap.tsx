@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { BANDS_BY_KIND, type Cycle, type Unit } from '@/content/schema'
+import { setupFor } from '@/content/setup'
 import { cycleStatus, read, PROGRESS_EVENT, type CycleStatus } from '@/lib/progress'
 import { cn } from '@/lib/utils'
 import { humanMinutes, unitMinutes } from '@/lib/duration'
@@ -72,6 +73,7 @@ export function UnitMap({ unit }: { unit: Unit }) {
   }, [unit])
 
   const spine = describeSpine(unit)
+  const setup = setupFor(unit.id)
   const [openingBand, middleBand, consequenceBand] = BANDS_BY_KIND[unit.kind]
 
   const inBand = (band: Cycle['band'], elaborates?: string) =>
@@ -110,6 +112,15 @@ export function UnitMap({ unit }: { unit: Unit }) {
         <p className="m-0 max-w-[720px] text-[14.5px] leading-relaxed text-fg-2">{unit.motivatingProblem}</p>
         <MasterySeal unit={unit} />
       </div>
+      {setup && (
+        <Link
+          href={`/units/${unit.id}/preparar`}
+          className="flex max-w-[720px] items-baseline gap-3 border border-rule bg-panel px-3.5 py-2.5 text-inherit hover:border-rule-control"
+        >
+          <span className="text-[14px] font-semibold text-contract">{setup.title}</span>
+          <span className="text-[13.5px] text-fg-3">{setup.summary}</span>
+        </Link>
+      )}
 
       <div className="flex flex-col gap-2">
         <div className="flex items-baseline gap-3">
