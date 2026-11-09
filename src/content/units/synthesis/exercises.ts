@@ -80,7 +80,7 @@ export const synthesisExercises: Exercise[] = [
     kind: 'choice', id: 'synthesis.e3',
     prompt: 'Uma fila de jobs precisa retirar o mais antigo e também cancelar qualquer job pelo identificador, ambos em tempo constante. Nenhuma estrutura isolada responde as duas. O que isso indica?',
     choices: [
-      { correct: true, text: 'Compor tabela hash por identificador e lista ligada com ponteiro para o anterior',
+      { correct: true, text: 'Compor tabela hash por identificador e lista duplamente ligada',
         why: 'A tabela leva do identificador ao nó, a lista mantém a ordem de chegada, e as duas apontam para os mesmos dados. O ponteiro para o anterior é o que deixa cancelar no meio em tempo constante: numa lista que só aponta para o próximo, ter o nó não dá o anterior.' },
       { correct: false, text: 'Que uma das duas exigências precisa ser relaxada, porque nenhuma estrutura oferece as duas garantias', misconceptionId: 'synthesis.composicao-nao-considerada' },
       { correct: false, text: 'Que a estrutura certa é a árvore balanceada, que fica entre as duas', misconceptionId: 'synthesis.composicao-nao-considerada' },

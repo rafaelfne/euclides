@@ -167,11 +167,11 @@ export const synthesisUnit: Unit = {
         'use as duas sobre os mesmos dados.',
       body: [
         'Corte os contratos que não prometem o que o problema exige. Se nada sobrevive ao corte, a conclusão não é relaxar o requisito, é que a resposta são 2 estruturas, não 1.',
-        'Uma LRU cache é o exemplo canônico e junta duas unidades desta trilha: a tabela hash leva da chave ao nó em tempo constante, e a lista ligada mantém a ordem de uso. Para mover um nó do meio para a frente sem varrer nada, cada nó aponta também para o anterior: com o nó em mãos, tirá-lo do lugar é religar 2 vizinhos. Numa lista em que o nó só aponta para o próximo, ter o nó não dá o anterior, e tirá-lo do meio volta a ser varredura. Cada uma das duas estruturas responde a pergunta que a outra não responde, e as duas apontam para os mesmos dados.',
+        'Uma LRU cache é o exemplo canônico e junta duas unidades desta trilha: a tabela hash leva da chave ao nó em tempo constante, e a lista duplamente ligada mantém a ordem de uso. Para mover um nó do meio para a frente sem varrer nada, cada nó aponta também para o anterior: com o nó em mãos, tirá-lo do lugar é religar 2 vizinhos. Numa lista em que o nó só aponta para o próximo, ter o nó não dá o anterior, e tirá-lo do meio volta a ser varredura. Cada uma das duas estruturas responde a pergunta que a outra não responde, e as duas apontam para os mesmos dados.',
         'O preço da composição é a manutenção: toda inserção e toda remoção precisam acontecer nas duas, e um esquecimento aí produz duas fontes de verdade que discordam. É um custo real, e ele entra na justificativa.',
       ],
       workedExample: {
-        problem: 'Numa LRU cache, a tabela hash localiza o nó pela chave em O(1) no caso médio; a lista ligada, com cada nó apontando para o próximo e para o anterior, move esse nó para a frente e mantém o menos recente na outra ponta, em O(1) no pior caso.',
+        problem: 'Numa LRU cache, a tabela hash localiza o nó pela chave em O(1) no caso médio; a lista duplamente ligada, com cada nó apontando para o próximo e para o anterior, move esse nó para a frente e mantém o menos recente na outra ponta, em O(1) no pior caso.',
         whatToNotice: 'Nenhuma das duas responde sozinha. As duas apontam para o mesmo item, e toda atualização precisa manter ambas coerentes.',
       },
       figure: {
