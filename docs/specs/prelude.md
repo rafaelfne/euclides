@@ -9,11 +9,17 @@ para acompanhar valores, decisões e repetições em pseudocódigo.
 
 ## Problema motivador
 
-Um e-mail foi parar na pasta de spam, e a pessoa quer saber por quê. A regra começa
-com 0 sinais: soma 2 se houver um link desconhecido, soma 1 se o remetente não
-estiver nos contatos e tira 1 se houver uma assinatura conhecida. Com 2 ou mais
-sinais, o e-mail vai para o spam. Como acompanhar as regras para reconstruir a
-decisão?
+Um e-mail foi parar na pasta de spam, e a pessoa quer saber por quê. O filtro começa
+com 0 sinais e aplica três regras, nesta ordem: soma 2 se houver um link
+desconhecido, tira 1 se houver uma assinatura conhecida e dobra os sinais se o
+assunto vier todo em maiúsculas. Com 2 ou mais sinais, o e-mail vai para o spam.
+Como acompanhar as regras para reconstruir a decisão?
+
+O e-mail do chamado aciona as três regras: 0, 2, 1, 2, e vai para o spam. A regra
+que dobra existe para a ordem importar. Com regras que só somam e subtraem, a ordem
+não muda o resultado, e a armadilha `prelude.ordem-ignorada`, que o postmortem
+retoma, não teria o que pegar: quem dobra primeiro chega a 1 e conclui que o filtro
+errou.
 
 ## Critério
 
@@ -44,9 +50,9 @@ estado.
 | c1 | técnica | Nomes guardam valores | variável, atribuição |
 | c2 | técnica | Uma condição faz uma pergunta | condição |
 | c3 | técnica | Repetir é perguntar de novo | rodada |
-| c4 | falha | A ordem dos passos importa | — |
+| c4 | falha | A ordem dos passos importa | nenhum |
 | c5 | falha | O caso sem itens também é uma entrada | lista, posição |
-| c6 | falha | O que você consegue ler agora | — |
+| c6 | falha | O que você consegue ler agora | nenhum |
 
 ## Armadilhas
 
@@ -76,3 +82,12 @@ posição válida.
 3. A numeração `00` identifica a preparação e não desloca a unidade 01.
 4. `state`, `iteration`, `list` e `position` passam a estrear aqui, porque a
    unidade 01 e a unidade 03 usam esses termos como vocabulário já estabelecido.
+5. Nenhum exercício cobra o que o ciclo dele ainda não ensinou. `prelude.e1`
+   cobra só atribuição; a pergunta que junta atribuição e condição é
+   `prelude.e2`, no ciclo da condição. A versão anterior perguntava sobre o laço
+   `i < 3` no ciclo da condição, um ciclo antes de o laço aparecer.
+6. Instrução ao aluno usa a seta: "comece com `total ← 0`", nunca "total = 0".
+   Na folha de notação `=` é comparação, e o ciclo c1 existe para separar as duas.
+7. A frase leve de cada ciclo (`plainly`) não carrega número forçado. O número
+   real fica nos dois primeiros parágrafos do corpo, onde a checagem `número`
+   o procura.

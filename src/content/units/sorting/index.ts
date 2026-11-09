@@ -109,7 +109,10 @@ export const sortingUnit: Unit = {
           measuredIn: 'n = elementos da coleção' },
       },
       space: { bound: 'O(n)', regime: 'worst', amortized: false,
-        assumptions: ['nada é alocado, mas cada chamada aberta ocupa um quadro de pilha'],
+        assumptions: [
+          'nada é alocado, mas cada chamada aberta ocupa um quadro de pilha',
+          'a versão ingênua, que recorre nas duas partes na ordem em que aparecem; recorrer primeiro na parte menor limita a pilha a O(log n)',
+        ],
         measuredIn: 'espaço além da entrada, contando a pilha de chamadas' },
       wrongWhen: [
         { scenario: 'O pior caso é inaceitável, uma requisição que não pode passar de um limite de tempo',
@@ -132,12 +135,11 @@ export const sortingUnit: Unit = {
       oneLine: "Ordenar devolve os mesmos elementos em ordem, e não promete mais nada.",
       plainly:
         'Você ordena pedidos por cliente depois de já os ter ordenado por data. Os pedidos do mesmo ' +
-        'cliente podem manter a ordem de data, ou podem sair embaralhados; ambos continuam ' +
-        '“ordenados por cliente”. A palavra ordenar promete uma coisa específica. O restante — ' +
-        'memória usada, tratamento dos empates e aproveitamento da ordem existente — precisa ser perguntado.',
+        'cliente podem manter a ordem de data ou sair embaralhados, e nos dois casos a lista está ' +
+        'ordenada por cliente.',
       body: [
         'Ordenar devolve os mesmos elementos, em ordem. Entram 3, saem 3: nenhum elemento entra, nenhum sai, nenhum vira outro, e nenhum vem antes de um menor.',
-        'O que interessa aqui é a lista do que essa promessa NÃO cobre. Ela não diz o que aconteceu com os elementos que o comparador considera iguais. Não diz quanta memória foi usada. Não diz se a ordem que a entrada já trazia foi aproveitada. Guarde essa lista: cada item dela é uma garantia que alguns algoritmos oferecem e outros não, e escolher entre eles é escolher qual dessas você precisa.',
+        'O que interessa aqui é a lista do que essa promessa NÃO cobre. Ela não diz o que aconteceu com os elementos que o comparador considera iguais. Não diz quanta memória foi usada. Não diz se a ordem que a entrada já trazia foi aproveitada. Não diz quanto custou. Guarde essa lista de 4: cada item dela é uma garantia que alguns algoritmos oferecem e outros não, e escolher entre eles é escolher qual dessas você precisa.',
       ],
       figure: {
         kind: 'concept-flow',
@@ -164,10 +166,9 @@ export const sortingUnit: Unit = {
       introducesTerms: ['stability', 'comparator'],
       oneLine: "Um algoritmo estável mantém a ordem de chegada entre 2 elementos que empatam.",
       plainly:
-        'Dois pedidos do mesmo cliente chegaram em datas diferentes. Ao organizar por cliente, ' +
-        'nenhum dos dois deveria passar na frente do outro sem motivo. Alguns métodos preservam a ' +
-        'chegada anterior quando há empate; outros não. A lista continua corretamente ordenada nos ' +
-        'dois casos, mas só um preserva a informação que já estava lá.',
+        'Dois pedidos do mesmo cliente chegaram em datas diferentes. Ao reordenar por cliente, ' +
+        'alguns métodos mantêm entre os dois a ordem que eles já tinham; outros não. A lista sai ' +
+        'ordenada por cliente nos dois casos.',
       body: [
         'Volte aos pedidos ordenados por data e depois por cliente. A segunda ordenação comparou clientes; para 2 pedidos do mesmo cliente, ela disse "empate". E o que um algoritmo faz com um empate não está no contrato.',
         'O comparador também tem uma obrigação, e ela é fácil de quebrar sem perceber: se ele diz que x vem antes de y e que y vem antes de z, ele precisa dizer que x vem antes de z. Um comparador que se contradiz não produz uma ordem errada, produz uma saída que não é ordem nenhuma.',
@@ -195,8 +196,7 @@ export const sortingUnit: Unit = {
       plainly:
         'Você recebe uma lista quase em ordem, com um único pedido fora do lugar. Em vez de ' +
         'reorganizar tudo, basta abrir espaço perto dele e encaixá-lo. Se a lista chega invertida, ' +
-        'cada item precisa atravessar quase todos os anteriores. O mesmo método muda muito de custo ' +
-        'conforme o estado real da entrada.',
+        'cada item precisa atravessar quase todos os anteriores.',
       body: [
         'A primeira forma de entregar o contrato é a que a mão faz sozinha com um baralho: mantenha à esquerda 1 trecho já ordenado e encaixe cada elemento novo dentro dele.',
         'O laço interno é onde mora o custo, e ele depende da entrada. Numa coleção em ordem decrescente ele roda inteiro toda vez, e o total é O(n²). Numa coleção que já chega quase ordenada ele quase não roda, e o total cai para O(n).',
@@ -233,10 +233,8 @@ export const sortingUnit: Unit = {
       introducesTerms: ['merge-sort', 'merge'],
       oneLine: "São log n níveis custando n cada, e isso vale para toda entrada.",
       plainly:
-        'Duas listas já estão em ordem. Para juntá-las, compare apenas o primeiro item disponível de ' +
-        'cada uma e leve o menor. Repita até acabar. Esse trabalho percorre cada item uma vez; o ' +
-        'custo está em quantas vezes você precisou dividir a lista antes de chegar a listas pequenas, ' +
-        'não em escolher entre os dois primeiros.',
+        'Duas listas já estão em ordem. Para juntá-las, olhe só o primeiro item de cada uma e leve ' +
+        'o menor, até acabar: cada item passa pela sua mão uma vez.',
       body: [
         'A segunda forma parte de uma observação: intercalar 2 sequências já ordenadas é barato. Basta olhar o primeiro de cada uma e tomar o menor, até esgotar as duas.',
         'Se intercalar é barato, ordenar vira dividir ao meio até sobrar um elemento, que já está ordenado sozinho, e intercalar de volta. São log n níveis, cada um custando n. O limite é O(n log n), e ele vale para toda entrada, não para a média delas.',
@@ -269,13 +267,12 @@ export const sortingUnit: Unit = {
       oneLine: "Pivô no meio dá log n rodadas; pivô no extremo dá n.",
       plainly:
         'Você escolhe um item como referência e separa os menores de um lado, os maiores do outro. ' +
-        'Se a referência cai perto do meio, as partes encolhem rápido. Se ela cai sempre na ponta, ' +
-        'sobra quase toda a lista para a próxima rodada. A diferença entre os dois casos está numa ' +
-        'escolha aparentemente pequena.',
+        'Se a referência cai perto do meio, cada parte fica com metade. Se ela cai sempre na ponta, ' +
+        'sobra quase toda a lista para a próxima rodada.',
       body: [
         'A terceira forma não divide ao meio: divide em torno de 1 elemento escolhido. Depois de separar o que é menor do que é maior, o pivô está na posição final dele, e as 2 partes podem ser resolvidas do mesmo jeito.',
         'Quando o pivô cai perto do meio, as partes têm metade do tamanho e o total é O(n log n). Quando ele cai no extremo, uma parte fica vazia e a outra fica com todo o resto, são n rodadas em vez de log n, e o total é O(n²).',
-        'A escolha do pivô é livre, e é ela que decide qual dos dois cenários acontece. Escolher sempre o primeiro elemento transforma uma coleção que já chega ordenada, a mais comum de todas, no pior caso.',
+        'A escolha do pivô é livre, e é ela que decide qual dos dois cenários acontece. Escolher sempre o primeiro elemento transforma uma coleção que já chega ordenada, como a saída de uma consulta que já tinha ORDER BY, no pior caso.',
       ],
       figure: {
         kind: 'quicksort-partition',
@@ -291,19 +288,18 @@ export const sortingUnit: Unit = {
 
     { id: 'sorting.c5', title: 'O preço que o contrato não menciona', layer: 'essential', band: 'cost',
       introducesTerms: ['in-place'],
-      oneLine: "In-place não é espaço constante: no pior caso são n chamadas abertas.",
+      oneLine: "In-place não é espaço constante: o quicksort ingênuo chega a n chamadas abertas.",
       plainly:
-        'Um método reorganiza a lista sem criar outra lista do mesmo tamanho, mas ainda pode abrir ' +
-        'várias chamadas enquanto divide o problema. Dizer que ele usa “pouca memória” é ' +
-        'incompleto: é preciso contar tanto o espaço dos itens quanto o espaço das chamadas que ainda ' +
-        'não terminaram.',
+        'Um método reorganiza a lista sem criar outra do mesmo tamanho, mas ainda abre chamadas ' +
+        'enquanto divide o problema. A conta de memória inclui as chamadas que ainda não terminaram.',
       body: [
         'Ordenar in-place é rearranjar o próprio array em vez de montar outro. Merge sort não faz isso: a intercalação escreve numa sequência à parte, e ordenar 1 milhão de elementos aloca outro 1 milhão.',
-        'Quicksort faz, e é aqui que a palavra engana. Ele não aloca coleção nenhuma, mas cada chamada aberta ocupa um quadro na pilha. No pior caso são n chamadas abertas ao mesmo tempo, e isso é espaço que cresce com a entrada, ainda que nenhum array tenha sido alocado.',
+        'Quicksort faz, e é aqui que a palavra engana. Ele não aloca coleção nenhuma, mas cada chamada aberta ocupa um quadro na pilha. Na versão ingênua, que recorre nas duas partes na ordem em que elas aparecem, o pior caso deixa n chamadas abertas ao mesmo tempo, e isso é espaço que cresce com a entrada, ainda que nenhum array tenha sido alocado.',
+        'Implementações reais não fazem assim: recorrem primeiro na parte menor e tratam a maior num laço, e com isso nunca passam de cerca de log n quadros abertos, mesmo quando o tempo cai no pior caso. É O(log n) de pilha, e ainda não é constante.',
         'In-place e espaço constante são coisas diferentes, e a segunda é a que importa quando a memória é o limite.',
       ],
       workedExample: {
-        problem: "Quicksort sobre 1 milhão de elementos com pivô sempre no extremo: nenhum array novo é alocado, e há 1 milhão de quadros abertos na pilha ao mesmo tempo.",
+        problem: "Quicksort ingênuo sobre 1 milhão de elementos com pivô sempre no extremo: nenhum array novo é alocado, e há 1 milhão de quadros abertos na pilha ao mesmo tempo. Recorrendo primeiro na parte menor, seriam no máximo cerca de 20.",
         whatToNotice: "\"Não alocou coleção\" e \"usa espaço constante\" são afirmações diferentes. A pilha de chamadas é espaço, e ela cresceu com a entrada.",
       },
       exerciseId: 'sorting.e5' },
@@ -312,10 +308,9 @@ export const sortingUnit: Unit = {
       introducesTerms: ['binary-search'],
       oneLine: "Achar o menor de 1000 custa 999 comparações; ordenar antes custa cerca de 10 mil.",
       plainly:
-        'Você precisa achar o menor pedido uma única vez. Percorrer mil pedidos custa menos do que ' +
-        'ordenar todos para então pegar o primeiro. Mas, se a pergunta se repete centenas de vezes, ' +
-        'pagar a organização uma vez pode compensar. O custo correto depende de quantas consultas ' +
-        'virão depois.',
+        'Para achar o menor de mil pedidos uma única vez, percorrer os mil custa menos do que ' +
+        'ordenar todos e pegar o primeiro. Se o que se repete são consultas por chave, pagar a ' +
+        'ordenação uma vez pode compensar, e quantas consultas virão é o que decide.',
       body: [
         'Numa coleção ordenada de 1000, procurar por chave custa cerca de 10 comparações: compare com o do meio e descarte metade das posições. Sem ordem, custa até 1000.',
         'Isso torna a ordenação um investimento, não um fim: paga-se n log n uma vez para que toda consulta seguinte fique em log n. A conta fecha quando as consultas são muitas e a coleção muda pouco.',
@@ -332,12 +327,12 @@ export const sortingUnit: Unit = {
       oneLine: "Ordenar é a escolha errada quando a pergunta era sobre 1 elemento.",
       plainly:
         'Você recebe um pedido para encontrar um único registro por identificador. Ordenar todos os ' +
-        'registros antes não ajuda a responder melhor essa pergunta; só acrescenta trabalho. ' +
+        'registros antes só acrescenta trabalho. ' +
         'Ordenação é investimento para perguntas sobre ordem, faixa ou repetição de buscas, não uma ' +
         'etapa padrão antes de qualquer consulta.',
       body: [
         'Volte ao contrato do primeiro ciclo. As 4 ausências que você guardou lá são a resposta inteira deste ciclo.',
-        'Ordenar é a escolha errada quando a pergunta era sobre um elemento e você ordenou todos; quando a ordem entre iguais importava e o algoritmo escolhido não a promete; quando a memória era o limite e o algoritmo escolhido pede uma cópia; e quando o pior caso era inaceitável e o algoritmo escolhido só garante o caso médio.',
+        'Ordenar é a escolha errada quando a pergunta era sobre um elemento e você pagou n log n para ordenar todos; quando o pior caso era inaceitável e o algoritmo escolhido só garante o caso médio; quando a ordem entre iguais importava e o algoritmo escolhido não a promete; quando a memória era o limite e o algoritmo escolhido pede uma cópia; e quando a entrada já chegava quase ordenada e o algoritmo escolhido não aproveita isso. Os dois primeiros são a ausência do preço; os outros três, uma ausência cada.',
         'Nenhuma dessas é um defeito do algoritmo. Todas são uma ausência do contrato que alguém não leu.',
       ],
       workedExample: {
@@ -350,10 +345,9 @@ export const sortingUnit: Unit = {
       introducesTerms: ['timsort'],
       oneLine: "A ordenação padrão de várias linguagens compõe 2 algoritmos, não escolhe 1.",
       plainly:
-        'Uma biblioteca não precisa escolher um único método para toda lista. Ela pode perceber ' +
-        'trechos que já estão em ordem, usar uma estratégia simples em pedaços pequenos e outra em ' +
-        'listas maiores. O nome da função parece uma operação só; por dentro, ela pode combinar ' +
-        'ferramentas conforme a entrada.',
+        'Uma biblioteca não precisa escolher um único método. Ela pode achar os trechos que já ' +
+        'chegam em ordem, completar os curtos com um método simples e depois juntar todos. O nome ' +
+        'da função parece uma operação só.',
       body: [
         'A ordenação padrão de várias linguagens não é nenhum dos 3: é a composição deliberada de 2 deles. Ela procura na entrada os trechos que já vêm ordenados, completa com insertion sort os menores que 32, e intercala os trechos.',
         'Cada peça está lá por uma ausência da outra. A intercalação dá o pior caso garantido e a estabilidade; o insertion sort aproveita a ordem que a entrada já traz, que a intercalação sozinha ignoraria.',

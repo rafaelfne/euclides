@@ -16,12 +16,19 @@ export const linearMisconceptions: Misconception[] = [
     ],
     reviewCycle: 'linear.c3' },
 
+  { id: 'linear.pilha-inverte-a-entrada', label: 'Supor que a pilha devolve a ordem de entrada invertida',
+    socraticQuestion: 'Escreva o conteúdo da pilha, de baixo para cima, depois de cada operação. Qual elemento estava no topo quando cada desempilhar aconteceu?',
+    escalation: [
+      'Inverter a ordem de entrada só dá a saída quando todos entram antes de o primeiro sair. Nesta sequência, quem entrou depois do primeiro desempilhar?',
+    ],
+    reviewCycle: 'linear.c1' },
+
   { id: 'linear.pilha-e-fila-invertidas', label: 'Supor que fila é a pilha lida ao contrário',
     socraticQuestion: 'Empilhe A, B, C e desempilhe tudo; depois enfileire A, B, C e desenfileire tudo. Escreva as duas saídas. Uma é o inverso da outra?',
     escalation: [
       'Uma saída é C B A e a outra é A B C, inverter uma dá a outra, para esta entrada. Agora intercale as operações: empilhe A, empilhe B, tire um, empilhe C, tire tudo. Faça o mesmo com a fila e compare de novo.',
     ],
-    reviewCycle: 'linear.c1' },
+    reviewCycle: 'linear.c2' },
 
   { id: 'linear.ponteiro-em-maos', label: 'Remover de lista ligada declarado O(1) sem dizer o que já se tem',
     socraticQuestion: 'Para desligar um nó de uma lista ligada é preciso ter o nó anterior. Quanto custa chegar até ele partindo da cabeça?',
@@ -58,12 +65,12 @@ export const linearExercises: Exercise[] = [
   },
   {
     kind: 'choice', id: 'linear.e1',
-    prompt: 'Uma pilha e uma fila recebem, nesta ordem: entra A, entra B, sai um, entra C, sai um, sai um. Quais são as duas saídas?',
+    prompt: 'Uma pilha vazia recebe, nesta ordem: empilha A, empilha B, empilha C, desempilha, empilha D, desempilha, desempilha. Em que ordem os elementos saíram?',
     choices: [
-      { correct: true, text: 'Pilha: B, C, A. Fila: A, B, C. Uma não é o inverso da outra',
-        why: 'A intercalação das operações separa as duas' },
-      { correct: false, text: 'Pilha: C, B, A. Fila: A, B, C, uma é sempre o inverso da outra', misconceptionId: 'linear.pilha-e-fila-invertidas' },
-      { correct: false, text: 'As duas devolvem A, B, C: a ordem de saída depende da ordem de entrada, não da estrutura', misconceptionId: 'linear.pilha-e-fila-invertidas' },
+      { correct: true, text: 'C, D, B, e A fica na pilha',
+        why: 'Cada desempilhar tira o que está no topo naquele momento. D entrou depois da primeira saída, então ficou no topo antes de B.' },
+      { correct: false, text: 'D, C, B: o inverso da ordem de entrada', misconceptionId: 'linear.pilha-inverte-a-entrada' },
+      { correct: false, text: 'C, B, A: cada saída volta um passo na entrada', misconceptionId: 'linear.pilha-inverte-a-entrada' },
     ],
   },
   {
@@ -103,10 +110,10 @@ export const linearExercises: Exercise[] = [
   },
   {
     kind: 'choice', id: 'linear.e4',
-    prompt: 'Uma lista ligada tem mil nós. Você tem em mãos o nó da posição 500 e quer removê-lo. Qual o custo, e qual o custo de "remova o nó que contém o valor X"?',
+    prompt: 'Uma lista ligada tem mil nós e cada nó aponta só para o próximo. Você tem em mãos o nó da posição 499 e quer remover o da 500, que vem logo depois. Qual o custo, e qual o custo de "remova o nó que contém o valor X"?',
     choices: [
-      { correct: true, text: 'Com o nó em mãos, constante; por valor, O(n)',
-        why: '"Remoção é O(1)" é verdade depois que alguém pagou para achar o nó, e é esse custo que a frase omite.' },
+      { correct: true, text: 'Com o anterior em mãos, constante; por valor, O(n)',
+        why: '"Remoção é O(1)" é verdade depois que alguém pagou para chegar ao nó anterior, e é esse custo que a frase omite. Com o próprio nó da posição 500 em mãos o custo não mudaria: o anterior continuaria a 499 saltos da cabeça.' },
       { correct: false, text: 'Constante nos dois casos, é a vantagem da lista ligada sobre o array', misconceptionId: 'linear.ponteiro-em-maos' },
       { correct: false, text: 'O(n) nos dois casos, porque a lista ligada não tem acesso por índice', misconceptionId: 'linear.indice-em-lista-ligada' },
     ],
@@ -123,7 +130,7 @@ export const linearExercises: Exercise[] = [
   },
   {
     kind: 'bug', id: 'linear.e6',
-    prompt: 'Esta implementação de pilha sobre array é plausível e passa nos testes de uso normal. Marque a linha defeituosa e escolha a consequência.',
+    prompt: 'Esta implementação de pilha sobre array é plausível e passa nos testes de uso normal. Em JavaScript, escrever depois do fim de um array faz o array crescer. Marque a linha defeituosa e escolha a consequência.',
     language: 'javascript',
     code: `class Pilha {
   constructor() { this.dados = new Array(8); this.n = 0 }
@@ -133,12 +140,12 @@ export const linearExercises: Exercise[] = [
   }
   desempilhar() { this.n = this.n - 1; return this.dados[this.n] }
 }`,
-    faultyLines: [4],
+    faultyLines: [7],
     consequences: [
-      { correct: true, text: 'A escrita acontece sem comparar n com a capacidade do bloco',
-        why: 'A partir do nono elemento a pilha grava fora do que foi alocado, e nada avisa enquanto os testes usarem menos de oito.' },
-      { correct: false, text: 'Nada de grave: o bloco cresce sozinho quando a posição escrita passa do fim', misconceptionId: 'linear.capacidade-e-tamanho' },
-      { correct: false, text: 'O defeito é desempilhar sem verificar se a pilha está vazia; empilhar está correto', misconceptionId: 'linear.capacidade-e-tamanho' },
+      { correct: true, text: 'Na pilha vazia, n vai a −1 e o próximo empilhar grava em dados[-1]',
+        why: 'Desempilhar não confere se n é zero antes de descontar. Teste de uso normal nunca tira de pilha vazia; um caminho de erro que desempilha a mais, sim, e daí em diante n conta um elemento a menos do que a pilha guarda. Empilhar além de 8 não é defeito aqui: o 8 de new Array(8) é o comprimento inicial, e o array cresce quando a escrita passa do fim.' },
+      { correct: false, text: 'A pilha perde uma das 8 posições do bloco e passa a caber só 7 elementos', misconceptionId: 'linear.capacidade-e-tamanho' },
+      { correct: false, text: 'Nada de grave: devolve undefined e a pilha continua guardando o que guardava', misconceptionId: 'linear.capacidade-e-tamanho' },
     ],
   },
 ]

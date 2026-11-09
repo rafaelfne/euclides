@@ -80,8 +80,8 @@ export const synthesisExercises: Exercise[] = [
     kind: 'choice', id: 'synthesis.e3',
     prompt: 'Uma fila de jobs precisa retirar o mais antigo e também cancelar qualquer job pelo identificador, ambos em tempo constante. Nenhuma estrutura isolada responde as duas. O que isso indica?',
     choices: [
-      { correct: true, text: 'Compor tabela hash por identificador com lista ligada por ordem de chegada',
-        why: 'Cada uma responde uma das perguntas, e as duas apontam para os mesmos dados' },
+      { correct: true, text: 'Compor tabela hash por identificador e lista duplamente ligada',
+        why: 'A tabela leva do identificador ao nó, a lista mantém a ordem de chegada, e as duas apontam para os mesmos dados. O ponteiro para o anterior é o que deixa cancelar no meio em tempo constante: numa lista que só aponta para o próximo, ter o nó não dá o anterior.' },
       { correct: false, text: 'Que uma das duas exigências precisa ser relaxada, porque nenhuma estrutura oferece as duas garantias', misconceptionId: 'synthesis.composicao-nao-considerada' },
       { correct: false, text: 'Que a estrutura certa é a árvore balanceada, que fica entre as duas', misconceptionId: 'synthesis.composicao-nao-considerada' },
     ],
@@ -90,8 +90,8 @@ export const synthesisExercises: Exercise[] = [
     kind: 'choice', id: 'synthesis.e4',
     prompt: 'Você escolheu varredura linear sobre um array para uma coleção de até duzentos itens. Como escrever a condição que torna essa escolha revisável?',
     choices: [
-      { correct: true, text: 'Escrever o limite: centenas de itens, e só por igualdade',
-        why: 'Acima disso, ou se aparecer consulta por faixa, a escolha muda. O número escrito é o que separa a condição de uma intenção.' },
+      { correct: true, text: 'Escrever o limite: até mil itens, e só consulta por igualdade',
+        why: 'Acima de mil, ou se aparecer consulta por faixa, a escolha muda. O valor exato é julgamento seu; o que não pode faltar é haver um número, porque é ele que separa a condição de uma intenção.' },
       { correct: false, text: '"Vale por enquanto; revisar quando começar a ficar lento"', misconceptionId: 'synthesis.escolha-sem-validade' },
       { correct: false, text: 'Não é preciso: a escolha foi justificada pelo custo, e o custo não muda', misconceptionId: 'synthesis.escolha-sem-validade' },
     ],

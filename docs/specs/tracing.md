@@ -65,10 +65,10 @@ revisão de código real, e é a mais difícil de exercitar com espaço de erro 
 |---|---|---|---|
 | c0 | critério | O que é saber o que um código faz | execution trace, estado |
 | c1 | critério | A condição que decide se há próxima rodada | condição de guarda |
-| c2 | técnica | Simular passo a passo | — |
+| c2 | técnica | Simular passo a passo | nenhum |
 | c3 | técnica | A propriedade que sobrevive a cada rodada | invariante de laço |
 | c4 | falha | A fronteira, e a entrada que ninguém testou | off-by-one, caso vazio |
-| c5 | falha | O laço não roda n vezes | — |
+| c5 | falha | O laço não roda n vezes | nenhum |
 | c6 | falha | O que não chega a ser avaliado | curto-circuito |
 
 Sete ciclos mantêm a unidade de entrada mais lenta que as seguintes. O segundo exercício de
@@ -109,3 +109,14 @@ o outro cobra a sequência produzida pela condição e pelo passo.
 4. O bug hunt usa JavaScript, identificado na própria tela.
 5. A sonda de nivelamento usa `tracing.e4`, que cabe no limite de quatro minutos; `tracing.e5`
    deixa de ser escolha porque faz parte do critério de domínio.
+
+## Decidido na revisão externa
+
+1. O postmortem nomeia o lado certo: em `tracing.e6` quem quebra é o primeiro lado,
+   `itens[i].ativo`, avaliado antes da conferência de posição.
+2. A afirmação que faltava é escrita como afirmação, não como formulário: o que a
+   função devolve para a coleção vazia, sem ler posição nenhuma.
+3. O exemplo de c5 mostra o valor inicial de cada laço. `i ← i × 2` começando em 0
+   nunca sai do 0, e o laço não para; o valor inicial é parte do passo.
+4. O aviso de que errar é esperado aparece só no primeiro ciclo. Repetido em três
+   ciclos seguidos, virava ruído.

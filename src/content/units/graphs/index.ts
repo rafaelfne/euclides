@@ -123,10 +123,8 @@ export const graphsUnit: Unit = {
       introducesTerms: ['graph', 'vertex', 'edge'],
       oneLine: "O grafo responde quem está ligado a quem, e mais nada.",
       plainly:
-        'Um usuário pertence a times, e times podem incluir outros times. A pergunta básica é ' +
-        'simples: quem está ligado diretamente a quem? Guardar essas ligações responde isso. Mas ' +
-        'não responde sozinho se existe um caminho entre dois times, quantos passos ele tem ou se ' +
-        'alguém acabou criando uma volta.',
+        'Um usuário pertence a times, e times podem incluir outros times. Guardar essas ligações ' +
+        'responde uma pergunta só: quem está ligado diretamente a quem.',
       body: [
         'Um grafo é um conjunto de vértices e as ligações entre eles. O contrato responde 1 pergunta: quem está ligado diretamente a quem.',
         'A lista do que ele não promete é desconfortavelmente grande, e é a coisa mais importante desta unidade: se existe caminho entre dois vértices, qual o caminho mais curto, se há ciclo, quem é alcançável. **Nada disso é operação do contrato.** Tudo isso é algoritmo escrito sobre ele.',
@@ -154,7 +152,7 @@ export const graphsUnit: Unit = {
         'pontos não basta: é preciso saber se ela pode ser seguida de volta e se carrega algum ' +
         'número que muda a decisão.',
       body: [
-        '3 escolhas de modelagem mudam o que o grafo pode responder, e as 3 costumam ficar implícitas no código.',
+        '2 escolhas de modelagem mudam o que o grafo pode responder, e as 2 costumam ficar implícitas no código.',
         'Dirigido ou não: "A segue B" não implica "B segue A", e "A faz fronteira com B" implica. A escolha errada aqui produz um sistema que responde bem por acidente até o primeiro caso assimétrico.',
         'Com peso ou sem: uma aresta pode carregar um número, distância, custo, duração. Sem peso, "caminho mais curto" quer dizer menos arestas; com peso, quer dizer menor soma. As duas perguntas têm respostas diferentes, e usam algoritmos diferentes.',
       ],
@@ -170,8 +168,7 @@ export const graphsUnit: Unit = {
       plainly:
         'Um usuário costuma pertencer a poucos times, não a todos os times da empresa. Em vez de ' +
         'reservar espaço para cada combinação possível, guarde ao lado de cada usuário só os times ' +
-        'a que ele realmente pertence. O espaço cresce com as ligações que existem, não com todas ' +
-        'as ligações imagináveis.',
+        'a que ele pertence.',
       body: [
         'A primeira implementação guarda, para cada vértice, a lista dos vizinhos dele. O espaço é proporcional ao que existe: 1 entrada por vértice e 1 por aresta, com 10 mil vértices e 20 mil arestas, 30 mil entradas.',
         'Isso torna vizinhos barato, a lista já está pronta, e existeAresta proporcional ao grau do vértice, porque é preciso percorrer a lista procurando. Em grafo real o grau é pequeno, e essa varredura quase nunca importa.',
@@ -194,10 +191,9 @@ export const graphsUnit: Unit = {
       introducesTerms: ['adjacency-matrix', 'density'],
       oneLine: "Com 10 mil vértices são 100 milhões de células, tenha o grafo 20 mil arestas ou 50 milhões.",
       plainly:
-        'Você tem dez mil usuários e quer responder instantaneamente se dois deles estão ligados ' +
-        'diretamente. Uma tabela gigante com uma célula para cada par responde rápido, mas reserva ' +
-        'cem milhões de espaços mesmo quando quase todos dizem “não”. Ela paga pelo que poderia ' +
-        'existir, não pelo que existe.',
+        'Você tem dez mil usuários e quer saber, numa conta só, se dois deles estão ligados ' +
+        'diretamente. Uma tabela com uma célula para cada par responde isso, mas reserva cem ' +
+        'milhões de células mesmo quando quase todas dizem "não".',
       body: [
         'A segunda implementação reserva 1 célula para cada par possível de vértices. Perguntar se 2 estão ligados vira uma conta, e a resposta é constante.',
         'O preço está no espaço, e ele não depende das arestas: dez mil vértices custam cem milhões de células, tenha o grafo vinte mil arestas ou cinquenta milhões. A matriz paga por toda ligação que poderia existir.',
@@ -222,9 +218,8 @@ export const graphsUnit: Unit = {
       plainly:
         'A tela de permissões trava e ninguém sabe por quê. O código anda por uma estrutura ' +
         'em que cada item aponta para outros, e em algum lugar alguém aponta de volta para ' +
-        'onde a busca já passou. O percurso chega lá, segue o ponteiro, volta ao ponto de ' +
-        'partida e recomeça — para sempre. O conserto não é uma condição de parada nova; é ' +
-        'anotar por onde já se passou e não passar de novo.',
+        'onde a busca já passou. O percurso segue esse ponteiro, volta ao ponto de partida e ' +
+        'recomeça, para sempre.',
       body: [
         'Percorrer um grafo é a consequência mais importante de tê-lo escolhido, e é onde o contrato mostra o que custa. A busca em largura usa 1 fila: tira um vértice, olha os vizinhos, põe na fila os que ainda não viu.',
         '"Os que ainda não viu" é a peça que a árvore não precisava. Como pode haver caminho de volta, um vértice pode ser alcançado duas vezes, e sem um conjunto de visitados a fila nunca esvazia. O laço infinito da tela de permissões é exatamente isto.',
@@ -264,12 +259,13 @@ export const graphsUnit: Unit = {
       plainly:
         'Você procura o caminho entre times. Se tira o próximo time da frente da fila, visita ' +
         'primeiro quem está mais perto; se tira o último colocado, aprofunda um caminho antes de ' +
-        'voltar. Uma única troca muda a ordem inteira. Os dois percursos alcançam os mesmos lugares, ' +
-        'mas servem perguntas diferentes.',
+        'voltar.',
       body: [
         'A diferença entre os dois percursos é **1 linha**: onde a busca em largura retira o primeiro da fila, a busca em profundidade retira o último de uma pilha. Nada mais muda, o conjunto de visitados, a condição de parada e os vizinhos são os mesmos.',
         'O efeito não é proporcional à mudança. Em vez de avançar por camadas, o percurso desce um ramo até o fim antes de voltar. As duas visitam **os mesmos vértices**, e visitam em ordens diferentes.',
-        'Guarde a diferença nesta forma, porque é ela que vai importar no próximo ciclo: a busca em largura alcança cada vértice pelo caminho com menos arestas; a busca em profundidade encontra um caminho completo mais cedo, e usa memória proporcional à profundidade, não à largura.',
+        'Guarde a diferença nesta forma, porque é ela que vai importar no próximo ciclo: a busca em largura alcança cada vértice pelo caminho com menos arestas; a busca em profundidade desce um ramo inteiro antes de abrir o próximo, e não dá essa garantia.',
+        'Memória não separa as duas nesta versão. Cada vértice retirado empilha de uma vez todos os vizinhos ainda não vistos: com uma origem ligada a 1000 vértices, a pilha guarda os 1000 de uma vez, igual à fila, e no pior caso as duas guardam quase todos os vértices do grafo.',
+        'E um aviso de precisão. Marcar na entrada da pilha faz desta uma aproximação da busca em profundidade clássica, a recursiva. Um vértice marcado cedo não é mais alcançado pelo ramo fundo que passaria por ele, e em alguns grafos a ordem de visita das duas difere. Nos grafos desta unidade isso não chega a acontecer.',
       ],
       figure: {
         kind: 'traversal',
@@ -288,19 +284,17 @@ export const graphsUnit: Unit = {
 
     { id: 'graphs.c6', title: 'Menos arestas não é menor custo', layer: 'essential', band: 'cost',
       introducesTerms: [],
-      oneLine: "Uma rota de 2 escalas pode durar o dobro de uma de 4.",
+      oneLine: "Uma rota de 2 trechos pode durar o dobro de uma de 4.",
       plainly:
-        'Uma rota com duas escalas pode levar doze horas; outra com quatro pode levar seis. Contar ' +
-        'ligações só responde qual caminho tem menos trechos. Se a pergunta é duração, preço ou ' +
-        'risco, cada ligação precisa carregar esse valor e a busca precisa somá-lo. O menor número ' +
-        'de passos não é automaticamente a melhor rota.',
+        'Contar ligações responde qual caminho tem menos trechos, e só isso. Se a pergunta é ' +
+        'duração, preço ou risco, cada ligação precisa carregar esse valor e a busca precisa somá-lo.',
       body: [
-        'A garantia da busca em largura tem uma forma exata, e a forma importa: ao alcançar um vértice **pela primeira vez**, ela chegou pelo caminho com o menor número de arestas, 2 escalas em vez de 4. É isso que responde "qual a rota com menos escalas".',
-        'A ressalva separa quem entendeu de quem decorou: **menos arestas não é menor custo**. Se as arestas têm peso, duração, distância, preço, nenhum dos dois percursos responde caminho mais curto. Uma rota de duas escalas pode durar o dobro de uma de quatro.',
+        'A garantia da busca em largura tem uma forma exata, e a forma importa: ao alcançar um vértice **pela primeira vez**, ela chegou pelo caminho com o menor número de arestas, 2 trechos em vez de 4. É isso que responde "qual a rota com menos escalas".',
+        'A ressalva separa quem entendeu de quem decorou: **menos arestas não é menor custo**. Se as arestas têm peso, duração, distância, preço, nenhum dos dois percursos responde caminho mais curto. Uma rota de dois trechos pode durar o dobro de uma de quatro.',
         'Isso não é uma limitação a contornar com um ajuste. É outro problema, e ele tem outro algoritmo, fora desta unidade. Saber que a ferramenta não responde a pergunta é metade do julgamento.',
       ],
       workedExample: {
-        problem: "A→B→C com 1 hora cada, contra A→D→E→F→C com 20 minutos cada. A busca em largura devolve a primeira: 2 arestas contra 4. A primeira leva 2 horas e a segunda 1h20.",
+        problem: "A→B→C, 2 trechos de 1 hora cada, contra A→D→E→F→C, 4 trechos de 15 minutos cada. A busca em largura devolve a primeira: 2 arestas contra 4. A primeira leva 2 horas, o dobro da segunda, que leva 1 hora.",
         whatToNotice: "A busca em largura acertou o que prometeu, menos arestas. A pergunta que você tinha era outra.",
       },
       exerciseId: 'graphs.e5' },
@@ -309,10 +303,9 @@ export const graphsUnit: Unit = {
       introducesTerms: ['sparse'],
       oneLine: "Com 10 mil vértices e 20 mil arestas, a lista olha 30 mil coisas e a matriz 100 milhões.",
       plainly:
-        'Com dez mil pessoas e vinte mil ligações, quase todos os pares não têm relação direta. ' +
-        'Guardar apenas as ligações reais exige olhar poucas dezenas de milhares de coisas. Guardar ' +
-        'uma resposta para cada par exige cem milhões de espaços. A escolha vira quando as ligações ' +
-        'deixam de ser exceção e passam a ocupar boa parte dos pares.',
+        'Com dez mil pessoas e vinte mil ligações, quase nenhum par tem relação direta. Guardar só ' +
+        'as ligações ou guardar uma resposta por par: a escolha só vira quando as ligações deixam de ' +
+        'ser exceção e passam a ocupar boa parte dos pares.',
       body: [
         'A representação decide o custo do percurso, e é aqui que as 2 escolhas do meio da unidade cobram a conta.',
         'Sobre lista de adjacência, a busca em largura custa O(V+E): cada vértice sai da fila uma vez e cada aresta é olhada uma vez. Sobre matriz, custa O(V²), porque cada vértice retirado obriga a varrer uma linha inteira.',
@@ -328,10 +321,9 @@ export const graphsUnit: Unit = {
       introducesTerms: [],
       oneLine: "O grafo é a escolha errada quando as ligações formam hierarquia e nada mais.",
       plainly:
-        'Uma estrutura de ligações é útil quando qualquer pessoa pode apontar para várias outras e ' +
-        'os caminhos podem se cruzar ou voltar. Se cada item tem um único pai e nunca há retorno, ' +
-        'desenhar todas as possibilidades só complica. Nesse caso, uma hierarquia simples já ' +
-        'descreve o problema inteiro.',
+        'Um grafo serve quando um item pode apontar para vários outros e os caminhos podem se ' +
+        'cruzar ou voltar. Se cada item tem um único pai e nunca há volta, uma hierarquia simples ' +
+        'já descreve o problema inteiro.',
       body: [
         'Volte ao contrato do primeiro ciclo. Tudo que ele não promete é onde a escolha falha, e aqui a lista de ausências é maior que a de operações, o que é próprio deste contrato.',
         'O grafo é a escolha errada quando a estrutura de fato não tem ciclo: uma hierarquia que é árvore paga o conjunto de visitados e a complexidade do percurso sem precisar. E é errada quando a pergunta real é sobre um par por vez, sem caminho envolvido, ali o contrato que responde é o Map da unidade 4.',
@@ -344,7 +336,7 @@ export const graphsUnit: Unit = {
       postmortem: {
         incident: "Volte à tela de permissões que nunca carregava, com times herdando de times.",
         trapId: "graphs.percurso-sem-visitados",
-        missingClaim: "nenhuma de custo: o percurso não terminava. O que faltava era a frase \"este percurso termina para entrada com ciclo\", e ela era falsa.",
+        missingClaim: "\"O percurso custa O(V+E) no pior caso, medido em times e ligações, mesmo quando a hierarquia tem ciclo, porque cada time entra na fila no máximo uma vez.\" Ninguém a escreveu, e para o código que estava lá ela era falsa: sem conjunto de visitados, A e B voltavam à fila um depois do outro, para sempre.",
         whatWouldCatch: "Perguntar se a estrutura admite ciclo. Admitindo, o conjunto de visitados deixa de ser detalhe e vira condição de parada.",
       },
       exerciseId: 'graphs.e7' },

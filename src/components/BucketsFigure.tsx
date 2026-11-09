@@ -112,7 +112,8 @@ export function BucketsFigure({ figure, autoPlay }: { figure: Extract<Figure, { 
         <div className="border-t border-rule px-3.5 py-2 font-mono text-[12px] text-fg-3">
           buscar({target}): 1 endereço, e depois{' '}
           <span className="text-implementation">
-            {buckets[targetBucket]!.indexOf(target) + 1} comparações de chave
+            {buckets[targetBucket]!.indexOf(target) + 1}{' '}
+            {buckets[targetBucket]!.indexOf(target) === 0 ? 'comparação' : 'comparações'} de chave
           </span>{' '}
           dentro do bucket {targetBucket}
         </div>

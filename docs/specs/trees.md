@@ -71,6 +71,8 @@ E não responde `obter` em O(1), o preço da ordem.
 **BST sem balanceamento**, cada nó tem chave, e tudo à esquerda é menor.
 Invariante: para todo nó, toda chave da subárvore esquerda é menor que a dele, e toda da
 direita é maior.
+Chave igual não desce para lado nenhum: o contrato substitui o valor, e a invariante fica
+estrita.
 Custo: O(h), e **h não é log n por garantia nenhuma**.
 Errada quando: as chaves chegam em ordem, a árvore vira lista e tudo vira O(n). Use uma
 balanceada.
@@ -96,7 +98,7 @@ menor porque o nó é grande, só faz sentido com o custo de acesso a disco decl
 | c1 | implementação | A invariante de busca binária numa árvore | árvore de busca, nó, subárvore |
 | c2 | implementação | Altura não é log n | altura, degeneração |
 | c3 | implementação | Balancear: rotação | rotação, balanceamento |
-| c4 | custo | O(log n) garantido contra O(log n) esperado | *(a definir)* |
+| c4 | custo | O(log n) garantido contra O(1) esperado | *(a definir)*; a garantia é só da balanceada |
 | c5 | implementação *(aprofundamento)* | B-tree e o custo do acesso a disco | B-tree |
 | c6 | custo | Quando a árvore é a escolha errada | *(a definir)* |
 
@@ -107,6 +109,9 @@ menor porque o nó é grande, só faz sentido com o custo de acesso a disco decl
 - `arvore-ordena-valores`, a ordem é de chave, e o aluno espera que valha para o valor
 - `rotacao-muda-ordem`, supor que rotacionar reordena as chaves
 - `travessia-errada`, usar pré-ordem esperando saída ordenada
+- `arvore-substitui-hash`, escolher entre tabela hash e árvore sem listar as consultas. O
+  chamado da unidade é a metade em que a hash foi escolhida e a consulta pedia faixa; o
+  último ciclo é a outra metade
 
 `bst-e-log-n` é a mais valiosa: o aluno constrói a entrada ordenada, vê a árvore virar
 lista, e a lição transfere direto para "hash é O(1)", o mesmo qualificador ausente, outra

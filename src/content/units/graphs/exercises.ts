@@ -169,7 +169,7 @@ export const graphsExercises: Exercise[] = [
   },
   {
     kind: 'bug', id: 'graphs.e7',
-    prompt: 'Esta busca em largura roda sem erro na maioria dos grafos da suíte de testes. Marque a linha defeituosa e escolha a consequência.',
+    prompt: 'Esta busca em largura roda sem erro na maioria dos grafos da suíte de testes. Marque uma linha defeituosa e escolha a consequência.',
     language: 'javascript',
     code: `function alcancaveis(grafo, origem) {
   const fila = [origem]
@@ -181,10 +181,12 @@ export const graphsExercises: Exercise[] = [
   }
   return vistos
 }`,
-    faultyLines: [7],
+    // As duas linhas fogem do pseudocódigo de graphs.c4: a 6 marca na retirada, a 7 põe
+    // na fila sem consultar o conjunto. As duas são defeito; a consequência grave é da 7.
+    faultyLines: [6, 7],
     consequences: [
       { correct: true, text: 'Os vizinhos entram na fila sem consultar o conjunto',
-        why: 'Num grafo com ciclo a fila nunca esvazia. O conjunto devolvido está certo, o laço é que não termina para devolvê-lo.' },
+        why: 'São duas linhas fora do pseudocódigo da busca em largura. A 6 marca na retirada, e isso sozinho só deixaria um vértice entrar na fila mais de uma vez. A 7 põe na fila sem consultar o conjunto, e num grafo com ciclo a fila nunca esvazia. O conjunto devolvido estaria certo; o laço é que não termina para devolvê-lo.' },
       { correct: false, text: 'Nada de grave: marcar na retirada em vez de na entrada só faz alguns vértices serem visitados duas vezes', misconceptionId: 'graphs.percurso-sem-visitados' },
       { correct: false, text: 'O defeito é usar fila em vez de pilha: com pilha o ciclo seria detectado ao voltar', misconceptionId: 'graphs.bfs-e-dfs-equivalentes' },
     ],

@@ -75,8 +75,8 @@ export const treesUnit: Unit = {
       space: { bound: 'O(n)', regime: 'worst', amortized: false,
         assumptions: ['um nó e dois ponteiros por chave'], measuredIn: 'nós alocados' },
       wrongWhen: [
-        { scenario: 'As chaves chegam em ordem, o que acontece sempre que a origem é um exportador ou um identificador crescente',
-          useInstead: 'árvore balanceada, a entrada mais comum é justamente o pior caso desta' },
+        { scenario: 'As chaves chegam em ordem, como acontece quando a chave é um identificador crescente ou vem de uma exportação ordenada',
+          useInstead: 'árvore balanceada: a entrada ordenada, que não tem nada de rara, é justamente o pior caso desta' },
         { scenario: 'É preciso garantir um limite de tempo por requisição',
           useInstead: 'árvore balanceada, cujo O(log n) vale para toda entrada' },
       ],
@@ -200,21 +200,23 @@ export const treesUnit: Unit = {
       oneLine: "Cada nó separa as chaves menores das maiores, e procurar é escolher um lado.",
       plainly:
         'Você procura uma data numa coleção ordenada e, a cada comparação, descarta metade das ' +
-        'opções. Uma árvore guarda essa mesma decisão em cada ponto: valores menores seguem por um ' +
+        'opções. Uma árvore guarda essa mesma decisão em cada ponto: chaves menores seguem por um ' +
         'lado, maiores pelo outro. Procurar não percorre tudo; a cada escolha, uma parte inteira ' +
         'deixa de importar.',
       body: [
         'A ideia é a busca binária guardada em ponteiros: cada nó separa as chaves menores das maiores, e procurar é descer escolhendo 1 lado por comparação. Com 1 milhão de chaves bem distribuídas, são cerca de 20 comparações.',
-        'A invariante é uma frase e sustenta tudo o que vem depois: para todo nó, toda chave da subárvore esquerda é menor que a dele, e toda da direita é maior. É ela que permite descartar metade da estrutura a cada comparação, e é ela que uma busca que desce pelos dois lados joga fora sem perceber.',
+        'A invariante é uma frase e sustenta tudo o que vem depois: para todo nó, toda chave da subárvore esquerda é menor que a dele, e toda da direita é maior. É ela que permite descartar um lado inteiro a cada comparação, e é ela que uma busca que desce pelos dois lados joga fora sem perceber. Por isso a chave igual não desce para lado nenhum: ela já está na árvore, e o contrato manda substituir o valor, como no Map.',
         'A ordem de visita também depende dela. Só uma das travessias devolve as chaves ordenadas: a que visita a subárvore esquerda, depois o nó, depois a direita. As outras devolvem sequências que parecem arbitrárias, porque são.',
       ],
-      pseudocode: `função inserir(T, chave)
+      pseudocode: `função inserir(T, chave, valor)
     se T é vazia então
-        retorne novo nó com chave
+        retorne novo nó com chave, valor
     se chave < T.chave então
-        T.esquerda ← inserir(T.esquerda, chave)
+        T.esquerda ← inserir(T.esquerda, chave, valor)
+    senão se chave > T.chave então
+        T.direita ← inserir(T.direita, chave, valor)
     senão
-        T.direita ← inserir(T.direita, chave)
+        T.valor ← valor
     retorne T`,
       invariant: 'Para todo nó, toda chave da subárvore esquerda é menor que a dele, e toda da direita é maior.',
       workedExample: {
@@ -234,7 +236,7 @@ export const treesUnit: Unit = {
       body: [
         'O custo de toda operação desta estrutura é a altura. E a invariante de ordem não diz nada sobre altura.',
         'Insira 1, 2, 3, 4 e 5 numa árvore vazia: cada chave vira o filho direito da anterior, a altura vira n − 1, e a estrutura virou uma lista ligada com ponteiros a mais. Toda operação passou a custar O(n), e a invariante continua valendo.',
-        'A entrada que produz isso é a coleção já ordenada, a mais comum que existe num sistema real, porque identificador cresce e exportador exporta em ordem. Aqui, como na unidade de análise de custo, o pior caso não é o caso raro.',
+        'A entrada que produz isso é a coleção já ordenada, e ela não tem nada de rara: identificador sequencial só cresce, e exportação costuma sair em ordem de chave. Aqui, como na unidade de análise de custo, o pior caso não é um caso exótico.',
         'Vale separar duas palavras que costumam ser trocadas: a profundidade de um nó é o caminho da raiz até ele, contado de cima para baixo; a altura de um nó é o caminho mais longo dele até uma folha, contado de baixo para cima. Portanto, a altura da árvore é a altura da raiz: o caminho da raiz até a folha mais distante.',
       ],
       figure: {
@@ -246,7 +248,7 @@ export const treesUnit: Unit = {
         caption:
           'As duas árvores guardam exatamente as mesmas seis chaves, e as duas satisfazem a ' +
           'invariante de ordem. Só a ordem de chegada mudou. A da direita é a coleção já ' +
-          'ordenada, a entrada mais comum que existe num sistema real.',
+          'ordenada, que chega assim sempre que a chave é um identificador crescente.',
       },
       workedExample: {
         problem: 'As sequências 50, 30, 70, 20, 40, 35 e 20, 30, 35, 40, 50, 70 produzem formas diferentes; a travessia em ordem das duas é 20, 30, 35, 40, 50, 70.',
@@ -258,9 +260,9 @@ export const treesUnit: Unit = {
       introducesTerms: ['rotation', 'balancing'],
       oneLine: "A rotação baixa a altura e não muda a ordem das chaves.",
       plainly:
-        'Três valores chegam em ordem e formam uma escada: 1 aponta para 2, que aponta para 3. A ' +
-        'busca pelo último precisa descer dois níveis. Trocar quem fica no meio reduz o caminho sem ' +
-        'trocar a ordem dos valores. O conserto não muda o que a coleção contém; muda o formato do ' +
+        'Três chaves chegam em ordem e formam uma escada: 1 aponta para 2, que aponta para 3. A ' +
+        'busca pela última precisa descer dois níveis. Trocar quem fica no meio reduz o caminho sem ' +
+        'trocar a ordem das chaves. O conserto não muda o que a coleção contém; muda o formato do ' +
         'caminho até ela.',
       body: [
         'Se o custo é a altura, a saída é impedir a altura de crescer. Uma rotação troca quem é pai de quem entre 2 nós vizinhos: a subárvore desce 1 nível de um lado e sobe 1 do outro.',
@@ -284,14 +286,14 @@ export const treesUnit: Unit = {
 
     { id: 'trees.c4', title: 'Garantido não é o mesmo que esperado', layer: 'essential', band: 'cost',
       introducesTerms: [],
-      oneLine: "A árvore promete O(log n) sempre; a tabela hash promete O(1) quase sempre.",
+      oneLine: "A árvore balanceada garante O(log n) para toda entrada; a tabela hash dá O(1) no caso médio.",
       plainly:
         'Uma tabela costuma responder uma chave exata em pouco tempo, mas depende de os dados se ' +
         'comportarem bem. Uma árvore mantida baixa faz mais comparações, porém limita esse número ' +
-        'mesmo quando a entrada vem em uma ordem ruim. A escolha não é entre “rápido” e “lento”; é ' +
+        'mesmo quando a entrada vem em uma ordem ruim. A escolha não é entre rápido e lento; é ' +
         'entre uma média melhor e uma garantia mais forte.',
       body: [
-        'Tabela hash oferece O(1) no caso médio e O(n) no pior. Árvore balanceada oferece O(log n) no pior caso, para toda entrada. Comparar os dois números sem os qualificadores é comparar coisas diferentes.',
+        'Tabela hash oferece O(1) no caso médio e O(n) no pior. Árvore balanceada oferece O(log n) no pior caso, para toda entrada; a árvore sem balanceamento, não, e inserir 1, 2, 3, 4 e 5 em ordem já a levou a O(n). Comparar os dois números sem os qualificadores é comparar coisas diferentes.',
         'A escolha depende de quem controla a entrada. Se as chaves são suas, o caso médio descreve o que vai acontecer. Se elas vêm de fora, alguém pode escolher a entrada que ativa o pior caso, e a garantia passa a valer mais que a média.',
         'É a unidade 2 sendo cobrada: sem regime declarado, as duas estruturas parecem trocáveis, e não são.',
       ],
@@ -334,12 +336,12 @@ export const treesUnit: Unit = {
       ],
       workedExample: {
         problem: "Um cache de sessão por token, 100 mil entradas, e nenhuma consulta por faixa. A árvore cobra cerca de 17 comparações por acesso; a tabela hash cobra 1.",
-        whatToNotice: "A ordem está sendo paga em toda operação e nenhuma consulta a usa. É a decisão do ciclo 0 lida ao contrário.",
+        whatToNotice: "A ordem está sendo paga em toda operação e nenhuma consulta a usa. É a decisão do primeiro ciclo lida ao contrário.",
       },
       postmortem: {
         incident: "Volte ao relatório de pedidos entre 1º e 15 de março, e ao índice que o plano de execução não usava.",
         trapId: "trees.arvore-substitui-hash",
-        missingClaim: "qual consulta o índice responde. Um índice hash responde igualdade; faixa e ordem pedem árvore, e a diferença não aparece no nome da coluna.",
+        missingClaim: "o custo da faixa em cada índice. No índice hash, \"entre 1º e 15 de março, em ordem\" é varrer todas as n chaves e ordenar o que sobrar; numa árvore balanceada é O(log n) para achar o começo, mais um passo por pedido devolvido. A diferença não aparece no nome da coluna.",
         whatWouldCatch: "Listar as consultas antes de criar o índice. \"Entre duas datas, em ordem\" é faixa mais ordem, e isso escolhe a estrutura sozinho.",
       },
       exerciseId: 'trees.e6' },

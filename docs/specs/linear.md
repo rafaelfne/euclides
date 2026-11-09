@@ -75,7 +75,9 @@ Errada quando: inserção e remoção acontecem no começo com frequência.
 
 **Lista ligada**, cada elemento aponta o próximo.
 Invariante: seguindo `próximo` a partir da cabeça, chega-se a todos exatamente uma vez.
-Custo: `obter(i)` O(n); inserir/remover **com o nó em mãos** O(1).
+Custo: `obter(i)` O(n); inserir/remover **com o nó anterior em mãos** O(1). Numa lista
+simplesmente ligada, ter o próprio nó não dá o anterior; só na duplamente ligada o nó em
+mãos basta, e é essa a variante da LRU cache.
 Errada quando: o acesso é por índice, ou quando n é grande e a varredura importa, cada
 salto é uma falha de cache, e é por isso que ela perde na prática mais do que a tabela de
 custos sugere.
@@ -95,7 +97,7 @@ de cache, não aparece em notação O. É o melhor exemplo da trilha inteira de 
 | c1 | implementação | Array dinâmico e o custo de andar uma casa | array dinâmico, capacidade |
 | c2 | implementação | Pilha: o que sobra quando só uma ponta é acessível | pilha |
 | c3 | implementação | Fila, e por que ela não é a pilha ao contrário | fila |
-| c4 | implementação | Lista ligada e o ponteiro em mãos | lista ligada, nó |
+| c4 | implementação | Lista ligada e o ponteiro em mãos | lista ligada, nó, lista duplamente ligada |
 | c5 | custo | A tabela de custos mente: localidade de cache | localidade de cache |
 | c6 | custo | Quando a lista é a escolha errada | *(a definir)* |
 
@@ -109,7 +111,10 @@ contrato". Se ficarem em `contract`, a checagem `espinha` reprova (a banda do me
 - `insercao-no-comeco-e-barata`, a que o problema motivador ativa
 - `lista-ligada-e-sempre-melhor`, a tabela de custos lida sem `assumptions`
 - `capacidade-e-tamanho`, confundir o bloco alocado com os elementos presentes
-- `pilha-e-fila-invertidas`, supor que basta ler ao contrário
+- `pilha-inverte-a-entrada`, supor que a pilha devolve a entrada invertida mesmo com
+  operações intercaladas. É a armadilha do ciclo da pilha, que ainda não conhece a fila
+- `pilha-e-fila-invertidas`, supor que basta ler ao contrário. Só pode ser cobrada a partir
+  do ciclo da fila: o exercício do ciclo da pilha não compara as duas
 - `ponteiro-em-maos`, supor que remover de uma lista ligada é O(1) *sem já ter o nó*
 
 A última é a mais valiosa e a menos óbvia: "remoção é O(1)" é verdade só depois que alguém

@@ -97,7 +97,7 @@ export function InsertionFigure({
               <span className={totalShifts(r.rounds) === maior ? 'text-implementation' : 'text-contract'}>
                 {totalShifts(r.rounds)}
               </span>{' '}
-              deslocamentos
+              {totalShifts(r.rounds) === 1 ? 'deslocamento' : 'deslocamentos'}
             </span>
           ))}
           , com os mesmos {figure.inputs[0]!.values.length} elementos
