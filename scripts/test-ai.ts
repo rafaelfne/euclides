@@ -21,6 +21,7 @@ import { referenceGenerators } from '../src/lib/reference'
 import { aiExercises } from '../src/content/units/ai/exercises'
 import { aiUnit } from '../src/content/units/ai'
 import { allUnits, units } from '../src/content/index'
+import { aiGlossary } from '../src/content/glossary'
 import { toPythonOrNull, untranslatedPython } from '../src/lib/transliterate-python'
 import type { Exercise } from '../src/content/schema'
 
@@ -193,11 +194,45 @@ check(`ai.e0: a pontuação é ${ptNumber(e0)}, e é o que a correta afirma`,
 check('ai.e0: sem o bias a soma daria 6, o número do distrator',
   says(byId('ai.e0'), 0.5 * 6 + 3 * 1))
 
-// e1: os valores de tanh do enunciado, com três casas
-check('ai.e1: tanh(0,2) ≈ 0,197 e tanh(0,3) ≈ 0,291',
-  says(byId('ai.e1'), Number(Math.tanh(0.2).toFixed(3))) && says(byId('ai.e1'), Number(Math.tanh(0.3).toFixed(3))))
-check('ai.e1: o if seco devolve o mesmo para 0,2 e 0,3, a tanh não',
-  Math.sign(0.2) === Math.sign(0.3) && Math.tanh(0.3) - Math.tanh(0.2) > 0.05)
+/*
+  c1 e e1: sem activation function, dois neurônios em sequência colapsam num
+  neurônio só. A revisão externa de 2026-11-09 trocou o argumento de c1 (a
+  curva suave "permite medir adiante", promessa que nenhum exemplo seguinte
+  cumpria) pelo colapso. Os números de c1 evitam as células do gabarito de
+  ai.e5, que a seção 4 proíbe na prosa de c0 a c5: por isso 9, e não 3.
+*/
+const c1 = aiUnit.cycles.find((c) => c.id === 'ai.c1')!
+const c1Text = [c1.oneLine, c1.plainly ?? '', ...c1.body, c1.workedExample.problem, c1.workedExample.whatToNotice].join(' ')
+const stacked = (x: number) => 9 * (2 * x + 1) + 1
+const stackedTanh = (x: number) => 9 * Math.tanh(2 * x + 1) + 1
+const r3 = (n: number) => ptNumber(Number(n.toFixed(3)))
+check('ai.c1: 9 × (2 × x + 1) + 1 é 18 × x + 10, e com x = 0, 1 e 2 dá 10, 28 e 46',
+  [-1, 0, 1, 2, 7].every((x) => stacked(x) === 18 * x + 10)
+    && [0, 1, 2].map(stacked).join(' ') === '10 28 46'
+    && ['18 × x + 10', '10, 28 e 46', 'peso 18 e bias 10'].every((t) => c1Text.includes(t)))
+check('ai.c1: com a tanh no meio, z vale −5,854, 7,854, 9,955 e 9,999 em x de −1 a 2, como o exemplo diz',
+  ['−5,854', '7,854', '9,955', '9,999'].every((t, i) => r3(stackedTanh(i - 1)).replace('-', '−') === t && c1.workedExample.problem.includes(t)),
+  [-1, 0, 1, 2].map((x) => r3(stackedTanh(x))).join(' '))
+check('ai.c1: os aumentos com a tanh são 13,71, 2,10 e 0,04, e sem ela 18 em todo passo',
+  ptNumber(Number((stackedTanh(0) - stackedTanh(-1)).toFixed(2))) === '13,71'
+    && (stackedTanh(1) - stackedTanh(0)).toFixed(2) === '2.10'
+    && (stackedTanh(2) - stackedTanh(1)).toFixed(2) === '0.04'
+    && ['13,71', '2,10', '0,04'].every((t) => c1.workedExample.whatToNotice.includes(t)))
+check('ai.c1: tanh(1) ≈ 0,762, tanh(2) ≈ 0,964, tanh(2 × 1 + 1) ≈ 0,995, tanh(0,1) ≈ 0,1',
+  r3(Math.tanh(1)) === '0,762' && r3(Math.tanh(2)) === '0,964' && r3(Math.tanh(3)) === '0,995'
+    && ptNumber(Number(Math.tanh(0.1).toFixed(2))) === '0,1'
+    && ['0,762', '0,964', '0,995', 'tanh(0,1) ≈ 0,1'].every((t) => c1Text.includes(t)))
+check('ai.c1: o ciclo não promete que a curva serve para medir o efeito de um peso adiante',
+  !/permite medir|quanto cada peso move|para que lado o peso/.test(c1Text))
+
+// e1: y = 4 × x − 2; z = 0,5 × y + 3; x = 0, 1 e 2
+const e1z = (x: number) => 0.5 * (4 * x - 2) + 3
+check('ai.e1: z vale 2, 4 e 6 para x = 0, 1 e 2, e é 2 × x + 2 para toda entrada',
+  [0, 1, 2].map(e1z).join(' ') === '2 4 6' && [-3, 0.5, 10].every((x) => e1z(x) === 2 * x + 2)
+    && correctText(byId('ai.e1')).includes('z = 2 × x + 2'))
+check('ai.e1: o enunciado traz as duas contas e nenhum valor de z',
+  byId('ai.e1').prompt.includes('y = 4 × x − 2') && byId('ai.e1').prompt.includes('z = 0,5 × y + 3')
+    && !/z vale|2, 4 e 6/.test(byId('ai.e1').prompt))
 
 // e2: prazos reais 2 e 4; A previu 5 e 1; B previu 3 e 5
 const real = [2, 4], A = [5, 1], B = [3, 5]
@@ -255,6 +290,17 @@ if (e7.kind === 'bug') {
     (e7.addedLines ?? []).length === lines.length)
   check('ai.e7: o enunciado não descreve o defeito',
     !/zer|antes|depois|fora|backward/i.test(e7.prompt), e7.prompt)
+  /*
+    No PyTorch 2.x, zero_grad põe p.grad em None, e a linha do passo lança
+    TypeError: "roda sem erro" só vale no estilo micrograd, em que limpar
+    escreve 0. O enunciado diz isso, sem nomear a chamada.
+  */
+  check('ai.e7: o enunciado declara o estilo micrograd, em que limpar o gradient escreve 0',
+    /micrograd/.test(e7.prompt) && /escreve 0/.test(e7.prompt))
+  const c7Prep = aiUnit.cycles.find((c) => c.id === 'ai.c7')!.body.find((p) => /ponto errado/.test(p)) ?? ''
+  check('ai.c7: prepara e7 dizendo que zerar no ponto errado é outro defeito, sem dizer onde zerar',
+    /Nunca zerar é um defeito/.test(c7Prep) && /Zerar no ponto errado da rodada é outro/.test(c7Prep)
+      && !/antes|depois|backward|passada|passo/i.test(c7Prep), c7Prep)
   check('ai.e7: a correta afirma o que o laço simulado mostra, peso parado e loss igual',
     /Nenhum peso muda/.test(correctText(e7)) && /loss fica igual/.test(correctText(e7)))
 }
@@ -307,6 +353,14 @@ check('ai.e8: os distratores conferem: 1,0 é onde o ajuste parou, 0,2 é o pass
     && ['1,0', '0,2', '5'].every((n) => e8.kind === 'choice' && e8.choices.some((c) => !c.correct && c.text.startsWith(n))))
 check('o chamado: com peso 1,0, toda rota de 500 km ou mais prevê pelo menos o dobro de com 0,4',
   [5, 6, 8, 10, 20, 50].every((dist) => route(dist, 1, baseDias, 0).prazo >= 2 * route(dist, 0.4, baseDias, 0).prazo - 1e-9))
+check('o chamado: o job ajusta o peso a cada entrega concluída, e a noite do chamado foi a entrega de 500 km',
+  /a cada entrega concluída/.test(aiUnit.motivatingProblem)
+    && /a entrega concluída foi a de uma rota de 500 km/.test(aiUnit.motivatingProblem)
+    && !/toda noite|entregas do dia/.test(aiUnit.motivatingProblem))
+check('o chamado: a tabela e o peso de partida 0,4 pela média do trimestre continuam',
+  /tabela da transportadora/.test(aiUnit.motivatingProblem) && /0,4 \(a média de um trimestre/.test(aiUnit.motivatingProblem))
+check('o chamado: diz por que a base é fixa, um prazo da operação que o job não estima',
+  /base é um prazo que a operação define, não um número estimado, e fica fixa/.test(aiUnit.motivatingProblem))
 check('o chamado: o problema motivador mostra a conta antes da pergunta',
   aiUnit.motivatingProblem.indexOf('5 × 0,4 + 1 = 3') >= 0
     && aiUnit.motivatingProblem.indexOf('5 × 1,0 + 1 = 6') > aiUnit.motivatingProblem.indexOf('5 × 0,4 + 1 = 3')
@@ -354,6 +408,66 @@ check('ai.c8: o exemplo não reusa os números de partida do chamado',
   ![10, 0.5, 2, 11].some((n) => [distancia, 0.4, baseDias, real8, 0.6].includes(n)))
 check('ai.c8: o corpo refaz a conta do chamado: loss 1 antes, 4 depois, gradient −10 no loss',
   ['(3 − 4)² = 1', '(6 − 4)² = 4', '5 × 2 × (3 − 4) = −10'].every((t) => c8.body.join(' ').includes(t)))
+/*
+  c8, a causa e não o sintoma (revisão externa de 2026-11-09). A distância
+  entra duas vezes no passo: no gradient do loss, 2 × erro × distância, e no
+  quanto o peso move a previsão, a distância. Cada dia de erro vira
+  learning rate × 2 × distância² dias de correção, e o erro depois do passo é
+  o de antes vezes 1 − esse número. Tudo aqui sai do grafo da rota, pela
+  passada para trás, e não da fórmula.
+*/
+const LR = 0.06
+const stepOnce = (dist: number, peso: number, base: number, realDias: number) =>
+  peso - LR * route(dist, peso, base, realDias).gradInLoss
+const walk = (dist: number, peso: number, base: number, realDias: number, steps: number) => {
+  const pesos = [peso]
+  for (let i = 0; i < steps; i++) pesos.push(stepOnce(dist, pesos[i]!, base, realDias))
+  const prazos = pesos.map((p) => route(dist, p, base, realDias).prazo)
+  return { pesos, prazos, erros: prazos.map((p) => p - realDias) }
+}
+const c8Text = [c8.plainly ?? '', ...c8.body].join(' ')
+const pm = c8.postmortem!
+
+check('ai.c8: com distância 5, cada dia de erro vira 0,06 × 2 × 5² = 3 dias de correção',
+  close(LR * 2 * distancia ** 2, 3) && close(night(0.4).prazo - route(distancia, stepOnce(distancia, 0.4, baseDias, real8), baseDias, real8).prazo, -3)
+    && c8Text.includes('0,06 × 2 × 5² = 3'))
+const diverge = walk(distancia, 0.4, baseDias, real8, 3)
+check('ai.c8: repetida na mesma rota, os erros são −1, +2, −4, +8, as previsões 3, 6, 0, 12 e os pesos 0,4, 1,0, −0,2, 2,2',
+  [-1, 2, -4, 8].every((e, i) => close(diverge.erros[i]!, e))
+    && [3, 6, 0, 12].every((p, i) => close(diverge.prazos[i]!, p))
+    && [0.4, 1, -0.2, 2.2].every((w, i) => close(diverge.pesos[i]!, w))
+    && ['−1, +2, −4, +8', '3, 6, 0 e 12', '0,4, 1,0, −0,2 e 2,2'].every((t) => c8Text.includes(t)),
+  diverge.pesos.map(ptNumber).join(' '))
+check('ai.c8: a figura mostra a mesma sequência, um passo por nó',
+  c8.figure?.kind === 'concept-flow'
+    && c8.figure.nodes.map((n) => n.label).join(' | ')
+      === 'peso 0,4 · prevê 3 · erro −1 | peso 1,0 · prevê 6 · erro +2 | peso −0,2 · prevê 0 · erro −4 | peso 2,2 · prevê 12 · erro +8')
+check('ai.c8: o fator do erro é 1 − 0,06 × 2 × distância²: −2 na rota de 500 km',
+  close(diverge.erros[1]! / diverge.erros[0]!, 1 - LR * 2 * 25) && close(1 - LR * 2 * 25, -2) && c8Text.includes('1 − 3 = −2'))
+const limit2 = 2 / (LR * 2)
+check('ai.c8: o erro só encolhe com distância² abaixo de 16,7, distância abaixo de 4,08, uns 410 km',
+  ptNumber(Number(limit2.toFixed(1))) === '16,7' && ptNumber(Number(Math.sqrt(limit2).toFixed(2))) === '4,08'
+    && Math.round(Math.sqrt(limit2) * 10) * 10 === 410
+    && ['16,7', '4,08', '410 km'].every((t) => c8Text.includes(t)))
+const short = walk(2, 0.4, baseDias, real8, 5)
+check('ai.c8: numa rota de 200 km o fator é 0,52 e o erro encolhe a cada passo',
+  close(1 - LR * 2 * 4, 0.52) && short.erros.slice(1).every((e, i) => close(e / short.erros[i]!, 0.52))
+    && c8Text.includes('1 − 0,06 × 2 × 4 = 0,52'))
+check('ai.c8: na fronteira, distância 4 ainda encolhe e 4,1 já cresce',
+  Math.abs(1 - LR * 2 * 16) < 1 && Math.abs(1 - LR * 2 * 4.1 ** 2) > 1)
+check('ai.c8: o postmortem afirma o passo seguro para a escala, com a conta, e não abre com "nenhuma"',
+  /^O passo é seguro para a escala desta entrada/.test(pm.missingClaim) && !/^nenhuma/i.test(pm.missingClaim)
+    && pm.missingClaim.includes('0,06 × 2 × distância²') && pm.missingClaim.includes('410 km'))
+check('ai.c8: o que teria pego é escolher o passo pela escala e conferir o loss em várias rodadas; recusar o passo é só alarme',
+  /pela escala da entrada/.test(pm.whatWouldCatch) && /várias rodadas/.test(pm.whatWouldCatch)
+    && /alarme, não de correção/.test(pm.whatWouldCatch))
+check('ai.c8: a lição nomeia a causa, learning rate fixo para entradas de escalas diferentes',
+  /learning rate fixo para entradas de escalas diferentes/.test(c8Text))
+
+// O bias não depende da ordem da soma: o pseudocódigo de c0 começa por ele.
+check('nenhum texto da unidade nem do glossário diz que o bias é "somado no fim"',
+  !/somado no fim/.test(JSON.stringify(aiUnit)) && !/somado no fim/.test(JSON.stringify(aiGlossary)))
+
 check('ai.c8: o título fala do peso, não do fator',
   /peso que saltou/.test(c8.title) && !/fator/.test(c8.title))
 

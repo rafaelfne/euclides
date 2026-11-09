@@ -106,6 +106,7 @@ export const IDENTIFIERS: Record<string, string> = {
   pontuar: 'score', soma: 'sum', pesos: 'weights', peso: 'weight',
   entradas: 'inputs', entrada: 'input', saída: 'output',
   degrau: 'threshold', ativar: 'activate', tanh: 'Math.tanh',
+  empilhado: 'stacked', empilhado_com_tanh: 'stackedWithTanh',
   previstos: 'predicted', reais: 'actual', erro: 'error',
   medir_gradient: 'numericGradient', conta: 'compute', nome: 'name', números: 'numbers',
   referência: 'reference', empurrão: 'nudge', empurrada: 'pushed',

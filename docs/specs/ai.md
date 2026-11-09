@@ -1,6 +1,7 @@
 # Spec, Unidade 9: Como uma IA decide
 
 **Status:** pronto para implementar; as quatro decisões que travavam o conteúdo foram tomadas em 2026-11-06
+**Revisão:** as mudanças em c1, no chamado (job por entrega, base fixa), no postmortem de c8, em e1 e em e7 vieram de uma revisão externa aceita pelo autor em 2026-11-09 (decisão 8).
 **Kind:** `method` (ADR-0012). O assunto não é uma estrutura, é o julgamento que o aluno
 produz diante de uma conta com pesos: o que ela devolve, quanto errou e para que lado mexer.
 
@@ -17,12 +18,18 @@ Uma transportadora mostra ao cliente um prazo previsto, em dias:
 
     prazo previsto = distância × peso da distância + base
 
-A distância vai em centenas de km, e a base, 1 dia de separação, é fixa. Por anos o prazo saiu
+A distância vai em centenas de km, e a base, 1 dia de separação, é fixa: é um prazo que a
+operação define, não um número estimado, e o job só aprende o peso. Por anos o prazo saiu
 de uma tabela da transportadora, com operações somando dias na mão quando as entregas
 atrasavam. O time trocou a tabela pela conta, com o peso começando na média de um trimestre
-(cada 100 km somavam 0,4 dia), e um job passou a ajustá-lo toda noite: compara as previsões com
-as entregas do dia e empurra o peso para o lado que diminui o erro. O sistema não muda a
-entrega, muda o número dentro da conta da estimativa.
+(cada 100 km somavam 0,4 dia), e um job passou a ajustá-lo a cada entrega concluída: compara a
+previsão daquela entrega com o prazo real e empurra o peso para o lado que diminui o erro. A
+noite do chamado foi a entrega de uma rota de 500 km. O sistema não muda a entrega, muda o
+número dentro da conta da estimativa.
+
+A versão anterior dizia que o job comparava, toda noite, as previsões com as entregas do dia, e
+o postmortem usava uma rota só. Agora as duas pontas falam da mesma coisa: uma atualização por
+entrega concluída, e a do chamado foi a da rota de 500 km.
 
 Duas versões anteriores foram trocadas. "O número que um dev chutava na mão" não dizia como o
 número nascia. "Abria-se um chamado e alguém refazia a conta à mão" descrevia mal o antes: o
@@ -36,7 +43,7 @@ A conta, passo a passo, é o que o chamado mostra antes da pergunta:
 
 - rota de 500 km, distância 5, peso 0,4: 5 × 0,4 + 1 = 3 dias
 - a entrega real levou 4 dias; loss (previsto − real)² = 1
-- numa noite, o ajuste levou o peso de 0,4 para 1,0: a rota passou a prever 5 × 1,0 + 1 = 6
+- numa noite, o ajuste daquela entrega levou o peso de 0,4 para 1,0: a rota passou a prever 5 × 1,0 + 1 = 6
   dias, loss 4, e toda rota de 500 km ou mais passou a prever pelo menos o dobro
 - ninguém mexeu no código
 
@@ -45,14 +52,30 @@ dia. O gradient do peso no loss, em 0,4, é 5 × 2 × (3 − 4) = −10, negativ
 lado certo. O passo foi learning rate 0,06 vezes 10; com 0,02, o peso pararia no ponto. A
 previsão estava 1 dia abaixo do real e terminou 2 acima: passo grande demais.
 
+A causa, e não só o sintoma: a distância entra duas vezes no passo, no gradient do loss
+(2 × erro × distância) e no quanto o peso move a previsão (a distância). Com learning rate 0,06
+e distância 5, cada dia de erro vira 0,06 × 2 × 5² = 3 dias de correção, e o erro depois do passo
+é o de antes vezes 1 − 3 = −2. Repetido na mesma rota, diverge: erros −1, +2, −4, +8; previsões
+3, 6, 0, 12; pesos 0,4, 1,0, −0,2, 2,2. O erro só encolhe quando 0,06 × 2 × distância² < 2, ou
+seja, distância² abaixo de 16,7 e distância abaixo de 4,08, uns 410 km. Uma rota de 200 km
+(distância 2) multiplica o erro por 1 − 0,06 × 2 × 4 = 0,52 e converge. É isso que explica, com
+número, o "toda rota de 500 km ou mais". A lição do postmortem: learning rate fixo para entradas
+de escalas diferentes. O que teria pego: escolher o passo pela escala da entrada (ou medir a
+distância numa escala em que toda rota fique pequena) e conferir que o loss cai em várias
+rodadas seguidas. Recusar o passo que fez o loss subir fica como alarme, não como correção.
+O `missingClaim` é a afirmação que faltava, "o passo é seguro para a escala desta entrada", com
+a conta; a versão anterior abria com "nenhuma de custo de tempo:", que lia como template.
+
 O peso que zera o loss nessa rota é 0,6 (5 × 0,6 + 1 = 4). Esse número não aparece em nada que o
 aluno lê antes de e8, inclusive o postmortem de c8, que a tela mostra antes do exercício. Como o
 passo daquela noite também mede 0,6, a prosa escreve "de 0,4 para 1,0" e nunca o tamanho do
-passo. `scripts/test-ai.ts` confere.
+passo. Os pesos da divergência (1,0, −0,2, 2,2) podem aparecer; o 0,6 não, e o 0,02 também não
+aparece em c8. `scripts/test-ai.ts` confere.
 
 A pergunta do chamado: **qual número o ajuste mexeu, por que aquele, e por que tanto de uma
 vez?** O ajuste automático é descida de gradient sobre um peso só, e o salto de 0,4 para 1,0
-numa noite é um passo grande demais. O postmortem (c8) volta a isso.
+numa noite é um passo grande demais para a escala daquela entrada. O postmortem (c8) volta a
+isso.
 
 A pergunta que abre a unidade: **quando uma estimativa erra, como se descobre qual número
 mexer, e para que lado, sem tentar um por um?**
@@ -105,7 +128,7 @@ gradient numérico não serve para dar o passo, e serve, só custa mais.
 | # | banda | título | termos novos |
 |---|---|---|---|
 | c0 | critério | Uma decisão é uma soma com pesos | neurônio, peso do neurônio, bias |
-| c1 | critério | tanh, o if que não é seco | activation function |
+| c1 | critério | tanh: sem ela, dois neurônios valem um | activation function |
 | c2 | critério | Loss: um número para o quanto errou | loss |
 | c3 | técnica | Mexer um pouco e medir | gradient |
 | c4 | técnica | Regra da cadeia: o impacto atravessa as contas | regra da cadeia, impacto local |
@@ -116,6 +139,21 @@ gradient numérico não serve para dar o passo, e serve, só custa mais.
 
 c1 mora na banda critério, e não na técnica como a primeira versão deste spec dizia: ele não
 elabora nenhuma das duas técnicas, e a tanh é parte da saída do critério.
+
+O argumento de c1 é o colapso: sem activation function, neurônios de multiplicar e somar em
+sequência viram uma conta de multiplicar e somar só. y = 2 × x + 1 seguido de z = 9 × y + 1 dá
+z = 18 × x + 10, um neurônio com peso 18 e bias 10; com a tanh entre os dois, z deixa de ser uma
+reta. A leitura "um if que não é seco" (perto de zero acompanha a soma, longe de zero trava em −1
+ou 1) continua, como apoio. A versão anterior prometia que a curva suave permitia medir, adiante,
+quanto cada peso move o resultado, e nenhum exemplo seguinte cumpria isso: todos são lineares e
+têm gradient sem tanh nenhuma. A revisão sugeriu z = 3 × y + 1 (z = 6 × x + 4); 3, 4 e 6 são
+células do gabarito de e5, que o teste proíbe na prosa de c0 a c5, por isso o 9.
+
+c7 prepara e7 com uma frase: nunca zerar é um defeito, zerar no ponto errado da rodada é outro.
+Não diz onde a chamada de zerar deve ficar.
+
+O bias é "um número somado sempre, sem multiplicar entrada nenhuma", e não "o número somado no
+fim": o pseudocódigo de c0 começa a soma por ele.
 
 O gradient sempre diz de quê é: "o gradient do peso na previsão", "o gradient do peso no loss".
 No chamado, o gradient do peso na previsão é a distância; no loss, é isso vezes
@@ -130,7 +168,10 @@ Exercícios, um por ciclo:
 
 - **e0, escolha:** a pontuação de um filtro antifraude, `p = 0,5 × v + 3 × n − 4`. A conta
   devolve 2, não "bloquear".
-- **e1, escolha:** if seco contra tanh quando a soma vai de 0,2 para 0,3.
+- **e1, escolha:** dois neurônios sem activation function, `y = 4 × x − 2` e `z = 0,5 × y + 3`;
+  o aluno calcula z para x = 0, 1 e 2 (2, 4, 6) e vê que um neurônio só, `z = 2 × x + 2`, faz o
+  mesmo. Os distratores exercitam `empilhar-sem-ativacao`. Antes da revisão, e1 era if seco
+  contra tanh quando a soma ia de 0,2 para 0,3.
 - **e2, escolha:** dois modelos de prazo de entrega; a soma com sinal declara A perfeito, e o
   loss, 18 contra 2, escolhe B.
 - **e3, escolha:** `p = w1 × x1 + w2 × x2 + b`, empurrão de 0,1 em cada; o peso menor move mais.
@@ -145,8 +186,10 @@ Exercícios, um por ciclo:
   prosa de c0 a c5 contra ele.
 - **e6, escolha:** `loss = (w − 3)²` em 5, learning rate 1,5 contra 0,1; o passo maior passa do
   ponto e o loss vai a 16.
-- **e7, defeito:** um laço de treino em que `zero_grad()` fica entre `backward()` e a linha que
-  muda o peso. O passo lê o gradient já zerado: nenhum peso muda e o loss fica igual em toda
+- **e7, defeito:** um laço de treino, no estilo do micrograd, em que `zero_grad()` fica entre
+  `backward()` e a linha que muda o peso. O enunciado diz que limpar o gradient escreve 0 em
+  `p.grad`: no PyTorch 2.x a mesma chamada põe `None`, e a linha do passo lançaria `TypeError`, o
+  que tornava falso o "roda sem erro" da versão anterior. O passo lê o gradient já zerado: nenhum peso muda e o loss fica igual em toda
   rodada. c7 ensina o mecanismo (a passada para trás soma ao que sobrou da rodada anterior) e
   não diz onde a chamada de zerar deve ficar; o exercício cobra essa leitura. O enunciado não
   descreve o defeito, e o diff marca a função inteira, para não apontar a linha. A correta não
@@ -192,6 +235,11 @@ A implementação acrescentou três, todas exercitadas:
 - `passo-com-sinal-trocado`, somar o gradient ao peso, do `whenOmitted` da direção do passo
 - `zerar-em-qualquer-ponto`, supor que zerar o gradient em qualquer ponto da rodada dá o mesmo
   resultado, de e7
+
+A revisão de 2026-11-09 acrescentou uma quarta, exercitada em e1:
+
+- `empilhar-sem-ativacao`, supor que neurônios em sequência, sem activation function entre
+  eles, fazem uma conta que um neurônio só não faz
 
 **A DEFINIR:** quais dessas o público da trilha erra. Mesmo argumento do spec de `tracing`:
 catálogo inventado produz distractor plausível e pedagogicamente vazio.
@@ -242,3 +290,8 @@ O exercício de trace de c5 entra em `requiresClean`.
    Ela entra em `allUnits` e não em `units`, então não altera nivelamento, faixas, contadores
    nem a regra de `design-reviewer`. Promover depois custa uma linha em `src/content/index.ts`,
    e a condição para isso é ter armadilhas observadas em alunos, não só propostas.
+8. **Revisão externa** (2026-11-09, aceita pelo autor): c1 passa a argumentar pelo colapso de
+   neurônios lineares em sequência; o chamado passa a ter job por entrega concluída e diz por que
+   a base é fixa; o postmortem de c8 nomeia a causa (learning rate fixo para entradas de escalas
+   diferentes) com a conta do limiar; e7 declara o estilo micrograd; a definição de bias deixa de
+   depender da ordem da soma.

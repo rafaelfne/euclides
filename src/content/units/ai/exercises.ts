@@ -9,9 +9,12 @@ import type { Exercise, Misconception } from '../../schema'
   gradient "é usado com o sinal trocado", palavra do próprio spec. A nona,
   `ai.zerar-em-qualquer-ponto`, nasce de ai.e7: o ciclo c7 ensina que o
   gradient acumula, e o exercício cobra o passo seguinte, que é ler em que ponto
-  da rodada a chamada de zerar está. Nenhuma das nove foi observada em aluno do
-  público da trilha; o spec diz isso, e é a condição para a unidade sair de
-  `allUnits` e entrar em `units`.
+  da rodada a chamada de zerar está. A décima, `ai.empilhar-sem-ativacao`, nasce
+  de ai.e1 depois da revisão externa de 2026-11-09: c1 deixou de ensinar o if
+  contra a curva e passou a ensinar que neurônios em sequência, sem activation
+  function, colapsam numa conta de multiplicar e somar só. Nenhuma das dez foi
+  observada em aluno do público da trilha; o spec diz isso, e é a condição para
+  a unidade sair de `allUnits` e entrar em `units`.
 */
 export const aiMisconceptions: Misconception[] = [
   { id: 'ai.decisao-binaria', label: 'Procurar o if dentro da conta, em vez de ler a saída como pontuação',
@@ -21,6 +24,14 @@ export const aiMisconceptions: Misconception[] = [
       'Procure no sistema onde a pontuação vira bloqueio ou liberação. Essa comparação faz parte da conta, ou é uma regra de quem lê o número?',
     ],
     reviewCycle: 'ai.c0' },
+
+  { id: 'ai.empilhar-sem-ativacao', label: 'Supor que neurônios em sequência, sem activation function entre eles, fazem uma conta que um neurônio só não faz',
+    socraticQuestion: 'Escreva a conta do segundo neurônio trocando y pela conta do primeiro, e simplifique. O que sobra tem a forma de um peso vezes x mais um bias, ou outra forma?',
+    escalation: [
+      'Calcule z para três entradas seguidas e anote quanto ele sobe de uma para a outra. O aumento muda de um passo para o outro, ou é sempre o mesmo?',
+      'Escreva um neurônio só com o peso e o bias que você encontrou e calcule a saída dele para as mesmas três entradas. Em qual delas ele discorda dos dois neurônios em sequência?',
+    ],
+    reviewCycle: 'ai.c1' },
 
   { id: 'ai.erros-se-cancelam', label: 'Somar os erros com sinal, e um erro para cima apagar um erro para baixo',
     socraticQuestion: 'Invente um modelo que erra 3 para cima num pedido e 3 para baixo no outro. Quanto dá a soma dos dois erros, e esse número diz que o modelo acertou?',
@@ -105,15 +116,15 @@ export const aiExercises: Exercise[] = [
   {
     kind: 'choice', id: 'ai.e1',
     prompt:
-      'Um neurônio passa a soma por uma regra de saída. Na versão A, um if seco devolve 1 quando a ' +
-      'soma passa de zero e −1 quando não passa. Na versão B, a regra é a tanh: tanh(0,2) ≈ 0,197 e ' +
-      'tanh(0,3) ≈ 0,291. Um peso do neurônio sobe um pouco, e a soma vai de 0,2 para 0,3. Em qual ' +
-      'versão a saída registra que o peso mexeu?',
+      'Um modelo passa a entrada por dois neurônios em sequência, sem activation function entre ' +
+      'eles. O primeiro faz y = 4 × x − 2, e o segundo recebe y e faz z = 0,5 × y + 3. Um colega ' +
+      'diz que, com dois neurônios, o modelo faz uma conta que um neurônio só não faz. Calcule z ' +
+      'para x = 0, 1 e 2. O que os três valores mostram sobre o que o colega disse?',
     choices: [
-      { correct: true, text: 'Só na versão B, a da tanh',
-        why: 'O if devolve 1 para 0,2 e para 0,3, e uma saída que não muda quando o peso mexe não diz para que lado mexer. A tanh se comporta como o if longe de zero, perto de 1 ou de −1, e perto de zero devolve um grau, não um veredito.' },
-      { correct: false, text: 'Em nenhuma: as duas continuam dizendo sim, e é a decisão que importa', misconceptionId: 'ai.decisao-binaria' },
-      { correct: false, text: 'Na A: é o if que decide', misconceptionId: 'ai.decisao-binaria' },
+      { correct: true, text: 'Que ele está errado: um neurônio só, z = 2 × x + 2, dá os mesmos três',
+        why: 'Com x = 0, 1 e 2, y vale −2, 2 e 6, e z vale 2, 4 e 6: sobe 2 a cada passo, como uma reta. Trocando y pela conta do primeiro, z = 0,5 × (4 × x − 2) + 3 = 2 × x + 2, um neurônio com peso 2 e bias 2. Sem activation function entre os dois, empilhar só alonga a conta. Com a tanh no meio, z deixaria de ser uma reta, e nenhum neurônio só o reproduziria.' },
+      { correct: false, text: 'Que ele está certo: z sobe cada vez mais, porque a segunda conta multiplica a primeira', misconceptionId: 'ai.empilhar-sem-ativacao' },
+      { correct: false, text: 'Que ele está certo: o segundo neurônio só vê y, nunca x', misconceptionId: 'ai.empilhar-sem-ativacao' },
     ],
   },
   {
@@ -219,7 +230,9 @@ export const aiExercises: Exercise[] = [
     kind: 'bug', id: 'ai.e7',
     prompt:
       'Este laço de treino chegou num pull request que reorganiza o que acontece dentro de cada ' +
-      'rodada. Ele roda sem erro. Marque a linha defeituosa e escolha a consequência.',
+      'rodada. O modelo segue o estilo do micrograd: cada parâmetro guarda o gradient num número, ' +
+      'p.grad, e a chamada que limpa os gradients escreve 0 em cada um. Nesse estilo, o laço roda ' +
+      'sem erro. Marque a linha defeituosa e escolha a consequência.',
     language: 'python',
     code: `def train(model, examples, rounds, learning_rate):
     for _ in range(rounds):
@@ -249,7 +262,7 @@ export const aiExercises: Exercise[] = [
     prompt:
       'No chamado, o prazo previsto é distância × peso + base. A rota tem distância 5, a base é ' +
       '1 dia, e a entrega real levou 4 dias. Com peso 0,4 a previsão era 3 dias, e o ajuste ' +
-      'noturno levou o peso a 1,0. Com que peso a previsão dessa rota acerta os 4 dias?',
+      'daquela entrega levou o peso a 1,0. Com que peso a previsão dessa rota acerta os 4 dias?',
     choices: [
       { correct: true, text: '0,6, que leva a previsão a 4 dias',
         why: '(4 − 1) ÷ 5 = 0,6. Na previsão, o gradient do peso é 5, a distância, então cada 0,1 no peso soma meio dia: faltava 1 dia, e o peso precisava subir 0,2. Com peso 0,4 o loss era 1; com 0,6 ele é zero; com o 1,0 que o ajuste escolheu, 4. O passo de 0,2 sairia de learning rate 0,02 vezes o gradient de 10 no loss; o ajuste usou 0,06, o triplo, foi para o lado certo e passou do ponto.' },
