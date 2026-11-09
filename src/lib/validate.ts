@@ -19,6 +19,7 @@ import { bfsOrder, dfsOrder, vertices, bfsRounds, reachesCycle } from './travers
 import { build, heightOf, inorder, rebalanceOnce } from './bst'
 import { insertionRounds, totalShifts } from './insertion'
 import { untranslated } from './transliterate'
+import { untranslatedPython } from './transliterate-python'
 import { TOKENIZERS } from './highlight'
 import { MAX_PROBE_LABEL_WORDS, MAX_PROBE_PROMPT_WORDS, probes } from '../content/placement'
 
@@ -46,7 +47,7 @@ export const CHECKS = [
   ['referência', 'referência: todo trace é gerado por implementação que roda'],
   ['formato', 'formato: toda coluna editável de trace declara como se escreve a resposta'],
   ['vazamento', 'vazamento: a prosa do ciclo não repete as entradas nem as células do gabarito do seu trace'],
-  ['tradução', 'tradução: o pseudocódigo ou atravessa inteiro para TypeScript, ou é declarado prosa'],
+  ['tradução', 'tradução: o pseudocódigo ou atravessa inteiro para a linguagem executável da unidade, ou é declarado prosa'],
   ['glossário', 'glossário: ids únicos, introdução declarada dos dois lados'],
   ['sobrecarga', 'sobrecarga: todo termo sobrecarregado declara seus falsos amigos'],
   ['ambiguidade', 'ambiguidade: nenhuma palavra é reivindicada por dois termos, nem por termo e checagem'],
@@ -502,7 +503,8 @@ export function checkAll(units: Unit[], terms: GlossaryTerm[]): Failure[] {
     */
     for (const c of u.cycles) {
       if (!c.pseudocode) continue
-      const left = untranslated(c.pseudocode)
+      // Cada unidade atravessa para a sua linguagem executável. ADR-0032.
+      const left = u.runnable === 'python' ? untranslatedPython(c.pseudocode) : untranslated(c.pseudocode)
       if (left.length && !c.pseudocodeIsProse) {
         fail('tradução', `${c.id}: sobra em português (${left.join(', ')}) e o ciclo não declara pseudocodeIsProse`)
       }

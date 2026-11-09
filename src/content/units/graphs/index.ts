@@ -3,6 +3,7 @@ import { graphsExercises, graphsMisconceptions } from './exercises'
 
 export const graphsUnit: Unit = {
   kind: 'structure',
+  runnable: 'typescript',
   id: 'graphs',
   number: 6,
   title: 'Grafos',

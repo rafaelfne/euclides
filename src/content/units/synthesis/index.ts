@@ -3,6 +3,7 @@ import { synthesisExercises, synthesisMisconceptions } from './exercises'
 
 export const synthesisUnit: Unit = {
   kind: 'method',
+  runnable: 'typescript',
   id: 'synthesis',
   number: 8,
   title: 'Síntese: escolher a estrutura',

@@ -21,7 +21,7 @@ import { referenceGenerators } from '../src/lib/reference'
 import { aiExercises } from '../src/content/units/ai/exercises'
 import { aiUnit } from '../src/content/units/ai'
 import { allUnits, units } from '../src/content/index'
-import { toTypeScriptOrNull, untranslated } from '../src/lib/transliterate'
+import { toPythonOrNull, untranslatedPython } from '../src/lib/transliterate-python'
 import type { Exercise } from '../src/content/schema'
 
 let failures = 0
@@ -248,8 +248,8 @@ const e7 = byId('ai.e7')
 if (e7.kind === 'bug') {
   const lines = e7.code.split('\n')
   const at = (needle: string) => lines.findIndex((l) => l.includes(needle)) + 1
-  check('ai.e7: a linha defeituosa é zeroGrad, entre backward e a linha que muda o peso',
-    e7.faultyLines.length === 1 && lines[e7.faultyLines[0]! - 1]!.includes('zeroGrad')
+  check('ai.e7: a linha defeituosa é zero_grad, entre backward e a linha que muda o peso',
+    e7.faultyLines.length === 1 && lines[e7.faultyLines[0]! - 1]!.includes('zero_grad')
       && at('backward') < e7.faultyLines[0]! && e7.faultyLines[0]! < at('p.data'))
   check('ai.e7: o diff marca a função inteira, e não aponta a linha defeituosa',
     (e7.addedLines ?? []).length === lines.length)
@@ -422,13 +422,24 @@ for (const [id, word] of [['ai.c3', /execuções/], ['ai.c5', /2 passadas/]] as 
     body.includes('1.000.001') && word.test(body))
 }
 
-// `test-transliterate` percorre `units`, e esta unidade está fora dele.
+// A unidade deriva Python (ADR-0032). Cada bloco atravessa inteiro, sem
+// identificador acentuado, e o resultado é Python que o próprio Python aceita:
+// sem chave, sem `let`, sem `===`, e com `import math` quando usa tanh.
+check('ai: a unidade declara Python como linguagem executável', aiUnit.runnable === 'python')
 for (const c of aiUnit.cycles) {
   if (!c.pseudocode) continue
-  const ts = toTypeScriptOrNull(c.pseudocode)
-  check(`${c.id}: o pseudocódigo atravessa inteiro para TypeScript, sem identificador acentuado`,
-    ts !== null && !/[À-ÿ]/.test(ts), ts ?? untranslated(c.pseudocode).join(', '))
+  const py = toPythonOrNull(c.pseudocode)
+  check(`${c.id}: o pseudocódigo atravessa inteiro para Python, sem identificador acentuado`,
+    py !== null && !/[À-ÿ]/.test(py), py ?? untranslatedPython(c.pseudocode).join(', '))
+  check(`${c.id}: o Python derivado não carrega sintaxe de TypeScript`,
+    py !== null && !/[{};]|\blet\b|===|Math\./.test(py), py ?? '')
+  check(`${c.id}: todo def e todo for terminam em dois-pontos`,
+    py !== null && py.split('\n').filter((l) => /^\s*(def|for|while|if|elif|else)\b/.test(l)).every((l) => l.trimEnd().endsWith(':') || /:\s+\S/.test(l)), py ?? '')
+  if (py && py.includes('math.')) check(`${c.id}: importa math quando usa math.tanh`, py.startsWith('import math'))
 }
+check('ai.c0: "para i de 0 até |entradas| − 1" vira range(len(inputs)), sem +1 de volta',
+  (toPythonOrNull(aiUnit.cycles.find((c) => c.id === 'ai.c0')!.pseudocode!) ?? '').includes('for i in range(len(inputs)):'))
+check('ai.e7: o exercício de defeito está em Python', byId('ai.e7').kind === 'bug' && (byId('ai.e7') as { language: string }).language === 'python')
 
 console.log(failures ? `\n  ${failures} falha(s)\n` : '\n  todas as checagens passaram\n')
 process.exit(failures ? 1 : 0)

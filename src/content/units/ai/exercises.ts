@@ -220,17 +220,14 @@ export const aiExercises: Exercise[] = [
     prompt:
       'Este laço de treino chegou num pull request que reorganiza o que acontece dentro de cada ' +
       'rodada. Ele roda sem erro. Marque a linha defeituosa e escolha a consequência.',
-    language: 'javascript',
-    code: `function train(model, examples, rounds, learningRate) {
-  for (let round = 0; round < rounds; round++) {
-    const loss = model.loss(examples)
-    loss.backward()
-    model.zeroGrad()
-    for (const p of model.parameters()) {
-      p.data -= learningRate * p.grad
-    }
-  }
-}`,
+    language: 'python',
+    code: `def train(model, examples, rounds, learning_rate):
+    for _ in range(rounds):
+        loss = model.loss(examples)
+        loss.backward()
+        model.zero_grad()
+        for p in model.parameters():
+            p.data -= learning_rate * p.grad`,
     faultyLines: [5],
     /*
       O pull request traz a função inteira, e o diff marca todas as linhas como
@@ -238,10 +235,10 @@ export const aiExercises: Exercise[] = [
       exatamente a linha defeituosa, e a metade "marque a linha" do exercício
       não media nada.
     */
-    addedLines: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+    addedLines: [1, 2, 3, 4, 5, 6, 7],
     consequences: [
       { correct: true, text: 'Nenhum peso muda, e o loss fica igual em toda rodada',
-        why: 'zeroGrad roda depois de backward e antes da linha que muda o peso: quando o passo lê p.grad, ele já é 0, e p.data − learningRate × 0 é o próprio p.data. Nenhum erro aparece, porque subtrair zero é uma conta válida. A chamada de zerar limpa o que sobrou da rodada anterior só quando vem antes de backward; depois dele, apaga o gradient desta rodada antes de alguém usá-lo.' },
+        why: 'zero_grad roda depois de backward e antes da linha que muda o peso: quando o passo lê p.grad, ele já é 0, e p.data − learning_rate × 0 é o próprio p.data. Nenhum erro aparece, porque subtrair zero é uma conta válida. A chamada de zerar limpa o que sobrou da rodada anterior só quando vem antes de backward; depois dele, apaga o gradient desta rodada antes de alguém usá-lo.' },
       { correct: false, text: 'O passo usa o gradient da rodada atual, e só ele', misconceptionId: 'ai.zerar-em-qualquer-ponto' },
       { correct: false, text: 'Nenhuma: backward escreve o gradient do zero, e zerar só sobra', misconceptionId: 'ai.grad-acumula-entre-rodadas' },
       { correct: false, text: 'O passo sai certo se backward escrever com = em vez de somar', misconceptionId: 'ai.grad-sobrescrito' },

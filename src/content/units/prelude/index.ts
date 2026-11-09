@@ -3,6 +3,7 @@ import { preludeExercises, preludeMisconceptions } from './exercises'
 
 export const preludeUnit: Unit = {
   kind: 'method',
+  runnable: 'typescript',
   id: 'prelude',
   number: 0,
   title: 'Ler um procedimento',

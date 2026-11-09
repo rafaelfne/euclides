@@ -1,5 +1,6 @@
 import type { Token } from './pseudocode'
 import { tokenizeJavaScript } from './javascript'
+import { tokenizePython } from './python'
 
 export type Tokenizer = (source: string) => Token[]
 
@@ -17,4 +18,5 @@ export type Tokenizer = (source: string) => Token[]
  */
 export const TOKENIZERS: Record<string, Tokenizer> = {
   javascript: tokenizeJavaScript,
+  python: tokenizePython,
 }

@@ -103,6 +103,7 @@ Antes disso a prosa era texto puro e os asteriscos apareciam literais na tela.
 | conteúdo autorado | pt-BR | enunciados, prosa, rubricas |
 | pseudocódigo | pt-BR | `inserir(tabela, chave, valor)` |
 | código do sandbox | inglês | `insert(table, key, value)` |
+| código executável derivado | TypeScript; Python na unidade 09 | `runnable` da unidade, ADR-0032 |
 
 Valor de enum é código; rótulo de tela é conteúdo. Nunca renderize um enum direto.
 
