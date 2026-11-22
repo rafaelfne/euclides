@@ -35,6 +35,13 @@ atual, porque o `uv init` cria o projeto pedindo Python 3.13 ou mais.
    apontando o ciclo que o ensinou. O código original entra só no fim, como leitura depois
    dos testes passarem.
 
+7. **Uma pasta por aula, código e testes separados** (2026-11-22). O projeto de estudo tem
+   uma pasta para cada aula, com o nome do que ela constrói: micrograd agora, makemore ao lado
+   depois. O Value mora em micrograd/engine.py, o mesmo nome do micrograd original, e os testes
+   em tests/. Duas linhas no pyproject.toml (`pythonpath = ["."]` em
+   `[tool.pytest.ini_options]`) deixam os testes importarem a partir da raiz. O deck de
+   prática do autor usa a mesma estrutura, para os dois materiais não divergirem.
+
 ## Opções consideradas
 
 - **As quatro fases do desenho.** Descartada por ora: fase 2 em diante instala PyTorch e
@@ -42,12 +49,18 @@ atual, porque o `uv init` cria o projeto pedindo Python 3.13 ou mais.
   sem checagem que perceba.
 - **Dar o `engine.py` pronto e pedir só para rodar.** Descartada: é a resposta entregue, e a
   página deixa de ser exercício.
+- **`uv init --package`**, que cria src/slm_estudo. É a convenção de biblioteca: repete o nome
+  do projeto num nível a mais, sem ganho para quem estuda, e cada aula nova viraria um
+  subpacote dele. A partir do uv 0.13 o `init` faz isso por padrão, até com `--app`; por isso a
+  página manda `uv init --no-package`, que dá o mesmo resultado na 0.11 e na 0.13.
+- **Todos os arquivos na raiz do projeto.** Funciona sem configurar nada, mas mistura as aulas e
+  os testes numa pasta só.
 - **Escrever o guia direto no componente.** Descartada pelo mesmo motivo das outras telas: o
   texto fora de `src/content` escapa das checagens.
 
 ## Consequências
 
 - O comando de instalação do uv foi conferido na documentação do uv em 2026-11-09, e os
-  passos foram rodados no uv 0.11. Mudou a ferramenta, muda este arquivo.
+  passos foram rodados no uv 0.11 e no 0.13.9. Mudou a ferramenta, muda este arquivo.
 - Uma unidade nova com código executável fora do app ganha guia acrescentando um item em
   `setupGuides`; a rota e o link aparecem sozinhos.

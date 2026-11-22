@@ -5,7 +5,7 @@ import type { SetupGuide } from '../../setup'
  * GPU e sem biblioteca de IA. PyTorch, modelo local e fine-tuning ficam fora
  * desta página até a trilha de SLM pedir por eles. ADR-0033.
  *
- * Os comandos foram rodados no uv 0.11. O `uv python pin 3.12` do desenho
+ * Os comandos foram rodados no uv 0.11 e no 0.13.9. O `uv python pin 3.12` do desenho
  * original saiu: o `uv init` atual cria o projeto pedindo Python 3.13 ou mais,
  * e o pin para 3.12 falha. Sem pin, o uv usa o Python que o projeto pede.
  *
@@ -34,9 +34,11 @@ export const aiSetup: SetupGuide = {
     },
     {
       title: 'Criar o projeto de estudo',
-      why: 'O `uv init` cria a pasta com um `pyproject.toml` e um `main.py` de exemplo, que você pode apagar. O pytest entra como dependência de desenvolvimento: é ele que roda os testes. Se a máquina não tiver Python, o uv baixa um nesse momento.',
+      why: 'Uma pasta por aula, com o nome do que ela constrói: `micrograd` agora, ao lado dela as próximas. O código mora na pasta da aula e os testes em `tests`. O `--no-package` é necessário a partir do uv 0.13: sem ele, o `init` cria um pacote com a pasta `src`, que esta estrutura não usa. O `main.py` de exemplo sai, e o pytest entra como dependência de desenvolvimento. Se a máquina não tiver Python, o uv baixa um nesse momento.',
       blocks: [
-        { kind: 'shell', source: 'uv init slm-estudo\ncd slm-estudo\nuv add --dev pytest' },
+        { kind: 'shell', os: 'unix', source: 'uv init --no-package slm-estudo\ncd slm-estudo\nrm main.py\nmkdir micrograd tests\ntouch micrograd/__init__.py\nuv add --dev pytest' },
+        { kind: 'shell', os: 'windows', source: 'uv init --no-package slm-estudo\ncd slm-estudo\nRemove-Item main.py\nNew-Item -ItemType Directory -Path micrograd, tests\nNew-Item -Path micrograd/__init__.py\nuv add --dev pytest' },
+        { kind: 'file', path: 'pyproject.toml', mode: 'append', source: '\n[tool.pytest.ini_options]\npythonpath = ["."]' },
       ],
       doneWhen: '`uv run pytest` termina com "no tests ran". Ainda não existe teste nenhum, e é exatamente isso que ele diz.',
     },
@@ -47,11 +49,11 @@ export const aiSetup: SetupGuide = {
       blocks: [
         {
           kind: 'file',
-          path: 'test_micrograd.py',
+          path: 'tests/test_engine.py',
           mode: 'new',
           source: `import math
 
-from micrograd import Value
+from micrograd.engine import Value
 
 
 def test_one_neuron():
@@ -78,11 +80,11 @@ def test_tanh_matches_the_measurement():
     assert abs(x.grad - measured) < 1e-4`,
         },
       ],
-      doneWhen: '`uv run pytest` falha com "No module named \'micrograd\'". O arquivo que ele procura é o próximo passo.',
+      doneWhen: '`uv run pytest` falha com "No module named \'micrograd.engine\'". O arquivo que ele procura é o próximo passo.',
     },
     {
-      title: 'Escrever o micrograd.py',
-      why: 'Um arquivo com uma classe, ao lado do arquivo de testes. Cada parte é o que um ciclo desta unidade ensinou, nesta ordem:',
+      title: 'Escrever o engine.py',
+      why: 'Um arquivo com uma classe, `micrograd/engine.py`, o mesmo nome que ele tem no micrograd original. Cada parte é o que um ciclo desta unidade ensinou, nesta ordem:',
       build: [
         { text: '`Value` guarda o número em `data`, começa com `grad` 0 e lembra de quais `Value` ele saiu.', cycle: 'ai.c5' },
         { text: 'Soma e produto (`__add__` e `__mul__`) devolvem um `Value` novo e deixam guardado como mandar o gradient de volta a cada operando: o impacto local vezes o gradient de quem está em cima.', cycle: 'ai.c4' },
@@ -100,7 +102,7 @@ def test_tanh_matches_the_measurement():
       blocks: [
         {
           kind: 'file',
-          path: 'test_micrograd.py',
+          path: 'tests/test_engine.py',
           mode: 'append',
           source: `
 
@@ -119,7 +121,7 @@ def test_cart():
     },
   ],
   next: {
-    text: 'Com os testes passando, leia o engine.py do micrograd original. São menos de 100 linhas. Ele usa relu no lugar de tanh e tem também potência, subtração e divisão: cada uma é mais um impacto local para você conferir com um teste.',
+    text: 'Com os testes passando, leia o engine.py do micrograd original, o mesmo arquivo que você acabou de escrever. São menos de 100 linhas. Ele usa relu no lugar de tanh e tem também potência, subtração e divisão: cada uma é mais um impacto local para você conferir com um teste.',
     href: 'https://github.com/karpathy/micrograd/blob/master/micrograd/engine.py',
     label: 'karpathy/micrograd, engine.py',
   },
